@@ -1,0 +1,4 @@
+import DataTileEdit from './components/Tiles/DataTile/Edit.jsx';
+import DataTileView from './components/Tiles/DataTile/View.jsx';
+
+export { DataTileEdit, DataTileView };
