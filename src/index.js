@@ -1,4 +1,4 @@
-import DataTileEdit from './components/Tiles/DataTile/Edit.js';
-import DataTileView from './components/Tiles/DataTile/View.js';
+import DataTileEdit from './components/Tiles/DataTile/Edit';
+import DataTileView from './components/Tiles/DataTile/View';
 
 export { DataTileEdit, DataTileView };

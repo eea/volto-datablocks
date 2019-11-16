@@ -1,0 +1,1 @@
+export const GET_SPARQL_DATA = 'GET_SPARQL_DATA';
