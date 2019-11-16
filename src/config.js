@@ -1,1 +1,3 @@
-export const voltoConfig = {};
+export function applyConfig(config) {
+  return config;
+}
