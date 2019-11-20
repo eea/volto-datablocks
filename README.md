@@ -1,3 +1,8 @@
+# SemanticData powered Volto blocks
+
+The purpose for this package is to provide a way to list data coming from
+a SPARQL query, as a Volto block.
+
 ### Development setup
 
 - Needs to be available at `<docker orchestration folder>/frontend-addons/volto-datablocks`
