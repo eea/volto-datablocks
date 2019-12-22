@@ -12,12 +12,12 @@ export function getSparqlData(path) {
   };
 }
 
-export function getDataQuerystring(path) {
-  return {
-    type: GET_DATA_QUERYSTRING,
-    request: {
-      op: 'get',
-      path: '/@dataquerystring',
-    },
-  };
-}
+// export function getDataQuerystring(path) {
+//   return {
+//     type: GET_DATA_QUERYSTRING,
+//     request: {
+//       op: 'get',
+//       path: '/@dataquerystring',
+//     },
+//   };
+// }

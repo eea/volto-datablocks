@@ -8,7 +8,7 @@ const initialState = {
 };
 
 export default function sparql_data(state = initialState, action = {}) {
-  console.log('sparql_data reducer');
+  // console.log('sparql_data reducer');
   switch (action.type) {
     case `${GET_SPARQL_DATA}_PENDING`:
       return {

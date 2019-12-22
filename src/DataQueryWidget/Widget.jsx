@@ -1,19 +1,22 @@
-import QueryWidget from '@plone/volto/components/manage/Widgets/QuerystringWidget';
 import { connect } from 'react-redux';
-import { getDataQuerystring } from '../actions';
+import { QuerystringWidget } from '@plone/volto/components/manage/Widgets/QuerystringWidget';
+import { getQuerystring } from '@plone/volto/actions';
+import { DATACONNECTOR_PARAMS_GROUP } from '../constants';
 
-class DataQueryWidget extends QueryWidget {
-  componentDidMount() {
-    if (this.props.focus) {
-      this.node.focus();
-    }
-    this.props.getDataQuerystring();
-  }
+// import { getDataQuerystring } from '../actions';
+
+function filterIndexes(indexes) {
+  const res = {};
+  Object.keys(indexes).forEach(k => {
+    if (indexes[k].group === DATACONNECTOR_PARAMS_GROUP) res[k] = indexes[k];
+  });
+  return res;
 }
 
 export default connect(
   state => ({
-    indexes: state.dataquerystring.indexes,
+    indexes: filterIndexes(state.querystring.indexes),
   }),
-  { getDataQuerystring },
-)(DataQueryWidget);
+  // { getQuerystring: getDataQuerystring },
+  { getQuerystring },
+)(QuerystringWidget);
