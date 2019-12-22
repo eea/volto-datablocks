@@ -3,8 +3,6 @@ import { QuerystringWidget } from '@plone/volto/components/manage/Widgets/Querys
 import { getQuerystring } from '@plone/volto/actions';
 import { DATACONNECTOR_PARAMS_GROUP } from '../constants';
 
-// import { getDataQuerystring } from '../actions';
-
 function filterIndexes(indexes) {
   const res = {};
   Object.keys(indexes).forEach(k => {
@@ -17,6 +15,5 @@ export default connect(
   state => ({
     indexes: filterIndexes(state.querystring.indexes),
   }),
-  // { getQuerystring: getDataQuerystring },
   { getQuerystring },
 )(QuerystringWidget);

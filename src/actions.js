@@ -1,4 +1,4 @@
-import { GET_SPARQL_DATA, GET_DATA_QUERYSTRING } from './constants';
+import { GET_SPARQL_DATA } from './constants';
 
 export function getSparqlData(path) {
   const url = path + '/@sparql-data';
