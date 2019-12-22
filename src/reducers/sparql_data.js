@@ -1,4 +1,4 @@
-import { GET_SPARQL_DATA } from './constants';
+import { GET_SPARQL_DATA } from '../constants';
 
 const initialState = {
   error: null,
@@ -7,7 +7,7 @@ const initialState = {
   loading: false,
 };
 
-export function sparql_data(state = initialState, action = {}) {
+export default function sparql_data(state = initialState, action = {}) {
   console.log('sparql_data reducer');
   switch (action.type) {
     case `${GET_SPARQL_DATA}_PENDING`:
