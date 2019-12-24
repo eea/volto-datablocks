@@ -7,7 +7,7 @@ import { GET_DATA_FROM_PROVIDER } from '../constants';
 
 const initialState = {
   error: null,
-  item: {},
+  data: {},
   loaded: false,
   loading: false,
 };
@@ -22,10 +22,24 @@ export default function data_providers(state = initialState, action = {}) {
         loading: true,
       };
     case `${GET_DATA_FROM_PROVIDER}_SUCCESS`:
+      const isExpand =
+        (action.result['@components'] &&
+          action.result['@components']['connector-data'] &&
+          action.result['@components']['connector-data']['@id'] &&
+          true) ||
+        false;
+      const id = isExpand
+        ? action.result['@components']['connector-data']['@id']
+        : action.result['@id'];
       return {
         ...state,
         error: null,
-        item: action.result['@components']?.['connector-data']?.data || [],
+        data: {
+          ...state.data,
+          [id]: isExpand
+            ? action.result['@components']['connector-data'].data
+            : action.result.data,
+        },
         loaded: true,
         loading: false,
       };
@@ -33,7 +47,7 @@ export default function data_providers(state = initialState, action = {}) {
       return {
         ...state,
         error: action.error,
-        item: {},
+        data: {},
         loaded: false,
         loading: false,
       };

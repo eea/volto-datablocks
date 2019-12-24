@@ -12,23 +12,12 @@ export function getSparqlData(path) {
   };
 }
 
-// TODO: this needs to be refactored to use the @connector-data endpoint
 export function getDataFromProvider(path) {
   return {
     type: GET_DATA_FROM_PROVIDER,
     request: {
       op: 'get',
-      path: path + '@connector-data',
+      path: path + '/@connector-data',
     },
   };
 }
-
-// export function getDataQuerystring(path) {
-//   return {
-//     type: GET_DATA_QUERYSTRING,
-//     request: {
-//       op: 'get',
-//       path: '/@dataquerystring',
-//     },
-//   };
-// }

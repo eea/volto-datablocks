@@ -3,6 +3,7 @@ import * as addonReducers from './reducers';
 import DataQueryWidget from './DataQueryWidget/Widget';
 import DataBlockView from './DataConnectedBlock/View';
 import DataBlockEdit from './DataConnectedBlock/Edit';
+import DataConnectorView from './DataConnector/View';
 
 import chartIcon from '@plone/volto/icons/world.svg';
 import addonRoutes from './routes';
@@ -21,6 +22,8 @@ function addCustomGroup(config) {
 
 export function applyConfig(config) {
   addCustomGroup(config);
+
+  config.views.contentTypesViews.discodataconnector = DataConnectorView;
 
   config.widgets.id.data_query = DataQueryWidget;
 
