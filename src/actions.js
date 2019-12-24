@@ -12,12 +12,21 @@ export function getSparqlData(path) {
   };
 }
 
-export function getDataFromProvider(path) {
-  return {
-    type: GET_DATA_FROM_PROVIDER,
-    request: {
-      op: 'get',
-      path: path + '/@connector-data',
-    },
-  };
+export function getDataFromProvider(path, filters) {
+  return filters
+    ? {
+        type: GET_DATA_FROM_PROVIDER,
+        request: {
+          op: 'post',
+          path: path + '/@connector-data',
+          data: { query: filters },
+        },
+      }
+    : {
+        type: GET_DATA_FROM_PROVIDER,
+        request: {
+          op: 'get',
+          path: path + '/@connector-data',
+        },
+      };
 }
