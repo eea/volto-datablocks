@@ -68,7 +68,6 @@ class Edit extends Component {
                 iconAction={
                   data.sparql_object_url
                     ? () => {
-                        console.log('icon action', data);
                         this.props.onChangeBlock(this.props.block, {
                           ...data,
                           sparql_object_url: data.href,

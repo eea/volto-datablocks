@@ -1,4 +1,4 @@
-import { GET_SPARQL_DATA } from './constants';
+import { GET_SPARQL_DATA, GET_DATA_FROM_PROVIDER } from './constants';
 
 export function getSparqlData(path) {
   const url = path + '/@sparql-data';
@@ -8,6 +8,17 @@ export function getSparqlData(path) {
     request: {
       op: 'get',
       path: url,
+    },
+  };
+}
+
+// TODO: this needs to be refactored to use the @connector-data endpoint
+export function getDataFromProvider(path) {
+  return {
+    type: GET_DATA_FROM_PROVIDER,
+    request: {
+      op: 'get',
+      path: path + '@connector-data',
     },
   };
 }

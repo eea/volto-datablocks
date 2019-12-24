@@ -5,8 +5,23 @@ import DataBlockView from './DataConnectedBlock/View';
 import DataBlockEdit from './DataConnectedBlock/Edit';
 
 import chartIcon from '@plone/volto/icons/world.svg';
+import addonRoutes from './routes';
+
+function addCustomGroup(config) {
+  const hasCustomGroup = config.blocks.groupBlocksOrder.filter(
+    el => el.id === 'custom_addons',
+  );
+  if (!hasCustomGroup.length) {
+    config.blocks.groupBlocksOrder.push({
+      id: 'custom_addons',
+      title: 'Custom addons',
+    });
+  }
+}
 
 export function applyConfig(config) {
+  addCustomGroup(config);
+
   config.widgets.id.data_query = DataQueryWidget;
 
   config.addonReducers = {
@@ -22,6 +37,9 @@ export function applyConfig(config) {
     icon: chartIcon,
     group: 'custom_addons',
   };
+
+  config.settings.nonContentRoutes.push('/data-providers-view');
+  config.addonRoutes = [...(config.addonRoutes || []), ...addonRoutes];
 
   return config;
 }
