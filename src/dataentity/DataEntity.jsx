@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import 'draft-js-focus-plugin/lib/plugin.css';
 
+import './styles.css';
+
 const propTypes = {
   blockProps: PropTypes.object.isRequired,
   className: PropTypes.string,
@@ -11,20 +13,11 @@ const propTypes = {
 
 const DataEntity = props => {
   const { blockProps, className } = props;
-  console.log('rendering dataentity', props);
+  // console.log('rendering dataentity', props);
 
   return (
-    <span
-      style={{
-        display: 'inline-block',
-        backgroundColor: 'red',
-        height: '30px',
-        width: '300px',
-      }}
-      className={className}
-    >
-      {props.children}
-      {blockProps.url}
+    <span className="inline-data-entity">
+      <div class="inline-data-entity-text">{blockProps.url}</div>
     </span>
   );
 };

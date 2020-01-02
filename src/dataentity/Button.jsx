@@ -23,16 +23,6 @@ class DataButton extends Component {
     onOverrideContent: PropTypes.func.isRequired,
   };
 
-  // constructor(props) {
-  //   super(props);
-  //
-  //   // TODO: State is only temporarily used, needs to be refactored as
-  //   // controlled input
-  //   // this.state = {
-  //   //   url: '',
-  //   // };
-  // }
-
   onMouseDown = event => {
     event.preventDefault();
   };
@@ -41,13 +31,11 @@ class DataButton extends Component {
     e.preventDefault();
     e.stopPropagation();
 
+    // TODO: this needs to be fixed, to be a toggle
+
     const { getEditorState, setEditorState } = this.props.store;
     const editorState = getEditorState();
     const newState = addDataEntity(editorState, {});
-
-    // const newContent = newState.getCurrentContent();
-    // console.log('constructed new state', newState, newContent);
-    // console.log('new content raw', convertToRaw(newContent));
 
     setEditorState(newState);
   };
@@ -81,24 +69,10 @@ class DataButton extends Component {
       'change-dataentity',
     );
 
-    // all kind of hacks to force the editor to rerender the component
-    // const emptyState = EditorState.createEmpty();
-    // setEditorState(emptyState);
-
-    // const editor = getEditorRef();
-    // editor.focus();
-    //
-    // editor.update(newEditorState);
-    // editor.setMode('render');
-    // editor.setMode('edit');
-    // editor.focus();
-    // this.setState({ url });
-    //
+    // this is needed to force redraw of entity component, should rewrite
     // TODO: use EditorState.forceSelection
     const focusedState = EditorState.moveFocusToEnd(newEditorState);
     setEditorState(focusedState);
-
-    // console.log('setEditorState triggered in onChangeEntityData');
   };
 
   render() {
@@ -112,9 +86,6 @@ class DataButton extends Component {
     const editorState = getEditorState();
     const currentEntityKey = EditorUtils.getCurrentEntityKey(editorState);
     const currentEntity = EditorUtils.getCurrentEntity(editorState);
-
-    // console.log('current entity', currentEntityKey, currentEntity);
-    // entity has type, mutability, data
 
     const className = cx(theme.button, { [theme.active]: isSelected });
 

@@ -1,0 +1,20 @@
+.inline-data-entity {
+  display: inline-block;
+  background-color: red;
+  height: 30px;
+  width: 300px;
+  padding: 3px;
+  padding-left: 20px;
+}
+
+.inline-data-entity-text {
+  background-color: white;
+}
+
+
+bla {
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
+}

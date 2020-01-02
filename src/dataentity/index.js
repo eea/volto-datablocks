@@ -4,8 +4,6 @@ import AddButton from './Button';
 import DataEntity from './DataEntity';
 import * as types from './types';
 
-import './styles.css';
-
 export function makeDataEntityPlugin(config = {}) {
   const store = {
     getEditorState: undefined,
