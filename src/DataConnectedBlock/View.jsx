@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getDataFromProvider } from '../actions';
-import { addAppURL } from '@plone/volto/helpers';
+// import { addAppURL } from '@plone/volto/helpers';
 
 export class BlockView extends Component {
   componentWillMount() {
@@ -34,7 +34,8 @@ export class BlockView extends Component {
 function getProviderData(state, props) {
   if (!props.data.connector_path) return {};
 
-  const url = `${addAppURL(props.data.connector_path)}/@connector-data`;
+  // const url = `${addAppURL(props.data.connector_path)}/@connector-data`;
+  const url = `${props.data.connector_path}/@connector-data`;
   const data = state.data_providers.data || {};
   return data[url];
 }

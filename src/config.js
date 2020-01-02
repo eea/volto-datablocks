@@ -4,6 +4,7 @@ import DataQueryWidget from './DataQueryWidget/Widget';
 import DataBlockView from './DataConnectedBlock/View';
 import DataBlockEdit from './DataConnectedBlock/Edit';
 import DataConnectorView from './DataConnector/View';
+import installDraftEditorDataEntity from './dataentity';
 
 import chartIcon from '@plone/volto/icons/world.svg';
 import addonRoutes from './routes';
@@ -43,6 +44,8 @@ export function applyConfig(config) {
 
   config.settings.nonContentRoutes.push('/data-providers-view');
   config.addonRoutes = [...(config.addonRoutes || []), ...addonRoutes];
+
+  installDraftEditorDataEntity(config);
 
   return config;
 }

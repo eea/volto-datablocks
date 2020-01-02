@@ -3,6 +3,7 @@
  * @module reducers/data_providers
  */
 
+import { settings } from '~/config';
 import { GET_DATA_FROM_PROVIDER } from '../constants';
 
 const initialState = {
@@ -28,9 +29,12 @@ export default function data_providers(state = initialState, action = {}) {
           action.result['@components']['connector-data']['@id'] &&
           true) ||
         false;
-      const id = isExpand
+      const id = (isExpand
         ? action.result['@components']['connector-data']['@id']
-        : action.result['@id'];
+        : action.result['@id']
+      )
+        .replace(settings.apiPath, '')
+        .replace(settings.internalApiPath, '');
       return {
         ...state,
         error: null,
