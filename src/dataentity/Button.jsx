@@ -54,11 +54,7 @@ class DataButton extends Component {
     console.log('on change block', arguments);
   }
 
-  onChangeEntityData = (entityKey, { url }) => {
-    // console.log(entityKey, url);
-
-    const data = { url };
-
+  onChangeEntityData = (entityKey, data) => {
     const { getEditorState, setEditorState } = this.props.store;
     const editorState = getEditorState();
     const contentState = editorState.getCurrentContent();

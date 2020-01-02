@@ -33,6 +33,7 @@ class DataEntity extends Component {
     return (
       <span className="inline-data-entity">
         <div class="inline-data-entity-text">{blockProps.url}</div>
+        <div class="inline-data-entity-text">{blockProps.column}</div>
       </span>
     );
   }

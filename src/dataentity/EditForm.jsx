@@ -1,15 +1,43 @@
 import React, { Component } from 'react';
-import { SidebarPortal, TextWidget } from '@plone/volto/components';
+import {
+  SidebarPortal,
+  TextWidget,
+  SelectWidget,
+} from '@plone/volto/components';
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
 import { Button, Input, Message, Segment } from 'semantic-ui-react';
 import { settings } from '~/config';
 import withObjectBrowser from '@plone/volto/components/manage/Sidebar/ObjectBrowser';
+import { connect } from 'react-redux';
+import { getDataFromProvider } from '../actions';
+import { addAppURL } from '@plone/volto/helpers';
 
 import aheadSVG from '@plone/volto/icons/ahead.svg';
 
+const makeChoices = keys => keys.map(k => [k, k]);
+
 class EditForm extends Component {
+  componentDidMount() {
+    const url = this.props.data.url;
+    if (url) this.props.getDataFromProvider(url);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const url = this.props.data.url;
+    const prevUrl = prevProps.data.url;
+    if (url && url !== prevUrl) {
+      this.props.getDataFromProvider(url);
+    }
+  }
+
+  logChanges() {
+    console.log('arg changes', arguments);
+  }
+
   render() {
     const { data, entityKey } = this.props;
+    let choices = makeChoices(Object.keys(this.props.provider_data || {}));
+
     // const { data } = this.props;
     return (
       <SidebarPortal selected={true}>
@@ -41,7 +69,10 @@ class EditForm extends Component {
                 this.props.openObjectBrowser({
                   mode: 'link',
                   onSelectItem: url => {
-                    this.props.onChangeEntityData(entityKey, { url });
+                    this.props.onChangeEntityData(entityKey, {
+                      url,
+                      column: null,
+                    });
                   },
                   ...this.props,
                 })
@@ -49,9 +80,49 @@ class EditForm extends Component {
               onChange={() => this.props.onChangeEntityData(entityKey, {})}
             />
           </Segment>
+
+          <Segment className="form sidebar-image-data">
+            <SelectWidget
+              id="data-entity-column"
+              title="Column"
+              choices={choices}
+              onChange={(id, value) =>
+                this.props.onChangeEntityData(entityKey, {
+                  ...data,
+                  column: value,
+                })
+              }
+              value={null}
+            />
+          </Segment>
         </Segment.Group>
       </SidebarPortal>
     );
   }
 }
-export default withObjectBrowser(EditForm);
+
+function getProviderData(state, props) {
+  let path = props?.data?.url || null;
+
+  if (!path) return;
+
+  path = `${path}/@connector-data`;
+  const url = `${addAppURL(path)}/@connector-data`;
+
+  const data = state.data_providers.data || {};
+  return path ? data[path] || data[url] : [];
+}
+
+// TODO: use the redux store to cache the provider data, as it doesn't change
+// often
+
+const ConnectedEditForm = connect(
+  (state, props) => ({
+    provider_data: getProviderData(state, props),
+  }),
+  {
+    getDataFromProvider,
+  },
+)(EditForm);
+
+export default withObjectBrowser(ConnectedEditForm);
