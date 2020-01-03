@@ -1,7 +1,7 @@
 import React from 'react';
 import decorateComponentWithProps from 'decorate-component-with-props';
 import AddButton from './Button';
-import AddInlineButton from './Button';
+import AddInlineButton from './InlineDataEntityButton';
 import DataEntity from './DataEntity';
 import * as types from './types';
 
@@ -25,6 +25,7 @@ export function makeDataEntityPlugin(config = {}) {
       if (block.getType() === types.ATOMIC) {
         // TODO subject to change for draft-js next release
         const contentState = getEditorState().getCurrentContent();
+        // TODO: this needs to be tested
         const entity = contentState.getEntity(block.getEntityAt(0));
         const type = entity.getType();
         const props = entity.getData();
@@ -47,9 +48,11 @@ const INLINE_DATA_REGEX = /#data{[\w/@]}+/g;
 function inlineDataEntityStrategy(contentBlock, callback, contentState) {
   //
   const text = contentBlock.getText();
+  console.log('trying text', text);
   let matchArr, start;
   while ((matchArr = INLINE_DATA_REGEX.exec(text)) !== null) {
     start = matchArr.index;
+    console.log('got strategy match');
     callback(start, start + matchArr[0].length);
   }
 }
