@@ -61,7 +61,7 @@ class DataEntity extends Component {
     }
   }
   render() {
-    const { blockProps } = this.props;
+    const { blockProps } = this.props; // also has contentState
     console.log('rendering dataentity', this.props);
 
     const value = getValue(
