@@ -30,6 +30,15 @@ export function addInlineDataEntity(editorState, props) {
   if (RichUtils.getCurrentBlockType(editorState) === types.ATOMIC) {
     return editorState;
   }
+
+  let targetRange = editorState.getSelection();
+
+  // selection is not an insert cursor, some text is selected
+  const changeOp =
+    targetRange.anchorOffset === targetRange.focusOffset
+      ? Modifier.insertText
+      : Modifier.replaceText;
+
   const contentState = editorState.getCurrentContent();
   const contentStateWithEntity = contentState.createEntity(
     types.INLINEDATAENTITY,
@@ -38,10 +47,10 @@ export function addInlineDataEntity(editorState, props) {
   );
 
   const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+  // console.log('target range', targetRange);
+  // console.log('decorator', editorState.decorator);
 
-  let targetRange = editorState.getSelection();
-
-  const contentStateWithText = Modifier.insertText(
+  const contentStateWithText = changeOp(
     contentStateWithEntity,
     targetRange,
     'data{}',

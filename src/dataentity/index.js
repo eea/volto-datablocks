@@ -3,6 +3,7 @@ import decorateComponentWithProps from 'decorate-component-with-props';
 import AddButton from './Button';
 import AddInlineButton from './InlineDataEntityButton';
 import DataEntity from './DataEntity';
+import { inlineDataEntityDecorator } from './decorators';
 import * as types from './types';
 
 export function makeDataEntityPlugin(config = {}) {
@@ -42,25 +43,6 @@ export function makeDataEntityPlugin(config = {}) {
   };
 }
 
-// const INLINE_DATA_REGEX = /#data{[\w\u0590-\u05ff]@[\w|]}+/g;
-const INLINE_DATA_REGEX = /#data{[\w/@]}+/g;
-
-function inlineDataEntityStrategy(contentBlock, callback, contentState) {
-  //
-  const text = contentBlock.getText();
-  console.log('trying text', text);
-  let matchArr, start;
-  while ((matchArr = INLINE_DATA_REGEX.exec(text)) !== null) {
-    start = matchArr.index;
-    console.log('got strategy match');
-    callback(start, start + matchArr[0].length);
-  }
-}
-
-const InlineDataEntity = props => {
-  return 'hello';
-};
-
 export function makeInlineDataEntityPlugin(config = {}) {
   // A decorator for inline data. Triggered by #data{column@/path/to/connector}
 
@@ -78,12 +60,7 @@ export function makeInlineDataEntityPlugin(config = {}) {
     AddButton: decorateComponentWithProps(AddInlineButton, {
       store,
     }),
-    decorators: [
-      {
-        strategy: inlineDataEntityStrategy,
-        component: InlineDataEntity,
-      },
-    ],
+    decorators: [inlineDataEntityDecorator],
   };
 }
 
@@ -93,8 +70,8 @@ export default function applyConfig(config) {
 
   config.settings.richTextEditorPlugins = [
     ...(config.settings.richTextEditorPlugins || []),
-    plugin,
     inlinePlugin,
+    plugin,
   ];
   config.settings.richTextEditorInlineToolbarButtons.push(plugin.AddButton);
   config.settings.richTextEditorInlineToolbarButtons.push(
