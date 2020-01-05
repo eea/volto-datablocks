@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
+import { Segment } from 'semantic-ui-react';
+import withObjectBrowser from '@plone/volto/components/manage/Sidebar/ObjectBrowser';
+import aheadSVG from '@plone/volto/icons/ahead.svg';
+import { addAppURL } from '@plone/volto/helpers';
 import {
   SidebarPortal,
   TextWidget,
   SelectWidget,
 } from '@plone/volto/components';
-import { FormattedMessage } from 'react-intl';
-import { Segment } from 'semantic-ui-react';
-import withObjectBrowser from '@plone/volto/components/manage/Sidebar/ObjectBrowser';
-import { connect } from 'react-redux';
 import { getDataFromProvider } from 'volto-datablocks/actions';
-import { addAppURL } from '@plone/volto/helpers';
-
-import aheadSVG from '@plone/volto/icons/ahead.svg';
 
 const makeChoices = keys => keys.map(k => [k, k]);
 
