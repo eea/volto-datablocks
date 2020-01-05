@@ -12,6 +12,7 @@ export function makeDataEntityPlugin(config = {}) {
   const store = {
     getEditorState: undefined,
     setEditorState: undefined,
+    getEditorRef: undefined,
   };
 
   return {
@@ -51,6 +52,7 @@ export function makeInlineDataEntityPlugin(config = {}) {
   const store = {
     getEditorState: undefined,
     setEditorState: undefined,
+    getEditorRef: undefined,
   };
 
   return {
@@ -75,10 +77,12 @@ export default function applyConfig(config) {
     inlinePlugin,
     plugin,
   ];
-  config.settings.richTextEditorInlineToolbarButtons.push(plugin.AddButton);
-  config.settings.richTextEditorInlineToolbarButtons.push(
+
+  config.settings.richTextEditorInlineToolbarButtons = [
+    ...(config.settings.richTextEditorInlineToolbarButtons || []),
+    plugin.AddButton,
     inlinePlugin.AddButton,
-  );
+  ];
 
   // redraft final rendering for View.jsx
   config.settings.ToHTMLRenderers.entities = {

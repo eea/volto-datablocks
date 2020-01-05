@@ -8,10 +8,12 @@ import { addInlineDataEntity } from '../modifiers';
 import cx from 'classnames';
 
 import EditorUtils from 'draft-js-plugins-utils';
-import { EditorState } from 'draft-js';
+import { EditorState, SelectionState } from 'draft-js';
 
 import EditForm from './EditForm';
 import * as types from '../types';
+
+// import { connect } from 'react-redux';
 
 // import { removeEntityOfSelection } from 'volto-addons/drafteditor/utils';
 // import { convertToRaw } from 'draft-js';
@@ -40,9 +42,7 @@ class DataButton extends Component {
     setEditorState(newState);
   };
 
-  onChangeBlock() {
-    console.log('on change block', arguments);
-  }
+  onChangeBlock() {}
 
   onChangeEntityData = (entityKey, data) => {
     const { getEditorState, setEditorState } = this.props.store;
@@ -52,18 +52,41 @@ class DataButton extends Component {
     const newEditorState = EditorState.push(
       editorState,
       newContentState,
-      'change-dataentity',
+      'apply-entity',
     );
+
+    this.props.forceDraftEditorRefresh();
 
     // this is needed to force redraw of entity component, should rewrite
     // TODO: use EditorState.forceSelection
-    const focusedState = EditorState.moveFocusToEnd(newEditorState);
+    // , getEditorRef
+    const selection = newEditorState.getSelection();
+    const anchorKey = selection.getAnchorKey();
+    const block = newContentState.getBlockForKey(anchorKey);
+
+    const newSelection = SelectionState.createEmpty(block.getKey()).set(
+      'focusOffset',
+      1,
+    );
+    const focusedState = EditorState.forceSelection(
+      newEditorState,
+      newSelection,
+    );
     setEditorState(focusedState);
+
+    // console.log('focused');
+    // const focusedState = EditorState.moveFocusToEnd(newEditorState);
+
+    // const editor = getEditorRef();
+    // console.log('editor', editor);
+    // editor.update(focusedState);
   };
 
   render() {
+    // console.log('button props', this.props);
     const { theme, getEditorState } = this.props;
 
+    // console.log('editor state', getEditorState().toJS());
     const isSelected = EditorUtils.hasEntity(
       getEditorState(),
       types.INLINEDATAENTITY,
@@ -113,3 +136,4 @@ class DataButton extends Component {
 }
 
 export default DataButton;
+// export default connect()(DataButton);
