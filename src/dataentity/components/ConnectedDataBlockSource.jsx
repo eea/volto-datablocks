@@ -2,19 +2,17 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Icon from '@plone/volto/components/theme/Icon/Icon';
 
-import checkSVG from '@plone/volto/icons/checkbox-unchecked.svg';
-import uncheckSVG from '@plone/volto/icons/checkbox-checked.svg';
-import { addInlineDataEntity } from './modifiers';
+import linkSVG from '@plone/volto/icons/add-on.svg';
+import unlinkSVG from '@plone/volto/icons/add-user.svg';
+import { addDataEntity } from '../modifiers';
 import cx from 'classnames';
 
 import EditorUtils from 'draft-js-plugins-utils';
+import { removeEntityOfSelection } from 'volto-addons/drafteditor/utils';
 import { EditorState } from 'draft-js';
 
 import EditForm from './EditForm';
-import * as types from './types';
-
-// import { removeEntityOfSelection } from 'volto-addons/drafteditor/utils';
-// import { convertToRaw } from 'draft-js';
+import * as types from '../types';
 
 class DataButton extends Component {
   static propTypes = {
@@ -35,10 +33,25 @@ class DataButton extends Component {
 
     const { getEditorState, setEditorState } = this.props.store;
     const editorState = getEditorState();
-    const newState = addInlineDataEntity(editorState, {});
+    const newState = addDataEntity(editorState, {});
 
     setEditorState(newState);
   };
+
+  onRemoveBlockAtSelection = e => {
+    // TODO: this needs to be implemented!
+    console.log('remove block');
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const { getEditorState, setEditorState } = this.props.store;
+    setEditorState(removeEntityOfSelection(getEditorState()));
+  };
+
+  onChangeBlock() {
+    console.log('on change block', arguments);
+  }
 
   onChangeEntityData = (entityKey, data) => {
     const { getEditorState, setEditorState } = this.props.store;
@@ -85,9 +98,9 @@ class DataButton extends Component {
           type="button"
         >
           {!isSelected ? (
-            <Icon name={checkSVG} size="24px" />
+            <Icon name={linkSVG} size="24px" />
           ) : (
-            <Icon name={uncheckSVG} size="24px" />
+            <Icon name={unlinkSVG} size="24px" />
           )}
         </button>
 
@@ -98,6 +111,7 @@ class DataButton extends Component {
             block="data-entity"
             entityKey={currentEntityKey}
             data={currentEntity.data}
+            title="Data block parameters"
           />
         ) : (
           ''

@@ -4,12 +4,11 @@ import {
   TextWidget,
   SelectWidget,
 } from '@plone/volto/components';
-import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
-import { Button, Input, Message, Segment } from 'semantic-ui-react';
-import { settings } from '~/config';
+import { FormattedMessage } from 'react-intl';
+import { Segment } from 'semantic-ui-react';
 import withObjectBrowser from '@plone/volto/components/manage/Sidebar/ObjectBrowser';
 import { connect } from 'react-redux';
-import { getDataFromProvider } from '../actions';
+import { getDataFromProvider } from 'volto-datablocks/actions';
 import { addAppURL } from '@plone/volto/helpers';
 
 import aheadSVG from '@plone/volto/icons/ahead.svg';
@@ -30,20 +29,17 @@ class EditForm extends Component {
     }
   }
 
-  logChanges() {
-    console.log('arg changes', arguments);
-  }
-
   render() {
-    const { data, entityKey } = this.props;
+    const { data, entityKey, title } = this.props;
     let choices = makeChoices(Object.keys(this.props.provider_data || {}));
 
-    // const { data } = this.props;
     return (
       <SidebarPortal selected={true}>
         <Segment.Group raised>
           <header className="header pulled">
-            <h2> Data connected block ${entityKey}</h2>
+            <h2>
+              {title}${entityKey}
+            </h2>
           </header>
 
           {!(data && data.url) && (
@@ -92,7 +88,7 @@ class EditForm extends Component {
                   column: value,
                 })
               }
-              value={null}
+              value={data.column}
             />
           </Segment>
         </Segment.Group>

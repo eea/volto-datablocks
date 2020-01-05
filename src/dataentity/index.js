@@ -1,8 +1,10 @@
 import React from 'react';
 import decorateComponentWithProps from 'decorate-component-with-props';
-import AddButton from './Button';
-import AddInlineButton from './InlineDataEntityButton';
-import DataEntity from './DataEntity';
+import {
+  ConnectedDataBlock,
+  ConnectedDataInlineSource,
+  ConnectedDataBlockSource,
+} from './components';
 import { inlineDataEntityDecorator } from './decorators';
 import * as types from './types';
 
@@ -18,7 +20,7 @@ export function makeDataEntityPlugin(config = {}) {
       store.setEditorState = setEditorState;
       store.getEditorRef = getEditorRef;
     },
-    AddButton: decorateComponentWithProps(AddButton, {
+    AddButton: decorateComponentWithProps(ConnectedDataBlockSource, {
       store,
     }),
 
@@ -33,7 +35,7 @@ export function makeDataEntityPlugin(config = {}) {
 
         if (type === types.DATAENTITY) {
           return {
-            component: DataEntity,
+            component: ConnectedDataBlock,
             editable: false,
             props,
           };
@@ -57,7 +59,7 @@ export function makeInlineDataEntityPlugin(config = {}) {
       store.setEditorState = setEditorState;
       store.getEditorRef = getEditorRef;
     },
-    AddButton: decorateComponentWithProps(AddInlineButton, {
+    AddButton: decorateComponentWithProps(ConnectedDataInlineSource, {
       store,
     }),
     decorators: [inlineDataEntityDecorator],
@@ -83,9 +85,9 @@ export default function applyConfig(config) {
     ...config.settings.ToHTMLRenderers.entities,
     [types.DATAENTITY]: (children, blockProps, { key }) => {
       return (
-        <DataEntity blockProps={blockProps} key={key}>
+        <ConnectedDataBlock blockProps={blockProps} key={key}>
           {children}
-        </DataEntity>
+        </ConnectedDataBlock>
       );
     },
   };

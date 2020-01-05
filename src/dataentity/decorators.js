@@ -1,9 +1,9 @@
 import * as types from './types';
 import { inlineDataEntityStrategy } from './strategies';
-import InlineDataEntity from './InlineDataEntity';
+import { ConnectedDataInline } from './components';
 
 export const inlineDataEntityDecorator = {
   strategy: inlineDataEntityStrategy,
   matchesEntityType: type => type === types.INLINEDATAENTITY,
-  component: InlineDataEntity,
+  component: ConnectedDataInline,
 };

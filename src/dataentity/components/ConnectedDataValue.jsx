@@ -1,11 +1,10 @@
 import { addAppURL } from '@plone/volto/helpers';
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getDataFromProvider } from '../actions';
+import { getDataFromProvider } from 'volto-datablocks/actions';
 
 import 'draft-js-focus-plugin/lib/plugin.css';
-import './styles.css';
+import '../styles.css';
 
 function getValue(data, column, filters) {
   /*
@@ -41,48 +40,34 @@ function getValue(data, column, filters) {
   return data[column] && data[column][pos];
 }
 
-const propTypes = {
-  blockProps: PropTypes.object.isRequired,
-  className: PropTypes.string,
-  style: PropTypes.object,
-  // theme: PropTypes.object.isRequired,
-};
-
 class DataEntity extends Component {
   componentDidMount() {
-    const url = this.props.blockProps.url;
+    const url = this.props.url;
     if (url) this.props.getDataFromProvider(url);
   }
   componentDidUpdate(prevProps, prevState) {
-    const url = this.props.blockProps.url;
-    const prevUrl = prevProps.blockProps.url;
+    const url = this.props.url;
+    const prevUrl = prevProps.url;
     if (url && url !== prevUrl) {
       this.props.getDataFromProvider(url);
     }
   }
   render() {
-    const { blockProps } = this.props; // also has contentState
     console.log('rendering dataentity', this.props);
+    const { column, provider_data } = this.props;
 
     const value = getValue(
-      this.props.provider_data,
-      blockProps.column,
+      provider_data,
+      column,
       this.props.content.data_query,
     );
 
-    return <span className="inline-data-entity">{value}</span>;
+    return <span className="data-entity">{value}</span>;
   }
 }
 
-DataEntity.propTypes = propTypes;
-DataEntity.defaultProps = {
-  className: null,
-  entityKey: null,
-  target: null,
-};
-
 function getProviderData(state, props) {
-  let path = props?.blockProps?.url || null;
+  let path = props?.url || null;
 
   if (!path) return;
 

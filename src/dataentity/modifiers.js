@@ -52,7 +52,7 @@ export function addInlineDataEntity(editorState, props) {
   const contentStateWithText = insertOrReplaceText(
     contentStateWithEntity,
     targetRange,
-    'data{}',
+    '#', // data{}
     null,
     entityKey, // applyEntity is not needed because entityKey is here
   );
@@ -60,12 +60,6 @@ export function addInlineDataEntity(editorState, props) {
   const newEditorState = EditorState.set(editorState, {
     currentContent: contentStateWithText,
   });
-
-  // const res = AtomicBlockUtils.insertAtomicBlock(
-  //   newEditorState,
-  //   entityKey,
-  //   '☺',
-  // );
 
   return newEditorState;
 }
