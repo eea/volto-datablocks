@@ -1,3 +1,4 @@
+import { v4 as uuid } from 'uuid';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Icon from '@plone/volto/components/theme/Icon/Icon';
@@ -12,6 +13,7 @@ import { removeEntityOfSelection } from 'volto-addons/drafteditor/utils';
 import { EditorState } from 'draft-js';
 
 import EditForm from './EditForm';
+import ForceEditorRefresh from './ForceEditorRefresh';
 import * as types from '../types';
 
 class DataButton extends Component {
@@ -20,6 +22,14 @@ class DataButton extends Component {
     store: PropTypes.shape({}).isRequired,
     onOverrideContent: PropTypes.func.isRequired,
   };
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      editorKey: null,
+    };
+  }
 
   onMouseDown = event => {
     event.preventDefault();
@@ -40,7 +50,7 @@ class DataButton extends Component {
 
   onRemoveBlockAtSelection = e => {
     // TODO: this needs to be implemented!
-    console.log('remove block');
+    // console.log('remove block');
 
     e.preventDefault();
     e.stopPropagation();
@@ -50,7 +60,7 @@ class DataButton extends Component {
   };
 
   onChangeBlock() {
-    console.log('on change block', arguments);
+    // console.log('on change block', arguments);
   }
 
   onChangeEntityData = (entityKey, data) => {
@@ -68,6 +78,7 @@ class DataButton extends Component {
     // TODO: use EditorState.forceSelection
     const focusedState = EditorState.moveFocusToEnd(newEditorState);
     setEditorState(focusedState);
+    this.setState({ editorKey: uuid() });
   };
 
   render() {
@@ -90,6 +101,7 @@ class DataButton extends Component {
         onMouseDown={this.onMouseDown}
         role="presentation"
       >
+        <ForceEditorRefresh editorKey={this.state.editorKey} />
         <button
           className={className}
           onClick={

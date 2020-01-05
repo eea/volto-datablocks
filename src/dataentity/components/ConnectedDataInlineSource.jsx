@@ -1,3 +1,4 @@
+import { v4 as uuid } from 'uuid';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Icon from '@plone/volto/components/theme/Icon/Icon';
@@ -11,9 +12,8 @@ import EditorUtils from 'draft-js-plugins-utils';
 import { EditorState, SelectionState } from 'draft-js';
 
 import EditForm from './EditForm';
+import ForceEditorRefresh from './ForceEditorRefresh';
 import * as types from '../types';
-
-// import { connect } from 'react-redux';
 
 // import { removeEntityOfSelection } from 'volto-addons/drafteditor/utils';
 // import { convertToRaw } from 'draft-js';
@@ -24,6 +24,14 @@ class DataButton extends Component {
     store: PropTypes.shape({}).isRequired,
     onOverrideContent: PropTypes.func.isRequired,
   };
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      editorKey: null,
+    };
+  }
 
   onMouseDown = event => {
     event.preventDefault();
@@ -55,7 +63,7 @@ class DataButton extends Component {
       'apply-entity',
     );
 
-    this.props.forceDraftEditorRefresh();
+    // this.props.forceDraftEditorRefresh();
 
     // this is needed to force redraw of entity component, should rewrite
     // TODO: use EditorState.forceSelection
@@ -73,6 +81,7 @@ class DataButton extends Component {
       newSelection,
     );
     setEditorState(focusedState);
+    this.setState({ editorKey: uuid() });
 
     // console.log('focused');
     // const focusedState = EditorState.moveFocusToEnd(newEditorState);
@@ -104,6 +113,7 @@ class DataButton extends Component {
         onMouseDown={this.onMouseDown}
         role="presentation"
       >
+        <ForceEditorRefresh editorKey={this.state.editorKey} />
         <button
           className={className}
           onClick={
