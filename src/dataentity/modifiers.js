@@ -1,5 +1,6 @@
 import * as types from './types';
 import { Modifier, EditorState, AtomicBlockUtils, RichUtils } from 'draft-js';
+// import { inlineDataEntityDecorator } from './decorators';
 
 export function addDataEntity(editorState, props) {
   if (RichUtils.getCurrentBlockType(editorState) === types.ATOMIC) {
@@ -34,7 +35,7 @@ export function addInlineDataEntity(editorState, props) {
   let targetRange = editorState.getSelection();
 
   // selection is not an insert cursor, some text is selected
-  const changeOp =
+  const insertOrReplaceText =
     targetRange.anchorOffset === targetRange.focusOffset
       ? Modifier.insertText
       : Modifier.replaceText;
@@ -47,15 +48,13 @@ export function addInlineDataEntity(editorState, props) {
   );
 
   const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-  // console.log('target range', targetRange);
-  // console.log('decorator', editorState.decorator);
 
-  const contentStateWithText = changeOp(
+  const contentStateWithText = insertOrReplaceText(
     contentStateWithEntity,
     targetRange,
     'data{}',
     null,
-    entityKey,
+    entityKey, // applyEntity is not needed because entityKey is here
   );
 
   const newEditorState = EditorState.set(editorState, {

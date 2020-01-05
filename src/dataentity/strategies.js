@@ -1,5 +1,6 @@
 // const INLINE_DATA_REGEX = /#data{[\w\u0590-\u05ff]@[\w|]}+/g;
-const INLINE_DATA_REGEX = /#data{[\w/@]}+/g;
+// const INLINE_DATA_REGEX = /#data{[\w/@]}+/g;
+const INLINE_DATA_REGEX = /#/g;
 
 export function inlineDataEntityStrategy(contentBlock, callback, contentState) {
   //

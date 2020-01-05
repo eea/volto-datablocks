@@ -38,7 +38,7 @@ function getValue(data, column, filters) {
     console.warn(`No value found in data for "${value}" in column "${index}"`);
     return '';
   }
-  return data[column][pos];
+  return data[column] && data[column][pos];
 }
 
 const propTypes = {
