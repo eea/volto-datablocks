@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { QuerystringWidget } from '@plone/volto/components/manage/Widgets/QuerystringWidget';
+import QuerystringWidget from '@plone/volto/components/manage/Widgets/QuerystringWidget';
 import { getQuerystring } from '@plone/volto/actions';
 import { DATACONNECTOR_PARAMS_GROUP } from '../constants';
 
