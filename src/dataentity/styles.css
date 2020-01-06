@@ -18,3 +18,9 @@ bla {
   -ms-user-select: none; /* IE10+/Edge */
   user-select: none; /* Standard */
 }
+
+.connected-data-block {
+  background-color: lightblue;
+  width: 200px;
+  height: 20px;
+}

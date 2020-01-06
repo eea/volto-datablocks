@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getDataFromProvider } from 'volto-datablocks/actions';
 
-import 'draft-js-focus-plugin/lib/plugin.css';
 import '../styles.css';
 
 function getValue(data, column, filters) {
