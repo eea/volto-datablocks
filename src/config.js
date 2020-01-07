@@ -13,7 +13,7 @@ function addCustomGroup(config) {
   const hasCustomGroup = config.blocks.groupBlocksOrder.filter(
     el => el.id === 'custom_addons',
   );
-  if (!hasCustomGroup.length) {
+  if (hasCustomGroup.length === 0) {
     config.blocks.groupBlocksOrder.push({
       id: 'custom_addons',
       title: 'Custom addons',
