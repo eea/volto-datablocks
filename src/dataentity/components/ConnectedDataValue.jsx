@@ -41,6 +41,12 @@ function getValue(data, column, filters) {
   return data[column] && data[column][pos];
 }
 
+const valueFormatters = {
+  raw: value => value,
+  compactnumber: value => Humanize.compactInteger(value),
+  percentage: value => `${value}%`
+}
+
 class DataEntity extends Component {
   componentDidMount() {
     const url = this.props.url;
@@ -53,6 +59,7 @@ class DataEntity extends Component {
       this.props.getDataFromProvider(url);
     }
   }
+
   render() {
     console.log('rendering dataentity', this.props);
     const { column, provider_data } = this.props;
@@ -64,7 +71,7 @@ class DataEntity extends Component {
     );
 
     if (this.props.format) {
-      return value;
+      return valueFormatters[this.props.format](value);
     }
     return value;
   }
