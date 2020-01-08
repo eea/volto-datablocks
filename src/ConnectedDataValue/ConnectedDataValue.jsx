@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { getDataFromProvider } from 'volto-datablocks/actions';
 import { getConnectedDataParameters } from 'volto-datablocks/helpers';
 
-import '../styles.css';
+import '../css/styles.css';
 import Humanize from 'humanize-plus';
 
 function getValue(data, column, filters) {
@@ -78,24 +78,14 @@ class DataEntity extends Component {
 }
 
 function getProviderData(state, props) {
-  let path = props?.url || null;
-
-  if (!path) return;
-
-  path = `${path}/@connector-data`;
-  const url = `${addAppURL(path)}/@connector-data`;
+  if (!props.url) return;
 
   const data = state.data_providers.data || {};
-  return path ? data[path] || data[url] : [];
+  return props.url
+    ? data[`${props.url}/@connector-data`] ||
+        data[`${addAppURL(props.url)}/@connector-data`]
+    : [];
 }
-
-// function getConnectedDataParameters(state, props) {
-//   let path = props?.url || null;
-//
-//   if (!path) return;
-//
-//   return state.connected_data_parameters.byUrl?.[path] || null;
-// }
 
 export default connect(
   (state, props) => ({

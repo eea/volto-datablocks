@@ -8,6 +8,8 @@ function filterIndexes(indexes) {
   Object.keys(indexes).forEach(k => {
     if (indexes[k].group === DATACONNECTOR_PARAMS_GROUP) res[k] = indexes[k];
   });
+
+  console.log('filtering indexes', res);
   return res;
 }
 

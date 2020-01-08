@@ -1,5 +1,5 @@
 import React from 'react';
-import ConnectedDataValue from './ConnectedDataValue';
+import ConnectedDataValue from 'volto-datablocks/ConnectedDataValue';
 
 const InlineDataEntity = props => {
   const { children, decoratedText, contentState, entityKey } = props;
