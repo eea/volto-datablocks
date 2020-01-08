@@ -5,6 +5,7 @@ import { getDataFromProvider } from 'volto-datablocks/actions';
 import { getConnectedDataParameters } from 'volto-datablocks/helpers';
 
 import '../styles.css';
+import Humanize from 'humanize-plus';
 
 function getValue(data, column, filters) {
   /*
@@ -62,6 +63,9 @@ class DataEntity extends Component {
       this.props.content.data_query,
     );
 
+    if (this.props.format) {
+      return value;
+    }
     return value;
   }
 }
