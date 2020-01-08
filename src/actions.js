@@ -1,8 +1,11 @@
-import { GET_SPARQL_DATA, GET_DATA_FROM_PROVIDER } from './constants';
+import {
+  GET_SPARQL_DATA,
+  GET_DATA_FROM_PROVIDER,
+  SET_CONNECTED_DATA_PARAMETERS,
+} from './constants';
 
 export function getSparqlData(path) {
   const url = path + '/@sparql-data';
-  // console.log('will do something with path', url);
   return {
     type: GET_SPARQL_DATA,
     request: {
@@ -29,4 +32,19 @@ export function getDataFromProvider(path, filters) {
           path: path + '/@connector-data',
         },
       };
+}
+
+export function setConnectedDataParameters(
+  path,
+  parameters,
+  manuallySet = false,
+) {
+  // path is actually url path of context page
+  // manuallySet is a flag to forbid the ConnectedDataParameterWatcher viewlet
+  // from overriding the data parameters on that path, if they already exist
+  return {
+    type: SET_CONNECTED_DATA_PARAMETERS,
+    parameters,
+    manuallySet,
+  };
 }

@@ -105,6 +105,8 @@ class DataButton extends Component {
     const currentEntityKey = EditorUtils.getCurrentEntityKey(editorState);
     const currentEntity = EditorUtils.getCurrentEntity(editorState);
 
+    console.log('current entity', currentEntity && currentEntity.toJS());
+
     const className = cx(theme.button, { [theme.active]: isSelected });
 
     return (

@@ -5,6 +5,7 @@ import DataBlockView from './DataConnectedBlock/View';
 import DataBlockEdit from './DataConnectedBlock/Edit';
 import DataConnectorView from './DataConnector/View';
 import installDraftEditorDataEntity from './dataentity';
+import { ConnectedDataParameterWatcher } from './Viewlets';
 
 import chartIcon from '@plone/volto/icons/world.svg';
 import addonRoutes from './routes';
@@ -44,6 +45,11 @@ export function applyConfig(config) {
 
   config.settings.nonContentRoutes.push('/data-providers-view');
   config.addonRoutes = [...(config.addonRoutes || []), ...addonRoutes];
+
+  config.viewlets = [
+    { path: '/', component: ConnectedDataParameterWatcher },
+    ...(config.viewlets || []),
+  ];
 
   installDraftEditorDataEntity(config);
 
