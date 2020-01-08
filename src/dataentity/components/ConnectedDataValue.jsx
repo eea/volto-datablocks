@@ -24,7 +24,7 @@ function getValue(data, column, filters) {
   // filter and only one filter is taken into consideration
 
   if (!data) return '';
-
+  if (!filters || !filters.length) return '';
   const filter = filters[0];
   const { i: index, v: values } = filter; // o: op,
 
@@ -44,8 +44,8 @@ function getValue(data, column, filters) {
 const valueFormatters = {
   raw: value => value,
   compactnumber: value => Humanize.compactInteger(value),
-  percentage: value => `${value}%`
-}
+  percentage: value => `${value}%`,
+};
 
 class DataEntity extends Component {
   componentDidMount() {
