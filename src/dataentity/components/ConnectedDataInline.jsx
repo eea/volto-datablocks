@@ -1,5 +1,5 @@
 import React from 'react';
-import ConnectedDataValue from 'volto-datablocks/ConnectedDataValue';
+import DataConnectedValue from 'volto-datablocks/DataConnectedValue';
 
 const InlineDataEntity = props => {
   const { children, decoratedText, contentState, entityKey } = props;
@@ -59,7 +59,7 @@ const InlineDataEntity = props => {
         style={styleObj}
         contentEditable={false}
       >
-        <ConnectedDataValue url={url} column={column} />
+        <DataConnectedValue url={url} column={column} />
       </span>
     )) || <span contentEditable={false}>{decoratedText}</span>
   );
