@@ -8,10 +8,11 @@ import { connect } from 'react-redux';
 import { setConnectedDataParameters } from '../actions';
 
 function ConnectedDataParameterWatcher(props) {
-  const contentPath = props.content['@id'];
+  const contentPath = props.content?.['@id'] || null;
   const dataQuery = props.content?.data_query || null;
   useEffect(() => {
-    if (dataQuery) setConnectedDataParameters(contentPath, dataQuery);
+    if (contentPath !== null && dataQuery)
+      setConnectedDataParameters(contentPath, dataQuery);
   }, [contentPath, dataQuery]);
   return '';
 }

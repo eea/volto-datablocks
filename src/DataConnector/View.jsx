@@ -28,15 +28,17 @@ export class DataConnectorView extends Component {
           {provider_data && (
             <Table compact striped>
               <Table.Header>
-                {Object.keys(provider_data).map(k => (
-                  <Table.HeaderCell key={k}>{k}</Table.HeaderCell>
-                ))}
+                <Table.Row>
+                  {Object.keys(provider_data).map(k => (
+                    <Table.HeaderCell key={k}>{k}</Table.HeaderCell>
+                  ))}
+                </Table.Row>
               </Table.Header>
               <Table.Body>
                 {Array(row_size)
                   .fill()
                   .map((_, i) => (
-                    <Table.Row>
+                    <Table.Row key={i}>
                       {Object.keys(provider_data).map(k => (
                         <Table.Cell key={`${i}-${k}`}>
                           {provider_data[k][i]}
