@@ -61,7 +61,7 @@ class DataEntity extends Component {
       this.props.content.data_query,
     );
 
-    return <span className="data-entity">{value}</span>;
+    return value;
   }
 }
 

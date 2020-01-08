@@ -35,5 +35,8 @@
     "prettier-stylelint": "0.4.2",
     "release-it": "^12.4.3",
     "webpack-cli": "^3.3.10"
+  },
+  "dependencies": {
+    "react-pretty-numbers": "^3.0.0"
   }
 }
