@@ -78,13 +78,13 @@ function getProviderData(state, props) {
   return path ? data[path] || data[url] : [];
 }
 
-function getConnectedDataParameters(state, props) {
-  let path = props?.url || null;
-
-  if (!path) return;
-
-  return state.connected_data_parameters.byUrl?.[path] || null;
-}
+// function getConnectedDataParameters(state, props) {
+//   let path = props?.url || null;
+//
+//   if (!path) return;
+//
+//   return state.connected_data_parameters.byUrl?.[path] || null;
+// }
 
 export default connect(
   (state, props) => ({
