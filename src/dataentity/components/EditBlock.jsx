@@ -13,10 +13,9 @@ import {
 import { getDataFromProvider } from 'volto-datablocks/actions';
 
 const prettyChoices = [
-  { text: 'As it is', value: {} },
-  { text: 'No decimals', value: { precision: 0, percentage: true } },
-  { text: 'Single decimal percent', value: { precision: 1, percentage: true } },
-  { text: 'Single decimal', value: { precision: 1, percentage: false } },
+  { text: 'Raw value', value: 'raw' },
+  { text: 'Compact number', value: 'compactnumber' },
+  { text: 'percentage', value: 'percentage' },
 ];
 
 // const prettyChoices = [

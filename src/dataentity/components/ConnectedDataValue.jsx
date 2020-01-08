@@ -5,6 +5,7 @@ import { getDataFromProvider } from 'volto-datablocks/actions';
 import { getConnectedDataParameters } from 'volto-datablocks/helpers';
 
 import '../styles.css';
+import Humanize from 'humanize-plus';
 
 function getValue(data, column, filters) {
   /*
@@ -40,6 +41,12 @@ function getValue(data, column, filters) {
   return data[column] && data[column][pos];
 }
 
+const valueFormatters = {
+  raw: value => value,
+  compactnumber: value => Humanize.compactInteger(value),
+  percentage: value => `${value}%`
+}
+
 class DataEntity extends Component {
   componentDidMount() {
     const url = this.props.url;
@@ -52,6 +59,7 @@ class DataEntity extends Component {
       this.props.getDataFromProvider(url);
     }
   }
+
   render() {
     console.log('rendering dataentity', this.props);
     const { column, provider_data } = this.props;
@@ -62,6 +70,9 @@ class DataEntity extends Component {
       this.props.content.data_query,
     );
 
+    if (this.props.format) {
+      return valueFormatters[this.props.format](value);
+    }
     return value;
   }
 }
