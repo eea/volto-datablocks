@@ -10,13 +10,20 @@ import { setConnectedDataParameters } from '../actions';
 function ConnectedDataParameterWatcher(props) {
   const contentPath = props.content?.['@id'] || null;
   const dataQuery = props.content?.data_query || null;
+  const setConnectedDataParameters = props.setConnectedDataParameters;
+  // const location = props.location;
+
   useEffect(() => {
     if (contentPath !== null && dataQuery)
-      setConnectedDataParameters(contentPath, dataQuery);
-  }, [contentPath, dataQuery]);
+      setConnectedDataParameters(contentPath, dataQuery, true);
+  }, [contentPath, dataQuery, setConnectedDataParameters]);
   return '';
 }
 
-export default connect((state, props) => ({
-  content: state.content.data,
-}))(ConnectedDataParameterWatcher);
+export default connect(
+  (state, props) => ({
+    content: state.content.data,
+    // location: state.router.location,
+  }),
+  { setConnectedDataParameters },
+)(ConnectedDataParameterWatcher);

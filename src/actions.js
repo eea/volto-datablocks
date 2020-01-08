@@ -3,6 +3,7 @@ import {
   GET_DATA_FROM_PROVIDER,
   SET_CONNECTED_DATA_PARAMETERS,
 } from './constants';
+import { settings } from '~/config';
 
 export function getSparqlData(path) {
   const url = path + '/@sparql-data';
@@ -42,8 +43,12 @@ export function setConnectedDataParameters(
   // path is actually url path of context page
   // manuallySet is a flag to forbid the ConnectedDataParameterWatcher viewlet
   // from overriding the data parameters on that path, if they already exist
+  path = path
+    .replace(settings.apiPath, '')
+    .replace(settings.internalApiPath, '');
   return {
     type: SET_CONNECTED_DATA_PARAMETERS,
+    path,
     parameters,
     manuallySet,
   };
