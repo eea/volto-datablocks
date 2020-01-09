@@ -15,8 +15,8 @@ import EditForm from './EditForm';
 import ForceEditorRefresh from './ForceEditorRefresh';
 import * as types from '../types';
 
-// import { removeEntityOfSelection } from 'volto-addons/drafteditor/utils';
-// import { convertToRaw } from 'draft-js';
+// TODO: column select prefill
+// auto save on change entity (column)
 
 class DataButton extends Component {
   static propTypes = {
@@ -56,6 +56,7 @@ class DataButton extends Component {
     const { getEditorState, setEditorState } = this.props.store;
     const editorState = getEditorState();
     const contentState = editorState.getCurrentContent();
+    // TODO: check if entityKey exists, otherwise create entity
     const newContentState = contentState.mergeEntityData(entityKey, data);
     const newEditorState = EditorState.push(
       editorState,

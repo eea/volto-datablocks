@@ -13,15 +13,26 @@ const RedraftConnectedInlineDataEntity = props => {
     entityData: { column, url },
   } = props;
 
+  console.log('children', children);
   return url && column ? (
     <span className="inline-data-entity">
       {children.map((child, index) => {
         if (!child) return '';
         // Note: this is a hack, it might not work in future react
-        child.props.children[0] = (
-          <DataConnectedValue url={url} column={column} />
-        );
-        return child;
+        if (child.props) {
+          child.props.children[0] = (
+            <DataConnectedValue url={url} column={column} key={index} />
+          );
+          if (child.props.children.length > 1) {
+            const range = new Array(child.props.children.length).fill(true);
+            range.forEach((_, i) => {
+              child.props.children[i + 1] = '';
+            });
+          }
+          return child;
+        } else {
+          return <DataConnectedValue url={url} column={column} key={index} />;
+        }
       })}
     </span>
   ) : (
