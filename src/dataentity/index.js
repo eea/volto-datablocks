@@ -4,11 +4,12 @@ import {
   ConnectedDataBlock,
   ConnectedDataInlineSource,
   ConnectedDataBlockSource,
+  RedraftConnectedDataInline,
 } from './components';
 import { inlineDataEntityDecorator } from './decorators';
 import * as types from './types';
 
-export function makeDataEntityPlugin(config = {}) {
+export function makeBlockDataEntityPlugin(config = {}) {
   const store = {
     getEditorState: undefined,
     setEditorState: undefined,
@@ -69,34 +70,39 @@ export function makeInlineDataEntityPlugin(config = {}) {
 }
 
 export default function applyConfig(config) {
-  const plugin = makeDataEntityPlugin();
+  // const blockPlugin = makeBlockDataEntityPlugin();
   const inlinePlugin = makeInlineDataEntityPlugin();
 
   config.settings.richTextEditorPlugins = [
     ...(config.settings.richTextEditorPlugins || []),
+    // blockPlugin,
     inlinePlugin,
-    plugin,
   ];
 
   config.settings.richTextEditorInlineToolbarButtons = [
     ...(config.settings.richTextEditorInlineToolbarButtons || []),
-    plugin.AddButton,
+    // blockPlugin.AddButton,
     inlinePlugin.AddButton,
   ];
 
   // redraft final rendering for View.jsx
   config.settings.ToHTMLRenderers.entities = {
     ...config.settings.ToHTMLRenderers.entities,
-    [types.DATAENTITY]: (children, blockProps, { key }) => {
+    // [types.DATAENTITY]: (children, blockProps, { key }) => {
+    //   return (
+    //     <ConnectedDataBlock blockProps={blockProps} key={key}>
+    //       {children}
+    //     </ConnectedDataBlock>
+    //   );
+    // },
+    [types.INLINEDATAENTITY]: (children, blockProps, { key }) => {
       return (
-        <ConnectedDataBlock blockProps={blockProps} key={key}>
+        <RedraftConnectedDataInline entityData={blockProps} key={key}>
           {children}
-        </ConnectedDataBlock>
+        </RedraftConnectedDataInline>
       );
     },
   };
-
-  // console.log('entity renderers', config.settings.ToHTMLRenderers.entities);
 
   return config;
 }

@@ -62,26 +62,27 @@ class DataButton extends Component {
       newContentState,
       'apply-entity',
     );
-
-    // this.props.forceDraftEditorRefresh();
-
-    // this is needed to force redraw of entity component, should rewrite
-    // TODO: use EditorState.forceSelection
-    // , getEditorRef
-    const selection = newEditorState.getSelection();
-    const anchorKey = selection.getAnchorKey();
-    const block = newContentState.getBlockForKey(anchorKey);
-
-    const newSelection = SelectionState.createEmpty(block.getKey()).set(
-      'focusOffset',
-      1,
-    );
-    const focusedState = EditorState.forceSelection(
-      newEditorState,
-      newSelection,
-    );
-    setEditorState(focusedState);
+    setEditorState(newEditorState);
     this.setState({ editorKey: uuid() });
+
+    // // this.props.forceDraftEditorRefresh();
+    //
+    // // this is needed to force redraw of entity component, should rewrite
+    // // TODO: use EditorState.forceSelection
+    // // , getEditorRef
+    // const selection = newEditorState.getSelection();
+    // const anchorKey = selection.getAnchorKey();
+    // const block = newContentState.getBlockForKey(anchorKey);
+    //
+    // const newSelection = SelectionState.createEmpty(block.getKey()).set(
+    //   'focusOffset',
+    //   1,
+    // );
+    // const focusedState = EditorState.forceSelection(
+    //   newEditorState,
+    //   newSelection,
+    // );
+    // setEditorState(focusedState);
 
     // console.log('focused');
     // const focusedState = EditorState.moveFocusToEnd(newEditorState);

@@ -1,7 +1,7 @@
 import React from 'react';
 import DataConnectedValue from 'volto-datablocks/DataConnectedValue';
 
-const InlineDataEntity = props => {
+const ConnectedInlineDataEntity = props => {
   const { children, decoratedText, contentState, entityKey } = props;
 
   // contentState,
@@ -19,6 +19,14 @@ const InlineDataEntity = props => {
 
   const child = children[0];
 
+  if (!(child && child.props))
+    return (
+      <span contentEditable={false} className="ui tag label red">
+        data {decoratedText}
+      </span>
+    );
+
+  // console.log('ongoing');
   const {
     customStyleMap,
     customStyleFn,
@@ -58,11 +66,16 @@ const InlineDataEntity = props => {
         data-offset-key={offsetKey}
         style={styleObj}
         contentEditable={false}
+        className="ui tag label red"
       >
         <DataConnectedValue url={url} column={column} />
       </span>
-    )) || <span contentEditable={false}>{decoratedText}</span>
+    )) || (
+      <span contentEditable={false} className="ui tag label red">
+        {decoratedText}
+      </span>
+    )
   );
 };
 
-export default InlineDataEntity;
+export default ConnectedInlineDataEntity;

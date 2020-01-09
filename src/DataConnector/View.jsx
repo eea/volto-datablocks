@@ -58,7 +58,7 @@ export class DataConnectorView extends Component {
 function getProviderData(state, props) {
   const path = `${props.location.pathname}/@connector-data`;
   const url = `${addAppURL(props.location.pathname)}/@connector-data`;
-  console.log('data providers', state.data_providers.data, url);
+  // console.log('data providers', state.data_providers.data, url);
   const data = state.data_providers.data || {};
   return data[url] || data[path];
 }

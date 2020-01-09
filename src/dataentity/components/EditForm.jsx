@@ -11,6 +11,7 @@ import {
   SelectWidget,
 } from '@plone/volto/components';
 import { getDataFromProvider } from 'volto-datablocks/actions';
+import { changeSidebarState } from 'volto-sidebar/actions';
 
 const makeChoices = keys => keys.map(k => [k, k]);
 
@@ -31,6 +32,7 @@ class EditForm extends Component {
   render() {
     const { data, entityKey, title } = this.props;
     let choices = makeChoices(Object.keys(this.props.provider_data || {}));
+    this.props.changeSidebarState(true);
 
     return (
       <SidebarPortal selected={true}>
@@ -117,6 +119,7 @@ const ConnectedEditForm = connect(
   }),
   {
     getDataFromProvider,
+    changeSidebarState,
   },
 )(EditForm);
 

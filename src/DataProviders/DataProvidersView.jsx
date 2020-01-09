@@ -15,7 +15,7 @@ class DataProvidersView extends Component {
     this.state = {
       providers: props.providers,
     };
-    console.log('providers props', props);
+    // console.log('providers props', props);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -33,7 +33,7 @@ class DataProvidersView extends Component {
   }
 
   render() {
-    console.log('state', this.state.providers);
+    // console.log('state', this.state.providers);
     return this.state.providers ? (
       <div>
         {this.state.providers.map(el => {

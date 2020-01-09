@@ -8,7 +8,6 @@ const initialState = {
 };
 
 export default function sparql_data(state = initialState, action = {}) {
-  // console.log('sparql_data reducer');
   switch (action.type) {
     case `${GET_SPARQL_DATA}_PENDING`:
       return {
@@ -19,7 +18,6 @@ export default function sparql_data(state = initialState, action = {}) {
       };
 
     case `${GET_SPARQL_DATA}_SUCCESS`:
-      console.log('Success getting attachments', action.result);
       return {
         ...state,
         error: null,

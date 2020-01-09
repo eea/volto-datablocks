@@ -22,7 +22,7 @@ export class BlockView extends Component {
   }
 
   render() {
-    console.log('props', this.props);
+    // console.log('props', this.props);
     return (
       <div className="data-connected-block">
         <div>{this.props.data.connector_path}</div>

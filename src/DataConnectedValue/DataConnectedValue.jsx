@@ -28,7 +28,7 @@ function getValue(data, column, filters) {
   const filter = filters[0];
   const { i: index, v: values } = filter; // o: op,
 
-  if (!values || values.length === 0) return '';
+  if (!values || values.length === 0) return 'no-results';
 
   // asuming that op is "plone.app.querystring.operation.selection.any"
   const value = values[0];
@@ -36,7 +36,7 @@ function getValue(data, column, filters) {
 
   if (pos === -1) {
     console.warn(`No value found in data for "${value}" in column "${index}"`);
-    return '';
+    return 'no-results';
   }
   return data[column] && data[column][pos];
 }
@@ -61,8 +61,7 @@ class DataEntity extends Component {
   }
 
   render() {
-    console.log('rendering dataentity', this.props);
-    const { column, provider_data } = this.props;
+    const { column, provider_data, format } = this.props;
 
     const value = getValue(
       provider_data,
@@ -70,10 +69,10 @@ class DataEntity extends Component {
       this.props.content.data_query,
     );
 
-    if (this.props.format) {
+    if (format) {
       return valueFormatters[this.props.format](value);
     }
-    return value;
+    return value || '';
   }
 }
 
