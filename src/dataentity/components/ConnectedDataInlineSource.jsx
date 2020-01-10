@@ -56,15 +56,25 @@ class DataButton extends Component {
     const { getEditorState, setEditorState } = this.props.store;
     const editorState = getEditorState();
     const contentState = editorState.getCurrentContent();
-    // TODO: check if entityKey exists, otherwise create entity
-    const newContentState = contentState.mergeEntityData(entityKey, data);
-    const newEditorState = EditorState.push(
-      editorState,
-      newContentState,
-      'apply-entity',
-    );
-    setEditorState(newEditorState);
-    this.setState({ editorKey: uuid() });
+
+    let modifiedEditorState;
+
+    try {
+      contentState.getEntity(entityKey);
+      const newContentState = contentState.mergeEntityData(entityKey, data);
+
+      modifiedEditorState = EditorState.push(
+        editorState,
+        newContentState,
+        'apply-entity',
+      );
+    } catch (error) {
+      console.warn('no such entitykey', entityKey, error);
+      modifiedEditorState = addInlineDataEntity(editorState);
+    } finally {
+      setEditorState(modifiedEditorState);
+      this.setState({ editorKey: uuid() });
+    }
   };
 
   render() {
