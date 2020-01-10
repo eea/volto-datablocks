@@ -18,10 +18,10 @@ const ConnectedInlineDataEntity = props => {
   // children with the simple text
 
   const child = children[0];
-
+  // ui tag label red
   if (!(child && child.props))
     return (
-      <span contentEditable={false} className="ui tag label red">
+      <span contentEditable={false} className="inline-data-entity">
         data {decoratedText}
       </span>
     );
@@ -66,12 +66,12 @@ const ConnectedInlineDataEntity = props => {
         data-offset-key={offsetKey}
         style={styleObj}
         contentEditable={false}
-        className="ui tag label red"
+        className="inline-data-entity"
       >
         <DataConnectedValue url={url} column={column} />
       </span>
     )) || (
-      <span contentEditable={false} className="ui tag label red">
+      <span contentEditable={false} className="inline-data-entity">
         {decoratedText}
       </span>
     )

@@ -5,31 +5,29 @@
 import React from 'react';
 import DataConnectedValue from 'volto-datablocks/DataConnectedValue';
 
-/*
- * Recursively replace all text nodes in children with DataConnectedValues
- * This is a hack, might not work in future React. Fingers cross
- */
 function insertConnectedData(children, url, column) {
-  children.forEach((child, index) => {
-    if (typeof child === 'string') {
-      children[index] = (
-        <DataConnectedValue url={url} column={column} key={index} />
-      );
-    } else {
-      const innerChildren = child.props?.children || [];
-      innerChildren.forEach((c, i) => {
-        if (typeof c === 'string') {
-          innerChildren[i] = (
-            <DataConnectedValue url={url} column={column} key={index} />
-          );
-        } else {
-          insertConnectedData(child.props?.children || [], url, column);
-        }
-      });
-    }
-  });
+  if (typeof children === 'string')
+    return <DataConnectedValue url={url} column={column} />;
 
-  return children;
+  if (Array.isArray(children)) {
+    return children.map((child, index) => {
+      if (typeof child === 'string') {
+        return <DataConnectedValue url={url} column={column} key={index} />;
+      } else {
+        return React.cloneElement(
+          child,
+          child.props,
+          insertConnectedData(child.props.children, url, column),
+        );
+      }
+    });
+  } else {
+    return React.cloneElement(
+      children,
+      children.props,
+      insertConnectedData(children.props.children, url, column),
+    );
+  }
 }
 
 const RedraftConnectedInlineDataEntity = props => {
@@ -37,6 +35,8 @@ const RedraftConnectedInlineDataEntity = props => {
     children,
     entityData: { column, url },
   } = props;
+
+  // console.log('children', children);
 
   return url && column ? (
     <span className="inline-data-entity">
