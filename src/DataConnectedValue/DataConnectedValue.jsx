@@ -1,13 +1,16 @@
-import { addAppURL } from '@plone/volto/helpers';
 import { Component } from 'react';
 import { connect } from 'react-redux';
+
+import { addAppURL } from '@plone/volto/helpers';
 import { getDataFromProvider } from 'volto-datablocks/actions';
 import { getConnectedDataParameters } from 'volto-datablocks/helpers';
+import { formatValue } from 'volto-datablocks/format';
 
 import '../css/styles.css';
-import Humanize from 'humanize-plus';
 
-function getValue(data, column, filters) {
+const EMPTY = '^';
+
+function getValue(data, column, filters, placeholder = EMPTY) {
   /*
    * Data is an object like: {
    * AV_P_SIZE: [501.78255, 849.335, 339.9433, 733.36331, 742.50659]
@@ -23,12 +26,12 @@ function getValue(data, column, filters) {
   // TODO: we implement now a very simplistic filtering, with only one type of
   // filter and only one filter is taken into consideration
 
-  if (!data) return '';
-  if (!filters || !filters.length) return '';
+  if (!data) return placeholder;
+  if (!filters || !filters.length) return placeholder;
   const filter = filters[0];
   const { i: index, v: values } = filter; // o: op,
 
-  if (!values || values.length === 0) return 'no-results';
+  if (!values || values.length === 0) return placeholder;
 
   // asuming that op is "plone.app.querystring.operation.selection.any"
   const value = values[0];
@@ -36,16 +39,10 @@ function getValue(data, column, filters) {
 
   if (pos === -1) {
     console.warn(`No value found in data for "${value}" in column "${index}"`);
-    return 'no-results';
+    return placeholder;
   }
   return data[column] && data[column][pos];
 }
-
-const valueFormatters = {
-  raw: value => value,
-  compactnumber: value => Humanize.compactInteger(value),
-  percentage: value => `${value}%`,
-};
 
 class DataEntity extends Component {
   componentDidMount() {
@@ -61,18 +58,16 @@ class DataEntity extends Component {
   }
 
   render() {
-    const { column, provider_data, format } = this.props;
+    const { column, provider_data, format, placeholder } = this.props;
 
     const value = getValue(
       provider_data,
       column,
       this.props.content.data_query,
+      placeholder,
     );
 
-    if (format) {
-      return valueFormatters[this.props.format](value);
-    }
-    return value || '';
+    return formatValue(value, format);
   }
 }
 

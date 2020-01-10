@@ -1,7 +1,13 @@
+/*
+ * A generic form to pick ConnectedDataValues metadata
+ *
+ * Pass schema for columns schema. See forests-frontend ForestCoverageBlock
+ */
+
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { Segment, Select } from 'semantic-ui-react';
+import { Segment } from 'semantic-ui-react';
 import withObjectBrowser from '@plone/volto/components/manage/Sidebar/ObjectBrowser';
 import aheadSVG from '@plone/volto/icons/ahead.svg';
 import { addAppURL } from '@plone/volto/helpers';
@@ -10,20 +16,9 @@ import {
   TextWidget,
   SelectWidget,
 } from '@plone/volto/components';
-import { getDataFromProvider } from 'volto-datablocks/actions';
-
-const prettyChoices = [
-  { text: 'Raw value', value: 'raw' },
-  { text: 'Compact number', value: 'compactnumber' },
-  { text: 'percentage', value: 'percentage' },
-];
-
-// const prettyChoices = [
-//     ['As it is', {} ],
-//     ['No decimals', { precision: 0, percent: true } ],
-//     ['Single decimal percent', { precision: 1, percent: true }  ],
-//     ['Single decimal', { precision: 1, percent: false } ],
-//   ];
+import { changeSidebarState } from 'volto-sidebar/actions';
+import { getDataFromProvider } from '../actions';
+import { dataFormatChoices } from '../format';
 
 const makeChoices = keys => keys.map(k => [k, k]);
 
@@ -41,9 +36,17 @@ class EditForm extends Component {
     }
   }
 
+  onChangeBlock() {}
+
   render() {
-    const { data, title } = this.props;
-    let choices = makeChoices(Object.keys(this.props.provider_data || {}));
+    const { data, title, provider_data, onChange, schema } = this.props;
+    if (this.props.selected) this.props.changeSidebarState(true);
+    /*
+     * data is like:
+     * { columns: { first: {title: 'Percentage', value: 'PERC_01', format: 'raw'}, }}
+     */
+    let choices = makeChoices(Object.keys(provider_data || {}));
+
     return (
       <SidebarPortal selected={true}>
         <Segment.Group raised>
@@ -73,57 +76,54 @@ class EditForm extends Component {
               iconAction={() =>
                 this.props.openObjectBrowser({
                   mode: 'link',
-                  onSelectItem: url => {
-                    this.props.updateData({
-                      url,
-                    });
-                  },
+                  onSelectItem: url => onChange({ url }),
                   ...this.props,
                 })
               }
-              onChange={() => this.props.updateData({})}
+              onChange={() => this.props.onChange({})}
             />
           </Segment>
-          {Object.keys(data.columns).map((column, index) => (
-            <Segment
-              key={`${column}_${index}`}
-              className="form sidebar-image-data"
-            >
+
+          {Object.entries(schema).map(([k, field]) => (
+            <Segment key={`${k}`} className="form sidebar-image-data">
               <SelectWidget
-                id="data-entity-column"
-                title="Column"
+                id={`data-entity-column-${k}`}
+                title={field.title}
                 choices={choices}
                 onChange={(id, value) =>
-                  this.props.updateData({
+                  this.props.onChange({
                     ...data,
                     columns: {
                       ...data.columns,
-                      [column]: {
-                        ...data.columns[column],
+                      [k]: {
+                        ...data.columns?.[k],
                         value,
                       },
                     },
                   })
                 }
-                value={data.columns[column]?.value}
+                value={data.columns?.[k]?.value}
               />
-              <Select
+              <SelectWidget
                 id="data-entity-format"
-                Placeholder="Formatting"
-                options={prettyChoices}
-                onChange={(event, selectData) =>
-                  this.props.updateData({
+                title="Format"
+                choices={dataFormatChoices.map(option => [
+                  option.id,
+                  option.label,
+                ])}
+                onChange={(id, value) =>
+                  this.props.onChange({
                     ...data,
                     columns: {
                       ...data.columns,
-                      [column]: {
-                        ...data.columns[column],
-                        format: selectData.value,
+                      [k]: {
+                        ...data.columns?.[k],
+                        format: value,
                       },
                     },
                   })
                 }
-                value={data.columns[column]?.format}
+                value={data.columns?.[k]?.format}
               />
             </Segment>
           ))}
@@ -154,6 +154,7 @@ const ConnectedEditForm = connect(
   }),
   {
     getDataFromProvider,
+    changeSidebarState,
   },
 )(EditForm);
 

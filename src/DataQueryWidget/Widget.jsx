@@ -9,7 +9,7 @@ function filterIndexes(indexes) {
     if (indexes[k].group === DATACONNECTOR_PARAMS_GROUP) res[k] = indexes[k];
   });
 
-  console.log('filtering indexes', res);
+  // console.log('filtering indexes', res);
   return res;
 }
 

@@ -1,3 +1,7 @@
+/*
+ * Generic example of how an edit would look like for a data connected block
+ * the example is incomplete and old, and not used.
+ */
 import React, { Component } from 'react';
 import { Icon, SidebarPortal, TextWidget } from '@plone/volto/components';
 import { Button, Input, Message, Segment } from 'semantic-ui-react';
