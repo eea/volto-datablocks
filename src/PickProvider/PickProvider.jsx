@@ -6,19 +6,6 @@ import { SelectWidget } from '@plone/volto/components';
 import { getDataFromProvider } from 'volto-datablocks/actions';
 import { searchContent } from '@plone/volto/actions';
 
-function getProviderData(state, props) {
-  let path = props?.value || null;
-
-  if (!path) return;
-
-  path = `${path}/@connector-data`;
-  const url = `${addAppURL(path)}/@connector-data`;
-
-  const data = state.data_providers.data || {};
-  const res = path ? data[path] || data[url] : [];
-  return res;
-}
-
 class PickProvider extends Component {
   componentDidMount() {
     // TODO: this needs to use a subrequest
@@ -66,6 +53,19 @@ class PickProvider extends Component {
       />
     );
   }
+}
+
+function getProviderData(state, props) {
+  let path = props?.value || null;
+
+  if (!path) return;
+
+  path = `${path}/@connector-data`;
+  const url = `${addAppURL(path)}/@connector-data`;
+
+  const data = state.data_providers.data || {};
+  const res = path ? data[path] || data[url] : [];
+  return res;
 }
 
 export default connect(
