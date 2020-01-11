@@ -123,7 +123,7 @@ class EditForm extends Component {
                     },
                   })
                 }
-                value={data.columns?.[k]?.format}
+                value={data.columns?.[k]?.format || field.defaultformat}
               />
             </Segment>
           ))}
