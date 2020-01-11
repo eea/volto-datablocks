@@ -35,14 +35,17 @@ class PickProvider extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.value && this.props.value !== prevProps.value)
+    if (this.props.value && this.props.value !== prevProps.value) {
       this.props.getDataFromProvider(this.props.value);
+    }
 
+    // Optimization to help land the proper providerData to the chart
     if (
       JSON.stringify(this.props.providerData) !==
-      JSON.stringify(prevProps.providerData)
-    )
+      JSON.stringify(this.props.currentProviderData)
+    ) {
       this.props.onLoadProviderData(this.props.providerData);
+    }
   }
 
   render() {
