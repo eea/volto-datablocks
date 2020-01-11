@@ -36,7 +36,9 @@ class EditForm extends Component {
     }
   }
 
-  onChangeBlock() {}
+  onChangeBlock() {
+    // needed by ObjectBrowser
+  }
 
   render() {
     const { data, title, provider_data, onChange, schema } = this.props;
@@ -48,7 +50,7 @@ class EditForm extends Component {
     let choices = makeChoices(Object.keys(provider_data || {}));
 
     return (
-      <SidebarPortal selected={true}>
+      <SidebarPortal selected={this.props.selected}>
         <Segment.Group raised>
           <header className="header pulled">
             <h2>{title}</h2>
