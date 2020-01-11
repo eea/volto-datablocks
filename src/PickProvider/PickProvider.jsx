@@ -69,8 +69,6 @@ export default connect(
   (state, props) => {
     const providerData = getProviderData(state, props);
 
-    console.log('search state', state.search.subrequests);
-
     return {
       providers: state.search.subrequests?.getProviders?.items || [],
       providerData,
