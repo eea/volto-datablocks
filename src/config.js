@@ -8,6 +8,9 @@ import installDraftEditorDataEntity from './dataentity';
 import { ConnectedDataParameterWatcher } from './Viewlets';
 import { ViewSelect, AutoSelectFromContext } from './ContextParameter';
 
+import DataConnectedEmbedView from './DataConnectedEmbedBlock/View';
+import DataConnectedEmbedEdit from './DataConnectedEmbedBlock/Edit';
+
 import chartIcon from '@plone/volto/icons/world.svg';
 import addonRoutes from './routes';
 
@@ -49,6 +52,15 @@ export function applyConfig(config) {
     edit: AutoSelectFromContext,
     icon: chartIcon,
     group: 'data_blocks',
+  };
+
+  config.blocks.blocksConfig.data_connected_embed = {
+    id: 'data_connected_embed',
+    title: 'Data connected embed',
+    view: DataConnectedEmbedView,
+    edit: DataConnectedEmbedEdit,
+    icon: chartIcon,
+    group: 'custom_addons',
   };
 
   config.settings.nonContentRoutes.push('/data-providers-view');
