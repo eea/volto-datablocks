@@ -30,7 +30,7 @@ class MultiValuesEdit extends Component {
     let choices = makeChoices(Object.keys(provider_data || {}));
 
     return Object.keys(schema || {}).length > 0 ? (
-      <Segment.Group>
+      <>
         <Segment className="form sidebar-image-data">
           <TextWidget
             id="data-provider"
@@ -94,7 +94,7 @@ class MultiValuesEdit extends Component {
             />
           </Segment>
         ))}
-      </Segment.Group>
+      </>
     ) : (
       ''
     );
