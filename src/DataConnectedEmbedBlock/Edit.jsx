@@ -81,6 +81,7 @@ class Edit extends Component {
     this.state = {
       uploading: false,
       url: '',
+      baseUrl: '',
       error: null,
     };
     this.onSubmitUrl = this.onSubmitUrl.bind(this);
@@ -122,6 +123,7 @@ class Edit extends Component {
     this.props.onChangeBlock(this.props.block, {
       ...this.props.data,
       url: this.state.url,
+      baseUrl: this.state.baseUrl,
     });
   }
 
@@ -153,7 +155,7 @@ class Edit extends Component {
    */
   getSrc(embed) {
     console.log('getSrc', this.props);
-    const nuts_code = this.props.properties.data_query[0].v[0]
+    const nuts_code = this.props.properties.data_query[0].v[0];
     // const parser = new DOMParser();
     // const doc = parser.parseFromString(embed, 'text/html');
     // const iframe = doc.getElementsByTagName('iframe');
@@ -162,6 +164,7 @@ class Edit extends Component {
     //   return '';
     // }
     // this.setState({ error: false });
+    this.setState({ baseUrl: embed });
     return embed.replace('<<NUTS_CODE>>', nuts_code);
   }
 
