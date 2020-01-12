@@ -75,6 +75,7 @@ class ViewSelect extends Component {
           return (
             <Select
               id={`field-${id}`}
+              key={`select-i`}
               name={id}
               disabled={onEdit !== null}
               className="react-select-container"

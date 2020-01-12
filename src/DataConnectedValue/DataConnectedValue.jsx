@@ -61,6 +61,7 @@ class DataEntity extends Component {
 
   render() {
     const { column, provider_data, format, placeholder } = this.props;
+    console.log('dcv', this.props);
 
     const value = getValue(
       provider_data,

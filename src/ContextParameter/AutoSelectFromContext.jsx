@@ -21,7 +21,7 @@ class SelectContextParameter extends Component {
   componentDidUpdate(prevProps) {}
 
   render() {
-    return <>Nothing to configure yet</>;
+    return <>Select data parameter block. Nothing to configure yet</>;
   }
 }
 
