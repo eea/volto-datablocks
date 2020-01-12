@@ -1,3 +1,4 @@
+import { settings } from '~/config';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 
@@ -49,6 +50,7 @@ class DataEntity extends Component {
     const url = this.props.url;
     if (url) this.props.getDataFromProvider(url);
   }
+
   componentDidUpdate(prevProps, prevState) {
     const url = this.props.url;
     const prevUrl = prevProps.url;
@@ -63,7 +65,8 @@ class DataEntity extends Component {
     const value = getValue(
       provider_data,
       column,
-      this.props.content.data_query,
+      // this.props.content.data_query,
+      this.props.connected_data_parameters,
       placeholder,
     );
 
@@ -74,12 +77,34 @@ class DataEntity extends Component {
 function getProviderData(state, props) {
   if (!props.url) return;
 
+  console.log('get provider data', props.url);
   const data = state.data_providers.data || {};
   return props.url
     ? data[`${props.url}/@connector-data`] ||
         data[`${addAppURL(props.url)}/@connector-data`]
     : [];
 }
+
+// function getConnectedDataParameters(state, props) {
+//   let path = props?.url || '';
+//
+//   path = path
+//     .replace(settings.apiPath, '')
+//     .replace(settings.internalApiPath, '');
+//
+//   // NOTE: we fetch first the general parameter. This is temporary, it should
+//   // be handled for more cases. Doing it this way means that there's no way to
+//   // have multiple data selectors on the page, because the first one overrides
+//   // the second. There's multiple things that need to be improved here.
+//   // The whole volto-datablocks, volto-plotlycharts need to be updated if this
+//   // code and cases change.
+//   const res =
+//     state.connected_data_parameters.byPath?.[''] ||
+//     state.connected_data_parameters.byPath?.[path] ||
+//     null;
+//   console.log('DCV conn data res', res, state, path);
+//   return res;
+// }
 
 export default connect(
   (state, props) => ({

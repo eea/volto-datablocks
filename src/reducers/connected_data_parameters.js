@@ -15,6 +15,7 @@ export default function connected_data_parameters(
 ) {
   switch (action.type) {
     case SET_CONNECTED_DATA_PARAMETERS:
+      console.log('set connected data params', action);
       return {
         ...state,
         byPath: {

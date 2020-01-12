@@ -6,24 +6,23 @@ import DataBlockEdit from './DataConnectedBlock/Edit';
 import DataConnectorView from './DataConnector/View';
 import installDraftEditorDataEntity from './dataentity';
 import { ConnectedDataParameterWatcher } from './Viewlets';
+import { ViewSelect, AutoSelectFromContext } from './ContextParameter';
 
 import chartIcon from '@plone/volto/icons/world.svg';
 import addonRoutes from './routes';
 
-function addCustomGroup(config) {
+function addCustomGroup(config, group) {
   const hasCustomGroup = config.blocks.groupBlocksOrder.filter(
-    el => el.id === 'custom_addons',
+    el => el.id === group.id,
   );
   if (hasCustomGroup.length === 0) {
-    config.blocks.groupBlocksOrder.push({
-      id: 'custom_addons',
-      title: 'Custom addons',
-    });
+    config.blocks.groupBlocksOrder.push(group);
   }
 }
 
 export function applyConfig(config) {
-  addCustomGroup(config);
+  addCustomGroup(config, { id: 'custom_addons', title: 'Custom addons' });
+  addCustomGroup(config, { id: 'data_blocks', title: 'Data blocks' });
 
   config.views.contentTypesViews.discodataconnector = DataConnectorView;
 
@@ -40,7 +39,16 @@ export function applyConfig(config) {
     view: DataBlockView,
     edit: DataBlockEdit,
     icon: chartIcon,
-    group: 'custom_addons',
+    group: 'data_blocks',
+  };
+
+  config.blocks.blocksConfig.auto_select_parameter = {
+    id: 'auto_select_parameter',
+    title: 'Auto select parameter',
+    view: ViewSelect,
+    edit: AutoSelectFromContext,
+    icon: chartIcon,
+    group: 'data_blocks',
   };
 
   config.settings.nonContentRoutes.push('/data-providers-view');

@@ -8,14 +8,15 @@ import { connect } from 'react-redux';
 import { setConnectedDataParameters } from '../actions';
 
 function ConnectedDataParameterWatcher(props) {
-  const contentPath = props.content?.['@id'] || null;
+  // const contentPath = props.content?.['@id'] || null;
+  const contentPath = ''; // generic fallback path
   const dataQuery = props.content?.data_query || null;
   const setConnectedDataParameters = props.setConnectedDataParameters;
   // const location = props.location;
 
   useEffect(() => {
     if (contentPath !== null && dataQuery)
-      setConnectedDataParameters(contentPath, dataQuery, true);
+      setConnectedDataParameters(contentPath, dataQuery, false);
   }, [contentPath, dataQuery, setConnectedDataParameters]);
   return '';
 }
