@@ -102,6 +102,7 @@ class ViewSelect extends Component {
                   true,
                 );
               }}
+              placeholder="Select NUTS code"
             />
           );
         })}

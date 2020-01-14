@@ -1,4 +1,4 @@
-import { settings } from '~/config';
+// import { settings } from '~/config';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 
@@ -27,8 +27,8 @@ function getValue(data, column, filters, placeholder = EMPTY) {
   // TODO: we implement now a very simplistic filtering, with only one type of
   // filter and only one filter is taken into consideration
 
-  if (!data) return placeholder;
-  if (!filters || !filters.length) return placeholder;
+  if (!data || (!filters || !filters.length)) return placeholder;
+
   const filter = filters[0];
   const { i: index, v: values } = filter; // o: op,
 
@@ -42,7 +42,7 @@ function getValue(data, column, filters, placeholder = EMPTY) {
     console.warn(`No value found in data for "${value}" in column "${index}"`);
     return placeholder;
   }
-  return data[column] && data[column][pos];
+  return (data[column] && data[column][pos]) || placeholder;
 }
 
 class DataEntity extends Component {
