@@ -32,6 +32,5 @@ export function getConnectedDataParameters(state, props) {
     state.connected_data_parameters.byPath?.[''] ||
     state.connected_data_parameters.byPath?.[path] ||
     null;
-  console.log('DCV conn data res', res, state, path);
   return res;
 }
