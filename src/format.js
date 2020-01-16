@@ -8,7 +8,9 @@ import { isNumber } from 'lodash';
 export const dataFormatChoices = [
   { id: 'raw', label: 'Raw value' },
   { id: 'compactnumber', label: 'Compact number' },
-  { id: 'percentage', label: 'percentage' },
+  { id: 'percentage', label: 'Compact percentage' },
+  { id: 'format_precise', label: 'Format with 2 precision' },
+  { id: 'format_int', label: 'Format as whole number' },
 ];
 
 function valueIsNumber(value) {
@@ -31,6 +33,17 @@ export const valueFormatters = {
         valueIsNumber(value) &&
         `${Humanize.compactInteger(value, 1)}%`) ||
       value
+    );
+  },
+  format_precise: value => {
+    return (
+      (value && valueIsNumber(value) && `${Humanize.formatNumber(value, 2)}`) ||
+      value
+    );
+  },
+  format_int: value => {
+    return (
+      (value && valueIsNumber(value) && `${Humanize.intComma(value)}`) || value
     );
   },
 };
