@@ -34,3 +34,37 @@ export function getConnectedDataParameters(state, props) {
     null;
   return res;
 }
+
+// refreshes chart data using data from provider
+// this is similar to mixProviderData from ConnectedChart, but it doesn't apply
+// transformation
+export function updateChartDataFromProvider(chartData, providerData) {
+  // console.log('chart data', data);
+  // console.log('provider_data', provider_data);
+
+  if (!providerData) return chartData;
+
+  const providerDataColumns = Object.keys(providerData);
+  // console.log('parameters', parameters);
+
+  const res = chartData.map(trace => {
+    Object.keys(trace).forEach(tk => {
+      const originalColumn = tk.replace(/src$/, '');
+      if (
+        tk.endsWith('src') &&
+        Object.keys(trace).includes(originalColumn) &&
+        typeof trace[tk] === 'string' &&
+        providerDataColumns.includes(trace[tk])
+      ) {
+        let values = providerData[trace[tk]];
+
+        // if (originalColumn === 'labels') values = values.map(l => l + 'LLL');
+
+        trace[originalColumn] = values;
+      }
+    });
+
+    return trace;
+  });
+  return res;
+}
