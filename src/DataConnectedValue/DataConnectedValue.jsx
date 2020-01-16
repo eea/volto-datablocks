@@ -36,6 +36,9 @@ function getValue(data, column, filters, placeholder = EMPTY) {
 
   // asuming that op is "plone.app.querystring.operation.selection.any"
   const value = values[0];
+  if (!data[index]) {
+    console.warn('not index in data', index, data);
+  }
   const pos = data[index].indexOf(value);
 
   if (pos === -1) {
