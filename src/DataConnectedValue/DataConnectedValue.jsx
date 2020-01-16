@@ -38,6 +38,7 @@ function getValue(data, column, filters, placeholder = EMPTY) {
   const value = values[0];
   if (!data[index]) {
     console.warn('not index in data', index, data);
+    return placeholder;
   }
   const pos = data[index].indexOf(value);
 
