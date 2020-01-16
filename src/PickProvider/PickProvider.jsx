@@ -103,11 +103,15 @@ class PickProvider extends Component {
             }
           />
         </Grid.Column>
-        <Grid.Column width={2}>
-          <Button onClick={this.refresh} disabled={!this.props.value}>
-            Reload data
-          </Button>
-        </Grid.Column>
+        {this.props.showReload ? (
+          <Grid.Column width={2}>
+            <Button onClick={this.refresh} disabled={!this.props.value}>
+              Reload data
+            </Button>
+          </Grid.Column>
+        ) : (
+          ''
+        )}
       </Grid>
     );
   }
