@@ -78,6 +78,7 @@ class MultiValuesEdit extends Component {
               <SelectWidget
                 id={`data-entity-column-${k}`}
                 title={field.title}
+                choices={choices}
                 onChange={(id, value) =>
                   this.props.onChange({
                     ...data,
