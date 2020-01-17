@@ -51,49 +51,71 @@ class MultiValuesEdit extends Component {
             onChange={() => this.props.onChange({})}
           />
         </Segment>
-        {Object.entries(schema).map(([k, field]) => (
-          <Segment key={`${k}`} className="form sidebar-image-data">
-            <SelectWidget
-              id={`data-entity-column-${k}`}
-              title={field.title}
-              choices={choices}
-              onChange={(id, value) =>
-                this.props.onChange({
-                  ...data,
-                  columns: {
-                    ...data.columns,
-                    [k]: {
-                      ...data.columns?.[k],
-                      value,
+        {Object.entries(schema).map(([k, field]) =>
+          field.static ? (
+            <Segment key={`${k}`} className="form sidebar-image-data">
+              <TextWidget
+                id={`text-widget-column-${k}`}
+                title={field.title}
+                required={false}
+                onChange={(id, value) =>
+                  this.props.onChange({
+                    ...data,
+                    columns: {
+                      ...data.columns,
+                      [k]: {
+                        ...data.columns?.[k],
+                        value,
+                      },
                     },
-                  },
-                })
-              }
-              value={data.columns?.[k]?.value}
-            />
-            <SelectWidget
-              id="data-entity-format"
-              title="Format"
-              choices={dataFormatChoices.map(option => [
-                option.id,
-                option.label,
-              ])}
-              onChange={(id, value) =>
-                this.props.onChange({
-                  ...data,
-                  columns: {
-                    ...data.columns,
-                    [k]: {
-                      ...data.columns?.[k],
-                      format: value,
+                  })
+                }
+                value={data.columns?.[k]?.value}
+              />
+            </Segment>
+          ) : (
+            <Segment key={`${k}`} className="form sidebar-image-data">
+              <SelectWidget
+                id={`data-entity-column-${k}`}
+                title={field.title}
+                onChange={(id, value) =>
+                  this.props.onChange({
+                    ...data,
+                    columns: {
+                      ...data.columns,
+                      [k]: {
+                        ...data.columns?.[k],
+                        value,
+                      },
                     },
-                  },
-                })
-              }
-              value={data.columns?.[k]?.format || field.defaultformat}
-            />
-          </Segment>
-        ))}
+                  })
+                }
+                value={data.columns?.[k]?.value}
+              />
+              <SelectWidget
+                id="data-entity-format"
+                title="Format"
+                choices={dataFormatChoices.map(option => [
+                  option.id,
+                  option.label,
+                ])}
+                onChange={(id, value) =>
+                  this.props.onChange({
+                    ...data,
+                    columns: {
+                      ...data.columns,
+                      [k]: {
+                        ...data.columns?.[k],
+                        format: value,
+                      },
+                    },
+                  })
+                }
+                value={data.columns?.[k]?.format || field.defaultformat}
+              />
+            </Segment>
+          ),
+        )}
       </>
     ) : (
       ''

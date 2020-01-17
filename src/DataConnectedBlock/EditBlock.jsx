@@ -18,7 +18,7 @@ class EditForm extends Component {
   }
 
   render() {
-    const { data, title, onChange, schema } = this.props;
+    const { data, title, onChange, schema, block } = this.props;
     if (this.props.selected) this.props.changeSidebarState(true);
     /*
      * data is like:
@@ -35,6 +35,7 @@ class EditForm extends Component {
             schema={schema}
             onChange={this.props.onChange}
             data={data}
+            block={block}
           />
         </Segment.Group>
       </SidebarPortal>
