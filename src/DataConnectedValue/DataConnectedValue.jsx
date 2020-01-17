@@ -26,6 +26,10 @@ function getValue(data, column, filters, placeholder = EMPTY) {
 
   // TODO: we implement now a very simplistic filtering, with only one type of
   // filter and only one filter is taken into consideration
+  if (!(filters && filters.length))
+    console.warn(
+      'This DataConnectedValue is used in a context without parameters',
+    );
 
   if (!data || (!filters || !filters.length)) return placeholder;
 
