@@ -5,6 +5,7 @@ import { SelectWidget, TextWidget } from '@plone/volto/components';
 import { addAppURL } from '@plone/volto/helpers';
 import aheadSVG from '@plone/volto/icons/ahead.svg';
 import withObjectBrowser from '@plone/volto/components/manage/Sidebar/ObjectBrowser';
+import { Field } from '@plone/volto/components'; // EditBlock
 
 import { getDataFromProvider } from '../actions';
 import { dataFormatChoices } from '../format';
@@ -117,6 +118,34 @@ class MultiValuesEdit extends Component {
             </Segment>
           ),
         )}
+        <Segment className="form sidebar-image-data">
+          <TextWidget
+            title="Source"
+            id="chart-source"
+            type="text"
+            value={this.props.data.chart_source}
+            required={false}
+            onChange={(e, d) =>
+              this.props.onChange({
+                ...data,
+                chart_source: d,
+              })
+            }
+          />
+          <TextWidget
+            title="Source Link"
+            id="chart-source-link"
+            type="text"
+            value={data.chart_source_link}
+            required={false}
+            onChange={(e, d) =>
+              this.props.onChange({
+                ...data,
+                chart_source_link: d,
+              })
+            }
+          />
+        </Segment>
       </>
     ) : (
       ''
