@@ -26,6 +26,13 @@ export class BlockView extends Component {
     return (
       <div className="data-connected-block">
         <div>{this.props.data.connector_path}</div>
+        <Grid.Column width={12}>
+              <div>
+                <a className="discreet" href={this.props.data.chart_source_link}>
+                  {this.props.data.chart_source}
+                </a>
+              </div>
+            </Grid.Column>
       </div>
     );
   }
