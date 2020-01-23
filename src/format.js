@@ -9,6 +9,10 @@ export const dataFormatChoices = [
   { id: 'raw', label: 'Raw value' },
   { id: 'compactnumber', label: 'Compact number' },
   { id: 'percentage', label: 'Compact percentage' },
+  {
+    id: 'percentage_format_precise',
+    label: 'Percentage format with 2 precision',
+  },
   { id: 'format_precise', label: 'Format with 2 precision' },
   { id: 'format_int', label: 'Format as whole number' },
 ];
@@ -38,6 +42,14 @@ export const valueFormatters = {
   format_precise: value => {
     return (
       (value && valueIsNumber(value) && `${Humanize.formatNumber(value, 2)}`) ||
+      value
+    );
+  },
+  percentage_format_precise: value => {
+    return (
+      (value &&
+        valueIsNumber(value) &&
+        `${Humanize.formatNumber(value, 2)}%`) ||
       value
     );
   },
