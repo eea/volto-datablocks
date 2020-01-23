@@ -30,6 +30,8 @@ export class BlockView extends Component {
           <a
             className="discreet block_source"
             href={this.props.data.chart_source_link}
+            target="_blank"
+            rel="noopener noreferrer"
           >
             {this.props.data.chart_source}
           </a>
