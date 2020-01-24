@@ -22,9 +22,12 @@ function ConnectedDataParameterWatcher(props) {
 }
 
 export default connect(
-  (state, props) => ({
-    content: state.content.data,
-    // location: state.router.location,
-  }),
+  (state, props) => {
+    const pathname = state.router?.location?.pathname || '';
+    return {
+      content: state.prefetch?.[pathname] || state.content.data,
+      // location: state.router.location,
+    };
+  },
   { setConnectedDataParameters },
 )(ConnectedDataParameterWatcher);

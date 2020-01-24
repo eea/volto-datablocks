@@ -27,14 +27,14 @@ class View extends Component {
   render() {
     const data = this.props.data;
     const intl = this.props.intl;
-    console.log('props in view', this.props);
+    console.log('DataConnectedEmbed props in view', this.props);
     const param = this.props.connected_data_parameters
       ? this.props.connected_data_parameters[0].v[0]
       : null;
     const url =
       param && data.baseUrl
         ? data.baseUrl.replace('<<NUTS_CODE>>', param)
-        : data.url;
+        : data.baseUrl;
     return (
       <p
         className={cx(

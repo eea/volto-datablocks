@@ -46,6 +46,7 @@ export function setConnectedDataParameters(
   path = path
     .replace(settings.apiPath, '')
     .replace(settings.internalApiPath, '');
+  console.log('Set connected data parameters', path, parameters);
   return {
     type: SET_CONNECTED_DATA_PARAMETERS,
     path,

@@ -77,13 +77,14 @@ class Edit extends Component {
    */
   constructor(props) {
     super(props);
-    this.getSrc = this.getSrc.bind(this);
+
     this.state = {
       uploading: false,
-      url: '',
       baseUrl: '',
       error: null,
     };
+
+    this.getSrc = this.getSrc.bind(this);
     this.onSubmitUrl = this.onSubmitUrl.bind(this);
     this.onKeyDownVariantMenuForm = this.onKeyDownVariantMenuForm.bind(this);
   }
@@ -109,7 +110,7 @@ class Edit extends Component {
    */
   onChangeUrl = ({ target }) => {
     this.setState({
-      url: this.getSrc(target.value),
+      baseUrl: target.value,
     });
   };
 
@@ -122,7 +123,6 @@ class Edit extends Component {
   onSubmitUrl() {
     this.props.onChangeBlock(this.props.block, {
       ...this.props.data,
-      url: this.state.url,
       baseUrl: this.state.baseUrl,
     });
   }
@@ -154,17 +154,8 @@ class Edit extends Component {
    * @returns {string} Source URL
    */
   getSrc(embed) {
-    console.log('getSrc', this.props);
-    const nuts_code = this.props.properties.data_query[0].v[0];
-    // const parser = new DOMParser();
-    // const doc = parser.parseFromString(embed, 'text/html');
-    // const iframe = doc.getElementsByTagName('iframe');
-    // if (iframe.length === 0) {
-    //   this.setState({ error: true });
-    //   return '';
-    // }
-    // this.setState({ error: false });
-    this.setState({ baseUrl: embed });
+    const nuts_code =
+      this.props.properties?.data_query?.[0]?.v[0] || '<<NUTS_CODE>>';
     return embed.replace('<<NUTS_CODE>>', nuts_code);
   }
 
@@ -174,7 +165,7 @@ class Edit extends Component {
    * @returns {string} Markup for the component.
    */
   render() {
-    console.log('props stuff', this.props);
+    // console.log('props stuff', this.props);
     return (
       <div
         className={cx(
@@ -186,7 +177,7 @@ class Edit extends Component {
           this.props.data.align,
         )}
       >
-        {this.props.selected && !!this.props.data.url && (
+        {this.props.selected && !!this.props.data.baseUrl && (
           <div className="toolbar">
             <Button.Group>
               <Button
@@ -242,7 +233,7 @@ class Edit extends Component {
                 onClick={() =>
                   this.props.onChangeBlock(this.props.block, {
                     ...this.props.data,
-                    url: '',
+                    baseUrl: '',
                   })
                 }
               >
@@ -251,7 +242,7 @@ class Edit extends Component {
             </Button.Group>
           </div>
         )}
-        {this.props.selected && !this.props.data.url && (
+        {this.props.selected && !this.props.data.baseUrl && (
           <div className="toolbar">
             <Icon name={globeSVG} size="24px" />
             <Input
@@ -263,7 +254,7 @@ class Edit extends Component {
             />
           </div>
         )}
-        {this.props.data.url ? (
+        {this.props.data.baseUrl ? (
           <div
             className={cx('video-inner', {
               'full-width': this.props.data.align === 'full',
@@ -273,11 +264,12 @@ class Edit extends Component {
               title={this.props.intl.formatMessage(
                 messages.GoogleMapsEmbeddedBlock,
               )}
-              src={this.props.data.url}
+              src={this.getSrc(this.props.data.baseUrl)}
               className="google-map"
               frameBorder="0"
               allowFullScreen
             />
+            <div>{this.props.data.baseUrl}</div>
           </div>
         ) : (
           <div>
