@@ -10,6 +10,7 @@ function insertConnectedData(children, url, column) {
     return <DataConnectedValue url={url} column={column} />;
 
   // TODO: find the deepest child that needs to be replaced.
+  // TODO: note: this might trigger warnings about keys
   if (Array.isArray(children)) {
     return children.map((child, index) => {
       if (typeof child === 'string') {
