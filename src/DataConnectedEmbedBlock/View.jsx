@@ -9,6 +9,7 @@ import { defineMessages, injectIntl } from 'react-intl';
 import cx from 'classnames';
 import { connect } from 'react-redux';
 import { getConnectedDataParametersForContext } from 'volto-datablocks/helpers';
+import VisibilitySensor from 'react-visibility-sensor';
 
 const messages = defineMessages({
   EmbededGoogleMaps: {
@@ -36,29 +37,31 @@ class ViewEmbedBlock extends Component {
         ? data.baseUrl.replace('<<NUTS_CODE>>', param)
         : data.baseUrl;
     return param && url ? (
-      <p
-        className={cx(
-          'block maps align',
-          {
-            center: !Boolean(data.align),
-          },
-          data.align,
-        )}
-      >
-        <div
-          className={cx('video-inner', {
-            'full-width': data.align === 'full',
-          })}
+      <VisibilitySensor partialVisibility={true}>
+        <p
+          className={cx(
+            'block maps align',
+            {
+              center: !Boolean(data.align),
+            },
+            data.align,
+          )}
         >
-          <iframe
-            title={intl.formatMessage(messages.EmbededGoogleMaps)}
-            src={url}
-            className="google-map"
-            frameBorder="0"
-            allowFullScreen
-          />
-        </div>
-      </p>
+          <div
+            className={cx('video-inner', {
+              'full-width': data.align === 'full',
+            })}
+          >
+            <iframe
+              title={intl.formatMessage(messages.EmbededGoogleMaps)}
+              src={url}
+              className="google-map"
+              frameBorder="0"
+              allowFullScreen
+            />
+          </div>
+        </p>
+      </VisibilitySensor>
     ) : (
       ''
     );
