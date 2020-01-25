@@ -17,7 +17,7 @@ export function getSparqlData(path) {
 }
 
 export function getDataFromProvider(path, filters) {
-  // console.log('getDataFromProvider call, ', path, filters);
+  console.log('getDataFromProvider call, ', path, filters);
   return filters
     ? {
         type: GET_DATA_FROM_PROVIDER,
