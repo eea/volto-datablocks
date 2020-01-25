@@ -33,6 +33,8 @@ class ViewEmbedBlock extends Component {
     const param = this.props.connected_data_parameters
       ? this.props.connected_data_parameters[0].v[0]
       : null;
+
+    // TODO: automatically discover parameters
     const url =
       param && data.baseUrl
         ? data.baseUrl.replace('<<NUTS_CODE>>', param)
@@ -53,7 +55,7 @@ class ViewEmbedBlock extends Component {
               'full-width': data.align === 'full',
             })}
           >
-            {visible && (
+            {visible ? (
               <iframe
                 title={intl.formatMessage(messages.EmbededGoogleMaps)}
                 src={url}
@@ -61,6 +63,8 @@ class ViewEmbedBlock extends Component {
                 frameBorder="0"
                 allowFullScreen
               />
+            ) : (
+              ''
             )}
           </div>
         </p>
