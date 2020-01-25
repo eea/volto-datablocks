@@ -6,10 +6,11 @@
 import { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { setConnectedDataParameters } from '../actions';
+import { getBaseUrl } from '@plone/volto/helpers';
 
 function ConnectedDataParameterWatcher(props) {
   // const contentPath = props.content?.['@id'] || null;
-  const contentPath = ''; // generic fallback path
+  const contentPath = getBaseUrl(props.content['@id']); // generic fallback path
   const dataQuery = props.content?.data_query || null;
   const setConnectedDataParameters = props.setConnectedDataParameters;
   // const location = props.location;

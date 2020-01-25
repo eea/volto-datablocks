@@ -1,10 +1,12 @@
-// import { settings } from '~/config';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { addAppURL } from '@plone/volto/helpers';
 import { getDataFromProvider } from 'volto-datablocks/actions';
-import { getConnectedDataParameters } from 'volto-datablocks/helpers';
+import {
+  getConnectedDataParametersForProvider,
+  getConnectedDataParametersForContext,
+} from 'volto-datablocks/helpers';
 import { formatValue } from 'volto-datablocks/format';
 
 import '../css/styles.css';
@@ -27,7 +29,7 @@ function getValue(data, column, filters, placeholder = EMPTY) {
   // TODO: we implement now a very simplistic filtering, with only one type of
   // filter and only one filter is taken into consideration
   if (!(filters && filters.length))
-    console.warn(
+    console.log(
       'This DataConnectedValue is used in a context without parameters',
     );
 
@@ -41,13 +43,13 @@ function getValue(data, column, filters, placeholder = EMPTY) {
   // asuming that op is "plone.app.querystring.operation.selection.any"
   const value = values[0];
   if (!data[index]) {
-    console.warn('not index in data', index, data);
+    console.log('NOT_AN_INDEX_IN_DATA:', index, data);
     return placeholder;
   }
   const pos = data[index].indexOf(value);
 
   if (pos === -1) {
-    console.warn(`No value found in data for "${value}" in column "${index}"`);
+    console.log(`No value found in data for "${value}" in column "${index}"`);
     return placeholder;
   }
   return (data[column] && data[column][pos]) || placeholder;
@@ -92,33 +94,20 @@ function getProviderData(state, props) {
     : [];
 }
 
-// function getConnectedDataParameters(state, props) {
-//   let path = props?.url || '';
-//
-//   path = path
-//     .replace(settings.apiPath, '')
-//     .replace(settings.internalApiPath, '');
-//
-//   // NOTE: we fetch first the general parameter. This is temporary, it should
-//   // be handled for more cases. Doing it this way means that there's no way to
-//   // have multiple data selectors on the page, because the first one overrides
-//   // the second. There's multiple things that need to be improved here.
-//   // The whole volto-datablocks, volto-plotlycharts need to be updated if this
-//   // code and cases change.
-//   const res =
-//     state.connected_data_parameters.byPath?.[''] ||
-//     state.connected_data_parameters.byPath?.[path] ||
-//     null;
-//   console.log('DCV conn data res', res, state, path);
-//   return res;
-// }
-
 export default connect(
-  (state, props) => ({
-    provider_data: getProviderData(state, props),
-    content: state.content.data,
-    connected_data_parameters: getConnectedDataParameters(state, props),
-  }),
+  (state, props) => {
+    const { url } = props; // this is the provider url
+    return {
+      provider_data: getProviderData(state, props),
+      content: state.content.data,
+      connected_data_parameters:
+        getConnectedDataParametersForProvider(state, url) ||
+        getConnectedDataParametersForContext(
+          state,
+          state.router.location.pathname,
+        ),
+    };
+  },
   {
     getDataFromProvider,
   },
