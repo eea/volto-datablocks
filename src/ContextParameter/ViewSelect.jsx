@@ -1,3 +1,5 @@
+// TODO: this module needs to be restructured, the setConnectedDataParameters
+// needs to be adjusted
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Select from 'react-select';

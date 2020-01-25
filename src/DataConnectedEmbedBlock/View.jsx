@@ -27,7 +27,7 @@ class ViewEmbedBlock extends Component {
   render() {
     const data = this.props.data;
     const intl = this.props.intl;
-    // console.log('DataConnectedEmbed props in view', this.props);
+    console.log('DataConnectedEmbed props in view', this.props);
     const param = this.props.connected_data_parameters
       ? this.props.connected_data_parameters[0].v[0]
       : null;
@@ -70,7 +70,7 @@ export default connect(
     return {
       connected_data_parameters: getConnectedDataParametersForContext(
         state,
-        state.content?.router?.location?.pathname,
+        state.router?.location?.pathname,
       ),
     };
   },

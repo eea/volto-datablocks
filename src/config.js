@@ -66,10 +66,10 @@ export function applyConfig(config) {
   config.settings.nonContentRoutes.push('/data-providers-view');
   config.addonRoutes = [...(config.addonRoutes || []), ...addonRoutes];
 
-  config.viewlets = [
-    { path: '/', component: ConnectedDataParameterWatcher },
-    ...(config.viewlets || []),
-  ];
+  // config.viewlets = [
+  //   { path: '/', component: ConnectedDataParameterWatcher },
+  //   ...(config.viewlets || []),
+  // ];
 
   installDraftEditorDataEntity(config);
 

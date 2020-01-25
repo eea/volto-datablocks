@@ -11,6 +11,10 @@ export function getConnectedDataParametersForContext(state, url) {
   let path = getBasePath(url || '');
 
   const { byContextPath = {} } = state.connected_data_parameters;
+
+  console.log('getConnectedDataParametersForProvider path', path, url);
+  console.log('getConnectedDataParametersForProvider content', byContextPath);
+
   const res = byContextPath[path]
     ? byContextPath[path]?.override || byContextPath[path]?.default
     : byContextPath['']?.override || byContextPath['']?.default;
