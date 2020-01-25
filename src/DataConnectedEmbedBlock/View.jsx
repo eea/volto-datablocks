@@ -24,56 +24,53 @@ const messages = defineMessages({
  * @extends Component
  */
 
-class ViewEmbedBlock extends Component {
-  render() {
-    const [visible, setVisibility] = useState(false);
-    const data = this.props.data;
-    const intl = this.props.intl;
-    // console.log('DataConnectedEmbed props in view', this.props);
-    const param = this.props.connected_data_parameters
-      ? this.props.connected_data_parameters[0].v[0]
-      : null;
+const ViewEmbedBlock = props => {
+  const [visible, setVisibility] = useState(false);
+  const { data, intl } = props;
+  // console.log('DataConnectedEmbed props in view', this.props);
+  const param = this.props.connected_data_parameters
+    ? this.props.connected_data_parameters[0].v[0]
+    : null;
 
-    // TODO: automatically discover parameters
-    const url =
-      param && data.baseUrl
-        ? data.baseUrl.replace('<<NUTS_CODE>>', param)
-        : data.baseUrl;
-    return param && url ? (
-      <VisibilitySensor partialVisibility={true} onChange={setVisibility}>
-        <p
-          className={cx(
-            'block maps align',
-            {
-              center: !Boolean(data.align),
-            },
-            data.align,
-          )}
+  // TODO: automatically discover parameters
+  const url =
+    param && data.baseUrl
+      ? data.baseUrl.replace('<<NUTS_CODE>>', param)
+      : data.baseUrl;
+  return param && url ? (
+    <VisibilitySensor partialVisibility={true} onChange={setVisibility}>
+      <p
+        className={cx(
+          'block maps align',
+          {
+            center: !Boolean(data.align),
+          },
+          data.align,
+        )}
+      >
+        <div
+          className={cx('video-inner', {
+            'full-width': data.align === 'full',
+          })}
         >
-          <div
-            className={cx('video-inner', {
-              'full-width': data.align === 'full',
-            })}
-          >
-            {visible ? (
-              <iframe
-                title={intl.formatMessage(messages.EmbededGoogleMaps)}
-                src={url}
-                className="google-map"
-                frameBorder="0"
-                allowFullScreen
-              />
-            ) : (
-              ''
-            )}
-          </div>
-        </p>
-      </VisibilitySensor>
-    ) : (
-      ''
-    );
-  }
-}
+          {visible ? (
+            <iframe
+              title={intl.formatMessage(messages.EmbededGoogleMaps)}
+              src={url}
+              className="google-map"
+              frameBorder="0"
+              allowFullScreen
+            />
+          ) : (
+            ''
+          )}
+        </div>
+      </p>
+    </VisibilitySensor>
+  ) : (
+    ''
+  );
+};
 
 export default connect(
   (state, props) => {
