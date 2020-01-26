@@ -28,8 +28,8 @@ const ViewEmbedBlock = props => {
   const [visible, setVisibility] = useState(false);
   const { data, intl } = props;
   // console.log('DataConnectedEmbed props in view', this.props);
-  const param = this.props.connected_data_parameters
-    ? this.props.connected_data_parameters[0].v[0]
+  const param = props.connected_data_parameters
+    ? props.connected_data_parameters[0].v[0]
     : null;
 
   // TODO: automatically discover parameters
