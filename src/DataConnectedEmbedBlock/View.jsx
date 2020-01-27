@@ -38,7 +38,12 @@ const ViewEmbedBlock = props => {
       ? data.baseUrl.replace('<<NUTS_CODE>>', param)
       : data.baseUrl;
   return param && url ? (
-    <VisibilitySensor partialVisibility={true} onChange={setVisibility}>
+    <VisibilitySensor
+      partialVisibility={true}
+      onChange={isVisible => {
+        !visible && isVisible && setVisibility(true);
+      }}
+    >
       <p
         className={cx(
           'block maps align',
