@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getDataFromProvider } from '../actions';
 // import { addAppURL } from '@plone/volto/helpers';
+import SourceView from '~/components/theme/Blocks/SourceView'
 
 export class BlockView extends Component {
   componentWillMount() {
@@ -27,14 +28,11 @@ export class BlockView extends Component {
       <div className="data-connected-block">
         <div>{this.props.data.connector_path}</div>
         <div>
-          <a
-            className="discreet block_source"
-            href={this.props.data.chart_source_link}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {this.props.data.chart_source}
-          </a>
+          <SourceView
+            initialSource={this.props.data.chart_source}
+            initialSourceLink={this.props.data.chart_source_link}
+            multipleSources={this.props.data.chartSources}
+          />
         </div>
       </div>
     );

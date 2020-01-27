@@ -6,7 +6,7 @@ import { addAppURL } from '@plone/volto/helpers';
 import aheadSVG from '@plone/volto/icons/ahead.svg';
 import withObjectBrowser from '@plone/volto/components/manage/Sidebar/ObjectBrowser';
 import { Field } from '@plone/volto/components'; // EditBlock
-
+import { Button } from 'semantic-ui-react';
 import { getDataFromProvider } from '../actions';
 import { dataFormatChoices } from '../format';
 
@@ -145,6 +145,65 @@ class MultiValuesEdit extends Component {
               })
             }
           />
+          {data.chartSources && data.chartSources.length
+            ? data.chartSources.map((item, index) => (
+                <React.Fragment>
+                  <TextWidget
+                    title="Source"
+                    id={`chart-source_${index}`}
+                    type="text"
+                    value={item.chart_source}
+                    required={false}
+                    onChange={(e, d) => {
+                      const dataClone = JSON.parse(
+                        JSON.stringify(data.chartSources),
+                      );
+                      dataClone[index].chart_source = d;
+                      this.props.onChange({
+                        ...data,
+                        chartSources: dataClone,
+                      });
+                    }}
+                  />
+                  <TextWidget
+                    title="Source Link"
+                    id={`chart-source_link_${index}`}
+                    type="text"
+                    value={item.chart_source_link}
+                    required={false}
+                    onChange={(e, d) => {
+                      const dataClone = JSON.parse(
+                        JSON.stringify(data.chartSources),
+                      );
+                      dataClone[index].chart_source_link = d;
+                      this.props.onChange({
+                        ...data,
+                        chartSources: dataClone,
+                      });
+                    }}
+                  />
+                </React.Fragment>
+              ))
+            : ''}
+          <Button
+            primary
+            onClick={() => {
+              const chartSources =
+                data.chartSources && data.chartSources.length
+                  ? JSON.parse(JSON.stringify(data.chartSources))
+                  : [];
+              chartSources.push({
+                chart_source_link: '',
+                chart_source: '',
+              });
+              this.props.onChange({
+                ...data,
+                chartSources: chartSources,
+              });
+            }}
+          >
+            Add source
+          </Button>
         </Segment>
       </>
     ) : (
