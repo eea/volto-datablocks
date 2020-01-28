@@ -2,6 +2,7 @@ import React from 'react';
 import downloadSVG from '@plone/volto/icons/download.svg';
 import { Icon as VoltoIcon } from '@plone/volto/components';
 import { Grid } from 'semantic-ui-react';
+import { settings } from '~/config';
 
 const SourceView = ({
   initialSource,
@@ -43,7 +44,7 @@ const SourceView = ({
         </Grid.Column>
         <Grid.Column width={2} textAlign="right">
           {providerUrl && (
-            <a href={`${providerUrl}/@@download`}>
+            <a href={`${settings.apiPath}/${providerUrl}/@@download`}>
               <VoltoIcon name={downloadSVG} size={20} />
             </a>
           )}
