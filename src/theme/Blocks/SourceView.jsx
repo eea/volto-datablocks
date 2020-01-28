@@ -23,17 +23,16 @@ const SourceView = ({
       )}
 
       <div className="sources">
-        <span className="discreet">
-          {initialSource || (multipleSources && multipleSources.length)
-            ? multipleSources && multipleSources.length
-              ? 'Sources: '
-              : 'Source: '
-            : ''}
-        </span>
-
         <Grid columns={2} stretched>
           <Grid.Row>
             <Grid.Column width={10}>
+              <span className="discreet">
+                {initialSource || (multipleSources && multipleSources.length)
+                  ? multipleSources && multipleSources.length
+                    ? 'Sources: '
+                    : 'Source: '
+                  : ''}
+              </span>
               <a
                 className="discreet block_source"
                 href={initialSourceLink}
