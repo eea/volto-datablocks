@@ -43,7 +43,11 @@ const SourceView = ({
         </Grid.Column>
         <Grid.Column width={2} textAlign="right">
           {providerUrl && (
-            <a href={`${providerUrl}/@@download`}>
+            <a
+              href={`${providerUrl}/@@download`}
+              className="discreet"
+              title="Download data"
+            >
               <VoltoIcon name={downloadSVG} size={20} />
             </a>
           )}
