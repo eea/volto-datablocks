@@ -11,50 +11,55 @@ const SourceView = ({
   providerUrl,
 }) => {
   return (
-    <div className="sources">
-      <span className="discreet">
-        {initialSource || (multipleSources && multipleSources.length)
-          ? multipleSources && multipleSources.length
-            ? 'Sources: '
-            : 'Source: '
-          : ''}
-      </span>
-      <Grid columns={2} stretched>
-        <Grid.Column width={10}>
-          <a
-            className="discreet block_source"
-            href={initialSourceLink}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {initialSource}
-          </a>
-          {multipleSources && multipleSources.length
-            ? multipleSources.map(item => (
-                <a
-                  className="discreet block_source"
-                  href={item.chart_source_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {item.chart_source}
-                </a>
-              ))
+    <React.Fragment>
+      {providerUrl && (
+        <a
+          href={`${settings.apiPath}${providerUrl}/@@download`}
+          className="discreet download-button"
+          title="Download data"
+        >
+          <VoltoIcon name={downloadSVG} size={20} />
+        </a>
+      )}
+
+      <div className="sources">
+        <span className="discreet">
+          {initialSource || (multipleSources && multipleSources.length)
+            ? multipleSources && multipleSources.length
+              ? 'Sources: '
+              : 'Source: '
             : ''}
-        </Grid.Column>
-        <Grid.Column width={2} textAlign="right">
-          {providerUrl && (
-            <a
-              href={`${settings.apiPath}${providerUrl}/@@download`}
-              className="discreet"
-              title="Download data"
-            >
-              <VoltoIcon name={downloadSVG} size="20" />
-            </a>
-          )}
-        </Grid.Column>
-      </Grid>
-    </div>
+        </span>
+
+        <Grid columns={2} stretched>
+          <Grid.Row>
+            <Grid.Column width={10}>
+              <a
+                className="discreet block_source"
+                href={initialSourceLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {initialSource}
+              </a>
+              {multipleSources && multipleSources.length
+                ? multipleSources.map(item => (
+                    <a
+                      className="discreet block_source"
+                      href={item.chart_source_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {item.chart_source}
+                    </a>
+                  ))
+                : ''}
+            </Grid.Column>
+            <Grid.Column width={2} align="right" />
+          </Grid.Row>
+        </Grid>
+      </div>
+    </React.Fragment>
   );
 };
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getDataFromProvider } from '../actions';
 // import { addAppURL } from '@plone/volto/helpers';
-import SourceView from 'volto-datablocks/theme/Blocks/SourceView'
+import SourceView from 'volto-datablocks/theme/Blocks/SourceView';
 
 export class BlockView extends Component {
   componentWillMount() {
