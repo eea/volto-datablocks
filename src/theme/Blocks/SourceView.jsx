@@ -49,7 +49,7 @@ const SourceView = ({
               className="discreet"
               title="Download data"
             >
-              <VoltoIcon name={downloadSVG} size={20} />
+              <VoltoIcon name={downloadSVG} size="20" />
             </a>
           )}
         </Grid.Column>
