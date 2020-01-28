@@ -12,7 +12,11 @@ const SourceView = ({
   return (
     <div className="sources">
       <span className="discreet">
-        {multipleSources && multipleSources.length ? 'Sources' : 'Source'}:
+        {initialSource || (multipleSources && multipleSources.length)
+          ? multipleSources && multipleSources.length
+            ? 'Sources: '
+            : 'Source: '
+          : ''}
       </span>
       <Grid columns={2} stretched>
         <Grid.Column width={10}>
