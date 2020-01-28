@@ -18,7 +18,7 @@ const SourceView = ({
           className="discreet download-button"
           title="Download data"
         >
-          <VoltoIcon name={downloadSVG} size={20} />
+          <VoltoIcon name={downloadSVG} size="20" />
         </a>
       )}
 
