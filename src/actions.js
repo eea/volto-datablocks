@@ -1,9 +1,9 @@
 import {
   GET_SPARQL_DATA,
   GET_DATA_FROM_PROVIDER,
-  SET_CONNECTED_DATA_PARAMETERS,
+  // SET_CONNECTED_DATA_PARAMETERS,
 } from './constants';
-import { settings } from '~/config';
+// import { settings } from '~/config';
 
 export function getSparqlData(path) {
   const url = path + '/@sparql-data';

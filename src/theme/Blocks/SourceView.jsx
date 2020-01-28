@@ -1,31 +1,50 @@
 import React from 'react';
+import downloadSVG from '@plone/volto/icons/download.svg';
+import { Icon as VoltoIcon } from '@plone/volto/components';
+import { Grid } from 'semantic-ui-react';
 
-const SourceView = ({ initialSource, initialSourceLink, multipleSources }) => {
+const SourceView = ({
+  initialSource,
+  initialSourceLink,
+  multipleSources,
+  providerUrl,
+}) => {
   return (
     <div className="sources">
       <span className="discreet">
         {multipleSources && multipleSources.length ? 'Sources' : 'Source'}:
       </span>
-      <a
-        className="discreet block_source"
-        href={initialSourceLink}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {initialSource}
-      </a>
-      {multipleSources && multipleSources.length
-        ? multipleSources.map(item => (
-            <a
-              className="discreet block_source"
-              href={item.chart_source_link}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {item.chart_source}
+      <Grid columns={2} stretched>
+        <Grid.Column width={10}>
+          <a
+            className="discreet block_source"
+            href={initialSourceLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {initialSource}
+          </a>
+          {multipleSources && multipleSources.length
+            ? multipleSources.map(item => (
+                <a
+                  className="discreet block_source"
+                  href={item.chart_source_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {item.chart_source}
+                </a>
+              ))
+            : ''}
+        </Grid.Column>
+        <Grid.Column width={2} textAlign="right">
+          {providerUrl && (
+            <a href={`${providerUrl}/@@download`}>
+              <VoltoIcon name={downloadSVG} size={20} />
             </a>
-          ))
-        : ''}
+          )}
+        </Grid.Column>
+      </Grid>
     </div>
   );
 };
