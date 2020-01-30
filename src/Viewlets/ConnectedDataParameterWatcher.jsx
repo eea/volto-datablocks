@@ -1,4 +1,6 @@
 /*
+ * NOTE: This is not used anymore!
+ *
  * Watch the content route changes and update the redux store data query
  * parameters
  */

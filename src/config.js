@@ -5,7 +5,6 @@ import DataBlockView from './DataConnectedBlock/View';
 import DataBlockEdit from './DataConnectedBlock/Edit';
 import DataConnectorView from './DataConnector/View';
 import installDraftEditorDataEntity from './dataentity';
-import { ConnectedDataParameterWatcher } from './Viewlets';
 import { ViewSelect, AutoSelectFromContext } from './ContextParameter';
 
 import DataConnectedEmbedView from './DataConnectedEmbedBlock/View';
@@ -13,6 +12,8 @@ import DataConnectedEmbedEdit from './DataConnectedEmbedBlock/Edit';
 
 import chartIcon from '@plone/volto/icons/world.svg';
 import addonRoutes from './routes';
+
+// import { ConnectedDataParameterWatcher } from './Viewlets';
 
 function addCustomGroup(config, group) {
   const hasCustomGroup = config.blocks.groupBlocksOrder.filter(
