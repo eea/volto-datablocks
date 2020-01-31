@@ -7,6 +7,7 @@ import { getDataFromProvider } from 'volto-datablocks/actions';
 import { searchContent } from '@plone/volto/actions';
 import { Button, Grid } from 'semantic-ui-react';
 import Select from 'react-select';
+import { Link } from 'react-router-dom';
 import {
   Option,
   DropdownIndicator,
@@ -36,6 +37,7 @@ class PickProvider extends Component {
       '',
       {
         object_provides: DATA_PROVIDER_TYPES,
+        b_size: 10000,
       },
       'getProviders',
     );
@@ -81,38 +83,48 @@ class PickProvider extends Component {
     ];
 
     return (
-      <Grid>
-        <Grid.Column width={2}>
-          <label htmlFor={`field-${this.props.id}`}>Provider:</label>
-        </Grid.Column>
-        <Grid.Column width={8}>
-          <Select
-            id={`field-${this.props.id}`}
-            name={this.props.id}
-            className="react-select-container"
-            classNamePrefix="react-select"
-            options={choices}
-            styles={customSelectStyles}
-            theme={selectTheme}
-            components={{ DropdownIndicator, Option }}
-            value={getDefaultValues(choices, this.props.value)}
-            onChange={data =>
-              this.props.onChange(
-                data.value === 'no-value' ? undefined : data.value,
-              )
-            }
-          />
-        </Grid.Column>
-        {this.props.showReload ? (
-          <Grid.Column width={2}>
-            <Button onClick={this.refresh} disabled={!this.props.value}>
-              Reload data
-            </Button>
-          </Grid.Column>
-        ) : (
-          ''
-        )}
-      </Grid>
+      <div class="inline field">
+        <Grid>
+          <Grid.Row stretched>
+            <Grid.Column width={4}>
+              <div className="wrapper">
+                {this.props.value ? (
+                  <Link to={this.props.value}>Provider:</Link>
+                ) : (
+                  <label htmlFor={`field-${this.props.id}`}>Provider:</label>
+                )}
+              </div>
+            </Grid.Column>
+            <Grid.Column width={8}>
+              <div>
+                <Select
+                  id={`field-${this.props.id}`}
+                  name={this.props.id}
+                  className="react-select-container"
+                  classNamePrefix="react-select"
+                  options={choices}
+                  styles={customSelectStyles}
+                  theme={selectTheme}
+                  components={{ DropdownIndicator, Option }}
+                  value={getDefaultValues(choices, this.props.value)}
+                  onChange={data =>
+                    this.props.onChange(
+                      data.value === 'no-value' ? undefined : data.value,
+                    )
+                  }
+                />
+                {this.props.showReload ? (
+                  <Button onClick={this.refresh} disabled={!this.props.value}>
+                    Reload data
+                  </Button>
+                ) : (
+                  ''
+                )}
+              </div>
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
+      </div>
     );
   }
 }
