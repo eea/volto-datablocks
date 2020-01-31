@@ -83,7 +83,7 @@ class PickProvider extends Component {
     ];
 
     return (
-      <div class="inline field">
+      <div className="inline field">
         <Grid>
           <Grid.Row stretched>
             <Grid.Column width={4}>
