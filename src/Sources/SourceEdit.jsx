@@ -71,31 +71,33 @@ const SourceEdit = ({ data, onChangeBlock, block }) => {
           : ''}
 
         <Form.Field inline>
-          <Grid.Row stretched>
-            <Grid.Column stretched columns={12}>
-              <div className="wrapper">
-                <Button
-                  primary
-                  onClick={() => {
-                    const chartSources =
-                      data.chartSources && data.chartSources.length
-                        ? JSON.parse(JSON.stringify(data.chartSources))
-                        : [];
-                    chartSources.push({
-                      chart_source_link: '',
-                      chart_source: '',
-                    });
-                    onChangeBlock(block, {
-                      ...data,
-                      chartSources: chartSources,
-                    });
-                  }}
-                >
-                  Add source
-                </Button>
-              </div>
-            </Grid.Column>
-          </Grid.Row>
+          <Grid>
+            <Grid.Row stretched>
+              <Grid.Column stretched columns={12}>
+                <div className="wrapper">
+                  <Button
+                    primary
+                    onClick={() => {
+                      const chartSources =
+                        data.chartSources && data.chartSources.length
+                          ? JSON.parse(JSON.stringify(data.chartSources))
+                          : [];
+                      chartSources.push({
+                        chart_source_link: '',
+                        chart_source: '',
+                      });
+                      onChangeBlock(block, {
+                        ...data,
+                        chartSources: chartSources,
+                      });
+                    }}
+                  >
+                    Add source
+                  </Button>
+                </div>
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
         </Form.Field>
       </Accordion.Content>
 
