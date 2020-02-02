@@ -17,12 +17,17 @@ class PickProvider extends Component {
     }
 
     // Optimization to help land the proper providerData to the chart
+
+    // NOTE: see comments in PickVisualization.jsx, the same applies here
     if (
-      this.props.onLoadProviderData &&
       JSON.stringify(this.props.providerData) !==
-        JSON.stringify(this.props.currentProviderData)
+      JSON.stringify(prevProps.providerData)
     ) {
-      this.props.onLoadProviderData(this.props.providerData);
+      this.props.onLoadProviderData &&
+        this.props.onLoadProviderData(this.props.providerData);
+
+      // This is a hack to pass loaded providerData. It should not be needed
+      // this.props.onChange('providerData', this.props.providerData);
     }
   }
 

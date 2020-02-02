@@ -1,5 +1,8 @@
 import * as addonReducers from './reducers';
 
+import chartIcon from '@plone/volto/icons/world.svg';
+
+import PickProvider from './PickProvider';
 import DataQueryWidget from './DataQueryWidget/Widget';
 import DataBlockView from './DataConnectedBlock/View';
 import DataBlockEdit from './DataConnectedBlock/Edit';
@@ -10,7 +13,6 @@ import { ViewSelect, AutoSelectFromContext } from './ContextParameter';
 import DataConnectedEmbedView from './DataConnectedEmbedBlock/View';
 import DataConnectedEmbedEdit from './DataConnectedEmbedBlock/Edit';
 
-import chartIcon from '@plone/volto/icons/world.svg';
 import addonRoutes from './routes';
 
 // import { ConnectedDataParameterWatcher } from './Viewlets';
@@ -31,6 +33,7 @@ export function applyConfig(config) {
   config.views.contentTypesViews.discodataconnector = DataConnectorView;
 
   config.widgets.id.data_query = DataQueryWidget;
+  config.widgets.widget.pick_provider = PickProvider;
 
   config.addonReducers = {
     ...config.addonReducers,
