@@ -39,16 +39,20 @@ const SourceView = ({
           {initialSource}
         </a>
         {multipleSources && multipleSources.length
-          ? multipleSources.map(item => (
-              <a
-                className="discreet block_source"
-                href={item.chart_source_link}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {item.chart_source}
-              </a>
-            ))
+          ? multipleSources.map(item =>
+              item.chart_source_link ? (
+                <a
+                  className="discreet block_source"
+                  href={item.chart_source_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {item.chart_source}
+                </a>
+              ) : (
+                <div className="discreet block_source">{item.chart_source}</div>
+              ),
+            )
           : ''}
       </div>
     </React.Fragment>
