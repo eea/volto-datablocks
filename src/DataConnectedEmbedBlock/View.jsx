@@ -4,12 +4,12 @@
  */
 
 import React, { useState } from 'react';
-import { Component } from 'react';
 import { defineMessages, injectIntl } from 'react-intl';
 import cx from 'classnames';
 import { connect } from 'react-redux';
 import { getConnectedDataParametersForContext } from 'volto-datablocks/helpers';
 import VisibilitySensor from 'react-visibility-sensor';
+import PrivacyProtection from 'volto-embed/PrivacyProtection';
 
 const messages = defineMessages({
   EmbededGoogleMaps: {
@@ -38,40 +38,42 @@ const ViewEmbedBlock = props => {
       ? data.baseUrl.replace('<<NUTS_CODE>>', param)
       : data.baseUrl;
   return param && url ? (
-    <VisibilitySensor
-      partialVisibility={true}
-      onChange={isVisible => {
-        !visible && isVisible && setVisibility(true);
-      }}
-    >
-      <p
-        className={cx(
-          'block maps align',
-          {
-            center: !Boolean(data.align),
-          },
-          data.align,
-        )}
+    <PrivacyProtection data={data}>
+      <VisibilitySensor
+        partialVisibility={true}
+        onChange={isVisible => {
+          !visible && isVisible && setVisibility(true);
+        }}
       >
-        <div
-          className={cx('video-inner', {
-            'full-width': data.align === 'full',
-          })}
-        >
-          {visible ? (
-            <iframe
-              title={intl.formatMessage(messages.EmbededGoogleMaps)}
-              src={url}
-              className="google-map"
-              frameBorder="0"
-              allowFullScreen
-            />
-          ) : (
-            ''
+        <p
+          className={cx(
+            'block maps align',
+            {
+              center: !Boolean(data.align),
+            },
+            data.align,
           )}
-        </div>
-      </p>
-    </VisibilitySensor>
+        >
+          <div
+            className={cx('video-inner', {
+              'full-width': data.align === 'full',
+            })}
+          >
+            {visible ? (
+              <iframe
+                title={intl.formatMessage(messages.EmbededGoogleMaps)}
+                src={url}
+                className="google-map"
+                frameBorder="0"
+                allowFullScreen
+              />
+            ) : (
+              ''
+            )}
+          </div>
+        </p>
+      </VisibilitySensor>
+    </PrivacyProtection>
   ) : (
     ''
   );

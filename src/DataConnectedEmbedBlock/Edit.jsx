@@ -1,6 +1,10 @@
 /**
  * Edit map block.
  * @module components/manage/Blocks/Maps/Edit
+ *
+ *
+ * NOTE: this is not used anymore
+ *
  */
 
 import React, { Component } from 'react';

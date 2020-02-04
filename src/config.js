@@ -11,7 +11,7 @@ import installDraftEditorDataEntity from './dataentity';
 import { ViewSelect, AutoSelectFromContext } from './ContextParameter';
 
 import DataConnectedEmbedView from './DataConnectedEmbedBlock/View';
-import DataConnectedEmbedEdit from './DataConnectedEmbedBlock/Edit';
+import DataConnectedEmbedEdit from './DataConnectedEmbedBlock/DataConnectedEmbedEdit';
 
 import addonRoutes from './routes';
 
