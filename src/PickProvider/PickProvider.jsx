@@ -36,12 +36,16 @@ class PickProvider extends Component {
   };
 
   render() {
+    // console.log('pick provider value', this.props.value, this.props.onChange);
     return (
       <PickObject
-        id="provider"
-        title="Provider"
+        id={this.props.id || 'provider'}
+        title={this.props.title || 'Provider'}
         value={this.props.value}
-        onChange={this.props.onChange}
+        onChange={(v1, v2) => {
+          // console.log('v1,v2', v1, v2);
+          this.props.onChange(v1, v2);
+        }}
       />
     );
   }
