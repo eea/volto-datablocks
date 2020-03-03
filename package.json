@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/eea/volto-datablocks#readme",
   "peerDependencies": {
-    "@plone/volto": "^4.0.0-alpha.20"
+    "@plone/volto": "^4.0.0"
   },
   "devDependencies": {
     "eslint-plugin-prettier": "3.0.1",
