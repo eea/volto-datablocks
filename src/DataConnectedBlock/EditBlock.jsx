@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import { Segment } from 'semantic-ui-react';
 import withObjectBrowser from '@plone/volto/components/manage/Sidebar/ObjectBrowser';
 import { SidebarPortal, TextWidget } from '@plone/volto/components';
-import { changeSidebarState } from 'volto-sidebar/actions';
+import { changeSidebarState } from 'volto-datablocks/actions';
 import MultiValuesEdit from './MultiValuesEdit';
 
 class EditForm extends Component {

@@ -11,7 +11,7 @@ import {
   SelectWidget,
 } from '@plone/volto/components';
 import { getDataFromProvider } from 'volto-datablocks/actions';
-import { changeSidebarState } from 'volto-sidebar/actions';
+import { changeSidebarState } from 'volto-datablocks/actions';
 
 const makeChoices = keys => keys.map(k => [k, k]);
 
