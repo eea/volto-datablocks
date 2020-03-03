@@ -1,9 +1,17 @@
 import {
   GET_SPARQL_DATA,
   GET_DATA_FROM_PROVIDER,
+  CHANGE_SIDEBAR_STATE,
   // SET_CONNECTED_DATA_PARAMETERS,
 } from './constants';
 // import { settings } from '~/config';
+
+export function changeSidebarState(open) {
+  return {
+    type: CHANGE_SIDEBAR_STATE,
+    open,
+  };
+}
 
 export function getSparqlData(path) {
   const url = path + '/@sparql-data';
