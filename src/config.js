@@ -75,7 +75,7 @@ export function applyConfig(config) {
   //   ...(config.viewlets || []),
   // ];
 
-  installDraftEditorDataEntity(config);
+  // installDraftEditorDataEntity(config);
 
   return config;
 }
