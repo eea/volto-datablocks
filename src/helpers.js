@@ -7,6 +7,17 @@ export function getBasePath(url) {
     .replace(settings.internalApiPath, '');
 }
 
+export function getConnectedDataParametersForPath(state, url) {
+  let path = getBasePath(url || '');
+  const { byPath = {} } = state.connected_data_parameters;
+
+  const res = byPath[path]
+    ? byPath[path]?.override || byPath[path]?.default
+    : byPath['']?.override || byPath['']?.default;
+
+  return res;
+}
+
 export function getConnectedDataParametersForContext(state, url) {
   let path = getBasePath(url || '');
 

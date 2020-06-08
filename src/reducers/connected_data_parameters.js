@@ -9,6 +9,7 @@ import { getBasePath } from 'volto-datablocks/helpers';
 const initialState = {
   byProviderPath: {},
   byContextPath: {},
+  byPath: {}
 };
 
 export default function connected_data_parameters(
@@ -18,18 +19,17 @@ export default function connected_data_parameters(
   let path;
 
   switch (action.type) {
-    // case SET_CONNECTED_DATA_PARAMETERS:
-    //   // console.log('set connected data params', action);
-    //   return {
-    //     ...state,
-    //     byPath: {
-    //       ...state.byPath,
-    //       [action.path]: {
-    //         ...state.byPath[action.path],
-    //         override: action.parameters,
-    //       },
-    //     },
-    //   };
+    case SET_CONNECTED_DATA_PARAMETERS:
+      return {
+        ...state,
+        byPath: {
+          ...state.byPath,
+          [action.path]: {
+            ...state.byPath[action.path],
+            override: action.parameters,
+          },
+        },
+      };
 
     case 'GET_CONTENT_SUCCESS':
     case 'PREFETCH_ROUTER_LOCATION_CHANGE_SUCCESS':

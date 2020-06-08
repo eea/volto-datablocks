@@ -2,7 +2,7 @@ import {
   GET_SPARQL_DATA,
   GET_DATA_FROM_PROVIDER,
   CHANGE_SIDEBAR_STATE,
-  // SET_CONNECTED_DATA_PARAMETERS,
+  SET_CONNECTED_DATA_PARAMETERS,
 } from './constants';
 // import { settings } from '~/config';
 
@@ -49,19 +49,10 @@ export function setConnectedDataParameters(
   parameters,
   manuallySet = false,
 ) {
-  console.warn('Refactor code for setConnectedDataParameters!!');
-
-  // path is actually url path of context page
-  // manuallySet is a flag to forbid the ConnectedDataParameterWatcher viewlet
-  // from overriding the data parameters on that path, if they already exist
-  // path = path
-  //   .replace(settings.apiPath, '')
-  //   .replace(settings.internalApiPath, '');
-  // console.log('Set connected data parameters', path, parameters);
-  // return {
-  //   type: SET_CONNECTED_DATA_PARAMETERS,
-  //   path,
-  //   parameters,
-  //   manuallySet,
-  // };
+  return {
+    type: SET_CONNECTED_DATA_PARAMETERS,
+    path,
+    parameters,
+    manuallySet,
+  };
 }

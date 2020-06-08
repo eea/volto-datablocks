@@ -6,6 +6,7 @@ import { getDataFromProvider } from 'volto-datablocks/actions';
 import {
   getConnectedDataParametersForProvider,
   getConnectedDataParametersForContext,
+  getConnectedDataParametersForPath,
 } from 'volto-datablocks/helpers';
 import { formatValue } from 'volto-datablocks/format';
 
@@ -25,7 +26,6 @@ function getValue(data, column, filters, placeholder = EMPTY) {
    * o: "plone.app.querystring.operation.selection.any"
    * v: ["BG"] }
    */
-
   // TODO: we implement now a very simplistic filtering, with only one type of
   // filter and only one filter is taken into consideration
   if (!(filters && filters.length))
@@ -71,7 +71,6 @@ class DataEntity extends Component {
 
   render() {
     const { column, provider_data, format, placeholder } = this.props;
-
     const value = getValue(
       provider_data,
       column,
@@ -105,6 +104,10 @@ export default connect(
         getConnectedDataParametersForContext(
           state,
           state.router.location.pathname,
+        ) ||
+        getConnectedDataParametersForPath(
+          state,
+          state.router.location.pathname
         ),
     };
   },
