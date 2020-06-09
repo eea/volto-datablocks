@@ -14,7 +14,12 @@ const makeChoices = keys => keys.map(k => [k, k]);
 
 const MultiValuesEdit = props => {
   const { data, providers, schema, getDataFromProvider } = props;
-
+  let choices = {}
+  if (providers) {
+    Object.keys(providers).forEach(provider => {
+      choices[provider] = providers[provider].choices || []
+    })
+  }
   useEffect(() => {
     if (providers) {
       Object.keys(providers).forEach((key) => {
@@ -23,7 +28,6 @@ const MultiValuesEdit = props => {
       })
     }
   }, [])
-
   return Object.keys(schema || {}).length > 0 ? (
     <>
       {Object.entries(schema).map(([k, field]) =>
@@ -33,7 +37,7 @@ const MultiValuesEdit = props => {
               <Segment
                 className="form sidebar-image-data"
                 key={`${k}`}
-                choices={providers[k]?.choices || []}
+                choices={choices[field.provider] || []}
               >
                 <TextWidget
                   id={`data-provider-${k}`}
@@ -47,13 +51,18 @@ const MultiValuesEdit = props => {
                     props.openObjectBrowser({
                       mode: 'link',
                       onSelectItem: path => {
-                        if (providers && providers[k] && providers[k].path !== path) {
-                          const newData = {...JSON.parse(JSON.stringify(data))}
-                          newData.providers[k].path = path
-                          props.getDataFromProvider(path);
-                          return props.onChange(newData)
+                        const newData = {...JSON.parse(JSON.stringify(data))}
+                        if (!newData.providers) newData.providers = {}
+                        if (!newData.providers[k]) newData.providers[k] = {}
+                        if (
+                          !providers ||
+                          !providers[k] ||
+                          (providers && providers[k] && providers[k].path !== path)
+                        ) {
+                          getDataFromProvider(path);
                         }
-                        return null
+                        newData.providers[k].path = path
+                        return props.onChange(newData)
                       },
                       onChangeBlock: () => {},
                       ...props,
@@ -92,12 +101,11 @@ const MultiValuesEdit = props => {
               <Segment
                 className="form sidebar-image-data"
                 key={`${k}`}
-                choices={providers[k]?.choices || []}
               >
                 <SelectWidget
                   id={`data-entity-column-${k}`}
                   title={field.title}
-                  choices={providers[k]?.choices || []}
+                  choices={choices[field.provider] || []}
                   onChange={(id, value) =>
                     props.onChange({
                       ...data,
