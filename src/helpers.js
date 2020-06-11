@@ -7,9 +7,12 @@ export function getBasePath(url) {
     .replace(settings.internalApiPath, '');
 }
 
-export function getConnectedDataParametersForPath(state, url) {
+export function getConnectedDataParametersForPath(
+  connected_data_parameters,
+  url,
+) {
   let path = getBasePath(url || '');
-  const { byPath = {} } = state.connected_data_parameters;
+  const { byPath = {} } = connected_data_parameters;
 
   const res = byPath[path]
     ? byPath[path]?.override || byPath[path]?.default
@@ -18,10 +21,13 @@ export function getConnectedDataParametersForPath(state, url) {
   return res;
 }
 
-export function getConnectedDataParametersForContext(state, url) {
+export function getConnectedDataParametersForContext(
+  connected_data_parameters,
+  url,
+) {
   let path = getBasePath(url || '');
 
-  const { byContextPath = {} } = state.connected_data_parameters;
+  const { byContextPath = {} } = connected_data_parameters;
 
   // console.log('getConnectedDataParametersForProvider path', path, url);
   // console.log('getConnectedDataParametersForProvider content', byContextPath);
@@ -33,10 +39,13 @@ export function getConnectedDataParametersForContext(state, url) {
   return res;
 }
 
-export function getConnectedDataParametersForProvider(state, url) {
+export function getConnectedDataParametersForProvider(
+  connected_data_parameters,
+  url,
+) {
   let path = getBasePath(url || '');
 
-  const { byProviderPath = {} } = state.connected_data_parameters;
+  const { byProviderPath = {} } = connected_data_parameters;
   const res = byProviderPath[path]
     ? byProviderPath[path]?.override || byProviderPath[path]?.default
     : byProviderPath['']?.override || byProviderPath['']?.default;

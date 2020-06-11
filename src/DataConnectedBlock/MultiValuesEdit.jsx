@@ -1,151 +1,186 @@
 import { connect } from 'react-redux';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Segment } from 'semantic-ui-react';
 import { SelectWidget, TextWidget } from '@plone/volto/components';
 import { addAppURL } from '@plone/volto/helpers';
 import aheadSVG from '@plone/volto/icons/ahead.svg';
 import withObjectBrowser from '@plone/volto/components/manage/Sidebar/ObjectBrowser';
-import { Field } from '@plone/volto/components'; // EditBlock
 import { Button } from 'semantic-ui-react';
 import { getDataFromProvider } from '../actions';
 import { dataFormatChoices } from '../format';
 
 const makeChoices = keys => keys.map(k => [k, k]);
 
+const usePrevious = value => {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+
+  return ref.current;
+};
+
 const MultiValuesEdit = props => {
   const { data, providers, schema, getDataFromProvider } = props;
-  let choices = {}
-  if (providers) {
-    Object.keys(providers).forEach(provider => {
-      choices[provider] = providers[provider].choices || []
-    })
+  const prevProviders = usePrevious(providers);
+  if (providers && !prevProviders) {
+    Object.keys(providers).forEach(key => {
+      const path = providers[key].path;
+      if (path) getDataFromProvider(path);
+    });
   }
-  useEffect(() => {
-    if (providers) {
-      Object.keys(providers).forEach((key) => {
-        const path = providers[key].path;
-        if (path) getDataFromProvider(path);
-      })
-    }
-  }, [])
   return Object.keys(schema || {}).length > 0 ? (
     <>
-      {Object.entries(schema).map(([k, field]) =>
-        (
-          <>
-            {field.type === 'data-provider' && !field.static && (
-              <Segment
-                className="form sidebar-image-data"
-                key={`${k}`}
-                choices={choices[field.provider] || []}
-              >
-                <TextWidget
-                  id={`data-provider-${k}`}
-                  title={field.title}
-                  required={false}
-                  value={
-                    providers && providers[k]?.path ? providers[k].path.split('/').slice(-1)[0] : ''
-                  }
-                  icon={aheadSVG}
-                  iconAction={() =>
-                    props.openObjectBrowser({
-                      mode: 'link',
-                      onSelectItem: path => {
-                        const newData = {...JSON.parse(JSON.stringify(data))}
-                        if (!newData.providers) newData.providers = {}
-                        if (!newData.providers[k]) newData.providers[k] = {}
-                        if (
-                          !providers ||
-                          !providers[k] ||
-                          (providers && providers[k] && providers[k].path !== path)
-                        ) {
-                          getDataFromProvider(path);
-                        }
-                        newData.providers[k].path = path
-                        return props.onChange(newData)
-                      },
-                      onChangeBlock: () => {},
-                      ...props,
-                    })
-                  }
-                  onChange={() => props.onChange({})}
-                />
-              </Segment>
-            )}
-            {field.static && (
-              <Segment
-                className="form sidebar-image-data"
-                key={`${k}`}
-              >
-                <TextWidget
-                  id={`text-widget-column-${k}`}
-                  title={field.title}
-                  required={false}
-                  onChange={(id, value) =>
-                    props.onChange({
-                      ...data,
-                      columns: {
-                        ...data.columns,
-                        [k]: {
-                          ...data.columns?.[k],
-                          value,
+      {Object.entries(schema).map(([k, field]) => (
+        <Segment className="form sidebar-image-data" key={`${k}`}>
+          {field.static && (
+            <TextWidget
+              id={`text-widget-column-${k}`}
+              title={field.title}
+              required={false}
+              onChange={(id, value) =>
+                props.onChange({
+                  ...data,
+                  columns: {
+                    ...data.columns,
+                    [k]: {
+                      ...data.columns?.[k],
+                      value,
+                    },
+                  },
+                })
+              }
+              value={data.columns?.[k]?.value}
+            />
+          )}
+          {field.type === 'data-provider' && !field.static && (
+            <TextWidget
+              id={`data-provider-${k}`}
+              title={field.title}
+              required={false}
+              value={
+                providers && providers[k]?.path
+                  ? providers[k].path.split('/').slice(-1)[0]
+                  : ''
+              }
+              icon={aheadSVG}
+              iconAction={() =>
+                props.openObjectBrowser({
+                  mode: 'link',
+                  onSelectItem: path => {
+                    const newData = { ...JSON.parse(JSON.stringify(data)) };
+                    if (!newData.providers) newData.providers = {};
+                    if (!newData.providers[k]) newData.providers[k] = {};
+                    if (
+                      !providers ||
+                      !providers[k] ||
+                      (providers && providers[k] && providers[k].path !== path)
+                    ) {
+                      getDataFromProvider(path);
+                    }
+                    newData.providers[k].path = path;
+                    return props.onChange(newData);
+                  },
+                  onChangeBlock: () => {},
+                  ...props,
+                })
+              }
+              onChange={() => props.onChange({})}
+            />
+          )}
+          {field.type === 'data-query' && !field.static && (
+            <div>
+              <TextWidget
+                id={`text-widget-column-${k}_i`}
+                title={'Key'}
+                required={false}
+                onChange={(id, value) =>
+                  props.onChange({
+                    ...data,
+                    columns: {
+                      ...data.columns,
+                      [k]: {
+                        ...data.columns?.[k],
+                        value: {
+                          ...data.columns?.[k]?.value,
+                          i: value || '',
+                          o: 'plone.app.querystring.operation.selection.any',
                         },
                       },
-                    })
-                  }
-                  value={data.columns?.[k]?.value}
-                />
-              </Segment>
-            )}
-            {field.type === 'data-provider-entity' && !field.static && (
-              <Segment
-                className="form sidebar-image-data"
-                key={`${k}`}
-              >
-                <SelectWidget
-                  id={`data-entity-column-${k}`}
-                  title={field.title}
-                  choices={choices[field.provider] || []}
-                  onChange={(id, value) =>
-                    props.onChange({
-                      ...data,
-                      columns: {
-                        ...data.columns,
-                        [k]: {
-                          ...data.columns?.[k],
-                          value,
+                    },
+                  })
+                }
+                value={data.columns?.[k]?.value.i}
+              />
+              <TextWidget
+                id={`text-widget-column-${k}_v`}
+                title={'For'}
+                required={false}
+                onChange={(id, value) =>
+                  props.onChange({
+                    ...data,
+                    columns: {
+                      ...data.columns,
+                      [k]: {
+                        ...data.columns?.[k],
+                        value: {
+                          ...data.columns?.[k]?.value,
+                          v: value?.split(',') || [],
+                          o: 'plone.app.querystring.operation.selection.any',
                         },
                       },
-                    })
-                  }
-                  value={data.columns?.[k]?.value}
-                />
-                <SelectWidget
-                  id={`data-entity-format-${k}`}
-                  title="Format"
-                  choices={dataFormatChoices.map(option => [
-                    option.id,
-                    option.label,
-                  ])}
-                  onChange={(id, value) =>
-                    props.onChange({
-                      ...data,
-                      columns: {
-                        ...data.columns,
-                        [k]: {
-                          ...data.columns?.[k],
-                          format: value,
-                        },
+                    },
+                  })
+                }
+                value={data.columns?.[k]?.value?.v?.join(',')}
+              />
+            </div>
+          )}
+          {field.type === 'data-provider-entity' && !field.static && (
+            <div>
+              <SelectWidget
+                id={`data-entity-column-${k}`}
+                title={field.title}
+                choices={providers?.[field.provider].choices || []}
+                onChange={(id, value) =>
+                  props.onChange({
+                    ...data,
+                    columns: {
+                      ...data.columns,
+                      [k]: {
+                        ...data.columns?.[k],
+                        value,
                       },
-                    })
-                  }
-                  value={data.columns?.[k]?.format || field.defaultformat}
-                />
-              </Segment>
-            )}
-          </>
-        )
-      )}
+                    },
+                  })
+                }
+                value={data.columns?.[k]?.value}
+              />
+              <SelectWidget
+                id={`data-entity-format-${k}`}
+                title="Format"
+                choices={dataFormatChoices.map(option => [
+                  option.id,
+                  option.label,
+                ])}
+                onChange={(id, value) =>
+                  props.onChange({
+                    ...data,
+                    columns: {
+                      ...data.columns,
+                      [k]: {
+                        ...data.columns?.[k],
+                        format: value,
+                      },
+                    },
+                  })
+                }
+                value={data.columns?.[k]?.format || field.defaultformat}
+              />
+            </div>
+          )}
+        </Segment>
+      ))}
       <Segment className="form sidebar-image-data">
         <TextWidget
           title="Source"
@@ -237,10 +272,12 @@ const MultiValuesEdit = props => {
   ) : (
     ''
   );
-}
+};
 
 function getProviderData(state, props) {
-  let providers = props?.data?.providers ? {...JSON.parse(JSON.stringify(props.data.providers))}  :  null;
+  let providers = props?.data?.providers
+    ? { ...JSON.parse(JSON.stringify(props.data.providers)) }
+    : null;
 
   if (!providers) return;
 
@@ -248,10 +285,12 @@ function getProviderData(state, props) {
     const path = `${providers[provider].path}/@connector-data`;
     const url = `${addAppURL(path)}/@connector-data`;
     const data = state.data_providers.data || {};
-    providers[provider].data = (path ? data[path] || data[url] : []);
-    providers[provider].choices = makeChoices(Object.keys(providers[provider].data || {}));
-  })
-  
+    providers[provider].data = path ? data[path] || data[url] : [];
+    providers[provider].choices = makeChoices(
+      Object.keys(providers[provider].data || {}),
+    );
+  });
+
   return providers;
 }
 

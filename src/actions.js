@@ -3,6 +3,7 @@ import {
   GET_DATA_FROM_PROVIDER,
   CHANGE_SIDEBAR_STATE,
   SET_CONNECTED_DATA_PARAMETERS,
+  DELETE_CONNECTED_DATA_PARAMETERS,
 } from './constants';
 // import { settings } from '~/config';
 
@@ -47,12 +48,22 @@ export function getDataFromProvider(path, filters) {
 export function setConnectedDataParameters(
   path,
   parameters,
+  index,
   manuallySet = false,
 ) {
   return {
     type: SET_CONNECTED_DATA_PARAMETERS,
     path,
     parameters,
+    index,
     manuallySet,
+  };
+}
+
+export function deleteConnectedDataParameters(path, index) {
+  return {
+    type: DELETE_CONNECTED_DATA_PARAMETERS,
+    path,
+    index,
   };
 }

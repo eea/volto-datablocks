@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 
 import { addAppURL } from '@plone/volto/helpers';
@@ -14,7 +14,22 @@ import '../css/styles.css';
 
 const EMPTY = '^';
 
-function getValue(data, column, filters, placeholder = EMPTY) {
+const usePrevious = value => {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+
+  return ref.current;
+};
+
+const getValue = (
+  data,
+  column,
+  filters,
+  filterIndex = 0,
+  placeholder = EMPTY,
+) => {
   /*
    * Data is an object like: {
    * AV_P_SIZE: [501.78255, 849.335, 339.9433, 733.36331, 742.50659]
@@ -28,14 +43,13 @@ function getValue(data, column, filters, placeholder = EMPTY) {
    */
   // TODO: we implement now a very simplistic filtering, with only one type of
   // filter and only one filter is taken into consideration
-  if (!(filters && filters.length))
+  if (!(filters && filters[filterIndex]))
     console.log(
       'This DataConnectedValue is used in a context without parameters',
     );
 
-  if (!data || (!filters || !filters.length)) return placeholder;
-
-  const filter = filters[0];
+  if (!data || (!filters || !filters[filterIndex])) return placeholder;
+  const filter = filters[filterIndex];
   const { i: index, v: values } = filter; // o: op,
 
   if (!values || values.length === 0) return placeholder;
@@ -53,64 +67,64 @@ function getValue(data, column, filters, placeholder = EMPTY) {
     return placeholder;
   }
   return (data[column] && data[column][pos]) || placeholder;
-}
+};
 
-class DataEntity extends Component {
-  componentDidMount() {
-    const url = this.props.url;
-    if (url) this.props.getDataFromProvider(url);
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const url = this.props.url;
-    const prevUrl = prevProps.url;
-    if (url && url !== prevUrl) {
-      this.props.getDataFromProvider(url);
-    }
-  }
-
-  render() {
-    const { column, provider_data, format, placeholder } = this.props;
-    const value = getValue(
-      provider_data,
-      column,
-      // this.props.content.data_query,
-      this.props.connected_data_parameters,
-      placeholder,
-    );
-
-    return formatValue(value, format);
-  }
-}
-
-function getProviderData(state, props) {
-  if (!props.url) return;
-
-  const data = state.data_providers.data || {};
-  return props.url
-    ? data[`${props.url}/@connector-data`] ||
-        data[`${addAppURL(props.url)}/@connector-data`]
+const DataEntity = props => {
+  const {
+    column,
+    connected_data_parameters,
+    filterIndex,
+    format,
+    placeholder,
+    data_providers,
+    pathname,
+    url,
+  } = props;
+  // provider_data: getProviderData(state, props),
+  const [state, setState] = useState({
+    firstDataProviderUpdate: true,
+  });
+  const prevUrl = usePrevious(url);
+  const data_provider = url
+    ? data_providers?.data?.[`${url}/@connector-data`] ||
+      data_providers?.data?.[`${addAppURL(url)}/@connector-data`]
     : [];
-}
+  if (
+    __CLIENT__ &&
+    !data_provider &&
+    ((prevUrl && prevUrl !== url) || (url && state.firstDataProviderUpdate))
+  ) {
+    url &&
+      state.firstDataProviderUpdate &&
+      setState({
+        ...state,
+        firstDataProviderUpdate: false,
+      });
+    props.getDataFromProvider(url);
+  }
+  const dataParameters =
+    getConnectedDataParametersForProvider(connected_data_parameters, url) ||
+    getConnectedDataParametersForContext(connected_data_parameters, pathname) ||
+    getConnectedDataParametersForPath(connected_data_parameters, pathname);
+
+  const value = getValue(
+    data_provider,
+    column,
+    dataParameters,
+    filterIndex,
+    placeholder,
+  );
+
+  return formatValue(value, format);
+};
 
 export default connect(
-  (state, props) => {
-    const { url } = props; // this is the provider url
-    return {
-      provider_data: getProviderData(state, props),
-      content: state.content.data,
-      connected_data_parameters:
-        getConnectedDataParametersForProvider(state, url) ||
-        getConnectedDataParametersForContext(
-          state,
-          state.router.location.pathname,
-        ) ||
-        getConnectedDataParametersForPath(
-          state,
-          state.router.location.pathname
-        ),
-    };
-  },
+  (state, props) => ({
+    data_providers: state.data_providers,
+    content: state.content.data,
+    pathname: state.router.location.pathname,
+    connected_data_parameters: state.connected_data_parameters,
+  }),
   {
     getDataFromProvider,
   },

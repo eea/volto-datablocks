@@ -42,6 +42,7 @@ const SourceView = ({
           ? multipleSources.map(item =>
               item.chart_source_link ? (
                 <a
+                  key={item.chart_source_link}
                   className="discreet block_source"
                   href={item.chart_source_link}
                   target="_blank"
@@ -50,7 +51,9 @@ const SourceView = ({
                   {item.chart_source}
                 </a>
               ) : (
-                <div className="discreet block_source">{item.chart_source}</div>
+                <div key={item.chart_source} className="discreet block_source">
+                  {item.chart_source}
+                </div>
               ),
             )
           : ''}
