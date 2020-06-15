@@ -47,8 +47,7 @@ const getValue = (
     console.log(
       'This DataConnectedValue is used in a context without parameters',
     );
-
-  if (!data || (!filters || !filters[filterIndex])) return placeholder;
+  if (!data || (!filters || !filters?.[filterIndex])) return placeholder;
   const filter = filters[filterIndex];
   const { i: index, v: values } = filter; // o: op,
 

@@ -141,7 +141,7 @@ const MultiValuesEdit = props => {
               <SelectWidget
                 id={`data-entity-column-${k}`}
                 title={field.title}
-                choices={providers?.[field.provider].choices || []}
+                choices={providers?.[field.provider]?.choices || []}
                 onChange={(id, value) =>
                   props.onChange({
                     ...data,
