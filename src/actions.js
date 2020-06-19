@@ -32,7 +32,7 @@ export function getDataFromProvider(path, filters) {
         type: GET_DATA_FROM_PROVIDER,
         request: {
           op: 'post',
-          path: path + '/@connector-data',
+          path: path + '/@connector-data/',
           data: { query: filters },
         },
       }
@@ -40,7 +40,7 @@ export function getDataFromProvider(path, filters) {
         type: GET_DATA_FROM_PROVIDER,
         request: {
           op: 'get',
-          path: path + '/@connector-data',
+          path: path + '/@connector-data/',
         },
       };
 }

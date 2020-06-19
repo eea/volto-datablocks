@@ -32,9 +32,9 @@ const MultiValuesEdit = props => {
   return Object.keys(schema || {}).length > 0 ? (
     <>
       {Object.entries(schema).map(([k, field]) => (
-        <>
+        <React.Fragment key={`${k}`}>
           {field.static && (
-            <Segment className="form sidebar-image-data" key={`${k}`}>
+            <Segment className="form sidebar-image-data">
               <TextWidget
                 id={`text-widget-column-${k}`}
                 title={field.title}
@@ -56,7 +56,7 @@ const MultiValuesEdit = props => {
             </Segment>
           )}
           {field.type === 'data-provider' && !field.static && (
-            <Segment className="form sidebar-image-data" key={`${k}`}>
+            <Segment className="form sidebar-image-data">
               <TextWidget
                 id={`data-provider-${k}`}
                 title={field.title}
@@ -95,7 +95,7 @@ const MultiValuesEdit = props => {
             </Segment>
           )}
           {field.type === 'data-query' && !field.static && (
-            <Segment className="form sidebar-image-data" key={`${k}`}>
+            <Segment className="form sidebar-image-data">
               <div>
                 <TextWidget
                   id={`text-widget-column-${k}_i`}
@@ -147,7 +147,7 @@ const MultiValuesEdit = props => {
           {field.type === 'data-provider-entity' &&
             !field.static &&
             providers?.[field.provider] && (
-              <Segment className="form sidebar-image-data" key={`${k}`}>
+              <Segment className="form sidebar-image-data">
                 <div>
                   <SelectWidget
                     id={`data-entity-column-${k}`}
@@ -191,7 +191,7 @@ const MultiValuesEdit = props => {
                 </div>
               </Segment>
             )}
-        </>
+        </React.Fragment>
       ))}
       <Segment className="form sidebar-image-data">
         <TextWidget
@@ -287,16 +287,16 @@ const MultiValuesEdit = props => {
 };
 
 function getProviderData(state, props) {
-  let providers = props?.data?.providers
-    ? { ...JSON.parse(JSON.stringify(props.data.providers)) }
-    : {
-        default: {
-          path: props.data.provider_url,
-        },
-      };
-
+  let providers = null;
+  if (props?.data?.providers)
+    providers = { ...JSON.parse(JSON.stringify(props.data.providers)) };
+  if (props?.data?.provider_url && !providers)
+    providers = {
+      default: {
+        path: props?.data?.provider_url,
+      },
+    };
   if (!providers) return;
-
   Object.keys(providers).forEach(provider => {
     const path = `${providers[provider].path}/@connector-data`;
     const url = `${addAppURL(path)}/@connector-data`;
@@ -306,7 +306,6 @@ function getProviderData(state, props) {
       Object.keys(providers[provider].data || {}),
     );
   });
-
   return providers;
 }
 

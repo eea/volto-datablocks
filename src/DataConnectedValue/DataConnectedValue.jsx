@@ -43,16 +43,20 @@ const getValue = (
    */
   // TODO: we implement now a very simplistic filtering, with only one type of
   // filter and only one filter is taken into consideration
-  if (!(filters && filters[filterIndex]))
+  if (!data || (data && !Object.keys(data).length)) return 'No data provider';
+  if (!filters || !filters?.[filterIndex]) {
     console.log(
+      filters,
       'This DataConnectedValue is used in a context without parameters',
     );
-  if (!data || (!filters || !filters?.[filterIndex])) return placeholder;
+    return 'No context parameters';
+  }
   const filter = filters[filterIndex];
   const { i: index, v: values } = filter; // o: op,
 
-  if (!values || values.length === 0) return placeholder;
-
+  if (!index) return 'Set "key" parameter';
+  if (!values || values.length === 0) return 'Set "for" parameter';
+  if (!column) return 'Set data type';
   // asuming that op is "plone.app.querystring.operation.selection.any"
   const value = values[0];
   if (!data[index]) {
@@ -62,8 +66,7 @@ const getValue = (
   const pos = data[index].indexOf(value);
 
   if (pos === -1) {
-    console.log(`No value found in data for "${value}" in column "${index}"`);
-    return placeholder;
+    return `No value found in data provider for "${value}" in column "${index}"`;
   }
   return (data[column] && data[column][pos]) || placeholder;
 };
@@ -87,7 +90,7 @@ const DataEntity = props => {
   const data_provider = url
     ? data_providers?.data?.[`${url}/@connector-data`] ||
       data_providers?.data?.[`${addAppURL(url)}/@connector-data`]
-    : [];
+    : {};
   if (
     __CLIENT__ &&
     !data_provider &&
