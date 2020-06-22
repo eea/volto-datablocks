@@ -18,7 +18,7 @@ export class DataConnectorView extends Component {
   render() {
     const { content, provider_data } = this.props;
     const row_size =
-      (provider_data && provider_data[Object.keys(provider_data)[0]].length) ||
+      (provider_data && provider_data[Object.keys(provider_data)[0]]?.length) ||
       0;
     return (
       <div className="data-connector-view">
