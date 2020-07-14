@@ -2,7 +2,8 @@ import {
   GET_SPARQL_DATA,
   GET_DATA_FROM_PROVIDER,
   CHANGE_SIDEBAR_STATE,
-  // SET_CONNECTED_DATA_PARAMETERS,
+  SET_CONNECTED_DATA_PARAMETERS,
+  DELETE_CONNECTED_DATA_PARAMETERS,
 } from './constants';
 // import { settings } from '~/config';
 
@@ -31,7 +32,7 @@ export function getDataFromProvider(path, filters) {
         type: GET_DATA_FROM_PROVIDER,
         request: {
           op: 'post',
-          path: path + '/@connector-data',
+          path: path + '/@connector-data/',
           data: { query: filters },
         },
       }
@@ -39,7 +40,7 @@ export function getDataFromProvider(path, filters) {
         type: GET_DATA_FROM_PROVIDER,
         request: {
           op: 'get',
-          path: path + '/@connector-data',
+          path: path + '/@connector-data/',
         },
       };
 }
@@ -47,21 +48,22 @@ export function getDataFromProvider(path, filters) {
 export function setConnectedDataParameters(
   path,
   parameters,
+  index,
   manuallySet = false,
 ) {
-  console.warn('Refactor code for setConnectedDataParameters!!');
+  return {
+    type: SET_CONNECTED_DATA_PARAMETERS,
+    path,
+    parameters,
+    index,
+    manuallySet,
+  };
+}
 
-  // path is actually url path of context page
-  // manuallySet is a flag to forbid the ConnectedDataParameterWatcher viewlet
-  // from overriding the data parameters on that path, if they already exist
-  // path = path
-  //   .replace(settings.apiPath, '')
-  //   .replace(settings.internalApiPath, '');
-  // console.log('Set connected data parameters', path, parameters);
-  // return {
-  //   type: SET_CONNECTED_DATA_PARAMETERS,
-  //   path,
-  //   parameters,
-  //   manuallySet,
-  // };
+export function deleteConnectedDataParameters(path, index) {
+  return {
+    type: DELETE_CONNECTED_DATA_PARAMETERS,
+    path,
+    index,
+  };
 }
