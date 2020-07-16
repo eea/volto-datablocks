@@ -79,7 +79,7 @@ const DataEntity = props => {
     format,
     placeholder,
     data_providers,
-    pathname,
+    content,
     url,
   } = props;
   // provider_data: getProviderData(state, props),
@@ -106,8 +106,14 @@ const DataEntity = props => {
   }
   const dataParameters =
     getConnectedDataParametersForProvider(connected_data_parameters, url) ||
-    getConnectedDataParametersForContext(connected_data_parameters, pathname) ||
-    getConnectedDataParametersForPath(connected_data_parameters, pathname);
+    getConnectedDataParametersForContext(
+      connected_data_parameters,
+      content['@id'],
+    ) ||
+    getConnectedDataParametersForPath(
+      connected_data_parameters,
+      content['@id'],
+    );
 
   const value = getValue(
     data_provider,
@@ -124,7 +130,6 @@ export default connect(
   (state, props) => ({
     data_providers: state.data_providers,
     content: state.content.data,
-    pathname: state.router.location.pathname,
     connected_data_parameters: state.connected_data_parameters,
   }),
   {
