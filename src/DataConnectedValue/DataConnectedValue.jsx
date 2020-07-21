@@ -29,6 +29,7 @@ const getValue = (
   filters,
   filterIndex = 0,
   placeholder = EMPTY,
+  hasQueryParammeters = true,
 ) => {
   /*
    * Data is an object like: {
@@ -44,6 +45,7 @@ const getValue = (
   // TODO: we implement now a very simplistic filtering, with only one type of
   // filter and only one filter is taken into consideration
   if (!data || (data && !Object.keys(data).length)) return 'No data provider';
+  if (!hasQueryParammeters) return data[column]?.[0];
   if (!filters || !filters?.[filterIndex]) {
     console.log(
       filters,
@@ -58,7 +60,7 @@ const getValue = (
   if (!values || values.length === 0) return 'Set "for" parameter';
   if (!column) return 'Set data type';
   // asuming that op is "plone.app.querystring.operation.selection.any"
-  const value = values[0];
+  const value = values?.[0];
   if (!data[index]) {
     console.log('NOT_AN_INDEX_IN_DATA:', index, data);
     return placeholder;
@@ -81,6 +83,7 @@ const DataEntity = props => {
     data_providers,
     content,
     url,
+    hasQueryParammeters,
   } = props;
   // provider_data: getProviderData(state, props),
   const [state, setState] = useState({
@@ -94,6 +97,7 @@ const DataEntity = props => {
   if (
     __CLIENT__ &&
     !data_provider &&
+    !data_providers.pendingConnectors[url] &&
     ((prevUrl && prevUrl !== url) || (url && state.firstDataProviderUpdate))
   ) {
     url &&
@@ -105,22 +109,23 @@ const DataEntity = props => {
     props.getDataFromProvider(url);
   }
   const dataParameters =
+    getConnectedDataParametersForPath(
+      connected_data_parameters,
+      content['@id'],
+      filterIndex,
+    ) ||
     getConnectedDataParametersForProvider(connected_data_parameters, url) ||
     getConnectedDataParametersForContext(
       connected_data_parameters,
       content['@id'],
-    ) ||
-    getConnectedDataParametersForPath(
-      connected_data_parameters,
-      content['@id'],
     );
-
   const value = getValue(
     data_provider,
     column,
     dataParameters,
     filterIndex,
     placeholder,
+    hasQueryParammeters,
   );
 
   return formatValue(value, format);

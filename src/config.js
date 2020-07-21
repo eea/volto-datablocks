@@ -13,6 +13,8 @@ import { ViewSelect, AutoSelectFromContext } from './ContextParameter';
 import DataConnectedEmbedView from './DataConnectedEmbedBlock/View';
 import DataConnectedEmbedEdit from './DataConnectedEmbedBlock/DataConnectedEmbedEdit';
 
+import DataProviderWidget from './DataProviders/DataProviderWidget';
+
 import addonRoutes from './routes';
 
 // import { ConnectedDataParameterWatcher } from './Viewlets';
@@ -70,6 +72,7 @@ export function applyConfig(config) {
   config.settings.nonContentRoutes.push('/data-providers-view');
   config.addonRoutes = [...(config.addonRoutes || []), ...addonRoutes];
 
+  config.widgets.type.dataProvider = DataProviderWidget;
   // config.viewlets = [
   //   { path: '/', component: ConnectedDataParameterWatcher },
   //   ...(config.viewlets || []),
