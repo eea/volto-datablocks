@@ -12,18 +12,22 @@ const initialState = {
   data: {},
   loaded: false,
   loading: false,
+  pendingConnectors: {},
   requested: [],
 };
 
 export default function data_providers(state = initialState, action = {}) {
+  const pendingConnectors = { ...state.pendingConnectors };
   switch (action.type) {
     case `${GET_DATA_FROM_PROVIDER}_PENDING`:
+      pendingConnectors[action.path] = true;
       return {
         ...state,
         error: null,
         loaded: false,
         loading: true,
         requested: [...without(state.requested, action.path), action.path],
+        pendingConnectors,
       };
     case `${GET_DATA_FROM_PROVIDER}_SUCCESS`:
       const isExpand =
@@ -38,6 +42,7 @@ export default function data_providers(state = initialState, action = {}) {
       )
         .replace(settings.apiPath, '')
         .replace(settings.internalApiPath, '');
+      delete pendingConnectors[action.path];
       return {
         ...state,
         error: null,
@@ -50,8 +55,10 @@ export default function data_providers(state = initialState, action = {}) {
         loaded: true,
         loading: false,
         requested: [...without(state.requested, action.path)],
+        pendingConnectors,
       };
     case `${GET_DATA_FROM_PROVIDER}_FAIL`:
+      delete pendingConnectors[action.path];
       return {
         ...state,
         error: action.error,
@@ -60,6 +67,7 @@ export default function data_providers(state = initialState, action = {}) {
         loading: false,
         // TODO: retry get?
         requested: [...without(state.requested, action.path)],
+        pendingConnectors,
       };
     default:
       return state;

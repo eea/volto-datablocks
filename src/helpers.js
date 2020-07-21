@@ -10,15 +10,18 @@ export function getBasePath(url) {
 export function getConnectedDataParametersForPath(
   connected_data_parameters,
   url,
+  filter,
 ) {
   let path = getBasePath(url || '');
   const { byPath = {} } = connected_data_parameters;
-
-  const res = byPath[path]
-    ? byPath[path]?.override || byPath[path]?.default
-    : byPath['']?.override || byPath['']?.default;
-
-  return res;
+  if (
+    (filter && byPath[path]?.override?.[filter]) ||
+    (filter && byPath[path]?.default?.[filter])
+  )
+    return byPath[path]
+      ? byPath[path]?.override || byPath[path]?.default
+      : byPath['']?.override || byPath['']?.default;
+  return null;
 }
 
 export function getConnectedDataParametersForContext(

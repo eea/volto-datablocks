@@ -30,6 +30,7 @@ export function getDataFromProvider(path, filters) {
   return filters
     ? {
         type: GET_DATA_FROM_PROVIDER,
+        path: path,
         request: {
           op: 'post',
           path: path + '/@connector-data/',
@@ -38,6 +39,7 @@ export function getDataFromProvider(path, filters) {
       }
     : {
         type: GET_DATA_FROM_PROVIDER,
+        path: path,
         request: {
           op: 'get',
           path: path + '/@connector-data/',
