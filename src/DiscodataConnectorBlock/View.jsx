@@ -38,18 +38,20 @@ const providerView = (dataProviderKey, dataProvider, defaultDataParameters) => {
       className={dataProvider.className}
     >
       <span>
-        <DataConnectedValue
-          hasQueryParammeters={
-            typeof dataProvider.hasQueryParameters !== 'undefined'
-              ? dataProvider.hasQueryParameters
-              : true
-          }
-          filterIndex={hasDefaultQueryParams ? 0 : dataProviderKey}
-          url={dataProvider.path}
-          column={dataProvider.displayColumn}
-          format={dataProvider.displayFormat}
-          placeholder="_"
-        />
+        {dataProvider.hasDiscodataConnector && (
+          <DataConnectedValue
+            hasQueryParammeters={
+              typeof dataProvider.hasQueryParameters !== 'undefined'
+                ? dataProvider.hasQueryParameters
+                : true
+            }
+            filterIndex={hasDefaultQueryParams ? 0 : dataProviderKey}
+            url={dataProvider.path}
+            column={dataProvider.displayColumn}
+            format={dataProvider.displayFormat}
+            placeholder="_"
+          />
+        )}
         {' ' + (dataProvider.measurmentUnit || '')}
       </span>
       {' ' + (dataProvider.additionalText || '')}
@@ -62,7 +64,8 @@ const bulletListView = items => (
     {items &&
       Object.entries(items).map(([key, item]) => (
         <div className="item">
-          <span>{item.description}</span>
+          {item.leftText}
+          <span className="float-right">{item.rightText}</span>
         </div>
       ))}
   </div>
@@ -116,18 +119,22 @@ const View = props => {
     Object.entries(dataProviders).forEach(([dataProviderKey, dataProvider]) => {
       if (!dataProvider.hasParent) {
         parentsDataProviders[dataProviderKey] = { ...dataProvider };
-      } else if (parentsDataProviders[dataProvider.hasParent]) {
-        if (!parentsDataProviders[dataProvider.hasParent].children) {
-          parentsDataProviders[dataProvider.hasParent].children = {};
+      } else if (
+        dataProvider.parent &&
+        parentsDataProviders[dataProvider.parent]
+      ) {
+        if (!parentsDataProviders[dataProvider.parent].children) {
+          parentsDataProviders[dataProvider.parent].children = {};
         }
-        parentsDataProviders[dataProvider.hasParent].children[
+        parentsDataProviders[dataProvider.parent].children[
           dataProviderKey
         ] = dataProvider;
       }
     });
+
   const view = (
-    <div className="forest-block-wrapper">
-      <div className="forest-specific-block forest-area-block">
+    <div className="flex h-100 pa-1">
+      <div className="flex flex-column w-100">
         {props.data?.block_title?.value ? (
           <h5>{props.data.block_title.value}</h5>
         ) : (
@@ -140,7 +147,7 @@ const View = props => {
                 return (
                   <div
                     className={dataProvider.wrapperClassName}
-                    key={`land-data-wrapper-${dataProviderKey}`}
+                    key={`data-wrapper-${dataProviderKey}`}
                   >
                     {providerView(
                       dataProviderKey,
@@ -161,7 +168,7 @@ const View = props => {
               return (
                 <div
                   className={dataProvider.wrapperClassName}
-                  key={`land-data-wrapper-${dataProviderKey}`}
+                  key={`data-wrapper-${dataProviderKey}`}
                 >
                   {providerView(
                     dataProviderKey,
@@ -172,12 +179,12 @@ const View = props => {
               );
             },
           )}
-        {bulletListView(bulletList)}
-        <div>
-          {props?.data?.chart_sources && (
+        {bulletList && bulletListView(bulletList)}
+        {props?.data?.chart_sources && (
+          <div>
             <SourceView multipleSources={props?.data?.chart_sources} />
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

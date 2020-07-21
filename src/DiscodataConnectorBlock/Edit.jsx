@@ -46,6 +46,7 @@ const getSchema = props => {
             fields: [
               'title',
               'id',
+              'hasDiscodataConnector',
               'path',
               'displayColumn',
               'displayFormat',
@@ -53,6 +54,7 @@ const getSchema = props => {
               'additionalText',
               'hasParent',
               'className',
+              'parent',
               'wrapperClassName',
               'hasQueryParameters',
               'queryParameterColumn',
@@ -69,13 +71,20 @@ const getSchema = props => {
             type: 'text',
             title: 'Id',
           },
+          hasDiscodataConnector: {
+            type: 'boolean',
+            title: 'Has discodata connector',
+            defaultValue: true,
+          },
           path: {
             type: 'dataProvider',
             title: 'Discodata connector',
+            disabled: formData => !formData.hasDiscodataConnector,
           },
           displayColumn: {
             type: 'select',
             title: 'Display column',
+            disabled: formData => !formData.hasDiscodataConnector,
             choices: formData =>
               makeChoices(
                 Object.keys(
@@ -88,6 +97,7 @@ const getSchema = props => {
           displayFormat: {
             type: 'select',
             title: 'Display format',
+            disabled: formData => !formData.hasDiscodataConnector,
             choices: dataFormatChoices.map(option => [option.id, option.label]),
           },
           measurmentUnit: {
@@ -99,40 +109,40 @@ const getSchema = props => {
             title: 'Additional text',
           },
           hasParent: {
-            type: 'checkbox',
+            type: 'boolean',
             title: 'Has parent',
+            defaultValue: false,
+          },
+          className: {
+            type: 'select',
+            title: 'Class name',
+            choices: [['data', 'Data'], ['data-content', 'Data content']],
+          },
+          parent: {
+            type: 'select',
+            title: 'Parent',
+            disabled: formData => !formData.hasParent,
             choices: formData => {
               const data_providers_filtered = { ...data_providers };
               data_providers_filtered[formData.id] &&
                 delete data_providers_filtered[formData.id];
-              return [
-                [false, 'No'],
-                ...makeChoices(Object.keys(data_providers_filtered)),
-              ];
+              return makeChoices(Object.keys(data_providers_filtered));
             },
-            defaultValue: false,
-          },
-          className: {
-            type: 'text',
-            title: 'Class name',
-            choices: [
-              ['land-data', 'Land data'],
-              ['land-data-content', 'Land data content'],
-            ],
           },
           wrapperClassName: {
-            type: 'text',
+            type: 'select',
             title: 'Wrapper class name',
             disabled: formData => !!formData?.hasParent,
             choices: [
-              ['land-data-wrapper eu28-data', 'EU28-data wrapper'],
-              ['land-data-wrapper eea39-data', 'EEA39-data wrapper'],
+              ['data-wrapper brown', 'Brown wrapper'],
+              ['data-wrapper green', 'Green wrapper'],
+              ['data-wrapper blue', 'Blue wrapper'],
+              ['data-wrapper purple', 'Purple wrapper'],
             ],
           },
           hasQueryParameters: {
-            type: 'checkbox',
+            type: 'boolean',
             title: 'Has query parameters',
-            choices: [[true, 'Yes'], [false, 'No']],
             defaultValue: true,
           },
           queryParameterColumn: {
@@ -170,7 +180,7 @@ const getSchema = props => {
             defaultValue: dataParameters(props)?.[0]?.v,
           },
         },
-        required: ['title', 'id', 'path', 'displayColumn', 'displayFormat'],
+        required: ['title', 'id'],
       },
       editFieldset: false,
       deleteFieldset: false,
@@ -185,7 +195,7 @@ const getSchema = props => {
           {
             id: 'default',
             title: 'title',
-            fields: ['title', 'id', 'description'],
+            fields: ['title', 'id', 'leftText', 'rightText'],
           },
         ],
         properties: {
@@ -197,12 +207,16 @@ const getSchema = props => {
             type: 'text',
             title: 'Id',
           },
-          description: {
+          leftText: {
             type: 'text',
-            title: 'Description',
+            title: 'Text (left)',
+          },
+          rightText: {
+            type: 'text',
+            title: 'Text (right)',
           },
         },
-        required: ['title', 'id', 'description'],
+        required: ['title', 'id'],
       },
       editFieldset: false,
       deleteFieldset: false,
