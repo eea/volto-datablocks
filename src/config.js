@@ -13,6 +13,9 @@ import { ViewSelect, AutoSelectFromContext } from './ContextParameter';
 import DataConnectedEmbedView from './DataConnectedEmbedBlock/View';
 import DataConnectedEmbedEdit from './DataConnectedEmbedBlock/DataConnectedEmbedEdit';
 
+import DiscodataConnectorBlockEdit from './DiscodataConnectorBlock/Edit';
+import DiscodataConnectorBlockView from './DiscodataConnectorBlock/View';
+
 import DataProviderWidget from './DataProviders/DataProviderWidget';
 
 import addonRoutes from './routes';
@@ -67,6 +70,15 @@ export function applyConfig(config) {
     edit: DataConnectedEmbedEdit,
     icon: chartIcon,
     group: 'custom_addons',
+  };
+
+  config.blocks.blocksConfig.discodata_connector_block = {
+    id: 'discodata_connector_block',
+    title: 'Discodata connector block',
+    view: DiscodataConnectorBlockView,
+    edit: DiscodataConnectorBlockEdit,
+    icon: chartIcon,
+    group: 'forests_specific',
   };
 
   config.settings.nonContentRoutes.push('/data-providers-view');
