@@ -78,7 +78,7 @@ export function applyConfig(config) {
     view: DiscodataConnectorBlockView,
     edit: DiscodataConnectorBlockEdit,
     icon: chartIcon,
-    group: 'forests_specific',
+    group: 'data_blocks',
   };
 
   config.settings.nonContentRoutes.push('/data-providers-view');
