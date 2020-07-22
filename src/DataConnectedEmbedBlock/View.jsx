@@ -27,11 +27,13 @@ const messages = defineMessages({
 const ViewEmbedBlock = props => {
   const [visible, setVisibility] = useState(false);
   const { data, intl } = props;
+  console.log('data in embed', props)
   // console.log('DataConnectedEmbed props in view', this.props);
   const param = props.connected_data_parameters
     ? props.connected_data_parameters[0].v[0]
     : null;
 
+    console.log('param in view', param)
   // TODO: automatically discover parameters
   const url =
     param && data.baseUrl
@@ -83,7 +85,7 @@ export default connect(
   (state, props) => {
     return {
       connected_data_parameters: getConnectedDataParametersForContext(
-        state,
+        state?.connected_data_parameters,
         state.router?.location?.pathname,
       ),
     };
