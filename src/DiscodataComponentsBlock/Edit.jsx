@@ -284,7 +284,7 @@ const Edit = props => {
   return (
     <div>
       <RenderFields
-        schema={props.schema}
+        schema={state.schema}
         {...props}
         title="Discodata components block"
       />
