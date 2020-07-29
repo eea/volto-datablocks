@@ -16,6 +16,9 @@ import DataConnectedEmbedEdit from './DataConnectedEmbedBlock/DataConnectedEmbed
 import DiscodataConnectorBlockEdit from './DiscodataConnectorBlock/Edit';
 import DiscodataConnectorBlockView from './DiscodataConnectorBlock/View';
 
+import DiscodataComponentsBlockEdit from './DiscodataComponentsBlock/Edit';
+import DiscodataComponentsBlockView from './DiscodataComponentsBlock/View';
+
 import DataProviderWidget from './DataProviders/DataProviderWidget';
 
 import addonRoutes from './routes';
@@ -77,6 +80,15 @@ export function applyConfig(config) {
     title: 'Discodata connector block',
     view: DiscodataConnectorBlockView,
     edit: DiscodataConnectorBlockEdit,
+    icon: chartIcon,
+    group: 'data_blocks',
+  };
+
+  config.blocks.blocksConfig.discodata_components_block = {
+    id: 'discodata_components_block',
+    title: 'Discodata components block',
+    view: DiscodataComponentsBlockView,
+    edit: DiscodataComponentsBlockEdit,
     icon: chartIcon,
     group: 'data_blocks',
   };
