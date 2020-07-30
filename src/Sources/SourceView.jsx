@@ -11,24 +11,45 @@ const SourceView = ({
   multipleSources,
   providerUrl,
   data_providers,
+  connectorsDataProviders,
 }) => {
   return (
     <React.Fragment>
-      {providerUrl && (
+      {(providerUrl || connectorsDataProviders) && (
         <VoltoIcon
           className="discreet download-button"
           title="Download data"
           onClick={() => {
+            const connectorsData = {};
+            Object.keys(connectorsDataProviders).forEach(key => {
+              if (
+                connectorsDataProviders[key].path &&
+                data_providers?.data?.[
+                  `${connectorsDataProviders[key].path}/@connector-data`
+                ]
+              ) {
+                connectorsData[connectorsDataProviders[key].path] =
+                  data_providers?.data?.[
+                    `${connectorsDataProviders[key].path}/@connector-data`
+                  ];
+              }
+            });
             const connectorData =
               data_providers?.data?.[`${providerUrl}/@connector-data`];
-            const dataStr = connectorData
+            const dataStr = connectorsData
+              ? 'data:text/json;charset=utf-8,' +
+                encodeURIComponent(JSON.stringify(connectorsData))
+              : connectorData
               ? 'data:text/json;charset=utf-8,' +
                 encodeURIComponent(JSON.stringify(connectorData))
               : null;
             if (dataStr) {
               const dlAnchorElem = document.createElement('a');
               dlAnchorElem.setAttribute('href', dataStr);
-              dlAnchorElem.setAttribute('download', `${providerUrl}.json`);
+              dlAnchorElem.setAttribute(
+                'download',
+                `${providerUrl || 'source'}.json`,
+              );
               dlAnchorElem.click();
             } else {
               const dlAnchorElem = document.createElement('a');

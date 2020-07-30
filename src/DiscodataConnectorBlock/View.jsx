@@ -182,7 +182,10 @@ const View = props => {
         {bulletList && bulletListView(bulletList)}
         {props?.data?.chart_sources && (
           <div>
-            <SourceView multipleSources={props?.data?.chart_sources} />
+            <SourceView
+              multipleSources={props?.data?.chart_sources}
+              connectorsDataProviders={dataProviders}
+            />
           </div>
         )}
       </div>
