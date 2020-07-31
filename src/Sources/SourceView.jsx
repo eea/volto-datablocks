@@ -5,6 +5,52 @@ import { Icon as VoltoIcon } from '@plone/volto/components';
 // import { Grid } from 'semantic-ui-react';
 import { settings } from '~/config';
 
+function convertToCSV(objArray) {
+  var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+  var str = '';
+
+  for (var i = 0; i < array.length; i++) {
+    var line = '';
+    for (var index in array[i]) {
+      if (line !== '') line += ',';
+
+      line += array[i][index];
+    }
+
+    str += line + '\r\n';
+  }
+
+  return str;
+}
+
+const exportCSVFile = (items, fileTitle) => {
+  // Convert Object to JSON
+  let jsonObject = JSON.stringify(items);
+
+  let csv = convertToCSV(jsonObject);
+
+  let exportedFilenmae = fileTitle + '.csv' || 'export.csv';
+
+  let blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  if (navigator.msSaveBlob) {
+    // IE 10+
+    navigator.msSaveBlob(blob, exportedFilenmae);
+  } else {
+    let link = document.createElement('a');
+    if (link.download !== undefined) {
+      // feature detection
+      // Browsers that support HTML5 download attribute
+      let url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', exportedFilenmae);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }
+};
+
 const SourceView = ({
   initialSource,
   initialSourceLink,
@@ -12,58 +58,79 @@ const SourceView = ({
   providerUrl,
   data_providers,
   connectorsDataProviders,
+  download_button,
 }) => {
   return (
     <React.Fragment>
-      {(providerUrl || connectorsDataProviders) && (
-        <VoltoIcon
-          className="discreet download-button"
-          title="Download data"
-          onClick={() => {
-            const connectorsData = {};
-            Object.keys(connectorsDataProviders).forEach(key => {
-              if (
-                connectorsDataProviders[key].path &&
-                data_providers?.data?.[
-                  `${connectorsDataProviders[key].path}/@connector-data`
-                ]
-              ) {
-                connectorsData[connectorsDataProviders[key].path] =
-                  data_providers?.data?.[
-                    `${connectorsDataProviders[key].path}/@connector-data`
-                  ];
+      {(providerUrl || connectorsDataProviders) &&
+        (download_button === undefined || download_button === true) && (
+          <VoltoIcon
+            size="22px"
+            className="discreet download-button"
+            title="Download data"
+            onClick={() => {
+              const connectorsData = {};
+              connectorsDataProviders &&
+                Object.keys(connectorsDataProviders).forEach(key => {
+                  if (
+                    connectorsDataProviders[key].path &&
+                    data_providers?.data?.[
+                      `${connectorsDataProviders[key].path}/@connector-data`
+                    ]
+                  ) {
+                    connectorsData[connectorsDataProviders[key].path] =
+                      data_providers?.data?.[
+                        `${connectorsDataProviders[key].path}/@connector-data`
+                      ];
+                  }
+                });
+              const connectorData =
+                data_providers?.data?.[`${providerUrl}/@connector-data`];
+
+              if (connectorData) {
+                let array = [];
+                connectorData &&
+                  Object.entries(connectorData).forEach(([key, items]) => {
+                    items.forEach((item, index) => {
+                      if (!array[index]) array[index] = {};
+                      array[index][key] = item;
+                    });
+                  });
+                exportCSVFile(array, providerUrl);
+                return;
               }
-            });
-            const connectorData =
-              data_providers?.data?.[`${providerUrl}/@connector-data`];
-            const dataStr = connectorsData
-              ? 'data:text/json;charset=utf-8,' +
-                encodeURIComponent(JSON.stringify(connectorsData))
-              : connectorData
-              ? 'data:text/json;charset=utf-8,' +
-                encodeURIComponent(JSON.stringify(connectorData))
-              : null;
-            if (dataStr) {
-              const dlAnchorElem = document.createElement('a');
-              dlAnchorElem.setAttribute('href', dataStr);
-              dlAnchorElem.setAttribute(
-                'download',
-                `${providerUrl || 'source'}.json`,
-              );
-              dlAnchorElem.click();
-            } else {
+
+              if (connectorsData) {
+                let title = '';
+                let array = [];
+                Object.entries(connectorsData).forEach(
+                  ([connectorKey, connector]) => {
+                    title += connectorKey + ' & ';
+                    Object.entries(connector).forEach(([key, items]) => {
+                      items.forEach((item, index) => {
+                        if (!array[index]) array[index] = {};
+                        array[index][key] = item;
+                      });
+                    });
+                  },
+                );
+                exportCSVFile(array, title.slice(0, -3));
+                return;
+              }
+
+              if (!providerUrl) return;
+
               const dlAnchorElem = document.createElement('a');
               dlAnchorElem.setAttribute(
                 'href',
                 `${settings.apiPath}${providerUrl}/@@download`,
               );
               dlAnchorElem.click();
-            }
-          }}
-          name={downloadSVG}
-          size="20"
-        />
-      )}
+            }}
+            name={downloadSVG}
+            size="20"
+          />
+        )}
 
       <div className="sources">
         <span className="discreet">

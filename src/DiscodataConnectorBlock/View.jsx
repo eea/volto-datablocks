@@ -185,6 +185,7 @@ const View = props => {
             <SourceView
               multipleSources={props?.data?.chart_sources}
               connectorsDataProviders={dataProviders}
+              download_button={props?.data?.download_button?.value}
             />
           </div>
         )}

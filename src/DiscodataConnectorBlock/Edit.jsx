@@ -33,6 +33,10 @@ const getSchema = props => {
       title: 'Title',
       type: 'text',
     },
+    download_button: {
+      title: 'Download button',
+      type: 'boolean',
+    },
     data_providers: {
       title: 'Data providers',
       type: 'schema',
