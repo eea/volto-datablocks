@@ -1,20 +1,29 @@
 import React, { useState, useEffect } from 'react';
+import _uniqueId from 'lodash/uniqueId';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import moment from 'moment';
 import { arrayToTree } from 'performant-array-to-tree';
-import { settings } from '~/config';
-import DB from '../DataBase/DB';
+import qs from 'query-string';
 import { Table } from 'semantic-ui-react';
 import './style.css';
+import DB from 'volto-datablocks/DataBase/DB';
+
+import { settings } from '~/config';
+
+import { getDiscodataResource } from '../actions';
 
 const renderComponents = {
   wrapper: function(tree, item) {
     if (!tree.children || tree.children.length === 0) {
-      return this[tree.data.type]({
-        component: tree.data,
-        item,
-      });
+      return (
+        <React.Fragment key={`data-wrapper-${tree.data?.id}`}>
+          {this[tree.data.type]({
+            component: tree.data,
+            item,
+          })}
+        </React.Fragment>
+      );
     } else if (tree.children.length > 0) {
       return (
         <div
@@ -105,6 +114,28 @@ const renderComponents = {
       <p className={props.component?.className?.join(' ') || ''}>{text}</p>
     );
     return text && props ? view : '';
+  },
+  list: props => {
+    let value = props.item?.[props.component?.value];
+    let items = [];
+    if (Array.isArray(value)) {
+      items = [...value];
+    } else if (value && Object.keys(value).length) {
+      items = Object.keys(value);
+    }
+    const view = (
+      <ul className={props.component?.className?.join(' ') || ''}>
+        {items.map(value => (
+          <li
+            key={_uniqueId('li-')}
+            className={props.component?.listItemClassName?.join(' ') || ''}
+          >
+            {value}
+          </li>
+        ))}
+      </ul>
+    );
+    return view;
   },
   banner: props => {
     return props.item && props.component ? (
@@ -220,67 +251,96 @@ const renderComponents = {
 };
 
 const View = props => {
+  // providerUrl
   const [state, setState] = useState({
-    loaded: false,
-    loading: false,
-    errors: [],
-    items: [],
+    item: {},
   });
   const { data } = props;
-  const selectQuery = data?.sql?.selectQuery;
-  const additionalQuery = data?.sql?.additionalQuery;
-  const providerUrl = data?.providerUrl || settings.providerUrl || null;
-  //  Update Edit
+  const discodata = { ...props.discodata_query.data };
+  const { additional_sql, sql, resource_key, key, where, groupBy } = data;
   useEffect(() => {
-    if (props.updateEditState) {
-      props.updateEditState({ items: state.items });
-    }
-    /* eslint-disable-next-line */
-  }, [state]);
-  //  Fetch items
-  useEffect(() => {
-    let isMounted = true;
     if (
-      isMounted &&
-      selectQuery?.table &&
-      selectQuery?.columnKey &&
-      selectQuery?.columnValue &&
-      providerUrl &&
-      !state.loading
+      additional_sql?.value === true &&
+      sql?.value &&
+      resource_key?.value &&
+      key?.value &&
+      where?.value
     ) {
-      setState({ ...state, loading: true });
-      DB.table(providerUrl, selectQuery.table)
-        .get()
-        .where(selectQuery?.columnKey, selectQuery?.columnValue)
-        .where(additionalQuery?.columnKey, additionalQuery?.columnValue)
-        .makeRequest()
-        .then(response => {
-          if (isMounted) {
-            setState({
-              ...state,
-              loaded: true,
-              loading: false,
-              errors: [],
-              items: response.data.results,
-            });
-          }
-        })
-        .catch(errors => {
-          if (isMounted) {
-            setState({
-              loaded: false,
-              loading: false,
-              errors: errors,
-              items: [],
-            });
-          }
-        });
+      const whereStatements = where.value
+        ? JSON.parse(where.value).properties
+        : {};
+      const groupByStatements = groupBy?.value
+        ? JSON.parse(groupBy.value).properties
+        : {};
+      const url = DB.table(sql.value, settings.providerUrl, {
+        p: props.query.p,
+        nrOfHits: props.query.nrOfHits,
+      })
+        .where(
+          whereStatements &&
+            Object.entries(whereStatements).map(([key, where]) => {
+              return {
+                discodataKey: where.queryParam,
+                value: props.discodata_query.data?.search?.[where.queryParam],
+              };
+            }),
+        )
+        .encode()
+        .get();
+      if (
+        discodata?.search?.[key.value] &&
+        !props.discodata_resources.data[resource_key.value]?.[
+          discodata?.search?.[key.value]
+        ] &&
+        !props.discodata_resources.pendingRequests[
+          `${resource_key.value}_${key.value}_${discodata.search?.[key.value]}`
+        ]
+      ) {
+        const request = {
+          url,
+          search: discodata.search || {},
+          resourceKey: resource_key.value || '',
+          key: key.value || '',
+          groupBy: groupByStatements
+            ? Object.entries(groupByStatements).map(([key, group]) => {
+                return {
+                  discodataKey: group.discodataKey,
+                  key: group.key,
+                };
+              })
+            : [],
+        };
+        props.getDiscodataResource(request);
+      }
     }
-    return () => {
-      isMounted = false;
-    };
     /* eslint-disable-next-line */
-}, [data?.sql, data?.provider_url])
+  }, [additional_sql])
+  useEffect(() => {
+    const __1_selectedDiscodataResource =
+      props.discodata_resources.data?.[props.data.resource_key?.value]?.[
+        discodata.search[(props.data.key?.value)]
+      ] || null;
+    const __2_selectedDiscodataResource =
+      props.discodata_resources.data?.[discodata.resourceKey]?.[
+        discodata.search?.[discodata.key]
+      ] || null;
+    const item = {
+      ...__1_selectedDiscodataResource,
+      additional_results: [
+        ...(__1_selectedDiscodataResource?.results
+          ? __1_selectedDiscodataResource.results
+          : []),
+      ],
+      ...__2_selectedDiscodataResource,
+      results: [
+        ...(__2_selectedDiscodataResource?.results
+          ? __2_selectedDiscodataResource.results
+          : []),
+      ],
+    };
+    setState({ ...state, item });
+    /* eslint-disable-next-line */
+  }, [props.data, props.discodata_resources])
   //  Render components
   const componentsSchema =
     data?.components?.value && JSON.parse(data?.components?.value);
@@ -304,15 +364,21 @@ const View = props => {
   return (
     <div className="facility-block-wrapper">
       <div className="" style={{ padding: '2rem', overflow: 'auto' }}>
-        {state.items?.[0] &&
-          root.map(tree => renderComponents.wrapper(tree, state.items[0]))}
+        {state.item &&
+          root.map(tree => renderComponents.wrapper(tree, state.item))}
       </div>
     </div>
   );
 };
 
 export default compose(
-  connect((state, props) => ({
-    pathname: state.router.location.pathname,
-  })),
+  connect(
+    (state, props) => ({
+      query: qs.parse(state.router.location.search),
+      pathname: state.router.location.pathname,
+      discodata_resources: state.discodata_resources,
+      discodata_query: state.discodata_query,
+    }),
+    { getDiscodataResource },
+  ),
 )(View);

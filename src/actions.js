@@ -4,8 +4,11 @@ import {
   CHANGE_SIDEBAR_STATE,
   SET_CONNECTED_DATA_PARAMETERS,
   DELETE_CONNECTED_DATA_PARAMETERS,
+  GET_DISCODATA_RESOURCE,
+  SET_DISCODATA_QUERY,
+  DELETE_QUERY_PARAM,
+  SET_QUERY_PARAM,
 } from './constants';
-// import { settings } from '~/config';
 
 export function changeSidebarState(open) {
   return {
@@ -67,5 +70,49 @@ export function deleteConnectedDataParameters(path, index) {
     type: DELETE_CONNECTED_DATA_PARAMETERS,
     path,
     index,
+  };
+}
+
+export function getDiscodataResource({
+  url,
+  resourceKey,
+  key,
+  search,
+  groupBy,
+}) {
+  return {
+    type: GET_DISCODATA_RESOURCE,
+    resourceKey,
+    key,
+    search,
+    groupBy,
+    request: {
+      op: 'get',
+      path: url,
+    },
+  };
+}
+
+export function setDiscodataQuery(query) {
+  return {
+    type: SET_DISCODATA_QUERY,
+    query,
+  };
+}
+
+export function setQueryParam({ queryParam, value }) {
+  console.log('SET QUERY PARAM', queryParam);
+  return {
+    type: SET_QUERY_PARAM,
+    queryParam,
+    value,
+  };
+}
+
+export function deleteQueryParam({ queryParam }) {
+  console.log('DELETE QUERY PARAM', queryParam);
+  return {
+    type: DELETE_QUERY_PARAM,
+    queryParam,
   };
 }

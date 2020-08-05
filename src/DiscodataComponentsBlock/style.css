@@ -144,6 +144,19 @@ h1.mt-3:first-child  {
   margin-right: 2rem;
 }
 
+.ma-0 {
+  margin: 0;
+}
+.ma-1 {
+  margin: 1rem;
+}
+.ma-2 {
+  margin: 2rem;
+}
+.ma-3 {
+  margin: 3rem;
+}
+
 /* WIDTHS */
 .w-40 {
   width: 40%;
@@ -185,6 +198,10 @@ h1.mt-3:first-child  {
 }
 .pa-3 {
   padding: 3rem;
+}
+
+.list-style-none {
+  list-style: none;
 }
 
 .bat-container {

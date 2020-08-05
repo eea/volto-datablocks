@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import _uniqueId from 'lodash/uniqueId';
+import qs from 'query-string';
 import RenderFields from 'volto-addons/Widgets/RenderFields';
 import View from './View';
 import { settings } from '~/config';
@@ -44,34 +45,125 @@ const classNames = [
   'w-80',
   'w-90',
   'w-100',
+  'pa-0',
+  'pa-1',
+  'pa-2',
+  'pa-3',
   'float-left',
   'float-right',
   'clear-fix',
+  'list-style-none',
 ];
 
 const getSchema = props => {
-  const item = { ...props.item };
   const components = props.data.components?.value
     ? JSON.parse(props.data.components?.value).properties
     : {};
+  const { search, key, resourceKey } = props.discodata_query.data;
+  const __1_selectedDiscodataResource =
+    props.discodata_resources.data?.[props.data.resource_key?.value]?.[
+      search[(props.data.key?.value)]
+    ] || null;
+  const __2_selectedDiscodataResource =
+    props.discodata_resources.data?.[resourceKey]?.[search?.[key]] || null;
+  const selectedDiscodataResource = {
+    ...__1_selectedDiscodataResource,
+    additional_results: [
+      ...(__1_selectedDiscodataResource?.results
+        ? __1_selectedDiscodataResource.results
+        : []),
+    ],
+    ...__2_selectedDiscodataResource,
+    results: [
+      ...(__2_selectedDiscodataResource?.results
+        ? __2_selectedDiscodataResource.results
+        : []),
+    ],
+  };
   return {
-    provider_url: {
-      title: 'Provider url',
-      type: 'text',
-      defaultValue: props.providerUrl,
+    additional_sql: {
+      title: 'Use additional sql',
+      type: 'boolean',
     },
     sql: {
-      title: 'SQL Select',
-      type: 'sql',
-      selectQueryFields: [
-        { title: 'Table', id: 'table' },
-        { title: 'Where column', id: 'columnKey' },
-        { title: 'Is equal to', id: 'columnValue' },
-      ],
-      additionalQueryFields: [
-        { title: 'Where column', id: 'columnKey' },
-        { title: 'Is equal to', id: 'columnValue' },
-      ],
+      title: 'Additional sql',
+      type: 'text',
+    },
+    resource_key: {
+      title: 'Resource key',
+      type: 'text',
+    },
+    key: {
+      title: 'Key',
+      type: 'text',
+    },
+    where: {
+      title: 'Where statements',
+      type: 'schema',
+      fieldSetTitle: 'Where statements metadata',
+      fieldSetId: 'where_statements_metadata',
+      fieldSetSchema: {
+        fieldsets: [
+          {
+            id: 'default',
+            title: 'title',
+            fields: ['title', 'id', 'queryParam'],
+          },
+        ],
+        properties: {
+          title: {
+            type: 'text',
+            title: 'Title',
+          },
+          id: {
+            type: 'text',
+            title: 'Id',
+          },
+          queryParam: {
+            type: 'text',
+            title: 'Query',
+          },
+        },
+        required: ['id', 'title'],
+      },
+      editFieldset: false,
+      deleteFieldset: false,
+    },
+    groupBy: {
+      title: 'Group by statements',
+      type: 'schema',
+      fieldSetTitle: 'Group by statements metadata',
+      fieldSetId: 'group_by_statements_metadata',
+      fieldSetSchema: {
+        fieldsets: [
+          {
+            id: 'default',
+            title: 'title',
+            fields: ['title', 'id', 'discodataKey', 'key'],
+          },
+        ],
+        properties: {
+          title: {
+            type: 'text',
+            title: 'Title',
+          },
+          id: {
+            type: 'text',
+            title: 'Id',
+          },
+          discodataKey: {
+            type: 'text',
+            title: 'Discodata key',
+          },
+          key: {
+            type: 'text',
+            title: 'key',
+          },
+        },
+        required: ['id', 'title'],
+      },
+      editFieldset: false,
+      deleteFieldset: false,
     },
     components: {
       title: 'Components',
@@ -96,6 +188,7 @@ const getSchema = props => {
               'type',
               'gridColumns',
               'className',
+              'listItemClassName',
               'hasParent',
               'wrapperClassName',
               'parent',
@@ -142,14 +235,18 @@ const getSchema = props => {
             items: formData => {
               if (['metadataGrid', 'table', 'banner'].includes(formData.type)) {
                 return {
-                  choices: item ? makeChoices(Object.keys(item)) : [],
+                  choices: selectedDiscodataResource
+                    ? makeChoices(Object.keys(selectedDiscodataResource))
+                    : [],
                 };
               }
               return undefined;
             },
             choices: formData => {
               if (!['metadataGrid', 'table', 'banner'].includes(formData.type))
-                return item ? makeChoices(Object.keys(item)) : [];
+                return selectedDiscodataResource
+                  ? makeChoices(Object.keys(selectedDiscodataResource))
+                  : [];
               return undefined;
             },
             description: formData => {
@@ -168,9 +265,12 @@ const getSchema = props => {
               return 'URL metadata field';
             },
             choices: formData => {
-              return item ? makeChoices(Object.keys(item)) : [];
+              return selectedDiscodataResource
+                ? makeChoices(Object.keys(selectedDiscodataResource))
+                : [];
             },
-            disabled: formData => !['linkHeader'].includes(formData.type),
+            disabled: formData =>
+              !['linkHeader', 'linkList'].includes(formData.type),
           },
           valueClassName: {
             type: 'array',
@@ -204,6 +304,8 @@ const getSchema = props => {
               ['hr', 'Horizontal line'],
               ['header', 'Header'],
               ['linkHeader', 'Header link'],
+              ['list', 'List'],
+              ['linkList', 'List Link'],
               ['paragraph', 'Paragraph'],
               ['metadataGrid', 'Metadata grid'],
               ['table', 'Table'],
@@ -222,6 +324,14 @@ const getSchema = props => {
               choices: makeChoices(classNames),
             },
             disabled: formData => ['container'].includes(formData.type),
+          },
+          listItemClassName: {
+            type: 'array',
+            title: 'List item class name',
+            items: {
+              choices: makeChoices(classNames),
+            },
+            disabled: formData => !['list', 'linkList'].includes(formData.type),
           },
           hasParent: {
             type: 'boolean',
@@ -280,7 +390,7 @@ const Edit = props => {
       }),
     });
     /* eslint-disable-next-line */
-  }, [state.item, props.data.components])
+  }, [props.data, props.discodata_resources, props.discodata_query])
   return (
     <div>
       <RenderFields
@@ -303,6 +413,9 @@ const Edit = props => {
 
 export default compose(
   connect((state, props) => ({
+    query: qs.parse(state.router.location.search),
     pathname: state.router.location.pathname,
+    discodata_resources: state.discodata_resources,
+    discodata_query: state.discodata_query,
   })),
 )(Edit);

@@ -1,57 +1,35 @@
-import axios from 'axios';
-
 class DB {
-  static table(path, tableName) {
-    return new Table(path, tableName);
+  static table(query, path = '', pagination = {}) {
+    return new Table(query, path, pagination);
   }
 }
 
 class Table {
-  constructor(path, tableName) {
-    this.path = path;
-    this.tableName = tableName;
-    this.method = '';
-    this.query = '';
-    this.whereStatements = [];
+  constructor(query, path, pagination) {
+    this.query = query;
+    this.path = path || '/';
+    this.pagination = pagination || {};
   }
   get() {
-    this.query += `SELECT TOP 1 * FROM ${this.tableName} `;
-    this.method = 'get';
+    const { p, nrOfHits } = this.pagination;
+    return `${this.path}?query=${this.query}${p ? '&p=' + p : ''}${
+      nrOfHits ? '&nrOfHits=' + nrOfHits : ''
+    }`;
+  }
+  encode() {
+    this.query = encodeURI(this.query);
     return this;
   }
-  where(column, value) {
-    if (Array.isArray(value)) {
-      value.forEach(v => {
-        this.whereStatements.push(`${column}='${v}'`);
-      });
-    } else if (value) {
-      value.split(',').forEach(v => {
-        this.whereStatements.push(`${column}='${v}'`);
-      });
-    }
+  where(whereStatements) {
+    this.query +=
+      whereStatements?.length > 0
+        ? whereStatements
+            .map(where => {
+              return ` WHERE ${where.discodataKey} LIKE '${where.value}'`;
+            })
+            .join(' AND ')
+        : '';
     return this;
-  }
-  log() {
-    console.log(
-      this.query +
-        (this.whereStatements.length > 0
-          ? 'WHERE ' + this.whereStatements.join(' AND ')
-          : ''),
-    );
-    return (
-      this.query +
-      (this.whereStatements.length > 0
-        ? 'WHERE ' + this.whereStatements.join(' AND ')
-        : '')
-    );
-  }
-  makeRequest() {
-    return axios[this.method](
-      `${this.path}?query=${this.query +
-        (this.whereStatements.length > 0
-          ? 'WHERE ' + this.whereStatements.join(' AND ')
-          : '')}`,
-    );
   }
 }
 
