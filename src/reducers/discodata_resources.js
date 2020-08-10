@@ -6,16 +6,18 @@ const initialState = {
   loaded: false,
   loading: false,
   pendingRequests: {},
+  requestsMetadata: {},
 };
 
 export default function pages(state = initialState, action = {}) {
+  let requestsMetadata = { ...state.requestsMetadata };
   const pendingRequests = { ...state.pendingRequests };
   const data = {
     ...state.data,
   };
-  const id = `${action.resourceKey}_${action.key}_${
-    action.search?.[action.key]
-  }`;
+  const id = action.isCollection
+    ? action.resourceKey
+    : `${action.resourceKey}_${action.key}`;
   switch (action.type) {
     case `${GET_DISCODATA_RESOURCE}_PENDING`:
       pendingRequests[id] = true;
@@ -39,40 +41,54 @@ export default function pages(state = initialState, action = {}) {
           );
         });
       const resourceKey = action.resourceKey;
-      const entity = action.search?.[action.key];
-      const groupBy = action.groupBy || [];
       if (resourceKey && !data[resourceKey]) data[resourceKey] = {};
-      if (resourceKey && entity && !data[resourceKey][entity])
-        data[resourceKey][entity] = {
-          results,
-          ...(results?.[0] || {}),
-        };
-      groupBy?.length > 0 &&
-        groupBy.forEach(group => {
-          if (group?.key && !data[resourceKey][entity][group.key])
-            data[resourceKey][entity][group.key] = {};
-          results.forEach(item => {
-            if (group && group.key && group.discodataKey) {
-              if (
-                !data[resourceKey][entity][group.key][item[group.discodataKey]]
-              ) {
-                data[resourceKey][entity][group.key][
-                  item[group.discodataKey]
-                ] = [];
-              }
-              data[resourceKey][entity][group.key][
-                item[group.discodataKey]
-              ].push(item);
-            }
+      if (!action.isCollection) {
+        const groupBy = action.groupBy || [];
+        const search = action.search || {};
+        const key = action.key || '';
+        const entity = search[key];
+        if (entity && !data[resourceKey][entity]) {
+          data[resourceKey][entity] = { ...(results?.[0] || {}), results };
+        }
+        groupBy?.length > 0 &&
+          groupBy.forEach(group => {
+            if (
+              group?.key &&
+              data[resourceKey][entity] &&
+              !data[resourceKey][entity][group.key]
+            )
+              data[resourceKey][entity][group.key] = {};
+            results &&
+              results.forEach(item => {
+                if (group && group.key && group.discodataKey) {
+                  if (
+                    !data[resourceKey][entity][group.key][
+                      item[group.discodataKey]
+                    ]
+                  ) {
+                    data[resourceKey][entity][group.key][
+                      item[group.discodataKey]
+                    ] = [];
+                  }
+                  data[resourceKey][entity][group.key][
+                    item[group.discodataKey]
+                  ].push(item);
+                }
+              });
           });
-        });
+      } else {
+        data[resourceKey] = results;
+      }
       delete pendingRequests[id];
+      requestsMetadata[id] = action.requestsMetadata;
       return {
         ...state,
         error: null,
         data,
-        loaded: true,
-        loading: false,
+        loaded: Object.keys(pendingRequests).length > 0 ? false : true,
+        loading: Object.keys(pendingRequests).length > 0 ? true : false,
+        pendingRequests,
+        requestsMetadata,
       };
     case `${GET_DISCODATA_RESOURCE}_FAIL`:
       delete pendingRequests[id];
@@ -82,6 +98,7 @@ export default function pages(state = initialState, action = {}) {
         data: {},
         loaded: false,
         loading: false,
+        pendingRequests,
       };
     default:
       return state;

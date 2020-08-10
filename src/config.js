@@ -19,6 +19,12 @@ import DiscodataConnectorBlockView from './DiscodataConnectorBlock/View';
 import DiscodataComponentsBlockEdit from './DiscodataComponentsBlock/Edit';
 import DiscodataComponentsBlockView from './DiscodataComponentsBlock/View';
 
+import DiscodataTableBlockEdit from './DiscodataTableBlock/Edit';
+import DiscodataTableBlockView from './DiscodataTableBlock/View';
+
+import DiscodataSqlBuilderEdit from './DiscodataSqlBuilder/Edit';
+import DiscodataSqlBuilderView from './DiscodataSqlBuilder/View';
+
 import DataProviderWidget from './DataProviders/DataProviderWidget';
 
 import addonRoutes from './routes';
@@ -89,6 +95,24 @@ export function applyConfig(config) {
     title: 'Discodata components block',
     view: DiscodataComponentsBlockView,
     edit: DiscodataComponentsBlockEdit,
+    icon: chartIcon,
+    group: 'data_blocks',
+  };
+
+  config.blocks.blocksConfig.discodata_sql_builder = {
+    id: 'discodata_sql_builder',
+    title: 'Discodata sql builder',
+    view: DiscodataSqlBuilderView,
+    edit: DiscodataSqlBuilderEdit,
+    icon: chartIcon,
+    group: 'data_blocks',
+  };
+
+  config.blocks.blocksConfig.discodata_table_block = {
+    id: 'discodata_table_block',
+    title: 'Discodata table block',
+    view: DiscodataTableBlockView,
+    edit: DiscodataTableBlockEdit,
     icon: chartIcon,
     group: 'data_blocks',
   };

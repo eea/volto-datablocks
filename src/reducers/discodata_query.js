@@ -1,59 +1,82 @@
 import {
-  SET_DISCODATA_QUERY,
   SET_QUERY_PARAM,
   DELETE_QUERY_PARAM,
+  TRIGGER_RENDER,
 } from '../constants';
 
 const initialState = {
-  data: {
-    search: {
-      siteName: 'Novartis AG - Werk Basel St. Johann',
-    },
-    key: 'siteName',
-    resourceKey: 'sites',
-    where: ['siteName'],
-    groupBy: [
-      {
-        discodataKey: 'facilityEprtrReportingYear',
-        key: 'facilityReportingYears',
-      },
-      {
-        discodataKey: 'FacilityName',
-        key: 'facilities',
-      },
-    ],
-  },
+  search: {},
   deletedQueryParams: {},
+  counter: 0,
+  lastAction: '',
 };
 
+// data: {
+//   search: {
+//     siteName: 'Novartis AG - Werk Basel St. Johann',
+//   },
+//   key: 'siteName',
+//   resourceKey: 'sites',
+//   where: ['siteName'],
+//   groupBy: [
+//     {
+//       discodataKey: 'facilityEprtrReportingYear',
+//       key: 'facilityReportingYears',
+//     },
+//     {
+//       discodataKey: 'FacilityName',
+//       key: 'facilities',
+//     },
+//   ],
+// }
+
 export default function pages(state = initialState, action = {}) {
-  let data = {
-    ...state.data,
-  };
+  let search = { ...state.search };
   let deletedQueryParams = { ...state.deletedQueryParams };
   switch (action.type) {
-    case `${SET_DISCODATA_QUERY}`:
-      data = { ...action.query };
-      return {
-        ...state,
-        data,
-      };
     case `${SET_QUERY_PARAM}`:
-      data.search[action.queryParam] = action.value;
-      delete deletedQueryParams[action.queryParam];
-      console.log(data);
+      if (typeof action.queryParam === 'string') {
+        search[action.queryParam] = action.value;
+        delete deletedQueryParams[action.queryParam];
+      } else if (
+        typeof action.queryParam === 'object' &&
+        Object.keys(action.queryParam).length > 0
+      ) {
+        action.queryParam &&
+          Object.entries(action.queryParam).forEach(([key, value]) => {
+            search[key] = value;
+            delete deletedQueryParams[key];
+          });
+      }
       return {
         ...state,
-        data,
+        search,
         deletedQueryParams,
+        counter: state.counter + 1,
+        lastAction: 'SET_QUERY_PARAM',
       };
     case `${DELETE_QUERY_PARAM}`:
-      delete data.search?.[action.queryParam];
-      deletedQueryParams[action.queryParam] = true;
+      if (Array.isArray(action.queryParam)) {
+        action.queryParam.forEach(param => {
+          delete search?.[param];
+          deletedQueryParams[param] = true;
+        });
+      } else {
+        delete search?.[action.queryParam];
+        deletedQueryParams[action.queryParam] = true;
+      }
       return {
         ...state,
-        data,
+        search,
         deletedQueryParams,
+        counter: state.counter + 1,
+        lastAction: 'DELETE_QUERY_PARAM',
+      };
+    case `${TRIGGER_RENDER}`:
+      return {
+        ...state,
+        counter: state.counter + 1,
+        lastAction: 'TRIGGER_RENDER',
       };
     default:
       return state;

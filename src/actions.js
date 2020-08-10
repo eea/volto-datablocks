@@ -8,6 +8,7 @@ import {
   SET_DISCODATA_QUERY,
   DELETE_QUERY_PARAM,
   SET_QUERY_PARAM,
+  TRIGGER_RENDER,
 } from './constants';
 
 export function changeSidebarState(open) {
@@ -75,17 +76,21 @@ export function deleteConnectedDataParameters(path, index) {
 
 export function getDiscodataResource({
   url,
+  search,
+  isCollection,
   resourceKey,
   key,
-  search,
   groupBy,
+  requestsMetadata,
 }) {
   return {
     type: GET_DISCODATA_RESOURCE,
+    search,
+    isCollection,
     resourceKey,
     key,
-    search,
     groupBy,
+    requestsMetadata,
     request: {
       op: 'get',
       path: url,
@@ -100,12 +105,11 @@ export function setDiscodataQuery(query) {
   };
 }
 
-export function setQueryParam({ queryParam, value }) {
+export function setQueryParam({ queryParam }) {
   console.log('SET QUERY PARAM', queryParam);
   return {
     type: SET_QUERY_PARAM,
     queryParam,
-    value,
   };
 }
 
@@ -114,5 +118,11 @@ export function deleteQueryParam({ queryParam }) {
   return {
     type: DELETE_QUERY_PARAM,
     queryParam,
+  };
+}
+
+export function triggerQueryRender() {
+  return {
+    type: TRIGGER_RENDER,
   };
 }

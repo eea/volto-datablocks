@@ -5,22 +5,19 @@ import { compose } from 'redux';
 import moment from 'moment';
 import { arrayToTree } from 'performant-array-to-tree';
 import qs from 'query-string';
-import { Table } from 'semantic-ui-react';
+import { Table, Dropdown, Icon } from 'semantic-ui-react';
 import './style.css';
-import DB from 'volto-datablocks/DataBase/DB';
-
-import { settings } from '~/config';
-
-import { getDiscodataResource } from '../actions';
-
+import DiscodataSqlBuilderView from 'volto-datablocks/DiscodataSqlBuilder/View';
+import { setQueryParam, deleteQueryParam } from 'volto-datablocks/actions';
 const renderComponents = {
-  wrapper: function(tree, item) {
+  wrapper: function(tree, item, props) {
     if (!tree.children || tree.children.length === 0) {
       return (
         <React.Fragment key={`data-wrapper-${tree.data?.id}`}>
           {this[tree.data.type]({
             component: tree.data,
             item,
+            ...props,
           })}
         </React.Fragment>
       );
@@ -33,10 +30,11 @@ const renderComponents = {
           {this[tree.data.type]({
             component: tree.data,
             item,
+            ...props,
           })}
           {tree.children.map(child => {
             if (child.children?.length > 0) {
-              return this.wrapper(child, item);
+              return this.wrapper(child, item, props);
             }
             return (
               renderComponents[child.data.type] && (
@@ -44,6 +42,7 @@ const renderComponents = {
                   {this[child.data.type]({
                     component: child.data,
                     item,
+                    ...props,
                   })}
                 </React.Fragment>
               )
@@ -100,6 +99,40 @@ const renderComponents = {
     );
     return text && props ? view : '';
   },
+  select: props => {
+    let value = props.item?.[props.component?.value];
+    const options =
+      value &&
+      Object.keys(value).map(key => {
+        return { key: key, value: key, text: key };
+      });
+    const trigger = (
+      <span>
+        {props.globalQuery?.[props.component?.urlValue] ||
+          props.component?.placeholder ||
+          ''}
+      </span>
+    );
+    const view = (
+      <Dropdown
+        trigger={trigger}
+        onChange={(event, data) => {
+          if (props.component?.urlValue) {
+            props.setQueryParam &&
+              typeof props.setQueryParam === 'function' &&
+              props.setQueryParam({
+                queryParam: {
+                  [props.component.urlValue]: data.value,
+                },
+              });
+          }
+        }}
+        className={props.component?.className?.join(' ') || ''}
+        options={options}
+      />
+    );
+    return view;
+  },
   paragraph: props => {
     let value = props.item?.[props.component?.value];
     if (value && !isNaN(Date.parse(value)) && value.length >= 10) {
@@ -108,8 +141,8 @@ const renderComponents = {
     const text = props.component?.static
       ? props.component?.staticValue
       : props.component?.staticValue
-      ? `${props.component?.staticValue} ${value}`
-      : value;
+      ? `${props.component?.staticValue} ${value || '-'}`
+      : value || '-';
     const view = (
       <p className={props.component?.className?.join(' ') || ''}>{text}</p>
     );
@@ -131,6 +164,39 @@ const renderComponents = {
             className={props.component?.listItemClassName?.join(' ') || ''}
           >
             {value}
+          </li>
+        ))}
+      </ul>
+    );
+    return view;
+  },
+  linkList: props => {
+    let value = props.item?.[props.component?.value];
+    let items = [];
+    if (Array.isArray(value)) {
+      items = [...value];
+    } else if (value && Object.keys(value).length) {
+      items = Object.keys(value);
+    }
+    const view = (
+      <ul className={props.component?.className?.join(' ') || ''}>
+        {items.map(value => (
+          <li key={_uniqueId('li-')}>
+            <button
+              style={{ cursor: 'pointer' }}
+              className={props.component?.listItemClassName?.join(' ') || ''}
+              onClick={() => {
+                props.setQueryParam &&
+                  typeof props.setQueryParam === 'function' &&
+                  props.setQueryParam({
+                    queryParam: {
+                      [props.component.urlValue]: value,
+                    },
+                  });
+              }}
+            >
+              {value}
+            </button>
           </li>
         ))}
       </ul>
@@ -253,97 +319,69 @@ const renderComponents = {
 const View = props => {
   // providerUrl
   const [state, setState] = useState({
-    item: {},
+    selectedResource: {},
   });
-  const { data } = props;
-  const discodata = { ...props.discodata_query.data };
-  const { additional_sql, sql, resource_key, key, where, groupBy } = data;
+  const { query } = props;
+  const { search } = props.discodata_query;
+  const { data } = props.discodata_resources;
+  const globalQuery = { ...query, ...search };
+  const source_discodata_keys = props.data.source_discodata_keys?.value
+    ? JSON.parse(props.data.source_discodata_keys?.value).properties
+    : {};
+  const resourcePackageKey = props.data.resource_package_key?.value;
+  const key = props.data.key?.value;
+  const source = props.data.source?.value;
+  const source_query_param = props.data.source_query_param?.value;
   useEffect(() => {
+    const selectedResource =
+      resourcePackageKey && !key
+        ? data[resourcePackageKey]
+        : resourcePackageKey && key
+        ? data[resourcePackageKey]?.[globalQuery[key]]
+        : data;
+    let sourceData;
+    let selectedSourceData;
     if (
-      additional_sql?.value === true &&
-      sql?.value &&
-      resource_key?.value &&
-      key?.value &&
-      where?.value
+      selectedResource &&
+      source &&
+      Object.keys(source).length &&
+      selectedResource[source] &&
+      globalQuery[source_query_param] &&
+      selectedResource[source][globalQuery[source_query_param]]
     ) {
-      const whereStatements = where.value
-        ? JSON.parse(where.value).properties
-        : {};
-      const groupByStatements = groupBy?.value
-        ? JSON.parse(groupBy.value).properties
-        : {};
-      const url = DB.table(sql.value, settings.providerUrl, {
-        p: props.query.p,
-        nrOfHits: props.query.nrOfHits,
-      })
-        .where(
-          whereStatements &&
-            Object.entries(whereStatements).map(([key, where]) => {
-              return {
-                discodataKey: where.queryParam,
-                value: props.discodata_query.data?.search?.[where.queryParam],
-              };
-            }),
-        )
-        .encode()
-        .get();
-      if (
-        discodata?.search?.[key.value] &&
-        !props.discodata_resources.data[resource_key.value]?.[
-          discodata?.search?.[key.value]
-        ] &&
-        !props.discodata_resources.pendingRequests[
-          `${resource_key.value}_${key.value}_${discodata.search?.[key.value]}`
-        ]
-      ) {
-        const request = {
-          url,
-          search: discodata.search || {},
-          resourceKey: resource_key.value || '',
-          key: key.value || '',
-          groupBy: groupByStatements
-            ? Object.entries(groupByStatements).map(([key, group]) => {
-                return {
-                  discodataKey: group.discodataKey,
-                  key: group.key,
-                };
-              })
-            : [],
-        };
-        props.getDiscodataResource(request);
-      }
+      sourceData = selectedResource[source][globalQuery[source_query_param]];
+    } else if (selectedResource && source && selectedResource[source]) {
+      sourceData = selectedResource[source];
     }
+    if (sourceData && Array.isArray(sourceData) && source_discodata_keys) {
+      selectedSourceData = sourceData.filter(item => {
+        let ok = true;
+        Object.entries(source_discodata_keys).forEach(
+          ([selectorKey, selector]) => {
+            if (
+              globalQuery[selectorKey] &&
+              item[selector.key] !== globalQuery[selectorKey]
+            ) {
+              ok = false;
+            } else if (!globalQuery[selectorKey]) {
+              ok = false;
+            }
+          },
+        );
+        return ok;
+      })[0];
+    }
+    setState({
+      ...state,
+      selectedResource: selectedSourceData
+        ? selectedSourceData
+        : selectedResource,
+    });
     /* eslint-disable-next-line */
-  }, [additional_sql])
-  useEffect(() => {
-    const __1_selectedDiscodataResource =
-      props.discodata_resources.data?.[props.data.resource_key?.value]?.[
-        discodata.search[(props.data.key?.value)]
-      ] || null;
-    const __2_selectedDiscodataResource =
-      props.discodata_resources.data?.[discodata.resourceKey]?.[
-        discodata.search?.[discodata.key]
-      ] || null;
-    const item = {
-      ...__1_selectedDiscodataResource,
-      additional_results: [
-        ...(__1_selectedDiscodataResource?.results
-          ? __1_selectedDiscodataResource.results
-          : []),
-      ],
-      ...__2_selectedDiscodataResource,
-      results: [
-        ...(__2_selectedDiscodataResource?.results
-          ? __2_selectedDiscodataResource.results
-          : []),
-      ],
-    };
-    setState({ ...state, item });
-    /* eslint-disable-next-line */
-  }, [props.data, props.discodata_resources])
+  }, [props.data, props.discodata_resources, props.discodata_query.search])
   //  Render components
   const componentsSchema =
-    data?.components?.value && JSON.parse(data?.components?.value);
+    props.data?.components?.value && JSON.parse(props.data?.components?.value);
   const components = {};
   componentsSchema?.fieldsets?.[0]?.fields &&
     componentsSchema.fieldsets[0].fields.forEach(component => {
@@ -362,12 +400,22 @@ const View = props => {
     });
   let root = arrayToTree(componentsArray);
   return (
-    <div className="facility-block-wrapper">
-      <div className="" style={{ padding: '2rem', overflow: 'auto' }}>
-        {state.item &&
-          root.map(tree => renderComponents.wrapper(tree, state.item))}
+    <DiscodataSqlBuilderView {...props}>
+      <div className="facility-block-wrapper">
+        <div
+          className=""
+          style={{ padding: '2em 0', margin: '0 1.3em', overflow: 'auto' }}
+        >
+          {state.selectedResource &&
+            root.map(tree =>
+              renderComponents.wrapper(tree, state.selectedResource, {
+                globalQuery,
+                setQueryParam: props.setQueryParam,
+              }),
+            )}
+        </div>
       </div>
-    </div>
+    </DiscodataSqlBuilderView>
   );
 };
 
@@ -379,6 +427,9 @@ export default compose(
       discodata_resources: state.discodata_resources,
       discodata_query: state.discodata_query,
     }),
-    { getDiscodataResource },
+    {
+      setQueryParam,
+      deleteQueryParam,
+    },
   ),
 )(View);

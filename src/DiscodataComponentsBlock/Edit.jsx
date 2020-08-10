@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import _uniqueId from 'lodash/uniqueId';
 import qs from 'query-string';
-import RenderFields from 'volto-addons/Widgets/RenderFields';
 import View from './View';
-import { settings } from '~/config';
+import DiscodataSqlBuilderEdit from 'volto-datablocks/DiscodataSqlBuilder/Edit';
 
 const makeChoices = keys => keys && keys.map(k => [k, k]);
 
@@ -56,111 +54,98 @@ const classNames = [
 ];
 
 const getSchema = props => {
+  const { query } = props;
+  const { search } = props.discodata_query;
+  const { data } = props.discodata_resources;
+  const globalQuery = { ...query, ...search };
+  /* ===================== */
+  const source_discodata_keys = props.data.source_discodata_keys?.value
+    ? JSON.parse(props.data.source_discodata_keys?.value).properties
+    : {};
   const components = props.data.components?.value
     ? JSON.parse(props.data.components?.value).properties
     : {};
-  const { search, key, resourceKey } = props.discodata_query.data;
-  const __1_selectedDiscodataResource =
-    props.discodata_resources.data?.[props.data.resource_key?.value]?.[
-      search[(props.data.key?.value)]
-    ] || null;
-  const __2_selectedDiscodataResource =
-    props.discodata_resources.data?.[resourceKey]?.[search?.[key]] || null;
-  const selectedDiscodataResource = {
-    ...__1_selectedDiscodataResource,
-    additional_results: [
-      ...(__1_selectedDiscodataResource?.results
-        ? __1_selectedDiscodataResource.results
-        : []),
-    ],
-    ...__2_selectedDiscodataResource,
-    results: [
-      ...(__2_selectedDiscodataResource?.results
-        ? __2_selectedDiscodataResource.results
-        : []),
-    ],
-  };
+  /* ===================== */
+  const resourcePackageKey = props.data.resource_package_key?.value;
+  const key = props.data.key?.value;
+  const source = props.data.source?.value;
+  const source_query_param = props.data.source_query_param?.value;
+  const selectedResource =
+    resourcePackageKey && !key
+      ? data[resourcePackageKey]
+      : resourcePackageKey && key
+      ? data[resourcePackageKey]?.[globalQuery[key]]
+      : data;
+  let sourceData;
+  if (
+    selectedResource &&
+    source &&
+    Object.keys(source).length &&
+    selectedResource[source] &&
+    globalQuery[source_query_param] &&
+    selectedResource[source][globalQuery[source_query_param]]
+  ) {
+    sourceData = selectedResource[source][globalQuery[source_query_param]];
+  } else if (selectedResource && source && selectedResource[source]) {
+    sourceData = selectedResource[source];
+  }
   return {
-    additional_sql: {
-      title: 'Use additional sql',
-      type: 'boolean',
-    },
-    sql: {
-      title: 'Additional sql',
-      type: 'text',
-    },
-    resource_key: {
-      title: 'Resource key',
-      type: 'text',
+    resource_package_key: {
+      title: 'Resource package key',
+      type: 'array',
+      choices: data ? makeChoices(Object.keys(data)) : [],
     },
     key: {
       title: 'Key',
-      type: 'text',
+      type: 'array',
+      choices: globalQuery ? makeChoices(Object.keys(globalQuery)) : [],
     },
-    where: {
-      title: 'Where statements',
+    source: {
+      title: 'Source',
+      type: 'array',
+      choices: selectedResource
+        ? makeChoices(Object.keys(selectedResource))
+        : [],
+    },
+    source_query_param: {
+      title: 'Source query selector',
+      type: 'array',
+      choices: globalQuery ? makeChoices(Object.keys(globalQuery)) : [],
+    },
+    source_discodata_keys: {
+      title: 'Source discodata keys',
       type: 'schema',
-      fieldSetTitle: 'Where statements metadata',
-      fieldSetId: 'where_statements_metadata',
+      fieldSetTitle: 'Source discodata keys metadata',
+      fieldSetId: 'source_discodata_keys_metadata',
       fieldSetSchema: {
         fieldsets: [
           {
             id: 'default',
             title: 'title',
-            fields: ['title', 'id', 'queryParam'],
+            fields: ['title', 'id', 'key'],
           },
         ],
         properties: {
           title: {
-            type: 'text',
             title: 'Title',
+            type: 'text',
           },
           id: {
-            type: 'text',
             title: 'Id',
-          },
-          queryParam: {
             type: 'text',
-            title: 'Query',
-          },
-        },
-        required: ['id', 'title'],
-      },
-      editFieldset: false,
-      deleteFieldset: false,
-    },
-    groupBy: {
-      title: 'Group by statements',
-      type: 'schema',
-      fieldSetTitle: 'Group by statements metadata',
-      fieldSetId: 'group_by_statements_metadata',
-      fieldSetSchema: {
-        fieldsets: [
-          {
-            id: 'default',
-            title: 'title',
-            fields: ['title', 'id', 'discodataKey', 'key'],
-          },
-        ],
-        properties: {
-          title: {
-            type: 'text',
-            title: 'Title',
-          },
-          id: {
-            type: 'text',
-            title: 'Id',
-          },
-          discodataKey: {
-            type: 'text',
-            title: 'Discodata key',
           },
           key: {
-            type: 'text',
-            title: 'key',
+            title: 'Key',
+            type: 'array',
+            choices:
+              sourceData && Array.isArray(sourceData)
+                ? makeChoices(Object.keys(sourceData[0]))
+                : sourceData
+                ? makeChoices(Object.keys(sourceData))
+                : [],
           },
         },
-        required: ['id', 'title'],
+        required: ['id', 'title', 'key'],
       },
       editFieldset: false,
       deleteFieldset: false,
@@ -179,9 +164,11 @@ const getSchema = props => {
               'title',
               'id',
               'static',
+              'hasParent',
               'staticValue',
               'value',
               'urlValue',
+              'placeholder',
               'valueClassName',
               'valueLabels',
               'valueLabelsClassName',
@@ -189,7 +176,6 @@ const getSchema = props => {
               'gridColumns',
               'className',
               'listItemClassName',
-              'hasParent',
               'wrapperClassName',
               'parent',
             ],
@@ -209,17 +195,36 @@ const getSchema = props => {
             title: 'Only static data',
             defaultValue: false,
             disabled: formData =>
-              ['container', 'hr', 'metadataGrid', 'table', 'banner'].includes(
-                formData.type,
-              ),
+              [
+                'container',
+                'hr',
+                'metadataGrid',
+                'table',
+                'banner',
+                'list',
+                'linkList',
+                'select',
+              ].includes(formData.type),
+          },
+          hasParent: {
+            type: 'boolean',
+            title: 'Has parent',
+            defaultValue: false,
           },
           staticValue: {
             type: 'text',
             title: 'Static value',
             disabled: formData =>
-              ['container', 'hr', 'metadataGrid', 'table', 'banner'].includes(
-                formData.type,
-              ),
+              [
+                'container',
+                'hr',
+                'metadataGrid',
+                'table',
+                'banner',
+                'list',
+                'linkList',
+                'select',
+              ].includes(formData.type),
           },
           value: {
             type: formData => {
@@ -228,15 +233,15 @@ const getSchema = props => {
               return 'select';
             },
             title: formData => {
-              if (['metadataGrid', 'banner'].includes(formData.type))
+              if (['metadataGrid', 'table', 'banner'].includes(formData.type))
                 return 'Metadata fields';
               return 'Metadata field';
             },
             items: formData => {
               if (['metadataGrid', 'table', 'banner'].includes(formData.type)) {
                 return {
-                  choices: selectedDiscodataResource
-                    ? makeChoices(Object.keys(selectedDiscodataResource))
+                  choices: selectedResource
+                    ? makeChoices(Object.keys(selectedResource))
                     : [],
                 };
               }
@@ -244,8 +249,8 @@ const getSchema = props => {
             },
             choices: formData => {
               if (!['metadataGrid', 'table', 'banner'].includes(formData.type))
-                return selectedDiscodataResource
-                  ? makeChoices(Object.keys(selectedDiscodataResource))
+                return selectedResource
+                  ? makeChoices(Object.keys(selectedResource))
                   : [];
               return undefined;
             },
@@ -259,18 +264,28 @@ const getSchema = props => {
           },
           urlValue: {
             type: formData => {
+              if (['linkList', 'select'].includes(formData.type)) return 'text';
               return 'select';
             },
             title: formData => {
+              if (['linkList', 'select'].includes(formData.type))
+                return 'Query to set';
               return 'URL metadata field';
             },
             choices: formData => {
-              return selectedDiscodataResource
-                ? makeChoices(Object.keys(selectedDiscodataResource))
+              if (['linkList', 'select'].includes(formData.type))
+                return undefined;
+              return selectedResource
+                ? makeChoices(Object.keys(selectedResource))
                 : [];
             },
             disabled: formData =>
-              !['linkHeader', 'linkList'].includes(formData.type),
+              !['linkHeader', 'linkList', 'select'].includes(formData.type),
+          },
+          placeholder: {
+            type: 'text',
+            title: 'Placeholder',
+            disabled: formData => !['select'].includes(formData.type),
           },
           valueClassName: {
             type: 'array',
@@ -303,6 +318,7 @@ const getSchema = props => {
               ['container', 'Container'],
               ['hr', 'Horizontal line'],
               ['header', 'Header'],
+              ['select', 'Select'],
               ['linkHeader', 'Header link'],
               ['list', 'List'],
               ['linkList', 'List Link'],
@@ -333,11 +349,6 @@ const getSchema = props => {
             },
             disabled: formData => !['list', 'linkList'].includes(formData.type),
           },
-          hasParent: {
-            type: 'boolean',
-            title: 'Has parent',
-            defaultValue: false,
-          },
           wrapperClassName: {
             type: 'array',
             title: 'Wrapper class name',
@@ -363,7 +374,8 @@ const getSchema = props => {
           const requiredFields = ['title', 'id', 'type'];
           if (['metadataGrid', 'table', 'banner'].includes(formData.type))
             requiredFields.push('valueLabels');
-          if (formData.type === 'linkHeader') requiredFields.push('urlValue');
+          if (['linkHeader', 'linkList', 'select'].includes(formData.type))
+            requiredFields.push('urlValue');
           if (!formData.static && !['container', 'hr'].includes(formData.type))
             requiredFields.push('value');
           return requiredFields;
@@ -377,37 +389,25 @@ const getSchema = props => {
 
 const Edit = props => {
   const [state, setState] = useState({
-    schema: getSchema({ ...props, providerUrl: settings.providerUrl }),
-    id: _uniqueId('block_'),
+    schema: getSchema({ ...props }),
   });
   useEffect(() => {
     setState({
       ...state,
       schema: getSchema({
         ...props,
-        item: state.item,
-        providerUrl: settings.providerUrl,
       }),
     });
     /* eslint-disable-next-line */
-  }, [props.data, props.discodata_resources, props.discodata_query])
+  }, [props.data, props.discodata_resources, props.discodata_query.search])
   return (
-    <div>
-      <RenderFields
-        schema={state.schema}
-        {...props}
-        title="Discodata components block"
-      />
-      <View
-        {...props}
-        id={state.id}
-        updateEditState={newState => {
-          if (newState.items?.[0]) {
-            setState({ ...state, item: { ...newState.items[0] } });
-          }
-        }}
-      />
-    </div>
+    <DiscodataSqlBuilderEdit
+      {...props}
+      optionalSchema={state.schema}
+      title="Discodata components block"
+    >
+      <View {...props} />
+    </DiscodataSqlBuilderEdit>
   );
 };
 

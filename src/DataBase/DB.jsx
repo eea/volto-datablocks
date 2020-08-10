@@ -12,9 +12,9 @@ class Table {
   }
   get() {
     const { p, nrOfHits } = this.pagination;
-    return `${this.path}?query=${this.query}${p ? '&p=' + p : ''}${
-      nrOfHits ? '&nrOfHits=' + nrOfHits : ''
-    }`;
+    return `${this.path}?query=${this.query}${
+      typeof p !== 'undefined' ? '&p=' + p : ''
+    }${typeof nrOfHits !== 'undefined' ? '&nrOfHits=' + nrOfHits : ''}`;
   }
   encode() {
     this.query = encodeURI(this.query);
@@ -25,7 +25,7 @@ class Table {
       whereStatements?.length > 0
         ? whereStatements
             .map(where => {
-              return ` WHERE ${where.discodataKey} LIKE '${where.value}'`;
+              return ` WHERE [${where.discodataKey}] LIKE '${where.value}'`;
             })
             .join(' AND ')
         : '';
