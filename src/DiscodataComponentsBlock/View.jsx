@@ -103,9 +103,11 @@ const renderComponents = {
     let value = props.item?.[props.component?.value];
     const options =
       value &&
-      Object.keys(value).map(key => {
-        return { key: key, value: key, text: key };
-      });
+      Object.keys(value)
+        .filter(key => key)
+        .map(key => {
+          return { key: key, value: key, text: key };
+        });
     const trigger = (
       <span>
         {props.globalQuery?.[props.component?.urlValue] ||
