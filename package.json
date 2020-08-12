@@ -39,6 +39,8 @@
   "dependencies": {
     "axios": "^0.19.2",
     "humanize-plus": "^1.8.2",
+    "jsonp": "^0.2.1",
+    "ol": "^6.4.3",
     "performant-array-to-tree": "^1.7.1"
   }
 }
