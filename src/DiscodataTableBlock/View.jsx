@@ -113,8 +113,6 @@ const View = props => {
     ? JSON.parse(props.data.sql.value).properties
     : {};
   const { activePage, itemsPerPage } = state.pagination;
-  // const totalItems = props.items_total;
-  // const items = props.items;
   let items = [],
     totalItems = 0;
   if (
@@ -135,10 +133,9 @@ const View = props => {
             (acc, el) =>
               acc[props.data.itemsCountKey.value] +
               el[props.data.itemsCountKey.value],
-          )
+          )[props.data.itemsCountKey.value]
         : 0;
   }
-  const start = itemsPerPage * activePage - itemsPerPage + 1;
   useEffect(() => {
     const metadata = props.data?.metadata
       ? isString(props.data.metadata.value)
@@ -156,7 +153,7 @@ const View = props => {
     <div className={`browse-table ${props.className ? props.className : ''}`}>
       <DiscodataSqlBuilderView
         {...props}
-        pagination={{ p: start, nrOfHits: itemsPerPage }}
+        pagination={{ p: activePage, nrOfHits: itemsPerPage }}
       >
         <React.Fragment>
           <Table>

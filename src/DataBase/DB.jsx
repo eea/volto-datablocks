@@ -21,14 +21,31 @@ class Table {
     return this;
   }
   where(whereStatements) {
-    this.query +=
+    let queryString =
       whereStatements?.length > 0
         ? whereStatements
             .map(where => {
-              return ` WHERE [${where.discodataKey}] LIKE '${where.value}'`;
+              let whereString = '';
+              if (Array.isArray(where.value)) {
+                return ` WHERE [${where.discodataKey}] IN (${where.value.map(
+                  v => {
+                    return "'" + v + "'";
+                  },
+                )})`;
+              } else {
+                whereString = ` WHERE [${where.discodataKey}] LIKE '${
+                  where.value
+                }'`;
+              }
+              return whereString;
             })
             .join(' AND ')
         : '';
+    if (this.query.includes(':where')) {
+      this.query = this.query.replace(':where', queryString);
+    } else {
+      this.query += queryString;
+    }
     return this;
   }
 }
