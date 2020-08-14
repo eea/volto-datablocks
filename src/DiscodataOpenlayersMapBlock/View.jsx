@@ -377,13 +377,13 @@ const OpenlayersMapView = props => {
         <Grid.Column>
           <p className="menu-title">Dynamic filter</p>
           <p className="menu-label">Reporting year</p>
-          <Dropdown
-            fluid
-            selection
-            value="All reporting years"
-            options
-            // options={options}
-          />
+          {/*<Dropdown*/}
+          {/*  fluid*/}
+          {/*  selection*/}
+          {/*  value="All reporting years"*/}
+          {/*  // options={options}*/}
+          {/*  // options={options}*/}
+          {/*/>*/}
           <p className="menu-label">Industrial sites in this area</p>
           {/*{sites.map((item, index) => (*/}
           {/*  <Grid.Row>*/}
