@@ -56,15 +56,6 @@ const renderMap = props => {
        * Elements that make up the popup.
        */
       var element = document.getElementById('popup');
-      var content = document.getElementById('popup-content');
-      var closer = document.getElementById('popup-closer');
-
-      /**
-       * Create an overlay to anchor the popup to the map.
-       */
-      var popup = new Overlay({
-        element: element,
-      });
 
       // Main map
       var map = new Map({
@@ -73,8 +64,17 @@ const renderMap = props => {
           center: fromLonLat([20, 50]),
           zoom: 4.5,
         }),
-        overlays: [popup],
       });
+
+      /**
+       * Create an overlay to anchor the popup to the map.
+       */
+      var popup = new Overlay({
+        element: element,
+        positioning: 'bottom-center',
+        stopEvent: false,
+      });
+      map.addOverlay(popup);
 
       // Basemaps Layers
       const worldLightGrayBase = new TileLayer({
@@ -231,36 +231,22 @@ const renderMap = props => {
       });
       map.addLayer(vectorLayerGroup);
 
-      // Layer Switcher logic for vector layers
-      // const vectorLayerElements = document.querySelectorAll('.sidebar > input[type=checkbox]');
-      // for (let vectorLayerElement of vectorLayerElements) {
-      //   vectorLayerElement.addEventListener('change', function () {
-      //     let vectorLayerElementValue = this.value;
-      //     let isVectorLayerVisible = this.checked;
-      //     vectorLayerGroup.getLayers().forEach(function (element, index, array) {
-      //       let vectorLayerTitle = element.get('title');
-      //       if(vectorLayerTitle === vectorLayerElementValue) {
-      //         element.setVisible(isVectorLayerVisible);
-      //       }
-      //     })
-      //   })
-      // }
-
       // Auto center by client location
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(centerPosition);
       }
-      function centerPosition(position) {
+
+      var centerPosition = function(position) {
         map
           .getView()
           .setCenter(
             fromLonLat([position.coords.longitude, position.coords.latitude]),
           );
         map.getView().setZoom(12);
-      }
+      };
 
       // Identify logic
-      var displayFeatureInfo = function(pixel, coordinate) {
+      var displayFeatureInfo = function(pixel) {
         var features = [];
         map.forEachFeatureAtPixel(pixel, function(feature) {
           features.push(feature);
@@ -269,52 +255,54 @@ const renderMap = props => {
           map.getTarget().style.cursor = 'pointer';
           var geometry = features[0].getGeometry();
           var coord = geometry.getCoordinates();
-          popup.setPosition(coord);
 
           let content = '';
           let title = '';
 
           if (features[0].get('sitename')) {
+            console.dir(features[0]);
             title = features[0].get('sitename');
-            content = features[0].get('sitename') + '<br>';
-            content += ' id: ' + features[0].get('id') + '<br>';
+            content = '<h5>Site contents:</h5>';
+            content += features[0].get('n_fac') + ' Facilities<br>';
             content +=
-              '* Reporting year: ' + features[0].get('rep_yr') + '<br>';
-            content += ' * Country: ' + features[0].get('country') + '<br>';
+              features[0].get('n_lcp') + ' Large combustion plants<br>';
+            content = '<h5>Pollutant emissions</h5>';
+            content += features[0].get('pollutants') + '<br>';
+            content += '<h5>Regulatory information</h5>';
+            content += 'Last operating permit issued: [DATA NOT AVAILABLE]<br>';
             content +=
-              '* Pollutants: ' + features[0].get('pollutants') + '<br>';
-            content +=
-              '* Pollutants No.: ' + features[0].get('n_pollu') + '<br>';
-            content += ' n_inspect: ' + features[0].get('n_inspect') + '<br>';
-            content += ' n_fac: ' + features[0].get('n_fac') + '<br>';
-            content += ' n_inst: ' + features[0].get('n_inst') + '<br>';
-            content += ' n_lcp: ' + features[0].get('n_lcp') + '<br>';
+              'Inspections in ' +
+              features[0].get('rep_yr') +
+              ': ' +
+              features[0].get('n_inspect') +
+              '<br>';
           }
 
           if (features[0].get('NUTS_NAME')) {
             title = features[0].get('NUTS_NAME');
-            content = ' * NUTS_NAME: ' + features[0].get('NUTS_NAME') + '<br>';
-            content += ' * CNTR_CODE: ' + features[0].get('CNTR_CODE') + '<br>';
-            content += ' * COUNTRY: ' + features[0].get('COUNTRY') + '<br>';
+            content = ' NUTS Region: ' + features[0].get('NUTS_NAME') + '<br>';
+            content += ' Country: ' + features[0].get('COUNTRY') + '<br>';
             content +=
-              ' * LEVEL_CODE: ' + features[0].get('LEVEL_CODE') + '<br>';
-            content += ' * NUTS_ID: ' + features[0].get('NUTS_ID') + '<br>';
-            content += ' * num_sites: ' + features[0].get('num_sites') + '<br>';
+              ' Number of sites: ' + features[0].get('num_sites') + '<br>';
           }
           setTimeout(() => {
-            // console.log('HERE', document.getElementById('popup-content'));
+            console.log('HERE', element);
+            console.log('HERE content', content);
+            popup.setPosition(coord);
+
+            // element.popover({
+            //   placement: 'right',
+            //   html: true,
+            //   title: features[0].get('sitename'),
+            //   content: content,
+            // });
+            // element.popover('show');
+
             // document.getElementById('popup-content').innerHTML = content;
-            popup.setPosition(coordinate);
           }, 0);
-          // $(element).popover({
-          //   placement: 'right',
-          //   html: true,
-          //   title: features[0].get('sitename'),
-          //   content: content,
-          // });
-          // $(element).popover('show');
         } else {
-          // map.getTarget().style.cursor = '';
+          map.getTarget().style.cursor = '';
+          popup.setPosition(undefined);
           // $(element).popover('destroy');
         }
       };
@@ -328,7 +316,7 @@ const renderMap = props => {
       });
 
       map.on('click', function(evt) {
-        displayFeatureInfo(evt.pixel, evt.coordinate);
+        displayFeatureInfo(evt.pixel);
       });
 
       // zoom-in out layer switching logic
@@ -383,16 +371,10 @@ const OpenlayersMapView = props => {
   }, [props.data?.query_parameters?.value])
   return (
     <React.Fragment>
-      <div className="grid-container">
-        <div className="grid-1">
-          <div className="sidebar" />
-        </div>
-        <div className="grid-2" />
-      </div>
       <div id="map" className="map" />
-      <div id="popup" class="ol-popup">
+      <div id="popup" className="popup">
         {/* eslint-disable-next-line */}
-        <a href="#" id="popup-closer" class="ol-popup-closer" />
+        <a href="#" id="popup-closer" className="ol-popup-closer" />
         <div id="popup-content" />
       </div>
     </React.Fragment>
