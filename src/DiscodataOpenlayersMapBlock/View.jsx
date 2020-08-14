@@ -1,5 +1,7 @@
 /* REACT */
 import React, { useState, useRef, useEffect } from 'react';
+import { Grid, Dropdown, Radio } from 'semantic-ui-react';
+// import { options, sites, quickFacts, tableItems } from './browseConstants';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { setQueryParam } from 'volto-datablocks/actions';
@@ -243,7 +245,7 @@ const renderMap = props => {
             fromLonLat([position.coords.longitude, position.coords.latitude]),
           );
         map.getView().setZoom(12);
-      };
+      }
 
       // Identify logic
       var displayFeatureInfo = function(pixel) {
@@ -286,7 +288,7 @@ const renderMap = props => {
               ' Number of sites: ' + features[0].get('num_sites') + '<br>';
           }
           setTimeout(() => {
-            console.log('HERE', element);
+            console.log('HERE', document.getElementById('popup'));
             console.log('HERE content', content);
             popup.setPosition(coord);
 
@@ -371,6 +373,47 @@ const OpenlayersMapView = props => {
   }, [props.data?.query_parameters?.value])
   return (
     <React.Fragment>
+      <div className="search-map-menu">
+        <Grid.Column>
+          <p className="menu-title">Dynamic filter</p>
+          <p className="menu-label">Reporting year</p>
+          <Dropdown
+            fluid
+            selection
+            value="All reporting years"
+            options
+            // options={options}
+          />
+          <p className="menu-label">Industrial sites in this area</p>
+          {/*{sites.map((item, index) => (*/}
+          {/*  <Grid.Row>*/}
+          {/*    <Radio*/}
+          {/*      key={index}*/}
+          {/*      label={item.label}*/}
+          {/*      value={item.value}*/}
+          {/*      className="menu-radio"*/}
+          {/*      // checked={checkedSite.value === item.value}*/}
+          {/*      // onChange={() => setCheckedSite(item)}*/}
+          {/*    />*/}
+          {/*  </Grid.Row>*/}
+          {/*))}*/}
+          <p className="menu-title">Quick facts</p>
+          {/*{quickFacts.map(fact => (*/}
+          {/*  <div className="quick-fact-card">*/}
+          {/*    <p className="menu-label">{fact.title}</p>*/}
+          {/*    <p className="card-content">*/}
+          {/*      {fact.reportingSites} reporting sites*/}
+          {/*    </p>*/}
+          {/*    <p className="card-content">*/}
+          {/*      Most common industry: {fact.commonIndustry} industry*/}
+          {/*    </p>*/}
+          {/*    <p className="card-content">*/}
+          {/*      Most common pollutant: {fact.commonPollutant}*/}
+          {/*    </p>*/}
+          {/*  </div>*/}
+          {/*))}*/}
+        </Grid.Column>
+      </div>
       <div id="map" className="map" />
       <div id="popup" className="popup">
         {/* eslint-disable-next-line */}
