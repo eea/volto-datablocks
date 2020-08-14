@@ -236,7 +236,7 @@ const renderMap = props => {
         navigator.geolocation.getCurrentPosition(centerPosition);
       }
 
-      var centerPosition = function(position) {
+      function centerPosition(position) {
         map
           .getView()
           .setCenter(
