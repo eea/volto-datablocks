@@ -1,83 +1,131 @@
 /* REACT */
 import React, { useState, useRef, useEffect } from 'react';
 import { Grid, Dropdown, Radio } from 'semantic-ui-react';
-// import { options, sites, quickFacts, tableItems } from './browseConstants';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { setQueryParam } from 'volto-datablocks/actions';
+// HELPERS
 import qs from 'query-string';
 import jsonp from 'jsonp';
-/* OPEN LAYERS */
+// VOLTO
+import { Icon as VoltoIcon } from '@plone/volto/components';
+// VOLTO-DATABLOCKS
+import { setQueryParam } from 'volto-datablocks/actions';
+// SVGs
+import clearSVG from '@plone/volto/icons/clear.svg';
+import pinSVG from '~/icons/pin.svg';
+// STYLES
 import 'ol/ol.css';
-// import EsriJSON from 'ol/format/EsriJSON';
-// import { Tile as TileLayer, Vector as VectorLayer, Group } from 'ol/layer';
-// import { tile as tileStrategy } from 'ol/loadingstrategy';
-// import { fromLonLat } from 'ol/proj';
-// import VectorSource from 'ol/source/Vector';
-// import XYZ from 'ol/source/XYZ';
-// import { Fill, Stroke, Style, Circle as CircleStyle } from 'ol/style';
-// import { createXYZ } from 'ol/tilegrid';
-
 import './style.css';
 
-const popupData = {
-  show: false,
+const getHtmlAttributes = obj => {
+  return Object.entries(obj)
+    .map(([key, value]) => {
+      return `${key}="${value}"`;
+    })
+    .join(' ');
 };
 
-const renderMap = props => {
-  const { draggable, queryParameters } = props;
-  setTimeout(() => {
+const encodedPinSVG = encodeURIComponent(
+  `<svg ${getHtmlAttributes(pinSVG.attributes)}>${pinSVG.content}</svg>`,
+);
+
+let Map,
+  View,
+  Overlay,
+  EsriJSON,
+  VectorSource,
+  XYZ,
+  fromLonLat,
+  createXYZ,
+  CircleStyle,
+  Fill,
+  Stroke,
+  Style,
+  Icon,
+  TileLayer,
+  VectorLayer,
+  Group,
+  tile;
+let OL_LOADED = false;
+const OpenlayersMapView = props => {
+  const stateRef = useRef({
+    popup: {},
+    popupDetails: {},
+  });
+  const [state, setState] = useState({
+    popup: {},
+    popupDetails: {},
+  });
+  const { query } = qs.parse(props.query);
+  const { search } = props.discodata_query;
+  const globalQuery = { ...query, ...search };
+  const draggable = props.data?.draggable?.value;
+  const queryParameters = props.data?.query_parameters?.value
+    ? JSON.parse(props.data.query_parameters.value).properties
+    : {};
+
+  useEffect(() => {
+    if (__CLIENT__ && document) {
+      // MOuNT
+      if (!OL_LOADED) {
+        Map = require('ol/Map').default;
+        View = require('ol/View').default;
+        Overlay = require('ol/Overlay').default;
+        EsriJSON = require('ol/format/EsriJSON').default;
+        VectorSource = require('ol/source/Vector').default;
+        XYZ = require('ol/source/XYZ').default;
+        fromLonLat = require('ol/proj').fromLonLat;
+        createXYZ = require('ol/tilegrid').createXYZ;
+        CircleStyle = require('ol/style/Circle.js').default;
+        Fill = require('ol/style/Fill.js').default;
+        Stroke = require('ol/style/Stroke.js').default;
+        Style = require('ol/style/Style.js').default;
+        Icon = require('ol/style/Icon.js').default;
+        TileLayer = require('ol/layer/Tile.js').default;
+        VectorLayer = require('ol/layer/Vector.js').default;
+        Group = require('ol/layer/Group.js').default;
+        tile = require('ol/loadingstrategy').tile;
+        OL_LOADED = true;
+      }
+      renderMap({ draggable, queryParameters });
+    }
+    return () => {
+      // UNMOUNT
+    };
+    /* eslint-disable-next-line */
+  }, [])
+
+  useEffect(() => {
+    if (__CLIENT__ && document) {
+      renderMap({ draggable, queryParameters });
+    }
+    /* eslint-disable-next-line */
+  }, [props.discodata_query.search])
+
+  useEffect(() => {
+    stateRef.current = { ...state };
+    /* eslint-disable-next-line */
+  }, [JSON.stringify(state)])
+
+  function renderMap() {
     if (
-      __CLIENT__ &&
-      document &&
       document.getElementById('map') &&
-      document.getElementById('popup-content') &&
-      document.getElementById('popup') &&
-      document.getElementById('popup-closer')
+      document.getElementById(`popup`) &&
+      document.getElementById(`popup-details`)
     ) {
+      //  Popup element
+      const popupElement = document.getElementById(`popup`);
+      const popupDetailsElement = document.getElementById(`popup-details`);
+      //  Clear map content on every cycle
       document.getElementById('map').innerHTML = '';
-      const Map = require('ol/Map').default;
-      const View = require('ol/View').default;
-      const Overlay = require('ol/Overlay').default;
-      const EsriJSON = require('ol/format/EsriJSON').default;
-      const VectorSource = require('ol/source/Vector').default;
-      const XYZ = require('ol/source/XYZ').default;
-      const { fromLonLat } = require('ol/proj');
-      const { createXYZ } = require('ol/tilegrid');
-      const CircleStyle = require('ol/style/Circle.js').default;
-      const Fill = require('ol/style/Fill.js').default;
-      const Stroke = require('ol/style/Stroke.js').default;
-      const Style = require('ol/style/Style.js').default;
-      const TileLayer = require('ol/layer/Tile.js').default;
-      const VectorLayer = require('ol/layer/Vector.js').default;
-      const Group = require('ol/layer/Group.js').default;
-      const { tile } = require('ol/loadingstrategy');
-      const tileStrategy = tile;
-
-      /**
-       * Elements that make up the popup.
-       */
-      var element = document.getElementById('popup');
-
       // Main map
-      var map = new Map({
+      const map = new Map({
         target: document.getElementById('map'),
         view: new View({
           center: fromLonLat([20, 50]),
           zoom: 4.5,
         }),
       });
-
-      /**
-       * Create an overlay to anchor the popup to the map.
-       */
-      var popup = new Overlay({
-        element: element,
-        positioning: 'bottom-center',
-        stopEvent: false,
-      });
-      map.addOverlay(popup);
-
       // Basemaps Layers
       const worldLightGrayBase = new TileLayer({
         source: new XYZ({
@@ -88,7 +136,6 @@ const renderMap = props => {
         visible: true,
         title: 'World_Light_Gray_Base',
       });
-
       const worldHillshade = new TileLayer({
         source: new XYZ({
           url:
@@ -98,13 +145,25 @@ const renderMap = props => {
         visible: false,
         title: 'World_Hillshade',
       });
-
       // Base Layer Group
       const baseLayerGroup = new Group({
         layers: [worldLightGrayBase, worldHillshade],
       });
+      // Create an overlay to anchor the popups to the map.
+      const popup = new Overlay({
+        element: popupElement,
+        positioning: 'bottom-center',
+        stopEvent: false,
+      });
+      const popupDetails = new Overlay({
+        element: popupDetailsElement,
+        positioning: 'bottom-center',
+        stopEvent: false,
+      });
+      // Add layers to map
+      map.addOverlay(popup);
+      map.addOverlay(popupDetails);
       map.addLayer(baseLayerGroup);
-
       // Layer Switcher logic for Basemaps
       const baseLayerElements = document.querySelectorAll(
         '.sidebar > input[type=radio]',
@@ -149,26 +208,27 @@ const renderMap = props => {
               var features = esrijsonFormat.readFeatures(response, {
                 featureProjection: projection,
               });
-              console.dir(response);
               if (features.length > 0) {
                 vectorSourceIEDSiteMapWM.addFeatures(features);
               }
             }
           });
         },
-        strategy: tileStrategy(
+        strategy: tile(
           createXYZ({
             tileSize: 512,
           }),
         ),
       });
+
       const lyIEDSiteMapWM = new VectorLayer({
         source: vectorSourceIEDSiteMapWM,
         style: new Style({
-          image: new CircleStyle({
-            radius: 3,
-            fill: new Fill({ color: '#666666' }),
-            stroke: new Stroke({ color: '#bada55', width: 1 }),
+          image: new Icon({
+            opacity: 1,
+            src: `data:image/svg+xml;utf8,${encodedPinSVG}`,
+            size: [100, 100],
+            scale: 1,
           }),
         }),
         visible: true,
@@ -207,7 +267,7 @@ const renderMap = props => {
             }
           });
         },
-        strategy: tileStrategy(
+        strategy: tile(
           createXYZ({
             tileSize: 512,
           }),
@@ -217,10 +277,11 @@ const renderMap = props => {
       const lyIEDSiteClustersWM = new VectorLayer({
         source: vectorSourceIEDSiteClustersWM,
         style: new Style({
-          image: new CircleStyle({
-            radius: 3,
-            fill: new Fill({ color: '#dd1111' }),
-            stroke: new Stroke({ color: '#bada55', width: 1 }),
+          image: new Icon({
+            opacity: 1,
+            src: `data:image/svg+xml;utf8,${encodedPinSVG}`,
+            size: [100, 100],
+            scale: 1,
           }),
         }),
         visible: true,
@@ -248,64 +309,49 @@ const renderMap = props => {
       }
 
       // Identify logic
-      var displayFeatureInfo = function(pixel) {
-        var features = [];
+      function setFeatureInfo(pixel, detailed) {
+        let features = [];
         map.forEachFeatureAtPixel(pixel, function(feature) {
           features.push(feature);
         });
         if (features.length > 0) {
+          const featuresProperties = features[0].getProperties();
+          if (
+            detailed &&
+            JSON.stringify(stateRef.current.popupDetails) !==
+              JSON.stringify(featuresProperties)
+          ) {
+            setState({
+              ...stateRef.current,
+              popupDetails: { ...featuresProperties },
+            });
+          } else if (
+            !detailed &&
+            JSON.stringify(stateRef.current.popup) !==
+              JSON.stringify(featuresProperties)
+          ) {
+            setState({
+              ...stateRef.current,
+              popup: { ...featuresProperties },
+            });
+          }
+          return true;
+        }
+        return false;
+      }
+
+      const displayPopup = function(
+        pixel,
+        coordinate,
+        popup,
+        detailed = false,
+      ) {
+        if (setFeatureInfo(pixel, detailed)) {
           map.getTarget().style.cursor = 'pointer';
-          var geometry = features[0].getGeometry();
-          var coord = geometry.getCoordinates();
-
-          let content = '';
-          let title = '';
-
-          if (features[0].get('sitename')) {
-            console.dir(features[0]);
-            title = features[0].get('sitename');
-            content = '<h5>Site contents:</h5>';
-            content += features[0].get('n_fac') + ' Facilities<br>';
-            content +=
-              features[0].get('n_lcp') + ' Large combustion plants<br>';
-            content = '<h5>Pollutant emissions</h5>';
-            content += features[0].get('pollutants') + '<br>';
-            content += '<h5>Regulatory information</h5>';
-            content += 'Last operating permit issued: [DATA NOT AVAILABLE]<br>';
-            content +=
-              'Inspections in ' +
-              features[0].get('rep_yr') +
-              ': ' +
-              features[0].get('n_inspect') +
-              '<br>';
-          }
-
-          if (features[0].get('NUTS_NAME')) {
-            title = features[0].get('NUTS_NAME');
-            content = ' NUTS Region: ' + features[0].get('NUTS_NAME') + '<br>';
-            content += ' Country: ' + features[0].get('COUNTRY') + '<br>';
-            content +=
-              ' Number of sites: ' + features[0].get('num_sites') + '<br>';
-          }
-          setTimeout(() => {
-            console.log('HERE', document.getElementById('popup'));
-            console.log('HERE content', content);
-            popup.setPosition(coord);
-
-            // element.popover({
-            //   placement: 'right',
-            //   html: true,
-            //   title: features[0].get('sitename'),
-            //   content: content,
-            // });
-            // element.popover('show');
-
-            // document.getElementById('popup-content').innerHTML = content;
-          }, 0);
+          popup.setPosition(coordinate);
         } else {
           map.getTarget().style.cursor = '';
           popup.setPosition(undefined);
-          // $(element).popover('destroy');
         }
       };
 
@@ -313,18 +359,16 @@ const renderMap = props => {
         if (evt.dragging) {
           return;
         }
-        var pixel = map.getEventPixel(evt.originalEvent);
-        displayFeatureInfo(pixel);
+        const pixel = map.getEventPixel(evt.originalEvent);
+        displayPopup(pixel, evt.coordinate, popup);
       });
 
       map.on('click', function(evt) {
-        displayFeatureInfo(evt.pixel);
+        displayPopup(evt.pixel, evt.coordinate, popupDetails, true);
       });
-
       // zoom-in out layer switching logic
       let currZoom = map.getView().getZoom();
       map.on('moveend', function(e) {
-        console.log('moveend');
         let newZoom = map.getView().getZoom();
         if (currZoom !== newZoom) {
           if (newZoom > 8) {
@@ -338,88 +382,89 @@ const renderMap = props => {
         }
       });
     }
-  }, 0);
-};
+  }
 
-const OpenlayersMapView = props => {
-  const { query } = qs.parse(props.query);
-  const { search } = props.discodata_query;
-  const globalQuery = { ...query, ...search };
-  const draggable = props.data?.draggable?.value;
-  const queryParameters = props.data?.query_parameters?.value
-    ? JSON.parse(props.data.query_parameters.value).properties
-    : {};
-  queryParameters &&
-    Object.keys(queryParameters).forEach(key => {
-      console.log(globalQuery[key]);
-    });
-  // props.setQueryParam({
-  //   queryParam: {
-  //     'key': 'value',
-  //   },
-  // });
-  useEffect(() => {
-    console.log('MOUNT');
-    renderMap({ draggable, queryParameters });
-    return () => {
-      console.log('UNMOUNT');
-    };
-    /* eslint-disable-next-line */
-  }, [])
-
-  useEffect(() => {
-    renderMap({ draggable, queryParameters });
-    /* eslint-disable-next-line */
-  }, [props.data?.query_parameters?.value])
   return (
     <React.Fragment>
-      <div className="search-map-menu">
-        <Grid.Column>
-          <p className="menu-title">Dynamic filter</p>
-          <p className="menu-label">Reporting year</p>
-          {/*<Dropdown*/}
-          {/*  fluid*/}
-          {/*  selection*/}
-          {/*  value="All reporting years"*/}
-          {/*  // options={options}*/}
-          {/*  // options={options}*/}
-          {/*/>*/}
-          <p className="menu-label">Industrial sites in this area</p>
-          {/*{sites.map((item, index) => (*/}
-          {/*  <Grid.Row>*/}
-          {/*    <Radio*/}
-          {/*      key={index}*/}
-          {/*      label={item.label}*/}
-          {/*      value={item.value}*/}
-          {/*      className="menu-radio"*/}
-          {/*      // checked={checkedSite.value === item.value}*/}
-          {/*      // onChange={() => setCheckedSite(item)}*/}
-          {/*    />*/}
-          {/*  </Grid.Row>*/}
-          {/*))}*/}
-          <p className="menu-title">Quick facts</p>
-          {/*{quickFacts.map(fact => (*/}
-          {/*  <div className="quick-fact-card">*/}
-          {/*    <p className="menu-label">{fact.title}</p>*/}
-          {/*    <p className="card-content">*/}
-          {/*      {fact.reportingSites} reporting sites*/}
-          {/*    </p>*/}
-          {/*    <p className="card-content">*/}
-          {/*      Most common industry: {fact.commonIndustry} industry*/}
-          {/*    </p>*/}
-          {/*    <p className="card-content">*/}
-          {/*      Most common pollutant: {fact.commonPollutant}*/}
-          {/*    </p>*/}
-          {/*  </div>*/}
-          {/*))}*/}
-        </Grid.Column>
-      </div>
       <div id="map" className="map" />
       <div id="popup" className="popup">
-        {/* eslint-disable-next-line */}
-        <a href="#" id="popup-closer" className="ol-popup-closer" />
-        <div id="popup-content" />
+        {state.popup.sitename && (
+          <div>
+            <p>{state.popup.sitename}</p>
+          </div>
+        )}
       </div>
+      <div id="popup-details" className="popup">
+        {state.popupDetails.sitename && (
+          <div>
+            <p>{state.popupDetails.sitename}</p>
+          </div>
+        )}
+      </div>
+      {/* <div id="popup-ceva" className="popup">
+        {popupState.properties && (
+          <div className="map-modal">
+            <div className="modal-header">
+              <p className="modal-title">Parent company name</p>
+              <VoltoIcon
+                onClick={() => console.log('CLOSE')}
+                color="red"
+                name={clearSVG}
+                size="2em"
+              />
+            </div>
+            <p className="modal-label">Chemical industry</p>
+            <p style={{ marginBottom: '5px', borderBottom: '1px solid grey' }}>
+              Address 1, Address 2
+            </p>
+
+            <Grid.Column stretched>
+              <Grid.Row>
+                <p className="modal-label">Site Contents</p>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  {mapModal.facilityContents &&
+                    mapModal.facilityContents.map(content => (
+                      <a className="details-link" href={content.url}>
+                        {content.title}
+                      </a>
+                    ))}
+                </div>
+              </Grid.Row>
+              <Grid.Row>
+                <p className="modal-label">Pollutant emissions</p>
+                {mapModal.pollutantEmissions &&
+                  mapModal.pollutantEmissions.map(pollutants => (
+                    <p className="details-content">{pollutants}</p>
+                  ))}
+                <a className="details-link" href={'google.com'}>
+                  15 more...
+                </a>
+              </Grid.Row>
+              <Grid.Row>
+                <p className="modal-label">Regulatory information</p>
+                <p className="details-content">
+                  Operating since:{' '}
+                  {mapModal.regulatoryInformation.operatingSince}
+                </p>
+                <p className="details-content">
+                  Last operating permit issued:{' '}
+                  {mapModal.regulatoryInformation.lastPermit}
+                </p>
+                <p className="details-content">
+                  Last inspection:{' '}
+                  {mapModal.regulatoryInformation.lastInspection}
+                </p>
+                <a className="details-link" href={'google.com'}>
+                  Find out more
+                </a>
+              </Grid.Row>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <button className="details-button"> VIEW SITE DETAIL </button>
+              </div>
+            </Grid.Column>
+          </div>
+        )}
+      </div> */}
     </React.Fragment>
   );
 };
