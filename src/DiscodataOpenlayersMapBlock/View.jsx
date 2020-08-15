@@ -1,8 +1,9 @@
 /* REACT */
 import React, { useState, useRef, useEffect } from 'react';
-import { Grid, Dropdown, Radio } from 'semantic-ui-react';
+import { useHistory } from 'react-router-dom';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 // HELPERS
 import qs from 'query-string';
 import jsonp from 'jsonp';
@@ -10,9 +11,12 @@ import jsonp from 'jsonp';
 import { Icon as VoltoIcon } from '@plone/volto/components';
 // VOLTO-DATABLOCKS
 import { setQueryParam } from 'volto-datablocks/actions';
+// SEMANTIC REACT UI
+import { Grid, Dropdown, Radio, Header } from 'semantic-ui-react';
 // SVGs
 import clearSVG from '@plone/volto/icons/clear.svg';
 import pinSVG from '~/icons/pin.svg';
+import bluePinSVG from '~/icons/blue_pin.svg';
 // STYLES
 import 'ol/ol.css';
 import './style.css';
@@ -29,6 +33,12 @@ const encodedPinSVG = encodeURIComponent(
   `<svg ${getHtmlAttributes(pinSVG.attributes)}>${pinSVG.content}</svg>`,
 );
 
+const encodedBluePinSVG = encodeURIComponent(
+  `<svg ${getHtmlAttributes(bluePinSVG.attributes)}>${
+    bluePinSVG.content
+  }</svg>`,
+);
+
 let Map,
   View,
   Overlay,
@@ -36,6 +46,8 @@ let Map,
   VectorSource,
   XYZ,
   fromLonLat,
+  toLonLat,
+  toStringHDMS,
   createXYZ,
   CircleStyle,
   Fill,
@@ -45,17 +57,24 @@ let Map,
   TileLayer,
   VectorLayer,
   Group,
-  tile;
+  tile,
+  Control,
+  defaultsControls;
 let OL_LOADED = false;
 const OpenlayersMapView = props => {
   const stateRef = useRef({
-    popup: {},
-    popupDetails: {},
+    map: { element: null },
+    popup: { element: null, properties: {} },
+    popupDetails: { element: null, properties: {} },
   });
   const [state, setState] = useState({
-    popup: {},
-    popupDetails: {},
+    map: { element: null },
+    popup: { element: null, properties: {} },
+    popupDetails: { element: null, properties: {} },
   });
+  const ToggleSidebarControl = useRef(null);
+  // const [ToggleSidebarControl, setToggleSidebarControl] = useState(null);
+  const history = useHistory();
   const { query } = qs.parse(props.query);
   const { search } = props.discodata_query;
   const globalQuery = { ...query, ...search };
@@ -63,7 +82,10 @@ const OpenlayersMapView = props => {
   const queryParameters = props.data?.query_parameters?.value
     ? JSON.parse(props.data.query_parameters.value).properties
     : {};
-
+  const zoomSwitch = 8;
+  const currentMapZoom = state.map.element
+    ? state.map.element.getView().getZoom()
+    : null;
   useEffect(() => {
     if (__CLIENT__ && document) {
       // MOuNT
@@ -75,6 +97,8 @@ const OpenlayersMapView = props => {
         VectorSource = require('ol/source/Vector').default;
         XYZ = require('ol/source/XYZ').default;
         fromLonLat = require('ol/proj').fromLonLat;
+        toLonLat = require('ol/proj').toLonLat;
+        toStringHDMS = require('ol/coordinate').toStringHDMS;
         createXYZ = require('ol/tilegrid').createXYZ;
         CircleStyle = require('ol/style/Circle.js').default;
         Fill = require('ol/style/Fill.js').default;
@@ -85,7 +109,30 @@ const OpenlayersMapView = props => {
         VectorLayer = require('ol/layer/Vector.js').default;
         Group = require('ol/layer/Group.js').default;
         tile = require('ol/loadingstrategy').tile;
+        Control = require('ol/control/Control.js').default;
+        defaultsControls = require('ol/control.js').defaults;
         OL_LOADED = true;
+      }
+      if (OL_LOADED && !ToggleSidebarControl.current) {
+        ToggleSidebarControl.current = /*@__PURE__*/ (function(Control) {
+          function ToggleSidebarControl(opt_options) {
+            const options = opt_options || {};
+            const buttonContainer = document.getElementById(
+              'dynamic-filter-toggle',
+            );
+            Control.call(this, {
+              element: buttonContainer,
+              target: options.target,
+            });
+          }
+          if (Control) ToggleSidebarControl.__proto__ = Control;
+          ToggleSidebarControl.prototype = Object.create(
+            Control && Control.prototype,
+          );
+          ToggleSidebarControl.prototype.constructor = ToggleSidebarControl;
+
+          return ToggleSidebarControl;
+        })(Control);
       }
       renderMap({ draggable, queryParameters });
     }
@@ -95,31 +142,37 @@ const OpenlayersMapView = props => {
     /* eslint-disable-next-line */
   }, [])
 
-  useEffect(() => {
-    if (__CLIENT__ && document) {
-      renderMap({ draggable, queryParameters });
-    }
-    /* eslint-disable-next-line */
-  }, [props.discodata_query.search])
+  // useEffect(() => {
+  //   if (__CLIENT__ && document) {
+  //     renderMap({ draggable, queryParameters });
+  //   }
+  //   /* eslint-disable-next-line */
+  // }, [props.discodata_query.search])
 
   useEffect(() => {
     stateRef.current = { ...state };
     /* eslint-disable-next-line */
-  }, [JSON.stringify(state)])
+  }, [state])
 
   function renderMap() {
     if (
       document.getElementById('map') &&
       document.getElementById(`popup`) &&
-      document.getElementById(`popup-details`)
+      document.getElementById(`popup-details`) &&
+      document.getElementById(`dynamic-filter`)
     ) {
       //  Popup element
       const popupElement = document.getElementById(`popup`);
       const popupDetailsElement = document.getElementById(`popup-details`);
+      const dynamicFilterElement = document.getElementById(`dynamic-filter`);
+      console.log('RENDER', ToggleSidebarControl.current);
       //  Clear map content on every cycle
       document.getElementById('map').innerHTML = '';
       // Main map
       const map = new Map({
+        controls: defaultsControls().extend([
+          new ToggleSidebarControl.current(),
+        ]),
         target: document.getElementById('map'),
         view: new View({
           center: fromLonLat([20, 50]),
@@ -152,18 +205,41 @@ const OpenlayersMapView = props => {
       // Create an overlay to anchor the popups to the map.
       const popup = new Overlay({
         element: popupElement,
-        positioning: 'bottom-center',
+        positioning: 'center-center',
         stopEvent: false,
       });
       const popupDetails = new Overlay({
         element: popupDetailsElement,
-        positioning: 'bottom-center',
+        className: 'ol-popup-details',
+        positioning: 'center-center',
         stopEvent: false,
+      });
+      const dynamicFilter = new Overlay({
+        element: dynamicFilterElement,
+        className: 'ol-dynamic-filter',
+        positioning: 'center-center',
+        stopEvent: false,
+      });
+      setState({
+        map: {
+          ...stateRef.current.map,
+          element: map,
+        },
+        popup: {
+          ...stateRef.current.popup,
+          element: popup,
+        },
+        popupDetails: {
+          ...stateRef.current.popupDetails,
+          element: popupDetails,
+        },
       });
       // Add layers to map
       map.addOverlay(popup);
       map.addOverlay(popupDetails);
+      map.addOverlay(dynamicFilter);
       map.addLayer(baseLayerGroup);
+      dynamicFilter.setPosition([0, 0]);
       // Layer Switcher logic for Basemaps
       const baseLayerElements = document.querySelectorAll(
         '.sidebar > input[type=radio]',
@@ -279,7 +355,7 @@ const OpenlayersMapView = props => {
         style: new Style({
           image: new Icon({
             opacity: 1,
-            src: `data:image/svg+xml;utf8,${encodedPinSVG}`,
+            src: `data:image/svg+xml;utf8,${encodedBluePinSVG}`,
             size: [100, 100],
             scale: 1,
           }),
@@ -309,30 +385,39 @@ const OpenlayersMapView = props => {
       }
 
       // Identify logic
-      function setFeatureInfo(pixel, detailed) {
+      function setFeatureInfo(pixel, coordinate, detailed) {
         let features = [];
         map.forEachFeatureAtPixel(pixel, function(feature) {
           features.push(feature);
         });
-        if (features.length > 0) {
+        if (features.length) {
+          let hdms = toStringHDMS(
+            toLonLat(features[0].getGeometry().flatCoordinates),
+          );
           const featuresProperties = features[0].getProperties();
           if (
             detailed &&
-            JSON.stringify(stateRef.current.popupDetails) !==
+            JSON.stringify(stateRef.current.popupDetails.properties) !==
               JSON.stringify(featuresProperties)
           ) {
             setState({
               ...stateRef.current,
-              popupDetails: { ...featuresProperties },
+              popupDetails: {
+                ...stateRef.current.popupDetails,
+                properties: { ...featuresProperties, hdms },
+              },
             });
           } else if (
             !detailed &&
-            JSON.stringify(stateRef.current.popup) !==
+            JSON.stringify(stateRef.current.popup.properties) !==
               JSON.stringify(featuresProperties)
           ) {
             setState({
               ...stateRef.current,
-              popup: { ...featuresProperties },
+              popup: {
+                ...stateRef.current.popup,
+                properties: { ...featuresProperties, hdms },
+              },
             });
           }
           return true;
@@ -346,12 +431,14 @@ const OpenlayersMapView = props => {
         popup,
         detailed = false,
       ) {
-        if (setFeatureInfo(pixel, detailed)) {
+        if (setFeatureInfo(pixel, coordinate, detailed)) {
           map.getTarget().style.cursor = 'pointer';
           popup.setPosition(coordinate);
         } else {
           map.getTarget().style.cursor = '';
-          popup.setPosition(undefined);
+          if (!detailed) {
+            popup.setPosition(undefined);
+          }
         }
       };
 
@@ -363,15 +450,17 @@ const OpenlayersMapView = props => {
         displayPopup(pixel, evt.coordinate, popup);
       });
 
-      map.on('click', function(evt) {
-        displayPopup(evt.pixel, evt.coordinate, popupDetails, true);
-      });
-      // zoom-in out layer switching logic
       let currZoom = map.getView().getZoom();
+      map.on('click', function(evt) {
+        let newZoom = map.getView().getZoom();
+        if (newZoom > zoomSwitch) {
+          displayPopup(evt.pixel, evt.coordinate, popupDetails, true);
+        }
+      });
       map.on('moveend', function(e) {
         let newZoom = map.getView().getZoom();
         if (currZoom !== newZoom) {
-          if (newZoom > 8) {
+          if (newZoom > zoomSwitch) {
             lyIEDSiteMapWM.setVisible(true);
             lyIEDSiteClustersWM.setVisible(false);
           } else {
@@ -384,87 +473,143 @@ const OpenlayersMapView = props => {
     }
   }
 
+  const setSiteQueryParams = () => {
+    setQueryParam({
+      queryParam: {
+        siteInspireId: state.popupDetails.properties.sitename,
+        reportingYear: state.popupDetails.properties.rep_yr,
+      },
+    });
+  };
+
   return (
     <React.Fragment>
       <div id="map" className="map" />
       <div id="popup" className="popup">
-        {state.popup.sitename && (
-          <div>
-            <p>{state.popup.sitename}</p>
-          </div>
+        {state.popup.element && (
+          <>
+            <div className="popover-header">
+              {currentMapZoom && currentMapZoom > zoomSwitch ? (
+                <Header as="h3">{state.popup.properties.sitename}</Header>
+              ) : (
+                <Header as="h3">{`${state.popup.properties.NUTS_NAME}, ${
+                  state.popup.properties.CNTR_CODE
+                }, ${state.popup.properties.COUNTRY}`}</Header>
+              )}
+            </div>
+            <div className="popover-body">
+              <Grid.Column stretched>
+                {currentMapZoom && currentMapZoom > zoomSwitch ? (
+                  ''
+                ) : (
+                  <Grid.Row>
+                    <p>
+                      Number of sites:{' '}
+                      <code>{state.popup.properties.num_sites}</code>
+                    </p>
+                  </Grid.Row>
+                )}
+                {/* HDMS */}
+                <Grid.Row>
+                  {state.popup.properties.hdms ? (
+                    <>
+                      <p className="mb-1">The location you are viewing is:</p>
+                      <code>{state.popup.properties.hdms}</code>
+                    </>
+                  ) : (
+                    ''
+                  )}
+                </Grid.Row>
+              </Grid.Column>
+            </div>
+          </>
         )}
       </div>
       <div id="popup-details" className="popup">
-        {state.popupDetails.sitename && (
-          <div>
-            <p>{state.popupDetails.sitename}</p>
-          </div>
-        )}
-      </div>
-      {/* <div id="popup-ceva" className="popup">
-        {popupState.properties && (
-          <div className="map-modal">
-            <div className="modal-header">
-              <p className="modal-title">Parent company name</p>
+        {state.popupDetails.element && (
+          <>
+            <div className="popover-header">
+              <Header as="h2">
+                {state.popupDetails.properties.sitename
+                  ? state.popupDetails.properties.sitename
+                  : ''}
+              </Header>
               <VoltoIcon
-                onClick={() => console.log('CLOSE')}
-                color="red"
+                onClick={() =>
+                  state.popupDetails.element.setPosition(undefined)
+                }
                 name={clearSVG}
                 size="2em"
               />
             </div>
-            <p className="modal-label">Chemical industry</p>
-            <p style={{ marginBottom: '5px', borderBottom: '1px solid grey' }}>
-              Address 1, Address 2
-            </p>
-
-            <Grid.Column stretched>
-              <Grid.Row>
-                <p className="modal-label">Site Contents</p>
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  {mapModal.facilityContents &&
-                    mapModal.facilityContents.map(content => (
-                      <a className="details-link" href={content.url}>
-                        {content.title}
-                      </a>
-                    ))}
-                </div>
-              </Grid.Row>
-              <Grid.Row>
-                <p className="modal-label">Pollutant emissions</p>
-                {mapModal.pollutantEmissions &&
-                  mapModal.pollutantEmissions.map(pollutants => (
-                    <p className="details-content">{pollutants}</p>
-                  ))}
-                <a className="details-link" href={'google.com'}>
-                  15 more...
-                </a>
-              </Grid.Row>
-              <Grid.Row>
-                <p className="modal-label">Regulatory information</p>
-                <p className="details-content">
-                  Operating since:{' '}
-                  {mapModal.regulatoryInformation.operatingSince}
-                </p>
-                <p className="details-content">
-                  Last operating permit issued:{' '}
-                  {mapModal.regulatoryInformation.lastPermit}
-                </p>
-                <p className="details-content">
-                  Last inspection:{' '}
-                  {mapModal.regulatoryInformation.lastInspection}
-                </p>
-                <a className="details-link" href={'google.com'}>
-                  Find out more
-                </a>
-              </Grid.Row>
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <button className="details-button"> VIEW SITE DETAIL </button>
-              </div>
-            </Grid.Column>
-          </div>
+            <div className="popover-body">
+              <Grid.Column stretched>
+                {/* SITE CONTENTS */}
+                <Grid.Row>
+                  <Header as="h3">Site contents</Header>
+                  <p>
+                    <Link
+                      onClick={setSiteQueryParams}
+                      to={'/industrial-site/introduction'}
+                    >
+                      {state.popupDetails.properties.n_fac || 0} Facilities
+                    </Link>
+                  </p>
+                  <p>
+                    <Link
+                      onClick={setSiteQueryParams}
+                      to={'/industrial-site/introduction'}
+                    >
+                      {state.popupDetails.properties.n_lcp || 0} Large comustion
+                      plants
+                    </Link>
+                  </p>
+                  <p>
+                    <Link
+                      onClick={setSiteQueryParams}
+                      to={'/industrial-site/introduction'}
+                    >
+                      {state.popupDetails.properties.n_inst || 0} Installations
+                    </Link>
+                  </p>
+                </Grid.Row>
+                {/* SITE POLLUTANT EMISSIONS */}
+                <Grid.Row>
+                  <Header as="h3">Pollutant emissions</Header>
+                  {state.popupDetails.properties.pollutants ? (
+                    <p>{state.popupDetails.properties.pollutants}</p>
+                  ) : (
+                    <p>There are no data regarding the pollutants</p>
+                  )}
+                </Grid.Row>
+                {/* REGULATORY INFORMATION */}
+                <Grid.Row>
+                  <Header as="h3">Regulatory information</Header>
+                  {state.popupDetails.properties.rep_yr ? (
+                    <p>
+                      Inspections in {state.popupDetails.properties.rep_yr}:{' '}
+                      {state.popupDetails.properties.n_inspect || 0}
+                    </p>
+                  ) : (
+                    ''
+                  )}
+                </Grid.Row>
+              </Grid.Column>
+            </div>
+            <div className="popover-actions">
+              <button
+                onClick={() => {
+                  setSiteQueryParams();
+                  history.push('/industrial-site/introduction');
+                }}
+                className="solid dark-blue"
+              >
+                VIEW SITE DETAIL
+              </button>
+            </div>
+          </>
         )}
-      </div> */}
+      </div>
     </React.Fragment>
   );
 };

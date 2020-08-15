@@ -7,13 +7,13 @@
   position: absolute;
   background-color: white;
   box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-  padding: 15px;
-  border-radius: 10px;
+  border-radius: .3rem;
   border: 1px solid #cccccc;
   bottom: 12px;
   left: -50px;
   min-width: 280px;
 }
+
 .popup:after, .popup:before {
   top: 100%;
   border: solid transparent;
@@ -34,4 +34,188 @@
   border-width: 11px;
   left: 48px;
   margin-left: -11px;
+}
+
+.ol-popup-details {
+  position: absolute !important;
+  pointer-events: auto !important;
+  transform: translate(-50%, -50%) !important;
+  top: 50% !important;
+  left: 50% !important;
+  right: unset !important;
+  bottom: unset !important;
+}
+
+.ol-dynamic-filter {
+  position: absolute !important;
+  pointer-events: auto !important;
+  transform: none !important;
+  height: 100% !important;
+  top: 0 !important;
+  left: 6rem !important;
+}
+
+.popover-header {
+  padding: .5rem .75rem;
+  margin-bottom: 0;
+  font-size: 1rem;
+  background-color: #f7f7f7;
+  border-bottom: 1px solid #ebebeb;
+  border-top-left-radius: calc(.3rem - 1px);
+  border-top-right-radius: calc(.3rem - 1px);
+}
+
+.popover-actions {
+  text-align: center;
+  padding: 1rem 2rem;
+  background-color: #f7f7f7;
+  border-top: 1px solid #ebebeb;
+  border-bottom-left-radius: calc(.3rem - 1px);
+  border-bottom-right-radius: calc(.3rem - 1px);
+}
+
+.popover-body {
+  padding: .5rem .75rem;
+}
+
+.popover-body code {
+  font-size: 87.5%;
+  color: #e83e8c;
+  word-wrap: break-word;
+}
+
+#popup-details {
+  min-width: 420px;
+  border: 2px solid #417283;
+  border-radius: .3rem;
+  left: unset !important;
+  bottom: unset !important;
+  right: unset !important;
+  top: unset !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+#popup-details:after,
+#popup-details:before {
+  display: none;
+}
+
+#popup-details .popover-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* background-color: transparent;
+  border-bottom: none; */
+  padding: 1rem 2rem;
+}
+
+#popup-details .popover-actions {
+  background-color: transparent;
+  border-bottom: none;
+}
+
+#popup-details .popover-body {
+  padding: 1rem 2rem;
+}
+
+#popup-details .popover-actions button.solid {
+  padding: 1rem 2rem;
+}
+
+#popup-details .popover-header .ui.header,
+#popup-details .popover-body .ui.header,
+#dynamic-filter .ui.header {
+  margin-bottom: 0;
+  color: #59A3BC;
+  font-weight: bold;
+}
+
+#popup-details .popover-body a {
+  text-decoration: underline;
+}
+
+#popup-details .popover-body .row {
+  margin-bottom: 1rem;
+}
+
+#popup-details .popover-body .row:last-child {
+  margin-bottom: 0;
+}
+
+#popup-details .popover-header .icon {
+  fill: #E16D5D !important;
+  cursor: pointer;
+}
+
+#popup-details .popover-header .icon:hover {
+  fill: #c96052 !important;
+}
+
+#dynamic-filter {
+  position: relative;
+  padding: 0;
+  background-color: #fff;
+  height: 100%;
+  min-width: 300px;
+  max-width: 300px;
+}
+
+#dynamic-filter .dynamic-filter-header,
+#dynamic-filter .dynamic-filter-body,
+#dynamic-filter .dynamic-filter-actions {
+  padding-bottom: 1rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+#dynamic-filter .dynamic-filter-header {
+  padding-top: 3rem;
+}
+
+#dynamic-filter .dynamic-filter-body,
+#dynamic-filter .dynamic-filter-actions {
+  padding-top: 1rem;
+}
+
+#dynamic-filter-toggle {
+  display: none;
+  top: 65px;
+  left: .5em;
+}
+
+
+@media only screen and (max-width: 600px) {
+  .ol-dynamic-filter {
+    left: 0 !important;
+    width: 100% !important;
+  }
+
+  #dynamic-filter {
+    width: 0;
+    min-width: unset;
+    max-width: unset;
+    overflow: hidden;
+    transition: width .5s ease-in-out;
+  }
+  
+  #dynamic-filter.show {
+    width: 100%;
+  }
+
+  #dynamic-filter-toggle {
+    display: block;
+  }
+
+  #dynamic-filter .dynamic-filter-header,
+  #dynamic-filter .dynamic-filter-body,
+  #dynamic-filter .dynamic-filter-actions {
+    padding-left: 4rem;
+    padding-right: 4rem;
+  }
+}
+
+
+p.mb-1,
+p.mb-1:first-child {
+  margin-bottom: 1rem;
 }
