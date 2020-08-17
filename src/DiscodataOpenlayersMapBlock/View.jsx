@@ -72,6 +72,7 @@ const OpenlayersMapView = props => {
     popup: { element: null, properties: {} },
     popupDetails: { element: null, properties: {} },
   });
+  const [mapRendered, setMapRendered] = useState(false);
   const ToggleSidebarControl = useRef(null);
   // const [ToggleSidebarControl, setToggleSidebarControl] = useState(null);
   const history = useHistory();
@@ -135,6 +136,7 @@ const OpenlayersMapView = props => {
         })(Control);
       }
       renderMap({ draggable, queryParameters });
+      setMapRendered(true);
     }
     return () => {
       // UNMOUNT
@@ -142,12 +144,24 @@ const OpenlayersMapView = props => {
     /* eslint-disable-next-line */
   }, [])
 
-  // useEffect(() => {
-  //   if (__CLIENT__ && document) {
-  //     renderMap({ draggable, queryParameters });
-  //   }
-  //   /* eslint-disable-next-line */
-  // }, [props.discodata_query.search])
+  useEffect(() => {
+    if (mapRendered) {
+      console.log('UPDATE MAP');
+    }
+    /* eslint-disable-next-line */
+  }, [
+    JSON.stringify(props.discodata_query.search.siteTerm),
+    JSON.stringify(props.discodata_query.search.locationTerm),
+    JSON.stringify(props.discodata_query.search.batConclusionCode),
+    JSON.stringify(props.discodata_query.search.eprtrSectorName),
+    JSON.stringify(props.discodata_query.search.pollutant),
+    JSON.stringify(props.discodata_query.search.pollutantGroup),
+    JSON.stringify(props.discodata_query.search.region),
+    JSON.stringify(props.discodata_query.search.reportingYear),
+    JSON.stringify(props.discodata_query.search.riverBasin),
+    JSON.stringify(props.discodata_query.search.siteCountry),
+    JSON.stringify(props.discodata_query.search.townVillage),
+  ]);
 
   useEffect(() => {
     stateRef.current = { ...state };

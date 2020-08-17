@@ -131,7 +131,15 @@ const getSchema = props => {
           {
             id: 'default',
             title: 'title',
-            fields: ['title', 'id', 'sqlId', 'urlQuery', 'key', 'queryParam'],
+            fields: [
+              'title',
+              'id',
+              'sqlId',
+              'urlQuery',
+              'key',
+              'queryParam',
+              'regex',
+            ],
           },
         ],
         properties: {
@@ -168,6 +176,15 @@ const getSchema = props => {
               if (!formData.urlQuery) return undefined;
               return globalQuery ? makeChoices(Object.keys(globalQuery)) : [];
             },
+          },
+          regex: {
+            title: 'Regex',
+            type: 'array',
+            choices: [
+              ['%:value%', '%Value%'],
+              [':value%', 'Value%'],
+              ['%:value', '%Value'],
+            ],
           },
         },
         required: ['id', 'title', 'sqlId', 'key', 'queryParam'],

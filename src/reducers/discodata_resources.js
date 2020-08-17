@@ -80,7 +80,7 @@ export default function pages(state = initialState, action = {}) {
         data[resourceKey] = results;
       }
       delete pendingRequests[id];
-      requestsMetadata[id] = action.requestsMetadata;
+      requestsMetadata[id] = { ...action.requestsMetadata };
       return {
         ...state,
         error: null,

@@ -34,13 +34,6 @@ const ViewWrapper = props => {
       Object.entries(sqls).forEach(([sqlKey, sqlValue]) => {
         const isCollection = sqlValue.isCollection;
         const hasPagination = sqlValue.hasPagination;
-        const requestsMetadata = {
-          ...(isCollection
-            ? props.discodata_resources.requestsMetadata[sqlKey]
-            : props.discodata_resources.requestsMetadata[
-                `${sqlKey}_${sqlValue.packageName}`
-              ]),
-        };
         let requestsMetadataDiff = false;
         let whereStatements = [],
           groupByStatements = [];
@@ -55,7 +48,10 @@ const ViewWrapper = props => {
           .map(key => {
             return {
               discodataKey: where[key].key,
-              value: globalQuery[where[key].queryParam],
+              value: Array.isArray(globalQuery[where[key].queryParam])
+                ? [...globalQuery[where[key].queryParam].filter(query => query)]
+                : globalQuery[where[key].queryParam],
+              regex: where[key].regex || null,
             };
           });
         const url = DB.table(
@@ -70,6 +66,7 @@ const ViewWrapper = props => {
           url,
           isCollection,
           resourceKey: sqlKey || '',
+          requestsMetadata: {},
         };
         if (!isCollection) {
           groupByStatements = Object.keys(groupBy)
@@ -83,12 +80,13 @@ const ViewWrapper = props => {
               };
             });
           /* Update requestsMetadata */
-          requestsMetadata.where = whereStatements;
-          requestsMetadata.groupBy = groupByStatements;
-          requestsMetadata.query = globalQuery[sqlValue.packageName] || '';
+          request.requestsMetadata.where = [...whereStatements];
+          request.requestsMetadata.groupBy = [...groupByStatements];
+          request.requestsMetadata.query =
+            globalQuery[sqlValue.packageName] || '';
 
           if (
-            JSON.stringify(requestsMetadata) !==
+            JSON.stringify(request.requestsMetadata) !==
               JSON.stringify(
                 props.discodata_resources.requestsMetadata[
                   `${sqlKey}_${sqlValue.packageName}`
@@ -97,19 +95,17 @@ const ViewWrapper = props => {
             whereStatements.length > 0
           ) {
             requestsMetadataDiff = true;
-          }
-          if (requestsMetadata) {
             request.search = globalQuery || {};
             request.groupBy = groupByStatements || [];
             request.key = sqlValue.packageName || '';
           }
         } else {
-          requestsMetadata.where = whereStatements;
-          requestsMetadata.pagination = hasPagination
+          request.requestsMetadata.where = [...whereStatements];
+          request.requestsMetadata.pagination = { ...hasPagination }
             ? props.pagination || { p: 1, nrOfHits: 5 }
             : null;
           if (
-            JSON.stringify(requestsMetadata) !==
+            JSON.stringify(request.requestsMetadata) !==
             JSON.stringify(props.discodata_resources.requestsMetadata[sqlKey])
           ) {
             requestsMetadataDiff = true;
@@ -122,8 +118,6 @@ const ViewWrapper = props => {
             (isCollection && !pendingRequests[sqlKey])) &&
           requestsMetadataDiff
         ) {
-          // done = true;
-          request.requestsMetadata = requestsMetadata;
           props.getDiscodataResource(request);
         }
       });

@@ -151,7 +151,8 @@
   fill: #c96052 !important;
 }
 
-#dynamic-filter {
+.ol-dynamic-filter #dynamic-filter {
+  display: block;
   position: relative;
   padding: 0;
   background-color: #fff;
@@ -160,29 +161,28 @@
   max-width: 300px;
 }
 
-#dynamic-filter .dynamic-filter-header,
-#dynamic-filter .dynamic-filter-body,
-#dynamic-filter .dynamic-filter-actions {
+.ol-dynamic-filter #dynamic-filter .dynamic-filter-header,
+.ol-dynamic-filter #dynamic-filter .dynamic-filter-body,
+.ol-dynamic-filter #dynamic-filter .dynamic-filter-actions {
   padding-bottom: 1rem;
   padding-left: 2rem;
   padding-right: 2rem;
 }
 
-#dynamic-filter .dynamic-filter-header {
+.ol-dynamic-filter #dynamic-filter .dynamic-filter-header {
   padding-top: 3rem;
 }
 
-#dynamic-filter .dynamic-filter-body,
-#dynamic-filter .dynamic-filter-actions {
+.ol-dynamic-filter #dynamic-filter .dynamic-filter-body,
+.ol-dynamic-filter #dynamic-filter .dynamic-filter-actions {
   padding-top: 1rem;
 }
 
-#dynamic-filter-toggle {
+.ol-overlaycontainer-stopevent #dynamic-filter-toggle {
   display: none;
   top: 65px;
   left: .5em;
 }
-
 
 @media only screen and (max-width: 600px) {
   .ol-dynamic-filter {
@@ -190,7 +190,7 @@
     width: 100% !important;
   }
 
-  #dynamic-filter {
+  .ol-dynamic-filter #dynamic-filter {
     width: 0;
     min-width: unset;
     max-width: unset;
@@ -198,17 +198,17 @@
     transition: width .5s ease-in-out;
   }
   
-  #dynamic-filter.show {
+  .ol-dynamic-filter #dynamic-filter.show {
     width: 100%;
   }
 
-  #dynamic-filter-toggle {
+  .ol-overlaycontainer-stopevent #dynamic-filter-toggle {
     display: block;
   }
 
-  #dynamic-filter .dynamic-filter-header,
-  #dynamic-filter .dynamic-filter-body,
-  #dynamic-filter .dynamic-filter-actions {
+  .ol-dynamic-filter #dynamic-filter .dynamic-filter-header,
+  .ol-dynamic-filter #dynamic-filter .dynamic-filter-body,
+  .ol-dynamic-filter #dynamic-filter .dynamic-filter-actions {
     padding-left: 4rem;
     padding-right: 4rem;
   }

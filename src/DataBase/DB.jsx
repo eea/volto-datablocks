@@ -21,26 +21,33 @@ class Table {
     return this;
   }
   where(whereStatements) {
-    let queryString =
-      whereStatements?.length > 0
-        ? whereStatements
-            .map(where => {
-              let whereString = '';
-              if (Array.isArray(where.value)) {
-                return ` WHERE [${where.discodataKey}] IN (${where.value.map(
-                  v => {
-                    return "'" + v + "'";
-                  },
-                )})`;
-              } else {
-                whereString = ` WHERE [${where.discodataKey}] LIKE '${
-                  where.value
-                }'`;
-              }
-              return whereString;
-            })
-            .join(' AND ')
-        : '';
+    let queryString = '';
+    if (whereStatements?.length > 0) {
+      const whereString = whereStatements
+        .map((where, index) => {
+          let whereString = '';
+          if (Array.isArray(where.value) && !where.value.length) return null;
+          if (typeof where.value === 'string' && !where.value.length)
+            return null;
+          if (Array.isArray(where.value)) {
+            return `[${where.discodataKey}] IN (${where.value.map(v => {
+              return "'" + v + "'";
+            })})`;
+          } else {
+            whereString = `[${where.discodataKey}] LIKE '${
+              where.regex && typeof where.regex === 'string'
+                ? where.regex.replace(':value', where.value)
+                : where.value
+            }'`;
+          }
+          return whereString;
+        })
+        .filter(value => value)
+        .join(' AND ');
+      if (whereString.length) {
+        queryString += ` WHERE ${whereString}`;
+      }
+    }
     if (this.query.includes(':where')) {
       this.query = this.query.replace(':where', queryString);
     } else {
