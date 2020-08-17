@@ -29,6 +29,18 @@ const getHtmlAttributes = obj => {
     .join(' ');
 };
 
+const splitBy = (arr, delimiter) => {
+  if (Array.isArray(arr)) {
+    return (
+      arr
+        .filter(value => value)
+        .map(value => `'${value}'`)
+        .join(delimiter) || ''
+    );
+  }
+  return '';
+};
+
 const encodedPinSVG = encodeURIComponent(
   `<svg ${getHtmlAttributes(pinSVG.attributes)}>${pinSVG.content}</svg>`,
 );
@@ -63,14 +75,26 @@ let Map,
 let OL_LOADED = false;
 const OpenlayersMapView = props => {
   const stateRef = useRef({
-    map: { element: null },
+    map: {
+      element: null,
+      filterIEDSiteMapWM: { whereStatements: {}, where: '' },
+      lyIEDSiteMapWM: null,
+    },
     popup: { element: null, properties: {} },
     popupDetails: { element: null, properties: {} },
+    pendingRequests: 0,
+    updateMapPosition: null,
   });
   const [state, setState] = useState({
-    map: { element: null },
+    map: {
+      element: null,
+      filterIEDSiteMapWM: { whereStatements: {}, where: '' },
+      lyIEDSiteMapWM: null,
+    },
     popup: { element: null, properties: {} },
     popupDetails: { element: null, properties: {} },
+    pendingRequests: 0,
+    updateMapPosition: null,
   });
   const [mapRendered, setMapRendered] = useState(false);
   const ToggleSidebarControl = useRef(null);
@@ -84,7 +108,7 @@ const OpenlayersMapView = props => {
     ? JSON.parse(props.data.query_parameters.value).properties
     : {};
   const zoomSwitch = 8;
-  const currentMapZoom = state.map.element
+  const currentMapZoom = state.map?.element
     ? state.map.element.getView().getZoom()
     : null;
   useEffect(() => {
@@ -146,126 +170,141 @@ const OpenlayersMapView = props => {
 
   useEffect(() => {
     if (mapRendered) {
-      console.log('UPDATE MAP');
+      const filterIEDSiteMapWM = { whereStatements: {}, where: '' };
+      filterIEDSiteMapWM.whereStatements = {
+        siteTerm: {
+          sql: `sitename LIKE ':options%'`,
+          type: 'string',
+        },
+        //?  Industries
+        EEASector: {
+          sql: `(EEASector IN (:options))`,
+        },
+        // Country
+        siteCountry: {
+          sql: `(country IN (:options))`,
+        },
+        //? Regions
+        region: {
+          sql: `(region IN (:options))`,
+        },
+        //? River Basin
+        riverBasin: {
+          sql: `(riverBasinDistrict IN (:options))`,
+        },
+        //? Town/Village
+        townVillage: {
+          sql: `(townVillage IN (:options))`,
+        },
+        // Pollutant groups
+        pollutantGroup: {
+          sql: `(pollutantGroup IN (:options))`,
+        },
+        // Pollutants
+        pollutant: {
+          sql: `(pollutants IN (:options))`,
+        },
+        // Reporting year
+        reportingYear: {
+          sql: `(rep_yr IN (:options))`,
+        },
+        //! Installation specifics
+        //? BAT conclusion
+        batConclusionCode: {
+          sql: `(batConclusion IN (:options))`,
+        },
+        //! BAT conclusion year
+        //! Permit type
+        //! Permit year
+      };
 
+      Object.entries(filterIEDSiteMapWM.whereStatements).forEach(
+        ([id, where]) => {
+          let options;
+          if (where.type === 'string') {
+            options = props.discodata_query.search[id];
+          } else {
+            options = splitBy(props.discodata_query.search[id], ',');
+          }
+          where.sql = options ? where.sql.replace(':options', options) : null;
+          if (!where.sql) delete filterIEDSiteMapWM.whereStatements[id];
+        },
+      );
 
-      //
-      // // Filter logic
-      //
-      // document.getElementById("filterBtn").addEventListener('click', function () {
-      //   filterIEDSiteMapWM['where'] = "";
-      //
-      //   //reporting year
-      //   var year = document.getElementById("years").value;
-      //   if (year) {
-      //     filterIEDSiteMapWM['where'] += "(rep_yr = '" + year + "')";
-      //   }
-      //
-      //   //industries
-      //   var industry = document.getElementById("industries").value;
-      //   if (industry) {
-      //     if (filterIEDSiteMapWM['where']) {
-      //       filterIEDSiteMapWM['where'] += " AND (industries = '" + industry + "')";
-      //     } else {
-      //       filterIEDSiteMapWM['where'] += "(industries = '" + industry + "')";
-      //     }
-      //   }
-      //
-      //   //countries
-      //   var country = document.getElementById("countries").value;
-      //   if (country) {
-      //     if (filterIEDSiteMapWM['where']) {
-      //       filterIEDSiteMapWM['where'] += " AND (country = '" + country + "')";
-      //     } else {
-      //       filterIEDSiteMapWM['where'] += "(country = '" + country + "')";
-      //     }
-      //   }
-      //
-      //   //regions
-      //   var region = document.getElementById("regions").value;
-      //   if (region) {
-      //     if (filterIEDSiteMapWM['where']) {
-      //       filterIEDSiteMapWM['where'] += " AND (region = '" + region + "')";
-      //     } else {
-      //       filterIEDSiteMapWM['where'] += "(region = '" + region + "')";
-      //     }
-      //   }
-      //
-      //   //river basin districts
-      //   var riverBasinDistrict = document.getElementById("riverBasinDistricts").value;
-      //   if (riverBasinDistrict) {
-      //     if (filterIEDSiteMapWM['where']) {
-      //       filterIEDSiteMapWM['where'] += " AND (riverBasinDistrict = '" + riverBasinDistrict + "')";
-      //     } else {
-      //       filterIEDSiteMapWM['where'] += "(riverBasinDistrict = '" + riverBasinDistrict + "')";
-      //     }
-      //   }
-      //
-      //   //Towns/Villages
-      //   var townVillage = document.getElementById("townsVillages").value;
-      //   if (townVillage) {
-      //     if (filterIEDSiteMapWM['where']) {
-      //       filterIEDSiteMapWM['where'] += " AND (townVillage = '" + townVillage + "')";
-      //     } else {
-      //       filterIEDSiteMapWM['where'] += "(townVillage = '" + townVillage + "')";
-      //     }
-      //   }
-      //
-      //   //Pollutant groups
-      //   var pollutantGroup = document.getElementById("pollutantGroups").value;
-      //   if (pollutantGroup) {
-      //     if (filterIEDSiteMapWM['where']) {
-      //       filterIEDSiteMapWM['where'] += "AND (pollutantGroup = '" + pollutantGroup + "')";
-      //     } else {
-      //       filterIEDSiteMapWM['where'] += "(pollutantGroup = '" + pollutantGroup + "')";
-      //     }
-      //   }
-      //
-      //   //Pollutants
-      //   var pollutant = document.getElementById("pollutants").value;
-      //   if (pollutant) {
-      //     if (filterIEDSiteMapWM['where']) {
-      //       filterIEDSiteMapWM['where'] += " AND (pollutants = '" + pollutant + "')";
-      //     } else {
-      //       filterIEDSiteMapWM['where'] += "(pollutants = '" + pollutant + "')";
-      //     }
-      //   }
-      //
-      //   //BAT Conclusions
-      //   var batConclusion = document.getElementById("batConclusions").value;
-      //   if (batConclusion) {
-      //     if (filterIEDSiteMapWM['where']) {
-      //       filterIEDSiteMapWM['where'] += " AND (batConclusion = '" + batConclusion + "')";
-      //     } else {
-      //       filterIEDSiteMapWM['where'] += "(batConclusion = '" + batConclusion + "')";
-      //     }
-      //   }
-      //
-      //   lyIEDSiteMapWM.getSource().refresh();
-      // });
-
-
-
+      filterIEDSiteMapWM.where = Object.entries(
+        filterIEDSiteMapWM.whereStatements,
+      )
+        .map(([id, where]) => where.sql)
+        .join(' AND ');
+      if (filterIEDSiteMapWM.where !== state.map.filterIEDSiteMapWM.where) {
+        let updateMapPosition = null;
+        state.map.lyIEDSiteMapWM.getSource().refresh();
+        if (
+          filterIEDSiteMapWM.whereStatements.siteTerm?.sql !==
+          state.map.filterIEDSiteMapWM.whereStatements.siteTerm?.sql
+        ) {
+          updateMapPosition = 'bySiteTerm';
+        } else if (
+          filterIEDSiteMapWM.whereStatements.siteCountry?.sql !==
+            state.map.filterIEDSiteMapWM.whereStatements.siteCountry?.sql ||
+          filterIEDSiteMapWM.whereStatements.region?.sql !==
+            state.map.filterIEDSiteMapWM.whereStatements.region?.sql
+        ) {
+          updateMapPosition = 'byRegion';
+        }
+        setState({
+          ...state,
+          map: {
+            ...state.map,
+            filterIEDSiteMapWM,
+          },
+          updateMapPosition,
+        });
+      }
     }
     /* eslint-disable-next-line */
   }, [
     JSON.stringify(props.discodata_query.search.siteTerm),
     JSON.stringify(props.discodata_query.search.locationTerm),
-    JSON.stringify(props.discodata_query.search.batConclusionCode),
-    JSON.stringify(props.discodata_query.search.eprtrSectorName),
-    JSON.stringify(props.discodata_query.search.pollutant),
-    JSON.stringify(props.discodata_query.search.pollutantGroup),
-    JSON.stringify(props.discodata_query.search.region),
-    JSON.stringify(props.discodata_query.search.reportingYear),
-    JSON.stringify(props.discodata_query.search.riverBasin),
+    JSON.stringify(props.discodata_query.search.EEASector),
     JSON.stringify(props.discodata_query.search.siteCountry),
+    JSON.stringify(props.discodata_query.search.region),
+    JSON.stringify(props.discodata_query.search.riverBasin),
     JSON.stringify(props.discodata_query.search.townVillage),
+    JSON.stringify(props.discodata_query.search.pollutantGroup),
+    JSON.stringify(props.discodata_query.search.pollutant),
+    JSON.stringify(props.discodata_query.search.reportingYear),
+    JSON.stringify(props.discodata_query.search.batConclusionCode),
   ]);
 
   useEffect(() => {
     stateRef.current = { ...state };
     /* eslint-disable-next-line */
   }, [state])
+
+  useEffect(() => {
+    if (!state.pendingRequests && state.updateMapPosition) {
+      if (state.updateMapPosition === 'bySiteTerm') {
+        const coordinates = state.map.lyIEDSiteMapWM
+          ?.getSource()
+          ?.getFeatures()?.[0]
+          ?.getProperties()?.geometry?.flatCoordinates;
+        console.log(
+          'AICI',
+          state.map.lyIEDSiteMapWM?.getSource()?.getFeatures()?.[0],
+        );
+        if (coordinates) {
+          state.map.element.getView().setCenter(coordinates);
+          state.map.element.getView().setZoom(15);
+        }
+      }
+      setState({
+        ...state,
+        updateMapPosition: null,
+      });
+    }
+    /* eslint-disable-next-line */
+  }, [state.pendingRequests])
 
   function renderMap() {
     if (
@@ -278,7 +317,6 @@ const OpenlayersMapView = props => {
       const popupElement = document.getElementById(`popup`);
       const popupDetailsElement = document.getElementById(`popup-details`);
       const dynamicFilterElement = document.getElementById(`dynamic-filter`);
-      console.log('RENDER', ToggleSidebarControl.current);
       //  Clear map content on every cycle
       document.getElementById('map').innerHTML = '';
       // Main map
@@ -333,20 +371,6 @@ const OpenlayersMapView = props => {
         positioning: 'center-center',
         stopEvent: false,
       });
-      setState({
-        map: {
-          ...stateRef.current.map,
-          element: map,
-        },
-        popup: {
-          ...stateRef.current.popup,
-          element: popup,
-        },
-        popupDetails: {
-          ...stateRef.current.popupDetails,
-          element: popupDetails,
-        },
-      });
       // Add layers to map
       map.addOverlay(popup);
       map.addOverlay(popupDetails);
@@ -358,7 +382,6 @@ const OpenlayersMapView = props => {
       var esrijsonFormat = new EsriJSON();
 
       // ly_IED_SiteMap_WM
-      const filterIEDSiteMapWM = { where: '' };
       const vectorSourceIEDSiteMapWM = new VectorSource({
         loader: function(extent, resolution, projection) {
           var url =
@@ -377,18 +400,39 @@ const OpenlayersMapView = props => {
             ) +
             '&geometryType=esriGeometryEnvelope&inSR=102100&outFields=*' +
             '&outSR=102100';
-          jsonp(url, { ...filterIEDSiteMapWM }, (error, response) => {
-            if (error) {
-              console.log(error.message);
-            } else {
-              var features = esrijsonFormat.readFeatures(response, {
-                featureProjection: projection,
-              });
-              if (features.length > 0) {
-                vectorSourceIEDSiteMapWM.addFeatures(features);
-              }
-            }
+          setState({
+            ...stateRef.current,
+            pendingRequests: isNaN(stateRef.current.pendingRequests)
+              ? 1
+              : stateRef.current.pendingRequests + 1,
           });
+          jsonp(
+            url,
+            {
+              param: `${qs.stringify({
+                where: stateRef.current.map.filterIEDSiteMapWM.where,
+              })}&callback`,
+            },
+            (error, response) => {
+              setState({
+                ...stateRef.current,
+                pendingRequests:
+                  stateRef.current.pendingRequests <= 0
+                    ? 0
+                    : stateRef.current.pendingRequests - 1,
+              });
+              if (error) {
+                console.log(error.message);
+              } else {
+                var features = esrijsonFormat.readFeatures(response, {
+                  featureProjection: projection,
+                });
+                if (features.length > 0) {
+                  vectorSourceIEDSiteMapWM.addFeatures(features);
+                }
+              }
+            },
+          );
         },
         strategy: tile(
           createXYZ({
@@ -396,7 +440,6 @@ const OpenlayersMapView = props => {
           }),
         ),
       });
-
       const lyIEDSiteMapWM = new VectorLayer({
         source: vectorSourceIEDSiteMapWM,
         style: new Style({
@@ -469,6 +512,22 @@ const OpenlayersMapView = props => {
         layers: [lyIEDSiteMapWM, lyIEDSiteClustersWM],
       });
       map.addLayer(vectorLayerGroup);
+
+      setState({
+        map: {
+          ...stateRef.current.map,
+          element: map,
+          lyIEDSiteMapWM,
+        },
+        popup: {
+          ...stateRef.current.popup,
+          element: popup,
+        },
+        popupDetails: {
+          ...stateRef.current.popupDetails,
+          element: popupDetails,
+        },
+      });
 
       // Auto center by client location
       if (navigator.geolocation) {
