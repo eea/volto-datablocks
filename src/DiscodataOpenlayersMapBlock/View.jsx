@@ -240,19 +240,6 @@ const OpenlayersMapView = props => {
       map.addOverlay(dynamicFilter);
       map.addLayer(baseLayerGroup);
       dynamicFilter.setPosition([0, 0]);
-      // Layer Switcher logic for Basemaps
-      const baseLayerElements = document.querySelectorAll(
-        '.sidebar > input[type=radio]',
-      );
-      for (let baseLayerElement of baseLayerElements) {
-        baseLayerElement.addEventListener('change', function() {
-          let baseLayerElementValue = this.value;
-          baseLayerGroup.getLayers().forEach(function(element, index, array) {
-            let baseLayerTitle = element.get('title');
-            element.setVisible(baseLayerTitle === baseLayerElementValue);
-          });
-        });
-      }
 
       // Vector Layers
       var esrijsonFormat = new EsriJSON();
@@ -301,10 +288,10 @@ const OpenlayersMapView = props => {
         source: vectorSourceIEDSiteMapWM,
         style: new Style({
           image: new Icon({
-            opacity: 1,
             src: `data:image/svg+xml;utf8,${encodedPinSVG}`,
-            size: [100, 100],
-            scale: 1,
+            anchor: [0.5, 17],
+            anchorXUnits: 'fraction',
+            anchorYUnits: 'pixels',
           }),
         }),
         visible: true,
@@ -354,10 +341,10 @@ const OpenlayersMapView = props => {
         source: vectorSourceIEDSiteClustersWM,
         style: new Style({
           image: new Icon({
-            opacity: 1,
             src: `data:image/svg+xml;utf8,${encodedBluePinSVG}`,
-            size: [100, 100],
-            scale: 1,
+            anchor: [0.5, 17],
+            anchorXUnits: 'fraction',
+            anchorYUnits: 'pixels',
           }),
         }),
         visible: true,
