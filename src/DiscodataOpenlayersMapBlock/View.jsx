@@ -147,6 +147,105 @@ const OpenlayersMapView = props => {
   useEffect(() => {
     if (mapRendered) {
       console.log('UPDATE MAP');
+
+
+      //
+      // // Filter logic
+      //
+      // document.getElementById("filterBtn").addEventListener('click', function () {
+      //   filterIEDSiteMapWM['where'] = "";
+      //
+      //   //reporting year
+      //   var year = document.getElementById("years").value;
+      //   if (year) {
+      //     filterIEDSiteMapWM['where'] += "(rep_yr = '" + year + "')";
+      //   }
+      //
+      //   //industries
+      //   var industry = document.getElementById("industries").value;
+      //   if (industry) {
+      //     if (filterIEDSiteMapWM['where']) {
+      //       filterIEDSiteMapWM['where'] += " AND (industries = '" + industry + "')";
+      //     } else {
+      //       filterIEDSiteMapWM['where'] += "(industries = '" + industry + "')";
+      //     }
+      //   }
+      //
+      //   //countries
+      //   var country = document.getElementById("countries").value;
+      //   if (country) {
+      //     if (filterIEDSiteMapWM['where']) {
+      //       filterIEDSiteMapWM['where'] += " AND (country = '" + country + "')";
+      //     } else {
+      //       filterIEDSiteMapWM['where'] += "(country = '" + country + "')";
+      //     }
+      //   }
+      //
+      //   //regions
+      //   var region = document.getElementById("regions").value;
+      //   if (region) {
+      //     if (filterIEDSiteMapWM['where']) {
+      //       filterIEDSiteMapWM['where'] += " AND (region = '" + region + "')";
+      //     } else {
+      //       filterIEDSiteMapWM['where'] += "(region = '" + region + "')";
+      //     }
+      //   }
+      //
+      //   //river basin districts
+      //   var riverBasinDistrict = document.getElementById("riverBasinDistricts").value;
+      //   if (riverBasinDistrict) {
+      //     if (filterIEDSiteMapWM['where']) {
+      //       filterIEDSiteMapWM['where'] += " AND (riverBasinDistrict = '" + riverBasinDistrict + "')";
+      //     } else {
+      //       filterIEDSiteMapWM['where'] += "(riverBasinDistrict = '" + riverBasinDistrict + "')";
+      //     }
+      //   }
+      //
+      //   //Towns/Villages
+      //   var townVillage = document.getElementById("townsVillages").value;
+      //   if (townVillage) {
+      //     if (filterIEDSiteMapWM['where']) {
+      //       filterIEDSiteMapWM['where'] += " AND (townVillage = '" + townVillage + "')";
+      //     } else {
+      //       filterIEDSiteMapWM['where'] += "(townVillage = '" + townVillage + "')";
+      //     }
+      //   }
+      //
+      //   //Pollutant groups
+      //   var pollutantGroup = document.getElementById("pollutantGroups").value;
+      //   if (pollutantGroup) {
+      //     if (filterIEDSiteMapWM['where']) {
+      //       filterIEDSiteMapWM['where'] += "AND (pollutantGroup = '" + pollutantGroup + "')";
+      //     } else {
+      //       filterIEDSiteMapWM['where'] += "(pollutantGroup = '" + pollutantGroup + "')";
+      //     }
+      //   }
+      //
+      //   //Pollutants
+      //   var pollutant = document.getElementById("pollutants").value;
+      //   if (pollutant) {
+      //     if (filterIEDSiteMapWM['where']) {
+      //       filterIEDSiteMapWM['where'] += " AND (pollutants = '" + pollutant + "')";
+      //     } else {
+      //       filterIEDSiteMapWM['where'] += "(pollutants = '" + pollutant + "')";
+      //     }
+      //   }
+      //
+      //   //BAT Conclusions
+      //   var batConclusion = document.getElementById("batConclusions").value;
+      //   if (batConclusion) {
+      //     if (filterIEDSiteMapWM['where']) {
+      //       filterIEDSiteMapWM['where'] += " AND (batConclusion = '" + batConclusion + "')";
+      //     } else {
+      //       filterIEDSiteMapWM['where'] += "(batConclusion = '" + batConclusion + "')";
+      //     }
+      //   }
+      //
+      //   lyIEDSiteMapWM.getSource().refresh();
+      // });
+
+
+
     }
     /* eslint-disable-next-line */
   }, [
