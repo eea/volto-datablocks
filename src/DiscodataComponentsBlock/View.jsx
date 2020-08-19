@@ -5,7 +5,7 @@ import { compose } from 'redux';
 import moment from 'moment';
 import { arrayToTree } from 'performant-array-to-tree';
 import qs from 'query-string';
-import { Table, Dropdown, Icon } from 'semantic-ui-react';
+import { Table, Dropdown, Icon, List, Header } from 'semantic-ui-react';
 import './style.css';
 import DiscodataSqlBuilderView from 'volto-datablocks/DiscodataSqlBuilder/View';
 import { setQueryParam, deleteQueryParam } from 'volto-datablocks/actions';
@@ -316,6 +316,40 @@ const renderComponents = {
       ''
     );
   },
+  eprtrCountrySelector: props => {
+    const items =
+      props.item?.[props.component.value]?.map(item => {
+        return {
+          key: item.siteCountry,
+          value: item.siteCountryName,
+          text: item.siteCountryName,
+        };
+      }) || [];
+    return (
+      <div className="eprtrSelection">
+        <Header as="h1">Industrial pollution in</Header>
+        <div className="selector-container">
+          {items && (
+            <Dropdown
+              search
+              selection
+              fluid
+              onChange={(event, data) => {
+                props.setQueryParam({
+                  queryParam: {
+                    countryCode: data.value,
+                  },
+                });
+              }}
+              placeholder={'Country'}
+              options={items}
+              value={props.globalQuery.countryCode}
+            />
+          )}
+        </div>
+      </div>
+    );
+  },
 };
 
 const View = props => {
@@ -404,10 +438,7 @@ const View = props => {
   return (
     <DiscodataSqlBuilderView {...props}>
       <div className="facility-block-wrapper">
-        <div
-          className=""
-          style={{ padding: '2em 0', margin: '0 1.3em', overflow: 'auto' }}
-        >
+        <div>
           {state.selectedResource &&
             root.map(tree =>
               renderComponents.wrapper(tree, state.selectedResource, {

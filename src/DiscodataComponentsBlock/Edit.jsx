@@ -326,6 +326,7 @@ const getSchema = props => {
               ['metadataGrid', 'Metadata grid'],
               ['table', 'Table'],
               ['banner', 'Banner'],
+              ['eprtrCountrySelector', 'eprtrCountrySelector'],
             ],
           },
           gridColumns: {
