@@ -6,13 +6,15 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 // HELPERS
 import qs from 'query-string';
+import axios from 'axios';
 import jsonp from 'jsonp';
+import { settings } from '~/config';
 // VOLTO
 import { Icon as VoltoIcon } from '@plone/volto/components';
 // VOLTO-DATABLOCKS
 import { setQueryParam } from 'volto-datablocks/actions';
 // SEMANTIC REACT UI
-import { Grid, Dropdown, Radio, Header } from 'semantic-ui-react';
+import { Grid, Header, Loader, Dimmer } from 'semantic-ui-react';
 // SVGs
 import clearSVG from '@plone/volto/icons/clear.svg';
 import pinSVG from '~/icons/pin.svg';
@@ -56,6 +58,7 @@ let Map,
   Overlay,
   EsriJSON,
   VectorSource,
+  VectorSourceEvent,
   XYZ,
   fromLonLat,
   toLonLat,
@@ -65,52 +68,63 @@ let Map,
   Fill,
   Stroke,
   Style,
-  Icon,
   TileLayer,
   VectorLayer,
   Group,
   tile,
   Control,
-  defaultsControls;
+  defaultsControls,
+  defaultsInteractions;
 let OL_LOADED = false;
+const initialExtent = [
+  -10686671.0000035,
+  -2430148.00000588,
+  6199975.99999531,
+  10421410.9999871,
+];
 const OpenlayersMapView = props => {
   const stateRef = useRef({
     map: {
       element: null,
-      filterIEDSiteMapWM: { whereStatements: {}, where: '' },
-      lyIEDSiteMapWM: null,
+      sitesSourceQuery: { whereStatements: {}, where: '' },
+      oldSitesSourceQuery: { whereStatements: {}, where: '' },
+      sitesSourceLayer: null,
     },
     popup: { element: null, properties: {} },
     popupDetails: { element: null, properties: {} },
-    pendingRequests: 0,
+    locationTerm: null,
     updateMapPosition: null,
   });
   const [state, setState] = useState({
     map: {
       element: null,
-      filterIEDSiteMapWM: { whereStatements: {}, where: '' },
-      lyIEDSiteMapWM: null,
+      sitesSourceQuery: { whereStatements: {}, where: '' },
+      oldSitesSourceQuery: { whereStatements: {}, where: '' },
+      sitesSourceLayer: null,
     },
     popup: { element: null, properties: {} },
     popupDetails: { element: null, properties: {} },
-    pendingRequests: 0,
+    locationTerm: null,
     updateMapPosition: null,
   });
+  const [loader, setLoader] = useState(false);
   const [mapRendered, setMapRendered] = useState(false);
+  const [firstFilteringUpdate, setFirstFilteringUpdate] = useState(false);
   const ToggleSidebarControl = useRef(null);
-  // const [ToggleSidebarControl, setToggleSidebarControl] = useState(null);
   const history = useHistory();
-  const { query } = qs.parse(props.query);
-  const { search } = props.discodata_query;
-  const globalQuery = { ...query, ...search };
-  const draggable = props.data?.draggable?.value;
-  const queryParameters = props.data?.query_parameters?.value
-    ? JSON.parse(props.data.query_parameters.value).properties
-    : {};
-  const zoomSwitch = 8;
+  const draggable = !!props.data?.draggable?.value;
+  const hasPopups = !!props.data?.hasPopups?.value;
+  const hasSidebar = !!props.data?.hasSidebar?.value;
+  const zoomSwitch = 6;
   const currentMapZoom = state.map?.element
     ? state.map.element.getView().getZoom()
     : null;
+
+  if (mapRendered && !firstFilteringUpdate) {
+    updateFilters();
+    setFirstFilteringUpdate(true);
+  }
+
   useEffect(() => {
     if (__CLIENT__ && document) {
       // MOuNT
@@ -120,6 +134,7 @@ const OpenlayersMapView = props => {
         Overlay = require('ol/Overlay').default;
         EsriJSON = require('ol/format/EsriJSON').default;
         VectorSource = require('ol/source/Vector').default;
+        VectorSourceEvent = require('ol/source/Vector').VectorSourceEvent;
         XYZ = require('ol/source/XYZ').default;
         fromLonLat = require('ol/proj').fromLonLat;
         toLonLat = require('ol/proj').toLonLat;
@@ -129,16 +144,16 @@ const OpenlayersMapView = props => {
         Fill = require('ol/style/Fill.js').default;
         Stroke = require('ol/style/Stroke.js').default;
         Style = require('ol/style/Style.js').default;
-        Icon = require('ol/style/Icon.js').default;
         TileLayer = require('ol/layer/Tile.js').default;
         VectorLayer = require('ol/layer/Vector.js').default;
         Group = require('ol/layer/Group.js').default;
         tile = require('ol/loadingstrategy').tile;
         Control = require('ol/control/Control.js').default;
         defaultsControls = require('ol/control.js').defaults;
+        defaultsInteractions = require('ol/interaction.js').defaults;
         OL_LOADED = true;
       }
-      if (OL_LOADED && !ToggleSidebarControl.current) {
+      if (OL_LOADED && !ToggleSidebarControl.current && hasSidebar) {
         ToggleSidebarControl.current = /*@__PURE__*/ (function(Control) {
           function ToggleSidebarControl(opt_options) {
             const options = opt_options || {};
@@ -159,7 +174,7 @@ const OpenlayersMapView = props => {
           return ToggleSidebarControl;
         })(Control);
       }
-      renderMap({ draggable, queryParameters });
+      renderMap();
       setMapRendered(true);
     }
     return () => {
@@ -170,10 +185,57 @@ const OpenlayersMapView = props => {
 
   useEffect(() => {
     if (mapRendered) {
-      const filterIEDSiteMapWM = { whereStatements: {}, where: '' };
-      filterIEDSiteMapWM.whereStatements = {
+      updateFilters();
+    }
+    /* eslint-disable-next-line */
+  }, [
+    JSON.stringify(props.discodata_query.search.siteTerm),
+    JSON.stringify(props.discodata_query.search.locationTerm),
+    JSON.stringify(props.discodata_query.search.EEASector),
+    JSON.stringify(props.discodata_query.search.siteCountry),
+    JSON.stringify(props.discodata_query.search.region),
+    JSON.stringify(props.discodata_query.search.riverBasin),
+    JSON.stringify(props.discodata_query.search.townVillage),
+    // JSON.stringify(props.discodata_query.search.pollutantGroup),
+    JSON.stringify(props.discodata_query.search.pollutant),
+    JSON.stringify(props.discodata_query.search.reportingYear),
+    JSON.stringify(props.discodata_query.search.batConclusionCode),
+  ]);
+
+  useEffect(() => {
+    stateRef.current = { ...state };
+    /* eslint-disable-next-line */
+  }, [state])
+
+  useEffect(() => {
+    if (mapRendered) {
+      if (state.updateMapPosition === 'byLocationTermNoRefresh') {
+        const options = {
+          duration: 2000,
+          maxZoom: 15,
+        };
+        getLocation(options, true);
+        setState({
+          ...state,
+          updateMapPosition: null,
+        });
+      } else {
+        console.log('UPDATE FILTERS', state.map.sitesSourceQuery);
+        state.map.sitesSourceLayer &&
+          state.map.sitesSourceLayer.getSource().refresh();
+      }
+    }
+    /* eslint-disable-next-line */
+  }, [state.map.sitesSourceQuery?.where, state.locationTerm?.text])
+
+  function updateFilters() {
+    const sitesSourceQuery = { ...state.map.sitesSourceQuery };
+    const locationTerm = props.discodata_query.search.locationTerm || null;
+    if (hasSidebar) {
+      sitesSourceQuery.whereStatements = {
+        ...sitesSourceQuery.whereStatements,
         siteTerm: {
-          sql: `sitename LIKE ':options%'`,
+          sql: `(sitename LIKE ':options%')`,
           type: 'string',
         },
         //?  Industries
@@ -197,9 +259,9 @@ const OpenlayersMapView = props => {
           sql: `(townVillage IN (:options))`,
         },
         // Pollutant groups
-        pollutantGroup: {
-          sql: `(pollutantGroup IN (:options))`,
-        },
+        // pollutantGroup: {
+        //   sql: `(pollutantGroup IN (:options))`,
+        // },
         // Pollutants
         pollutant: {
           sql: `(pollutants IN (:options))`,
@@ -217,218 +279,374 @@ const OpenlayersMapView = props => {
         //! Permit type
         //! Permit year
       };
-
-      Object.entries(filterIEDSiteMapWM.whereStatements).forEach(
-        ([id, where]) => {
-          let options;
-          if (where.type === 'string') {
-            options = props.discodata_query.search[id];
-          } else {
-            options = splitBy(props.discodata_query.search[id], ',');
-          }
-          where.sql = options ? where.sql.replace(':options', options) : null;
-          if (!where.sql) delete filterIEDSiteMapWM.whereStatements[id];
+    } else {
+      sitesSourceQuery.whereStatements = {
+        ...sitesSourceQuery.whereStatements,
+        // Site inspire id
+        siteId: {
+          sql: `(id = ':options')`,
+          type: 'string',
         },
-      );
+      };
+    }
 
-      filterIEDSiteMapWM.where = Object.entries(
-        filterIEDSiteMapWM.whereStatements,
-      )
-        .map(([id, where]) => where.sql)
-        .join(' AND ');
-      if (filterIEDSiteMapWM.where !== state.map.filterIEDSiteMapWM.where) {
-        let updateMapPosition = null;
-        state.map.lyIEDSiteMapWM.getSource().refresh();
-        if (
-          filterIEDSiteMapWM.whereStatements.siteTerm?.sql !==
-          state.map.filterIEDSiteMapWM.whereStatements.siteTerm?.sql
-        ) {
-          updateMapPosition = 'bySiteTerm';
-        } else if (
-          filterIEDSiteMapWM.whereStatements.siteCountry?.sql !==
-            state.map.filterIEDSiteMapWM.whereStatements.siteCountry?.sql ||
-          filterIEDSiteMapWM.whereStatements.region?.sql !==
-            state.map.filterIEDSiteMapWM.whereStatements.region?.sql
-        ) {
-          updateMapPosition = 'byRegion';
-        }
+    Object.entries(sitesSourceQuery.whereStatements).forEach(([id, where]) => {
+      let options;
+      if (where.type === 'string') {
+        options = props.discodata_query.search[id];
+      } else if (!props.discodata_query.search[id]) {
+        options = null;
+      } else {
+        options = splitBy(props.discodata_query.search[id], ',');
+      }
+      where.sql = options ? where.sql.replace(':options', options) : null;
+      if (!where.sql) delete sitesSourceQuery.whereStatements[id];
+    });
+
+    sitesSourceQuery.where = Object.entries(sitesSourceQuery.whereStatements)
+      .map(([id, where]) => where.sql)
+      .join(' AND ');
+
+    if (
+      sitesSourceQuery.where !== state.map.sitesSourceQuery.where ||
+      locationTerm?.text !== state.locationTerm?.text
+    ) {
+      let updateMapPosition = null;
+      if (
+        sitesSourceQuery.whereStatements.siteTerm?.sql ||
+        sitesSourceQuery.whereStatements.siteId?.sql
+      ) {
+        updateMapPosition = 'bySiteTerm';
+      } else if (locationTerm?.text) {
+        updateMapPosition = 'byLocationTerm';
+      } else if (
+        sitesSourceQuery.whereStatements.siteCountry?.sql ||
+        sitesSourceQuery.whereStatements.region?.sql
+      ) {
+        updateMapPosition = 'byRegion';
+      }
+      setLoader(true);
+      if (sitesSourceQuery.where !== state.map.sitesSourceQuery.where) {
         setState({
           ...state,
           map: {
             ...state.map,
-            filterIEDSiteMapWM,
+            sitesSourceQuery,
           },
           updateMapPosition,
+          locationTerm,
+        });
+      } else if (locationTerm?.text !== state.locationTerm?.text) {
+        setState({
+          ...state,
+          updateMapPosition: 'byLocationTermNoRefresh',
+          locationTerm,
         });
       }
     }
-    /* eslint-disable-next-line */
-  }, [
-    JSON.stringify(props.discodata_query.search.siteTerm),
-    JSON.stringify(props.discodata_query.search.locationTerm),
-    JSON.stringify(props.discodata_query.search.EEASector),
-    JSON.stringify(props.discodata_query.search.siteCountry),
-    JSON.stringify(props.discodata_query.search.region),
-    JSON.stringify(props.discodata_query.search.riverBasin),
-    JSON.stringify(props.discodata_query.search.townVillage),
-    JSON.stringify(props.discodata_query.search.pollutantGroup),
-    JSON.stringify(props.discodata_query.search.pollutant),
-    JSON.stringify(props.discodata_query.search.reportingYear),
-    JSON.stringify(props.discodata_query.search.batConclusionCode),
-  ]);
+  }
 
-  useEffect(() => {
-    stateRef.current = { ...state };
-    /* eslint-disable-next-line */
-  }, [state])
-
-  useEffect(() => {
-    if (!state.pendingRequests && state.updateMapPosition) {
-      if (state.updateMapPosition === 'bySiteTerm') {
-        const coordinates = state.map.lyIEDSiteMapWM
-          ?.getSource()
-          ?.getFeatures()?.[0]
-          ?.getProperties()?.geometry?.flatCoordinates;
-        console.log(
-          'AICI',
-          state.map.lyIEDSiteMapWM?.getSource()?.getFeatures()?.[0],
-        );
-        if (coordinates) {
-          state.map.element.getView().setCenter(coordinates);
-          state.map.element.getView().setZoom(15);
-        }
-      }
-      setState({
-        ...state,
-        updateMapPosition: null,
-      });
-    }
-    /* eslint-disable-next-line */
-  }, [state.pendingRequests])
-
-  function renderMap() {
-    if (
-      document.getElementById('map') &&
-      document.getElementById(`popup`) &&
-      document.getElementById(`popup-details`) &&
-      document.getElementById(`dynamic-filter`)
-    ) {
-      //  Popup element
-      const popupElement = document.getElementById(`popup`);
-      const popupDetailsElement = document.getElementById(`popup-details`);
-      const dynamicFilterElement = document.getElementById(`dynamic-filter`);
-      //  Clear map content on every cycle
+  function makeMap() {
+    if (document.getElementById('map')) {
       document.getElementById('map').innerHTML = '';
-      // Main map
       const map = new Map({
-        controls: defaultsControls().extend([
-          new ToggleSidebarControl.current(),
-        ]),
+        controls: draggable
+          ? hasSidebar
+            ? defaultsControls().extend([new ToggleSidebarControl.current()])
+            : defaultsControls()
+          : [],
+        interactions: draggable ? defaultsInteractions() : [],
         target: document.getElementById('map'),
         view: new View({
           center: fromLonLat([20, 50]),
           zoom: 4.5,
         }),
       });
-      // Basemaps Layers
-      const worldLightGrayBase = new TileLayer({
-        source: new XYZ({
-          url:
-            'https://server.arcgisonline.com/ArcGIS/rest/services/' +
-            'Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
-        }),
-        visible: true,
-        title: 'World_Light_Gray_Base',
-      });
-      const worldHillshade = new TileLayer({
-        source: new XYZ({
-          url:
-            'https://server.arcgisonline.com/ArcGIS/rest/services/' +
-            'Elevation/World_Hillshade/MapServer/tile/{z}/{y}/{x}',
-        }),
-        visible: false,
-        title: 'World_Hillshade',
-      });
-      // Base Layer Group
-      const baseLayerGroup = new Group({
-        layers: [worldLightGrayBase, worldHillshade],
-      });
-      // Create an overlay to anchor the popups to the map.
-      const popup = new Overlay({
-        element: popupElement,
-        positioning: 'center-center',
-        stopEvent: false,
-      });
-      const popupDetails = new Overlay({
-        element: popupDetailsElement,
-        className: 'ol-popup-details',
-        positioning: 'center-center',
-        stopEvent: false,
-      });
-      const dynamicFilter = new Overlay({
-        element: dynamicFilterElement,
-        className: 'ol-dynamic-filter',
-        positioning: 'center-center',
-        stopEvent: false,
-      });
-      // Add layers to map
-      map.addOverlay(popup);
-      map.addOverlay(popupDetails);
-      map.addOverlay(dynamicFilter);
-      map.addLayer(baseLayerGroup);
-      dynamicFilter.setPosition([0, 0]);
+      return map;
+    }
+    return false;
+  }
 
-      // Vector Layers
-      var esrijsonFormat = new EsriJSON();
+  function makeTileLayer(url, visible, title) {
+    const layer = new TileLayer({
+      source: new XYZ({
+        url,
+      }),
+      visible,
+      title,
+    });
+    return layer;
+  }
 
-      // ly_IED_SiteMap_WM
-      const vectorSourceIEDSiteMapWM = new VectorSource({
+  function makeOverlay(element, className, positioning, stopEvent) {
+    if (element) {
+      return new Overlay({
+        element,
+        className,
+        positioning,
+        stopEvent,
+      });
+    }
+    return false;
+  }
+
+  function getLocation(options, noRefresh = false) {
+    axios
+      .get(
+        encodeURI(
+          'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?SingleLine=' +
+            stateRef.current.locationTerm?.text +
+            '&f=json&outSR={"wkid":102100,"latestWkid":3857}&outFields=Match_addr,Addr_type,StAddr,City&magicKey=' +
+            stateRef.current.locationTerm?.magicKey +
+            '&maxLocations=6',
+        ),
+      )
+      .then(response => {
+        const data = JSON.parse(response.request.response) || {};
+        if (data.error) {
+          setLoader(false);
+        } else if (data.candidates?.length > 0) {
+          stateRef.current.map.element
+            .getView()
+            .fit(
+              [
+                data.candidates[0].extent.xmin,
+                data.candidates[0].extent.ymin,
+                data.candidates[0].extent.xmax,
+                data.candidates[0].extent.ymax,
+              ],
+              {
+                ...options,
+                callback: function() {
+                  if (noRefresh) {
+                    setLoader(false);
+                    stateRef.current.map.sitesSourceLayer &&
+                      stateRef.current.map.sitesSourceLayer
+                        .getSource()
+                        .refresh();
+                  }
+                },
+              },
+            );
+        }
+      })
+      .catch(error => {});
+  }
+
+  function onSourceChange(source) {
+    const options = {
+      duration: 2000,
+      maxZoom: 15,
+    };
+    const extent = source.getExtent().map((coordinate, index) => {
+      if (coordinate === Infinity || coordinate === -Infinity) {
+        return initialExtent[index];
+      }
+      return coordinate;
+    });
+    if (stateRef.current.updateMapPosition === 'bySiteTerm' && extent) {
+      stateRef.current.map.element.getView().fit(extent, options);
+    }
+    if (
+      stateRef.current.updateMapPosition === 'byLocationTerm' &&
+      stateRef.current.locationTerm?.text &&
+      stateRef.current.locationTerm?.magicKey &&
+      extent
+    ) {
+      getLocation(options);
+    }
+    if (stateRef.current.updateMapPosition === 'byRegion' && extent) {
+      stateRef.current.map.element.getView().fit(extent);
+    }
+    //  UPDATE OLD FILTERS
+    if (
+      stateRef.current.map.sitesSourceQuery.where !==
+        stateRef.current.map.oldSitesSourceQuery.where ||
+      stateRef.current.updateMapPosition !== null
+    ) {
+      console.log('ON SOURCE CHANGE');
+      setState({
+        ...stateRef.current,
+        map: {
+          ...stateRef.current.map,
+          oldSitesSourceQuery: {
+            ...stateRef.current.map.sitesSourceQuery,
+          },
+        },
+        updateMapPosition: null,
+      });
+    }
+  }
+
+  function centerPosition(map, position, zoom) {
+    map
+      .getView()
+      .setCenter(
+        fromLonLat([position.coords.longitude, position.coords.latitude]),
+      );
+    map.getView().setZoom(zoom);
+  }
+
+  function setFeatureInfo(map, pixel, coordinate, detailed) {
+    let features = [];
+    map.forEachFeatureAtPixel(pixel, function(feature) {
+      features.push(feature);
+    });
+    if (features.length) {
+      let hdms = toStringHDMS(
+        toLonLat(features[0].getGeometry().flatCoordinates),
+      );
+      const featuresProperties = features[0].getProperties();
+      if (
+        detailed &&
+        JSON.stringify(stateRef.current.popupDetails.properties) !==
+          JSON.stringify(featuresProperties)
+      ) {
+        // axios.get()
+        setState({
+          ...stateRef.current,
+          popupDetails: {
+            ...stateRef.current.popupDetails,
+            properties: { ...featuresProperties, hdms },
+          },
+        });
+      } else if (
+        !detailed &&
+        JSON.stringify(stateRef.current.popup.properties) !==
+          JSON.stringify(featuresProperties)
+      ) {
+        setState({
+          ...stateRef.current,
+          popup: {
+            ...stateRef.current.popup,
+            properties: { ...featuresProperties, hdms },
+          },
+        });
+      }
+      return true;
+    }
+    return false;
+  }
+
+  function displayPopup(map, pixel, coordinate, popup, detailed = false) {
+    if (setFeatureInfo(map, pixel, coordinate, detailed)) {
+      map.getTarget().style.cursor = 'pointer';
+      popup.element.classList.add('show');
+      popup.setPosition(coordinate);
+    } else {
+      map.getTarget().style.cursor = '';
+      if (!detailed) {
+        popup.element.classList.remove('show');
+        popup.setPosition(undefined);
+      }
+    }
+  }
+
+  function renderMap() {
+    //  MAP
+    const map = makeMap();
+    //  Layers
+    let worldLightGrayBase, worldHillshade;
+    //  Overlayers
+    let popup, popupDetails, dynamicFilters;
+    //  Features Formater
+    let esrijsonFormat = new EsriJSON();
+    //  Vector Layers
+    let sitesSourceLayer, regionsSourceLayer;
+    //  Vector Sources
+    let sitesSource, regionsSource;
+    //  Global variables
+    let currentZoom;
+    if (map) {
+      /* ======== TILE LAYERS ======== */
+      //  Make TileLayers
+      worldLightGrayBase = makeTileLayer(
+        'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+        true,
+        'World_Light_Gray_Base',
+      );
+      worldHillshade = makeTileLayer(
+        'https://server.arcgisonline.com/ArcGIS/rest/services/Elevation/World_Hillshade/MapServer/tile/{z}/{y}/{x}',
+        false,
+        'World_Hillshade',
+      );
+      /* ======== OVERLAYS ======== */
+      //  Make popups overlays
+      if (hasPopups) {
+        popup = makeOverlay(
+          document.getElementById('popup'),
+          'ol-overlay-container ol-popup',
+          'center-center',
+          true,
+        );
+        popupDetails = makeOverlay(
+          document.getElementById('popup-details'),
+          'ol-overlay-container ol-popup-details',
+          'center-center',
+          true,
+        );
+      }
+      //  Make dynamic filters overlay
+      if (hasSidebar) {
+        dynamicFilters = makeOverlay(
+          document.getElementById(`dynamic-filter`),
+          'ol-dynamic-filter',
+          'center-center',
+          true,
+        );
+      }
+      /* ======== SOURCES ======== */
+      //  Make sites source
+      let reqs = 0;
+      sitesSource = new VectorSource({
         loader: function(extent, resolution, projection) {
+          const updateMapPosition =
+            !!stateRef.current.updateMapPosition &&
+            !['byLocationTerm', 'byLocationTermNoRefresh'].includes(
+              stateRef.current.updateMapPosition,
+            );
           var url =
             'https://services.arcgis.com/LcQjj2sL7Txk9Lag/arcgis/rest/services/ly_IED_SiteMap_WM/FeatureServer/0/query/?f=json&' +
             'returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=' +
             encodeURIComponent(
               '{"xmin":' +
-                extent[0] +
+                (updateMapPosition ? initialExtent[0] : extent[0]) +
                 ',"ymin":' +
-                extent[1] +
+                (updateMapPosition ? initialExtent[1] : extent[1]) +
                 ',"xmax":' +
-                extent[2] +
+                (updateMapPosition ? initialExtent[2] : extent[2]) +
                 ',"ymax":' +
-                extent[3] +
+                (updateMapPosition ? initialExtent[3] : extent[3]) +
                 ',"spatialReference":{"wkid":102100}}',
             ) +
             '&geometryType=esriGeometryEnvelope&inSR=102100&outFields=*' +
             '&outSR=102100';
-          setState({
-            ...stateRef.current,
-            pendingRequests: isNaN(stateRef.current.pendingRequests)
-              ? 1
-              : stateRef.current.pendingRequests + 1,
-          });
+          setLoader(true);
+          reqs++;
           jsonp(
             url,
             {
-              param: `${qs.stringify({
-                where: stateRef.current.map.filterIEDSiteMapWM.where,
-              })}&callback`,
+              param:
+                qs.stringify({
+                  where: stateRef.current.map.sitesSourceQuery.where,
+                }) + '&callback',
             },
             (error, response) => {
-              setState({
-                ...stateRef.current,
-                pendingRequests:
-                  stateRef.current.pendingRequests <= 0
-                    ? 0
-                    : stateRef.current.pendingRequests - 1,
-              });
+              reqs--;
               if (error) {
+                setLoader(false);
                 console.log(error.message);
               } else {
                 var features = esrijsonFormat.readFeatures(response, {
                   featureProjection: projection,
                 });
                 if (features.length > 0) {
-                  vectorSourceIEDSiteMapWM.addFeatures(features);
+                  sitesSource.addFeatures(features);
+                  sitesSource.dispatchEvent(
+                    new VectorSourceEvent('updateFilters', features),
+                  );
+                } else {
+                  setLoader(false);
                 }
               }
             },
@@ -440,22 +658,8 @@ const OpenlayersMapView = props => {
           }),
         ),
       });
-      const lyIEDSiteMapWM = new VectorLayer({
-        source: vectorSourceIEDSiteMapWM,
-        style: new Style({
-          image: new Icon({
-            src: `data:image/svg+xml;utf8,${encodedPinSVG}`,
-            anchor: [0.5, 17],
-            anchorXUnits: 'fraction',
-            anchorYUnits: 'pixels',
-          }),
-        }),
-        visible: true,
-        title: 'ly_IED_SiteMap_WM',
-      });
-
-      // IED_SiteClusters_WM
-      const vectorSourceIEDSiteClustersWM = new VectorSource({
+      //  Make regions source layer
+      regionsSource = new VectorSource({
         loader: function(extent, resolution, projection) {
           var url =
             'https://services.arcgis.com/LcQjj2sL7Txk9Lag/ArcGIS/rest/services/ly_IED_SiteClusters_WM/FeatureServer/0/query/?f=json' +
@@ -481,7 +685,7 @@ const OpenlayersMapView = props => {
                 featureProjection: projection,
               });
               if (features.length > 0) {
-                vectorSourceIEDSiteClustersWM.addFeatures(features);
+                regionsSource.addFeatures(features);
               }
             }
           });
@@ -492,32 +696,113 @@ const OpenlayersMapView = props => {
           }),
         ),
       });
-
-      const lyIEDSiteClustersWM = new VectorLayer({
-        source: vectorSourceIEDSiteClustersWM,
+      /* ======== SOURCE LAYERS ======== */
+      //  Sites source layer
+      sitesSourceLayer = new VectorLayer({
+        source: sitesSource,
         style: new Style({
-          image: new Icon({
-            src: `data:image/svg+xml;utf8,${encodedBluePinSVG}`,
-            anchor: [0.5, 17],
-            anchorXUnits: 'fraction',
-            anchorYUnits: 'pixels',
+          image: new CircleStyle({
+            radius: 3,
+            fill: new Fill({ color: '#000' }),
+            stroke: new Stroke({ color: '#6A6A6A', width: 1 }),
+          }),
+        }),
+        visible: true,
+        title: 'ly_IED_SiteMap_WM',
+      });
+      //  Regions source layer
+      regionsSourceLayer = new VectorLayer({
+        source: regionsSource,
+        style: new Style({
+          image: new CircleStyle({
+            radius: 3,
+            fill: new Fill({ color: '#4296B2' }),
+            stroke: new Stroke({ color: '#6A6A6A', width: 1 }),
           }),
         }),
         visible: true,
         title: 'ly_IED_SiteClusters_WM',
       });
-
-      // Vector Layer Group
-      const vectorLayerGroup = new Group({
-        layers: [lyIEDSiteMapWM, lyIEDSiteClustersWM],
+      /* ======== APPEND TO THE MAP ======== */
+      //  Append TileLayers to the map
+      map.addLayer(
+        new Group({
+          layers: [worldLightGrayBase, worldHillshade],
+        }),
+      );
+      //  Append popups to the map
+      popup && map.addOverlay(popup);
+      popupDetails && map.addOverlay(popupDetails);
+      //  Append dynamic filters to the map
+      dynamicFilters && map.addOverlay(dynamicFilters);
+      dynamicFilters && dynamicFilters.setPosition([0, 0]);
+      //  Append source layers to the map
+      map.addLayer(
+        new Group({
+          layers: [sitesSourceLayer, regionsSourceLayer],
+        }),
+      );
+      //  Center by user location
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position =>
+          centerPosition(map, position, 12),
+        );
+      }
+      //  Events
+      sitesSource.on('updateFilters', function(e) {
+        if (!reqs && e.target.getState() === 'ready') {
+          setLoader(false);
+          onSourceChange(e.target);
+        }
       });
-      map.addLayer(vectorLayerGroup);
-
+      if (hasPopups) {
+        map.on('pointermove', function(evt) {
+          if (evt.dragging) {
+            return;
+          }
+          const pixel = map.getEventPixel(evt.originalEvent);
+          displayPopup(map, pixel, evt.coordinate, popup);
+        });
+        map.on('click', function(evt) {
+          let newZoom = map.getView().getZoom();
+          if (newZoom > zoomSwitch) {
+            displayPopup(map, evt.pixel, evt.coordinate, popupDetails, true);
+          }
+        });
+      }
+      map.on('moveend', function(e) {
+        if (hasSidebar && document.getElementById('dynamic-filter')) {
+          document.getElementById('dynamic-filter').dispatchEvent(
+            new CustomEvent('featurechange', {
+              detail: {
+                features: sitesSource.getFeaturesInExtent(
+                  map.getView().calculateExtent(),
+                ),
+              },
+            }),
+          );
+        }
+        let newZoom = map.getView().getZoom();
+        if (currentZoom !== newZoom) {
+          if (newZoom > zoomSwitch) {
+            sitesSourceLayer.setVisible(true);
+            regionsSourceLayer.setVisible(false);
+          } else if (newZoom > 2) {
+            sitesSourceLayer.setVisible(false);
+            regionsSourceLayer.setVisible(true);
+          } else {
+            sitesSourceLayer.setVisible(false);
+            regionsSourceLayer.setVisible(false);
+          }
+          currentZoom = newZoom;
+        }
+      });
       setState({
+        ...stateRef.current,
         map: {
           ...stateRef.current.map,
           element: map,
-          lyIEDSiteMapWM,
+          sitesSourceLayer,
         },
         popup: {
           ...stateRef.current.popup,
@@ -528,117 +813,32 @@ const OpenlayersMapView = props => {
           element: popupDetails,
         },
       });
-
-      // Auto center by client location
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(centerPosition);
-      }
-
-      function centerPosition(position) {
-        map
-          .getView()
-          .setCenter(
-            fromLonLat([position.coords.longitude, position.coords.latitude]),
-          );
-        map.getView().setZoom(12);
-      }
-
-      // Identify logic
-      function setFeatureInfo(pixel, coordinate, detailed) {
-        let features = [];
-        map.forEachFeatureAtPixel(pixel, function(feature) {
-          features.push(feature);
-        });
-        if (features.length) {
-          let hdms = toStringHDMS(
-            toLonLat(features[0].getGeometry().flatCoordinates),
-          );
-          const featuresProperties = features[0].getProperties();
-          if (
-            detailed &&
-            JSON.stringify(stateRef.current.popupDetails.properties) !==
-              JSON.stringify(featuresProperties)
-          ) {
-            setState({
-              ...stateRef.current,
-              popupDetails: {
-                ...stateRef.current.popupDetails,
-                properties: { ...featuresProperties, hdms },
-              },
-            });
-          } else if (
-            !detailed &&
-            JSON.stringify(stateRef.current.popup.properties) !==
-              JSON.stringify(featuresProperties)
-          ) {
-            setState({
-              ...stateRef.current,
-              popup: {
-                ...stateRef.current.popup,
-                properties: { ...featuresProperties, hdms },
-              },
-            });
-          }
-          return true;
-        }
-        return false;
-      }
-
-      const displayPopup = function(
-        pixel,
-        coordinate,
-        popup,
-        detailed = false,
-      ) {
-        if (setFeatureInfo(pixel, coordinate, detailed)) {
-          map.getTarget().style.cursor = 'pointer';
-          popup.setPosition(coordinate);
-        } else {
-          map.getTarget().style.cursor = '';
-          if (!detailed) {
-            popup.setPosition(undefined);
-          }
-        }
-      };
-
-      map.on('pointermove', function(evt) {
-        if (evt.dragging) {
-          return;
-        }
-        const pixel = map.getEventPixel(evt.originalEvent);
-        displayPopup(pixel, evt.coordinate, popup);
-      });
-
-      let currZoom = map.getView().getZoom();
-      map.on('click', function(evt) {
-        let newZoom = map.getView().getZoom();
-        if (newZoom > zoomSwitch) {
-          displayPopup(evt.pixel, evt.coordinate, popupDetails, true);
-        }
-      });
-      map.on('moveend', function(e) {
-        let newZoom = map.getView().getZoom();
-        if (currZoom !== newZoom) {
-          if (newZoom > zoomSwitch) {
-            lyIEDSiteMapWM.setVisible(true);
-            lyIEDSiteClustersWM.setVisible(false);
-          } else {
-            lyIEDSiteMapWM.setVisible(false);
-            lyIEDSiteClustersWM.setVisible(true);
-          }
-          currZoom = newZoom;
-        }
-      });
     }
   }
 
   const setSiteQueryParams = () => {
-    setQueryParam({
-      queryParam: {
-        siteInspireId: state.popupDetails.properties.sitename,
-        reportingYear: state.popupDetails.properties.rep_yr,
-      },
-    });
+    axios
+      .get(
+        encodeURI(
+          `${
+            settings.providerUrl
+          }?query=SELECT DISTINCT siteId, siteInspireId FROM [IED].[latest].[FacilitiesPerSite] WHERE siteId = '${
+            state.popupDetails.properties.id
+          }'`,
+        ),
+      )
+      .then(response => {
+        const data = JSON.parse(response.request.response);
+        props.setQueryParam({
+          queryParam: {
+            siteInspireId: data.results[0].siteInspireId,
+            siteId: state.popupDetails.properties.id,
+            siteName: state.popupDetails.properties.sitename,
+            reportingYear: state.popupDetails.properties.rep_yr,
+          },
+        });
+      })
+      .catch(error => {});
   };
 
   return (
@@ -709,7 +909,7 @@ const OpenlayersMapView = props => {
                   <p>
                     <Link
                       onClick={setSiteQueryParams}
-                      to={'/industrial-site/introduction'}
+                      to={'/industrial-sites/introduction'}
                     >
                       {state.popupDetails.properties.n_fac || 0} Facilities
                     </Link>
@@ -717,7 +917,7 @@ const OpenlayersMapView = props => {
                   <p>
                     <Link
                       onClick={setSiteQueryParams}
-                      to={'/industrial-site/introduction'}
+                      to={'/industrial-sites/introduction'}
                     >
                       {state.popupDetails.properties.n_lcp || 0} Large comustion
                       plants
@@ -726,7 +926,7 @@ const OpenlayersMapView = props => {
                   <p>
                     <Link
                       onClick={setSiteQueryParams}
-                      to={'/industrial-site/introduction'}
+                      to={'/industrial-sites/introduction'}
                     >
                       {state.popupDetails.properties.n_inst || 0} Installations
                     </Link>
@@ -759,7 +959,7 @@ const OpenlayersMapView = props => {
               <button
                 onClick={() => {
                   setSiteQueryParams();
-                  history.push('/industrial-site/introduction');
+                  history.push('/industrial-sites');
                 }}
                 className="solid dark-blue"
               >
@@ -769,6 +969,9 @@ const OpenlayersMapView = props => {
           </>
         )}
       </div>
+      <Dimmer id="map-loader" active={loader}>
+        <Loader />
+      </Dimmer>
     </React.Fragment>
   );
 };

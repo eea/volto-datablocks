@@ -11,34 +11,17 @@ const getSchema = props => {
     draggable: {
       type: 'boolean',
       title: 'Drraggable',
+      defaultValue: false,
     },
-    query_parameters: {
-      title: 'Query parameters',
-      type: 'schema',
-      fieldSetTitle: 'Query parameters metadata',
-      fieldSetId: 'query_parameters_metadata',
-      fieldSetSchema: {
-        fieldsets: [
-          {
-            id: 'default',
-            title: 'title',
-            fields: ['title', 'id'],
-          },
-        ],
-        properties: {
-          title: {
-            title: 'Title',
-            type: 'text',
-          },
-          id: {
-            title: 'Id',
-            type: 'text',
-          },
-        },
-        required: ['id', 'title'],
-      },
-      editFieldset: false,
-      deleteFieldset: false,
+    hasPopups: {
+      type: 'boolean',
+      title: 'Has popups',
+      defaultValue: false,
+    },
+    hasSidebar: {
+      type: 'boolean',
+      title: 'Has sidebar',
+      defaultValue: false,
     },
   };
 };
