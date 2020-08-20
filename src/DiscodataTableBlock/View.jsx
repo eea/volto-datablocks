@@ -128,7 +128,9 @@ const View = props => {
     items = props.discodata_resources.data[collection] || [];
     totalItems =
       props.data.itemsCountKey?.value &&
-      props.discodata_resources.data[collection_count]
+      props.discodata_resources.data[collection_count] &&
+      Array.isArray(props.discodata_resources.data[collection_count]) &&
+      props.discodata_resources.data[collection_count].length > 0
         ? props.discodata_resources.data[collection_count].reduce(
             (acc, el) =>
               acc[props.data.itemsCountKey.value] +
