@@ -337,6 +337,9 @@ const renderComponents = {
               onChange={(event, data) => {
                 props.setQueryParam({
                   queryParam: {
+                    siteCountry: data.options.filter(opt => {
+                      return opt.value === data.value;
+                    })[0]?.key,
                     countryCode: data.value,
                   },
                 });

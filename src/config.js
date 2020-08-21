@@ -24,9 +24,6 @@ import DiscodataTableBlockView from './DiscodataTableBlock/View';
 import DiscodataSqlBuilderEdit from './DiscodataSqlBuilder/Edit';
 import DiscodataSqlBuilderView from './DiscodataSqlBuilder/View';
 
-import DiscodataOpenlayersMapBlockEdit from './DiscodataOpenlayersMapBlock/Edit';
-import DiscodataOpenlayersMapBlockView from './DiscodataOpenlayersMapBlock/View';
-
 import DataProviderWidget from './DataProviders/DataProviderWidget';
 
 import addonRoutes from './routes';
@@ -116,15 +113,6 @@ export function applyConfig(config) {
     title: 'Discodata table block',
     view: DiscodataTableBlockView,
     edit: DiscodataTableBlockEdit,
-    icon: chartIcon,
-    group: 'data_blocks',
-  };
-
-  config.blocks.blocksConfig.discodata_openlayers_map_block = {
-    id: 'discodata_openlayers_map_block',
-    title: 'Discodata Openlayers map block',
-    view: DiscodataOpenlayersMapBlockView,
-    edit: DiscodataOpenlayersMapBlockEdit,
     icon: chartIcon,
     group: 'data_blocks',
   };
