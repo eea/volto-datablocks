@@ -1,4 +1,3 @@
-import DataTileEdit from './components/Tiles/DataTile/Edit';
-import DataTileView from './components/Tiles/DataTile/View';
+import { applyConfig } from './config';
 
-export { DataTileEdit, DataTileView };
+export default applyConfig;

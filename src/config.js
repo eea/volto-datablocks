@@ -7,7 +7,6 @@ import DataQueryWidget from './DataQueryWidget/Widget';
 import DataBlockView from './DataConnectedBlock/View';
 import DataBlockEdit from './DataConnectedBlock/Edit';
 import DataConnectorView from './DataConnector/View';
-import installDraftEditorDataEntity from './dataentity';
 import { ViewSelect, AutoSelectFromContext } from './ContextParameter';
 
 import DataConnectedEmbedView from './DataConnectedEmbedBlock/View';
@@ -32,11 +31,12 @@ import DataProviderWidget from './DataProviders/DataProviderWidget';
 
 import addonRoutes from './routes';
 
+// import installDraftEditorDataEntity from './dataentity';
 // import { ConnectedDataParameterWatcher } from './Viewlets';
 
 function addCustomGroup(config, group) {
   const hasCustomGroup = config.blocks.groupBlocksOrder.filter(
-    el => el.id === group.id,
+    (el) => el.id === group.id,
   );
   if (hasCustomGroup.length === 0) {
     config.blocks.groupBlocksOrder.push(group);
