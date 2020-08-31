@@ -5,6 +5,8 @@ import {
   SET_CONNECTED_DATA_PARAMETERS,
   DELETE_CONNECTED_DATA_PARAMETERS,
   GET_DISCODATA_RESOURCE,
+  SET_DISCODATA_RESOURCE,
+  SET_DISCODATA_RESOURCE_PENDING,
   SET_DISCODATA_QUERY,
   DELETE_QUERY_PARAM,
   SET_QUERY_PARAM,
@@ -95,6 +97,22 @@ export function getDiscodataResource({
       op: 'get',
       path: url,
     },
+  };
+}
+
+export function setDiscodataResource({ collection, resourceKey, key }) {
+  return {
+    type: SET_DISCODATA_RESOURCE,
+    collection,
+    resourceKey,
+    key,
+  };
+}
+
+export function setDiscodataResourcePending({ key }) {
+  return {
+    type: SET_DISCODATA_RESOURCE_PENDING,
+    key,
   };
 }
 

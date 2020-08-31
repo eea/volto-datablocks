@@ -1,4 +1,8 @@
-import { GET_DISCODATA_RESOURCE } from '../constants';
+import {
+  GET_DISCODATA_RESOURCE,
+  SET_DISCODATA_RESOURCE,
+  SET_DISCODATA_RESOURCE_PENDING,
+} from '../constants';
 
 const initialState = {
   error: null,
@@ -35,7 +39,7 @@ export default function pages(state = initialState, action = {}) {
           const str = JSON.stringify(item);
           return (
             index ===
-            action.result.results.findIndex(duplicate => {
+            action.result.results.findIndex((duplicate) => {
               return JSON.stringify(duplicate) === str;
             })
           );
@@ -51,7 +55,7 @@ export default function pages(state = initialState, action = {}) {
           data[resourceKey][entity] = { ...(results?.[0] || {}), results };
         }
         groupBy?.length > 0 &&
-          groupBy.forEach(group => {
+          groupBy.forEach((group) => {
             if (
               group?.key &&
               data[resourceKey][entity] &&
@@ -59,7 +63,7 @@ export default function pages(state = initialState, action = {}) {
             )
               data[resourceKey][entity][group.key] = {};
             results &&
-              results.forEach(item => {
+              results.forEach((item) => {
                 if (group && group.key && group.discodataKey) {
                   if (
                     !data[resourceKey][entity][group.key][
@@ -97,6 +101,27 @@ export default function pages(state = initialState, action = {}) {
         error: action.error,
         data: {},
         loaded: false,
+        loading: false,
+        pendingRequests,
+      };
+    case SET_DISCODATA_RESOURCE_PENDING:
+      pendingRequests[action.key] = true;
+      return {
+        ...state,
+        loaded: false,
+        loading: true,
+        pendingRequests,
+      };
+    case SET_DISCODATA_RESOURCE:
+      delete pendingRequests[`${action.resourceKey}-${action.key}`];
+      data[action.resourceKey] = {
+        ...(data[action.resourceKey] || {}),
+        [action.key]: [...(action.collection || [])],
+      };
+      return {
+        ...state,
+        data,
+        loaded: true,
         loading: false,
         pendingRequests,
       };

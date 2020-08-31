@@ -30,7 +30,7 @@ class Table {
           if (typeof where.value === 'string' && !where.value.length)
             return null;
           if (Array.isArray(where.value)) {
-            return `[${where.discodataKey}] IN (${where.value.map(v => {
+            return `[${where.discodataKey}] IN (${where.value.map((v) => {
               return "'" + v + "'";
             })})`;
           } else {
@@ -42,14 +42,17 @@ class Table {
           }
           return whereString;
         })
-        .filter(value => value)
+        .filter((value) => value)
         .join(' AND ');
       if (whereString.length) {
         queryString += ` WHERE ${whereString}`;
       }
     }
     if (this.query.includes(':where')) {
-      this.query = this.query.replace(':where', queryString);
+      this.query = this.query.replace(
+        ':where',
+        queryString.replace(' WHERE ', ''),
+      );
     } else {
       this.query += queryString;
     }

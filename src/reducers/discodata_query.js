@@ -5,30 +5,13 @@ import {
 } from '../constants';
 
 const initialState = {
-  search: {},
+  search: {
+    // siteInspireId: 'AT.CAED/9008390849866.SITE',
+  },
   deletedQueryParams: {},
   counter: 0,
   lastAction: '',
 };
-
-// data: {
-//   search: {
-//     siteName: 'Novartis AG - Werk Basel St. Johann',
-//   },
-//   key: 'siteName',
-//   resourceKey: 'sites',
-//   where: ['siteName'],
-//   groupBy: [
-//     {
-//       discodataKey: 'facilityEprtrReportingYear',
-//       key: 'facilityReportingYears',
-//     },
-//     {
-//       discodataKey: 'FacilityName',
-//       key: 'facilities',
-//     },
-//   ],
-// }
 
 export default function pages(state = initialState, action = {}) {
   let search = { ...state.search };
@@ -57,7 +40,7 @@ export default function pages(state = initialState, action = {}) {
       };
     case `${DELETE_QUERY_PARAM}`:
       if (Array.isArray(action.queryParam)) {
-        action.queryParam.forEach(param => {
+        action.queryParam.forEach((param) => {
           delete search?.[param];
           deletedQueryParams[param] = true;
         });

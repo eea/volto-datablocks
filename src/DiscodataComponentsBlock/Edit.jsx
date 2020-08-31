@@ -5,7 +5,7 @@ import qs from 'query-string';
 import View from './View';
 import DiscodataSqlBuilderEdit from 'volto-datablocks/DiscodataSqlBuilder/Edit';
 
-const makeChoices = keys => keys && keys.map(k => [k, k]);
+const makeChoices = (keys) => keys && keys.map((k) => [k, k]);
 
 const classNames = [
   'flex',
@@ -53,7 +53,7 @@ const classNames = [
   'list-style-none',
 ];
 
-const getSchema = props => {
+const getSchema = (props) => {
   const { query } = props;
   const { search } = props.discodata_query;
   const { data } = props.discodata_resources;
@@ -168,6 +168,7 @@ const getSchema = props => {
               'staticValue',
               'value',
               'urlValue',
+              'queryToSet',
               'placeholder',
               'valueClassName',
               'valueLabels',
@@ -194,7 +195,7 @@ const getSchema = props => {
             type: 'boolean',
             title: 'Only static data',
             defaultValue: false,
-            disabled: formData =>
+            disabled: (formData) =>
               [
                 'container',
                 'hr',
@@ -214,7 +215,7 @@ const getSchema = props => {
           staticValue: {
             type: 'text',
             title: 'Static value',
-            disabled: formData =>
+            disabled: (formData) =>
               [
                 'container',
                 'hr',
@@ -227,17 +228,17 @@ const getSchema = props => {
               ].includes(formData.type),
           },
           value: {
-            type: formData => {
+            type: (formData) => {
               if (['metadataGrid', 'table', 'banner'].includes(formData.type))
                 return 'array';
               return 'select';
             },
-            title: formData => {
+            title: (formData) => {
               if (['metadataGrid', 'table', 'banner'].includes(formData.type))
                 return 'Metadata fields';
               return 'Metadata field';
             },
-            items: formData => {
+            items: (formData) => {
               if (['metadataGrid', 'table', 'banner'].includes(formData.type)) {
                 return {
                   choices: selectedResource
@@ -247,45 +248,51 @@ const getSchema = props => {
               }
               return undefined;
             },
-            choices: formData => {
+            choices: (formData) => {
               if (!['metadataGrid', 'table', 'banner'].includes(formData.type))
                 return selectedResource
                   ? makeChoices(Object.keys(selectedResource))
                   : [];
               return undefined;
             },
-            description: formData => {
+            description: (formData) => {
               if (['metadataGrid', 'table', 'banner'].includes(formData.type))
                 return "If you want to add multiple columns for the same metadata field use '@{unique id}' suffix";
               return undefined;
             },
-            disabled: formData =>
+            disabled: (formData) =>
               formData.static || ['container', 'hr'].includes(formData.type),
           },
           urlValue: {
-            type: formData => {
+            type: (formData) => {
               if (['linkList', 'select'].includes(formData.type)) return 'text';
               return 'select';
             },
-            title: formData => {
+            title: (formData) => {
               if (['linkList', 'select'].includes(formData.type))
-                return 'Query to set';
+                return 'Query to use';
               return 'URL metadata field';
             },
-            choices: formData => {
+            choices: (formData) => {
               if (['linkList', 'select'].includes(formData.type))
                 return undefined;
               return selectedResource
                 ? makeChoices(Object.keys(selectedResource))
                 : [];
             },
-            disabled: formData =>
+            disabled: (formData) =>
+              !['linkHeader', 'linkList', 'select'].includes(formData.type),
+          },
+          queryToSet: {
+            type: 'text',
+            title: 'Query to set',
+            disabled: (formData) =>
               !['linkHeader', 'linkList', 'select'].includes(formData.type),
           },
           placeholder: {
             type: 'text',
             title: 'Placeholder',
-            disabled: formData => !['select'].includes(formData.type),
+            disabled: (formData) => !['select'].includes(formData.type),
           },
           valueClassName: {
             type: 'array',
@@ -293,13 +300,13 @@ const getSchema = props => {
             items: {
               choices: makeChoices(classNames),
             },
-            disabled: formData =>
+            disabled: (formData) =>
               !['metadataGrid', 'table', 'banner'].includes(formData.type),
           },
           valueLabels: {
             type: 'array',
             title: 'Labels for metadata fields',
-            disabled: formData =>
+            disabled: (formData) =>
               !['metadataGrid', 'table', 'banner'].includes(formData.type),
           },
           valueLabelsClassName: {
@@ -308,7 +315,7 @@ const getSchema = props => {
             items: {
               choices: makeChoices(classNames),
             },
-            disabled: formData =>
+            disabled: (formData) =>
               !['metadataGrid', 'table', 'banner'].includes(formData.type),
           },
           type: {
@@ -327,12 +334,13 @@ const getSchema = props => {
               ['table', 'Table'],
               ['banner', 'Banner'],
               ['eprtrCountrySelector', 'eprtrCountrySelector'],
+              ['eprtrCountryGroupSelector', 'eprtrCountryGroupSelector'],
             ],
           },
           gridColumns: {
             type: 'text',
             title: 'Grid columns',
-            disabled: formData => !['metadataGrid'].includes(formData.type),
+            disabled: (formData) => !['metadataGrid'].includes(formData.type),
           },
           className: {
             type: 'array',
@@ -340,7 +348,7 @@ const getSchema = props => {
             items: {
               choices: makeChoices(classNames),
             },
-            disabled: formData => ['container'].includes(formData.type),
+            disabled: (formData) => ['container'].includes(formData.type),
           },
           listItemClassName: {
             type: 'array',
@@ -348,7 +356,8 @@ const getSchema = props => {
             items: {
               choices: makeChoices(classNames),
             },
-            disabled: formData => !['list', 'linkList'].includes(formData.type),
+            disabled: (formData) =>
+              !['list', 'linkList'].includes(formData.type),
           },
           wrapperClassName: {
             type: 'array',
@@ -356,14 +365,14 @@ const getSchema = props => {
             items: {
               choices: makeChoices(classNames),
             },
-            disabled: formData =>
+            disabled: (formData) =>
               ['metadataGrid', 'table', 'banner'].includes(formData.type),
           },
           parent: {
             type: 'select',
             title: 'Parent',
-            disabled: formData => !formData.hasParent,
-            choices: formData => {
+            disabled: (formData) => !formData.hasParent,
+            choices: (formData) => {
               const components_filtered = { ...components };
               components_filtered[formData.id] &&
                 delete components_filtered[formData.id];
@@ -371,12 +380,12 @@ const getSchema = props => {
             },
           },
         },
-        required: formData => {
+        required: (formData) => {
           const requiredFields = ['title', 'id', 'type'];
           if (['metadataGrid', 'table', 'banner'].includes(formData.type))
             requiredFields.push('valueLabels');
           if (['linkHeader', 'linkList', 'select'].includes(formData.type))
-            requiredFields.push('urlValue');
+            requiredFields.push('urlValue', 'queryToSet');
           if (!formData.static && !['container', 'hr'].includes(formData.type))
             requiredFields.push('value');
           return requiredFields;
@@ -388,7 +397,7 @@ const getSchema = props => {
   };
 };
 
-const Edit = props => {
+const Edit = (props) => {
   const [state, setState] = useState({
     schema: getSchema({ ...props }),
   });
@@ -407,6 +416,7 @@ const Edit = props => {
       optionalSchema={state.schema}
       title="Discodata components block"
     >
+      <h3>Discodata components - edit mode</h3>
       <View {...props} />
     </DiscodataSqlBuilderEdit>
   );

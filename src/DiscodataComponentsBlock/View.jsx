@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import _uniqueId from 'lodash/uniqueId';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -9,8 +10,10 @@ import { Table, Dropdown, Icon, List, Header } from 'semantic-ui-react';
 import './style.css';
 import DiscodataSqlBuilderView from 'volto-datablocks/DiscodataSqlBuilder/View';
 import { setQueryParam, deleteQueryParam } from 'volto-datablocks/actions';
+import cx from 'classnames';
+
 const renderComponents = {
-  wrapper: function(tree, item, props) {
+  wrapper: function (tree, item, props) {
     if (!tree.children || tree.children.length === 0) {
       return (
         <React.Fragment key={`data-wrapper-${tree.data?.id}`}>
@@ -32,7 +35,7 @@ const renderComponents = {
             item,
             ...props,
           })}
-          {tree.children.map(child => {
+          {tree.children.map((child) => {
             if (child.children?.length > 0) {
               return this.wrapper(child, item, props);
             }
@@ -52,15 +55,15 @@ const renderComponents = {
       );
     }
   },
-  container: props => {
+  container: (props) => {
     return '';
   },
-  hr: props => {
+  hr: (props) => {
     return (
       <div className={`hr ${props.component?.className?.join(' ') || ''}`} />
     );
   },
-  header: props => {
+  header: (props) => {
     let value = props.item?.[props.component?.value];
     if (value && !isNaN(Date.parse(value)) && value.length >= 10) {
       value = moment(props.item[value]).format('DD MMM YYYY');
@@ -75,7 +78,7 @@ const renderComponents = {
     );
     return text && props ? view : '';
   },
-  linkHeader: props => {
+  linkHeader: (props) => {
     let value = props.item?.[props.component?.value];
     if (value && !isNaN(Date.parse(value)) && value.length >= 10) {
       value = moment(props.item[value]).format('DD MMM YYYY');
@@ -90,7 +93,7 @@ const renderComponents = {
         href={
           props.component?.static
             ? props.component?.urlValue
-            : props.item[(props.component?.urlValue)]
+            : props.item[props.component?.urlValue]
         }
         className={props.component?.className?.join(' ') || ''}
       >
@@ -99,13 +102,13 @@ const renderComponents = {
     );
     return text && props ? view : '';
   },
-  select: props => {
+  select: (props) => {
     let value = props.item?.[props.component?.value];
     const options =
       value &&
       Object.keys(value)
-        .filter(key => key)
-        .map(key => {
+        .filter((key) => key)
+        .map((key) => {
           return { key: key, value: key, text: key };
         });
     const trigger = (
@@ -135,7 +138,7 @@ const renderComponents = {
     );
     return view;
   },
-  paragraph: props => {
+  paragraph: (props) => {
     let value = props.item?.[props.component?.value];
     if (value && !isNaN(Date.parse(value)) && value.length >= 10) {
       value = moment(props.item[value]).format('DD MMM YYYY');
@@ -150,7 +153,7 @@ const renderComponents = {
     );
     return text && props ? view : '';
   },
-  list: props => {
+  list: (props) => {
     let value = props.item?.[props.component?.value];
     let items = [];
     if (Array.isArray(value)) {
@@ -160,7 +163,7 @@ const renderComponents = {
     }
     const view = (
       <ul className={props.component?.className?.join(' ') || ''}>
-        {items.map(value => (
+        {items.map((value) => (
           <li
             key={_uniqueId('li-')}
             className={props.component?.listItemClassName?.join(' ') || ''}
@@ -172,7 +175,7 @@ const renderComponents = {
     );
     return view;
   },
-  linkList: props => {
+  linkList: (props) => {
     let value = props.item?.[props.component?.value];
     let items = [];
     if (Array.isArray(value)) {
@@ -181,8 +184,13 @@ const renderComponents = {
       items = Object.keys(value);
     }
     const view = (
-      <ul className={props.component?.className?.join(' ') || ''}>
-        {items.map(value => (
+      <ol
+        className={cx(
+          'link-list responsive grid grid-cl-4',
+          props.component?.className?.join(' '),
+        )}
+      >
+        {items.map((value) => (
           <li key={_uniqueId('li-')}>
             <button
               style={{ cursor: 'pointer' }}
@@ -192,20 +200,28 @@ const renderComponents = {
                   typeof props.setQueryParam === 'function' &&
                   props.setQueryParam({
                     queryParam: {
-                      [props.component.urlValue]: value,
+                      [props.component.queryToSet]:
+                        typeof value === 'object'
+                          ? value[props.component?.urlValue]
+                          : value,
                     },
                   });
+                if (props.component.page) {
+                  props.history.push(props.component.page);
+                }
               }}
             >
-              {value}
+              {typeof value === 'object'
+                ? value[props.component?.urlValue]
+                : value}
             </button>
           </li>
         ))}
-      </ul>
+      </ol>
     );
     return view;
   },
-  banner: props => {
+  banner: (props) => {
     return props.item && props.component ? (
       <div className={`banner flex ${props.component?.className?.join(' ')}`}>
         {props.component.value &&
@@ -240,7 +256,7 @@ const renderComponents = {
       ''
     );
   },
-  metadataGrid: props => {
+  metadataGrid: (props) => {
     return props.item && props.component ? (
       <div
         className={`grid responsive metadata grid-cl-${
@@ -277,7 +293,7 @@ const renderComponents = {
       ''
     );
   },
-  table: props => {
+  table: (props) => {
     return props.item && props.component ? (
       <div className={`table ${props.component?.className?.join(' ')}`}>
         {props.component.value && (
@@ -316,13 +332,14 @@ const renderComponents = {
       ''
     );
   },
-  eprtrCountrySelector: props => {
+  eprtrCountrySelector: (props) => {
+    console.log(props.globalQuery);
     const items =
-      props.item?.[props.component.value]?.map(item => {
+      props.item?.[props.component.value]?.map((item) => {
         return {
-          key: item.siteCountry,
-          value: item.siteCountryName,
-          text: item.siteCountryName,
+          key: item.CountryCode,
+          value: item.CountryName,
+          text: item.CountryName,
         };
       }) || [];
     return (
@@ -337,16 +354,52 @@ const renderComponents = {
               onChange={(event, data) => {
                 props.setQueryParam({
                   queryParam: {
-                    siteCountry: data.options.filter(opt => {
+                    countryCode: data.options.filter((opt) => {
                       return opt.value === data.value;
                     })[0]?.key,
-                    countryCode: data.value,
+                    countryName: data.value,
                   },
                 });
               }}
               placeholder={'Country'}
               options={items}
-              value={props.globalQuery.countryCode}
+              value={props.globalQuery.countryName}
+            />
+          )}
+        </div>
+      </div>
+    );
+  },
+  eprtrCountryGroupSelector: (props) => {
+    const items =
+      props.item?.[props.component.value]?.map((item) => {
+        return {
+          key: item.countryGroupId,
+          value: item.countryGroupId,
+          text: item.countryGroupId,
+        };
+      }) || [];
+    return (
+      <div className="eprtrSelection">
+        <Header as="h1">Industrial pollution in</Header>
+        <div className="selector-container">
+          {items && (
+            <Dropdown
+              search
+              selection
+              fluid
+              onChange={(event, data) => {
+                props.setQueryParam({
+                  queryParam: {
+                    countryGroupId: data.options.filter((opt) => {
+                      return opt.value === data.value;
+                    })[0]?.key,
+                  },
+                });
+              }}
+              placeholder={'Country group'}
+              options={items}
+              value={props.globalQuery.countryGroupId}
             />
           )}
         </div>
@@ -355,11 +408,12 @@ const renderComponents = {
   },
 };
 
-const View = props => {
+const View = (props) => {
   // providerUrl
   const [state, setState] = useState({
     selectedResource: {},
   });
+  const history = useHistory();
   const { query } = props;
   const { search } = props.discodata_query;
   const { data } = props.discodata_resources;
@@ -393,7 +447,7 @@ const View = props => {
       sourceData = selectedResource[source];
     }
     if (sourceData && Array.isArray(sourceData) && source_discodata_keys) {
-      selectedSourceData = sourceData.filter(item => {
+      selectedSourceData = sourceData.filter((item) => {
         let ok = true;
         Object.entries(source_discodata_keys).forEach(
           ([selectorKey, selector]) => {
@@ -423,7 +477,7 @@ const View = props => {
     props.data?.components?.value && JSON.parse(props.data?.components?.value);
   const components = {};
   componentsSchema?.fieldsets?.[0]?.fields &&
-    componentsSchema.fieldsets[0].fields.forEach(component => {
+    componentsSchema.fieldsets[0].fields.forEach((component) => {
       components[component] = {
         ...componentsSchema.properties[component],
       };
@@ -442,13 +496,14 @@ const View = props => {
     <DiscodataSqlBuilderView {...props}>
       <div className="facility-block-wrapper">
         <div>
-          {state.selectedResource &&
-            root.map(tree =>
+          {(state.selectedResource &&
+            root.map((tree) =>
               renderComponents.wrapper(tree, state.selectedResource, {
                 globalQuery,
                 setQueryParam: props.setQueryParam,
+                history,
               }),
-            )}
+            )) || <p>Add components</p>}
         </div>
       </div>
     </DiscodataSqlBuilderView>
