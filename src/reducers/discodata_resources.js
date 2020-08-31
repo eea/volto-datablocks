@@ -21,7 +21,7 @@ export default function pages(state = initialState, action = {}) {
   };
   const id = action.isCollection
     ? action.resourceKey
-    : `${action.resourceKey}_${action.key}`;
+    : `${action.resourceKey}_${action.search?.[action.key]}`;
   switch (action.type) {
     case `${GET_DISCODATA_RESOURCE}_PENDING`:
       pendingRequests[id] = true;
@@ -60,12 +60,14 @@ export default function pages(state = initialState, action = {}) {
               group?.key &&
               data[resourceKey][entity] &&
               !data[resourceKey][entity][group.key]
-            )
+            ) {
               data[resourceKey][entity][group.key] = {};
+            }
             results &&
-              results.forEach((item) => {
+              results.forEach((item, index) => {
                 if (group && group.key && group.discodataKey) {
                   if (
+                    index === 0 ||
                     !data[resourceKey][entity][group.key][
                       item[group.discodataKey]
                     ]

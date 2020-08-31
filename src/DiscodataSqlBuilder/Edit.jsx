@@ -38,6 +38,10 @@ const getSchema = (props) => {
       }
     });
   return {
+    importExport: {
+      title: 'Import/Export block data',
+      type: 'import-export',
+    },
     provider_url: {
       title: 'Provider url',
       type: 'text',

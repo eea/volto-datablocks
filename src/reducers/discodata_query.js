@@ -6,7 +6,8 @@ import {
 
 const initialState = {
   search: {
-    siteInspireId: 'AT.CAED/9008390849866.SITE',
+    siteInspireId: 'AT.CAED/9008390212035.SITE',
+    installationInspireId: 'AT.CAED/9008391175629.INSTALLATION',
   },
   deletedQueryParams: {},
   counter: 0,

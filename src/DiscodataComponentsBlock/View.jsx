@@ -6,11 +6,14 @@ import { compose } from 'redux';
 import moment from 'moment';
 import { arrayToTree } from 'performant-array-to-tree';
 import qs from 'query-string';
-import { Table, Dropdown, Icon, List, Header } from 'semantic-ui-react';
+import { Table, Dropdown, List, Header } from 'semantic-ui-react';
 import './style.css';
 import DiscodataSqlBuilderView from 'volto-datablocks/DiscodataSqlBuilder/View';
 import { setQueryParam, deleteQueryParam } from 'volto-datablocks/actions';
 import cx from 'classnames';
+import Icon from '@plone/volto/components/theme/Icon/Icon';
+import infoSVG from '@plone/volto/icons/info.svg';
+import blankSVG from '@plone/volto/icons/blank.svg';
 
 const renderComponents = {
   wrapper: function (tree, item, props) {
@@ -333,7 +336,6 @@ const renderComponents = {
     );
   },
   eprtrCountrySelector: (props) => {
-    console.log(props.globalQuery);
     const items =
       props.item?.[props.component.value]?.map((item) => {
         return {
@@ -406,6 +408,128 @@ const renderComponents = {
       </div>
     );
   },
+  eprtrReprotingYears: (props) => {
+    // const items =
+    //   props.item?.[props.component.value]?.map((item) => {
+    //     return {
+    //       key: item.CountryCode,
+    //       value: item.CountryName,
+    //       text: item.CountryName,
+    //     };
+    //   }) || [];
+    return <h1>OLA</h1>;
+    // return (
+    //   <div className="eprtrSelection">
+    //     <Header as="h1">Industrial pollution in</Header>
+    //     <div className="selector-container">
+    //       {items && (
+    //         <Dropdown
+    //           search
+    //           selection
+    //           fluid
+    //           onChange={(event, data) => {
+    //             props.setQueryParam({
+    //               queryParam: {
+    //                 countryCode: data.options.filter((opt) => {
+    //                   return opt.value === data.value;
+    //                 })[0]?.key,
+    //                 countryName: data.value,
+    //               },
+    //             });
+    //           }}
+    //           placeholder={'Country'}
+    //           options={items}
+    //           value={props.globalQuery.countryName}
+    //         />
+    //       )}
+    //     </div>
+    //   </div>
+    // );
+  },
+  eprtrBatDerogations: (props) => {
+    return (
+      <div className="eprtrBatDerogations">
+        <h1>BAT DEROGATIONS</h1>
+      </div>
+    );
+  },
+  eprtrBatConclusions: (props) => {
+    const batConclusions = props.item?.[props.component.value] || {};
+    return Object.keys(batConclusions).length ? (
+      <>
+        <div className="display-flex align-items-center mb-1">
+          <h2 className="mb-0-super mr-1">BAT Conclusions</h2>
+          <Icon name={infoSVG} size="30" color="#EC776A" />
+        </div>
+        <div className="eprtrBatConclusions bat-container">
+          {Object.entries(batConclusions).map(([key, conclusion]) => (
+            <div key={key} className="bat-conclusion">
+              <div className="bat-title mb-2">
+                <a>
+                  {key}
+                  <Icon name={blankSVG} size="20" color="#EC776A" />
+                </a>
+              </div>
+              <div className="bat-details grid grid-cl-2 mb-2">
+                <div>
+                  <p className="bold">Status</p>
+                  <p className="info">{conclusion[0].conclusionStatus}</p>
+                </div>
+                {/* <div>
+                <p className="bold">Status Modified</p>
+                <p className="info">{conclusion[0].Status}</p>
+              </div> */}
+              </div>
+              {props.show.aels && (
+                <div className="bat-aels mb-2">
+                  <p className="bat-aels-title">BAT AELs</p>
+                  {conclusion.map((ael, index) => (
+                    <div
+                      className="bat-ael"
+                      key={`${index} - ${ael.BATAELName}`}
+                    >
+                      <div className="bat-title mb-2">
+                        <a>
+                          {ael.BATAELName}
+                          <Icon name={blankSVG} size="20" color="#EC776A" />
+                        </a>
+                      </div>
+                      <div className="bat-details grid grid-cl-1 mb-2">
+                        <div>
+                          <p className="bold">Status</p>
+                          <p className="info">{ael.BATAELStatus}</p>
+                        </div>
+                        <div>
+                          <p className="bold">Accepted date</p>
+                          <p className="info">{ael.BATAELAcceptedDate}</p>
+                        </div>
+                        <div>
+                          <p className="bold">Description</p>
+                          <p className="info">{ael.Description}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+          <div className="hr mb-1" />
+          <div className="bat-action text-align-center">
+            <button
+              onClick={() => {
+                props.setShow({ ...props.show, aels: !props.show.aels });
+              }}
+            >
+              {props.show.aels ? 'Hide BAT Aels' : 'View BAT AELs'}
+            </button>
+          </div>
+        </div>
+      </>
+    ) : (
+      ''
+    );
+  },
 };
 
 const View = (props) => {
@@ -413,6 +537,7 @@ const View = (props) => {
   const [state, setState] = useState({
     selectedResource: {},
   });
+  const [show, setShow] = useState({});
   const history = useHistory();
   const { query } = props;
   const { search } = props.discodata_query;
@@ -502,8 +627,11 @@ const View = (props) => {
                 globalQuery,
                 setQueryParam: props.setQueryParam,
                 history,
+                show,
+                setShow,
               }),
-            )) || <p>Add components</p>}
+            )) ||
+            (props.data.mode === 'edit' ? <p>Add components</p> : '')}
         </div>
       </div>
     </DiscodataSqlBuilderView>

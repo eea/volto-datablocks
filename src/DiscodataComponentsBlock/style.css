@@ -233,6 +233,14 @@ h1.mt-3:first-child  {
   box-sizing: border-box;
 }
 
+.bat-container .bat-title {
+  font-size: 18px;
+  line-height: 23px;
+  color: #EC776A;
+  font-weight: 300;
+  text-decoration: underline;
+}
+
 .bat-container div.hr {
   height: 1px;
   background-color: #606060;
@@ -241,6 +249,25 @@ h1.mt-3:first-child  {
 .bat-container a,
 .bat-container a:hover {
   text-decoration: underline;
+}
+
+.bat-aels-title {
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 23px;
+  color: #333333;
+}
+
+.bat-action button {
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  color: #EC776A;
+  text-decoration: underline;
+}
+
+.bat-action button:focus {
+  outline: none;
 }
 
 .float-left {

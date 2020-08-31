@@ -335,6 +335,8 @@ const getSchema = (props) => {
               ['banner', 'Banner'],
               ['eprtrCountrySelector', 'eprtrCountrySelector'],
               ['eprtrCountryGroupSelector', 'eprtrCountryGroupSelector'],
+              ['eprtrBatDerogations', 'eprtrBatDerogations'],
+              ['eprtrBatConclusions', 'eprtrBatConclusions'],
             ],
           },
           gridColumns: {
@@ -417,7 +419,7 @@ const Edit = (props) => {
       title="Discodata components block"
     >
       <h3>Discodata components - edit mode</h3>
-      <View {...props} />
+      <View {...props} mode="edit" />
     </DiscodataSqlBuilderEdit>
   );
 };

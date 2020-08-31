@@ -6,7 +6,7 @@ import DB from 'volto-datablocks/DataBase/DB';
 import { settings } from '~/config';
 import { getDiscodataResource } from '../actions';
 let done = false;
-const ViewWrapper = props => {
+const ViewWrapper = (props) => {
   const [state, setState] = useState({
     mounted: false,
   });
@@ -38,18 +38,22 @@ const ViewWrapper = props => {
         let whereStatements = [],
           groupByStatements = [];
         whereStatements = Object.keys(where)
-          .filter(key => {
+          .filter((key) => {
             return (
               where[key].sqlId === sqlKey &&
               globalQuery[where[key].queryParam] &&
               where[key].key
             );
           })
-          .map(key => {
+          .map((key) => {
             return {
               discodataKey: where[key].key,
               value: Array.isArray(globalQuery[where[key].queryParam])
-                ? [...globalQuery[where[key].queryParam].filter(query => query)]
+                ? [
+                    ...globalQuery[where[key].queryParam].filter(
+                      (query) => query,
+                    ),
+                  ]
                 : globalQuery[where[key].queryParam],
               regex: where[key].regex || null,
             };
@@ -70,10 +74,10 @@ const ViewWrapper = props => {
         };
         if (!isCollection) {
           groupByStatements = Object.keys(groupBy)
-            .filter(key => {
+            .filter((key) => {
               return groupBy[key].sqlId === sqlKey;
             })
-            .map(key => {
+            .map((key) => {
               return {
                 discodataKey: groupBy[key].discodataKey,
                 key: groupBy[key].key,
@@ -84,12 +88,11 @@ const ViewWrapper = props => {
           request.requestsMetadata.groupBy = [...groupByStatements];
           request.requestsMetadata.query =
             globalQuery[sqlValue.packageName] || '';
-
           if (
             JSON.stringify(request.requestsMetadata) !==
               JSON.stringify(
                 props.discodata_resources.requestsMetadata[
-                  `${sqlKey}_${sqlValue.packageName}`
+                  `${sqlKey}_${globalQuery[sqlValue.packageName]}`
                 ],
               ) &&
             whereStatements.length > 0
@@ -114,7 +117,9 @@ const ViewWrapper = props => {
         if (
           // !done &&
           ((!isCollection &&
-            !pendingRequests[`${sqlKey}_${sqlValue.packageName}`]) ||
+            !pendingRequests[
+              `${sqlKey}_${globalQuery[sqlValue.packageName]}`
+            ]) ||
             (isCollection && !pendingRequests[sqlKey])) &&
           requestsMetadataDiff
         ) {
