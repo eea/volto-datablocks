@@ -33,7 +33,7 @@ import addonRoutes from './routes';
 
 function addCustomGroup(config, group) {
   const hasCustomGroup = config.blocks.groupBlocksOrder.filter(
-    (el) => el.id === group.id,
+    el => el.id === group.id,
   );
   if (hasCustomGroup.length === 0) {
     config.blocks.groupBlocksOrder.push(group);

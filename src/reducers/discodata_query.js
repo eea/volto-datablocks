@@ -6,7 +6,7 @@ import {
 
 const initialState = {
   search: {
-    // siteInspireId: 'AT.CAED/9008390849866.SITE',
+    siteInspireId: 'AT.CAED/9008390849866.SITE',
   },
   deletedQueryParams: {},
   counter: 0,
