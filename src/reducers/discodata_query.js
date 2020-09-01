@@ -6,6 +6,7 @@ import {
 
 const initialState = {
   search: {
+    siteName: 'Site: 133AG0000.SITE',
     siteInspireId: 'AT.CAED/9008390212035.SITE',
     installationInspireId: 'AT.CAED/9008391175629.INSTALLATION',
   },

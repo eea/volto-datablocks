@@ -426,3 +426,51 @@ a.small h1 {
   border: none;
   color: #EC776A;
 }
+
+.eprtrSelection h1.ui.header {
+  font-weight: bold;
+  font-size: 36px;
+  line-height: 45px;
+  color: #EC776A;
+  margin-bottom: 0;
+}
+
+.eprtrSelection .selector-container .ui.search.selection.dropdown {
+  width: fit-content;
+  color: #EC776A;
+  padding: 0;
+  border-bottom: none;
+}
+
+.eprtrSelection .selector-container .ui.search.selection.dropdown > input.search {
+  color: #EC776A;
+  font-weight: bold;
+  font-size: 36px;
+  line-height: 45px;
+  padding: 10px;
+  padding-left: 0;
+  padding-right: 40px;
+}
+
+.eprtrSelection .selector-container .ui.search.selection.dropdown > .default.text,
+.eprtrSelection .selector-container .ui.search.selection.dropdown > .text {
+  color: #EC776A;
+  font-weight: bold;
+  font-size: 36px;
+  line-height: 45px;
+  padding: 10px;
+  padding-left: 0;
+}
+
+.eprtrSelection .selector-container .ui.search.selection.dropdown > .dropdown.icon {
+  font-size: 30px !important;
+  line-height: 45px;
+  position: relative;
+  padding: 10px 5px;
+  margin: 0;
+  margin-left: 0;
+  top: unset;
+  left: unset;
+  right: unset;
+  bottom: unset;
+}

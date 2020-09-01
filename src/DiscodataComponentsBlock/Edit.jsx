@@ -169,6 +169,7 @@ const getSchema = (props) => {
               'value',
               'urlValue',
               'queryToSet',
+              'page',
               'placeholder',
               'valueClassName',
               'valueLabels',
@@ -286,6 +287,12 @@ const getSchema = (props) => {
           queryToSet: {
             type: 'text',
             title: 'Query to set',
+            disabled: (formData) =>
+              !['linkHeader', 'linkList', 'select'].includes(formData.type),
+          },
+          page: {
+            type: 'text',
+            title: 'Go to page',
             disabled: (formData) =>
               !['linkHeader', 'linkList', 'select'].includes(formData.type),
           },

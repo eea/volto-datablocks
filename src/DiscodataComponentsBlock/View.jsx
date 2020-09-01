@@ -352,7 +352,6 @@ const renderComponents = {
             <Dropdown
               search
               selection
-              fluid
               onChange={(event, data) => {
                 props.setQueryParam({
                   queryParam: {
@@ -389,7 +388,6 @@ const renderComponents = {
             <Dropdown
               search
               selection
-              fluid
               onChange={(event, data) => {
                 props.setQueryParam({
                   queryParam: {
