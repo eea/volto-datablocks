@@ -4,14 +4,7 @@
  */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Select from 'react-select';
 import { getQuerystring } from '@plone/volto/actions';
-import {
-  Option,
-  DropdownIndicator,
-  selectTheme,
-  customSelectStyles,
-} from '@plone/volto/components/manage/Widgets/SelectStyling';
 
 class SelectContextParameter extends Component {
   componentDidMount() {

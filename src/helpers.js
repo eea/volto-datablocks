@@ -32,9 +32,6 @@ export function getConnectedDataParametersForContext(
 
   const { byContextPath = {} } = connected_data_parameters;
 
-  // console.log('getConnectedDataParametersForProvider path', path, url);
-  // console.log('getConnectedDataParametersForProvider content', byContextPath);
-
   const res = byContextPath[path]
     ? byContextPath[path]?.override || byContextPath[path]?.default
     : byContextPath['']?.override || byContextPath['']?.default;
@@ -62,15 +59,12 @@ export function getConnectedDataParametersForProvider(
  * transformation
  */
 export function updateChartDataFromProvider(chartData, providerData) {
-  // console.log('chart data', data);
-  // console.log('provider_data', provider_data);
-
   if (!providerData) return chartData;
 
   const providerDataColumns = Object.keys(providerData);
 
-  const res = chartData.map(trace => {
-    Object.keys(trace).forEach(tk => {
+  const res = chartData.map((trace) => {
+    Object.keys(trace).forEach((tk) => {
       const originalColumn = tk.replace(/src$/, '');
       if (
         tk.endsWith('src') &&
