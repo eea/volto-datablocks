@@ -163,6 +163,7 @@ const getSchema = (props) => {
             fields: [
               'title',
               'id',
+              'type',
               'static',
               'hasParent',
               'staticValue',
@@ -170,11 +171,11 @@ const getSchema = (props) => {
               'urlValue',
               'queryToSet',
               'page',
+              'maxElements',
               'placeholder',
               'valueClassName',
               'valueLabels',
               'valueLabelsClassName',
-              'type',
               'gridColumns',
               'className',
               'listItemClassName',
@@ -191,6 +192,27 @@ const getSchema = (props) => {
           id: {
             type: 'text',
             title: 'Id',
+          },
+          type: {
+            type: 'select',
+            title: 'Component type',
+            choices: [
+              ['container', 'Container'],
+              ['hr', 'Horizontal line'],
+              ['header', 'Header'],
+              ['select', 'Select'],
+              ['linkHeader', 'Header link'],
+              ['list', 'List'],
+              ['linkList', 'List Link'],
+              ['paragraph', 'Paragraph'],
+              ['metadataGrid', 'Metadata grid'],
+              ['table', 'Table'],
+              ['banner', 'Banner'],
+              ['eprtrCountrySelector', 'eprtrCountrySelector'],
+              ['eprtrCountryGroupSelector', 'eprtrCountryGroupSelector'],
+              ['eprtrBatDerogations', 'eprtrBatDerogations'],
+              ['eprtrBatConclusions', 'eprtrBatConclusions'],
+            ],
           },
           static: {
             type: 'boolean',
@@ -296,6 +318,11 @@ const getSchema = (props) => {
             disabled: (formData) =>
               !['linkHeader', 'linkList', 'select'].includes(formData.type),
           },
+          maxElements: {
+            type: 'text',
+            title: 'Max elements',
+            disabled: (formData) => !['linkList'].includes(formData.type),
+          },
           placeholder: {
             type: 'text',
             title: 'Placeholder',
@@ -324,27 +351,6 @@ const getSchema = (props) => {
             },
             disabled: (formData) =>
               !['metadataGrid', 'table', 'banner'].includes(formData.type),
-          },
-          type: {
-            type: 'select',
-            title: 'Component type',
-            choices: [
-              ['container', 'Container'],
-              ['hr', 'Horizontal line'],
-              ['header', 'Header'],
-              ['select', 'Select'],
-              ['linkHeader', 'Header link'],
-              ['list', 'List'],
-              ['linkList', 'List Link'],
-              ['paragraph', 'Paragraph'],
-              ['metadataGrid', 'Metadata grid'],
-              ['table', 'Table'],
-              ['banner', 'Banner'],
-              ['eprtrCountrySelector', 'eprtrCountrySelector'],
-              ['eprtrCountryGroupSelector', 'eprtrCountryGroupSelector'],
-              ['eprtrBatDerogations', 'eprtrBatDerogations'],
-              ['eprtrBatConclusions', 'eprtrBatConclusions'],
-            ],
           },
           gridColumns: {
             type: 'text',
@@ -402,6 +408,13 @@ const getSchema = (props) => {
       },
       editFieldset: false,
       deleteFieldset: false,
+    },
+    requiredQueries: {
+      title: 'Required queries',
+      type: 'array',
+      items: {
+        choices: [],
+      },
     },
   };
 };

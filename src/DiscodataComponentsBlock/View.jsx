@@ -186,6 +186,15 @@ const renderComponents = {
     } else if (value && Object.keys(value).length) {
       items = Object.keys(value);
     }
+    const maxElements = parseInt(props.component.maxElements) || 0;
+    if (maxElements && props.globalQuery.listFilter) {
+      items = items
+        .sort(
+          (a, b) =>
+            b[props.globalQuery.listFilter] - a[props.globalQuery.listFilter],
+        )
+        .slice(0, maxElements);
+    }
     const view = (
       <ol
         className={cx(
@@ -350,7 +359,6 @@ const renderComponents = {
         <div className="selector-container">
           {items && (
             <Dropdown
-              search
               selection
               onChange={(event, data) => {
                 props.setQueryParam({
@@ -373,20 +381,33 @@ const renderComponents = {
   },
   eprtrCountryGroupSelector: (props) => {
     const items =
-      props.item?.[props.component.value]?.map((item) => {
-        return {
-          key: item.countryGroupId,
-          value: item.countryGroupId,
-          text: item.countryGroupId,
-        };
-      }) || [];
+      props.item?.[props.component.value]
+        ?.filter((item) => item.countryGroupId)
+        .map((item) => {
+          return {
+            key: item.countryGroupId,
+            value: item.countryGroupId,
+            text: item.countryGroupId,
+          };
+        }) || [];
+    const pollutionType = [
+      {
+        key: 'airPollutionPerCapita',
+        value: 'airPollutionPerCapita',
+        text: 'Air',
+      },
+      {
+        key: 'waterPollutionPerCapita',
+        value: 'waterPollutionPerCapita',
+        text: 'Water',
+      },
+    ];
     return (
       <div className="eprtrSelection">
         <Header as="h1">Industrial pollution in</Header>
-        <div className="selector-container">
+        <div className="selector-container display-flex flex-flow-column">
           {items && (
             <Dropdown
-              search
               selection
               onChange={(event, data) => {
                 props.setQueryParam({
@@ -400,6 +421,23 @@ const renderComponents = {
               placeholder={'Country group'}
               options={items}
               value={props.globalQuery.countryGroupId}
+            />
+          )}
+          {pollutionType && (
+            <Dropdown
+              selection
+              onChange={(event, data) => {
+                props.setQueryParam({
+                  queryParam: {
+                    listFilter: data.options.filter((opt) => {
+                      return opt.value === data.value;
+                    })[0]?.key,
+                  },
+                });
+              }}
+              placeholder={'Pollution by'}
+              options={pollutionType}
+              value={props.globalQuery.listFilter}
             />
           )}
         </div>
@@ -536,6 +574,7 @@ const View = (props) => {
     selectedResource: {},
   });
   const [show, setShow] = useState({});
+  const [canRender, setCanRender] = useState(true);
   const history = useHistory();
   const { query } = props;
   const { search } = props.discodata_query;
@@ -548,6 +587,19 @@ const View = (props) => {
   const key = props.data.key?.value;
   const source = props.data.source?.value;
   const source_query_param = props.data.source_query_param?.value;
+  const requiredQueries = props.data.requiredQueries?.value || [];
+  useEffect(() => {
+    const requiredQueriesLength = requiredQueries?.length
+      ? requiredQueries.filter((query) => props.discodata_query.search[query])
+          .length
+      : true;
+    if (!requiredQueriesLength && canRender) {
+      setCanRender(false);
+    } else if (requiredQueriesLength && !canRender) {
+      setCanRender(true);
+    }
+    /* eslint-disable-next-line */
+  }, [props.discodata_query.search])
   useEffect(() => {
     const selectedResource =
       resourcePackageKey && !key
@@ -620,6 +672,7 @@ const View = (props) => {
       <div className="facility-block-wrapper">
         <div>
           {(state.selectedResource &&
+            canRender &&
             root.map((tree) =>
               renderComponents.wrapper(tree, state.selectedResource, {
                 globalQuery,

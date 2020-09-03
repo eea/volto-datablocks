@@ -10,6 +10,7 @@ import {
   SET_DISCODATA_QUERY,
   DELETE_QUERY_PARAM,
   SET_QUERY_PARAM,
+  RESET_QUERY_PARAM,
   TRIGGER_RENDER,
 } from './constants';
 
@@ -136,6 +137,12 @@ export function deleteQueryParam({ queryParam }) {
   return {
     type: DELETE_QUERY_PARAM,
     queryParam,
+  };
+}
+
+export function resetQueryParam() {
+  return {
+    type: RESET_QUERY_PARAM,
   };
 }
 

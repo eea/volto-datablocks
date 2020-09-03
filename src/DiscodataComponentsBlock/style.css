@@ -427,6 +427,10 @@ a.small h1 {
   color: #EC776A;
 }
 
+.link-list li button:focus {
+  outline: none;
+}
+
 .eprtrSelection h1.ui.header {
   font-weight: bold;
   font-size: 36px;
@@ -435,40 +439,32 @@ a.small h1 {
   margin-bottom: 0;
 }
 
-.eprtrSelection .selector-container .ui.search.selection.dropdown {
+.eprtrSelection .selector-container .ui.selection.dropdown {
   width: fit-content;
   color: #EC776A;
   padding: 0;
   border-bottom: none;
+  min-width: unset;
+  margin-right: 40px;
 }
 
-.eprtrSelection .selector-container .ui.search.selection.dropdown > input.search {
+.eprtrSelection .selector-container .ui.selection.dropdown > .default.text,
+.eprtrSelection .selector-container .ui.selection.dropdown > .text {
   color: #EC776A;
   font-weight: bold;
-  font-size: 36px;
-  line-height: 45px;
-  padding: 10px;
-  padding-left: 0;
-  padding-right: 40px;
-}
-
-.eprtrSelection .selector-container .ui.search.selection.dropdown > .default.text,
-.eprtrSelection .selector-container .ui.search.selection.dropdown > .text {
-  color: #EC776A;
-  font-weight: bold;
-  font-size: 36px;
-  line-height: 45px;
+  font-size: 30px;
+  line-height: 39px;
   padding: 10px;
   padding-left: 0;
 }
 
-.eprtrSelection .selector-container .ui.search.selection.dropdown > .dropdown.icon {
+.eprtrSelection .selector-container .ui.selection.dropdown > .dropdown.icon {
   font-size: 30px !important;
-  line-height: 45px;
+  line-height: 39px;
   position: relative;
-  padding: 10px 5px;
+  padding: 10px 0;
   margin: 0;
-  margin-left: 0;
+  margin-left: 0 !important;
   top: unset;
   left: unset;
   right: unset;
