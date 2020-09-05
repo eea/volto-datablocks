@@ -99,7 +99,7 @@ const components = {
   },
 };
 
-const View = (props) => {
+const View = props => {
   const [state, setState] = useState({
     metadata: {},
     tableHeaders: 0,
@@ -120,9 +120,9 @@ const View = (props) => {
     props.data.itemsCountKey?.value)
   ) {
     const collection = Object.keys(sqls).filter(
-      (key) => !key.includes('collection_count'),
+      key => !key.includes('collection_count'),
     )[0];
-    const collection_count = Object.keys(sqls).filter((key) =>
+    const collection_count = Object.keys(sqls).filter(key =>
       key.includes('collection_count'),
     )[0];
     items = props.discodata_resources.data[collection] || [];
@@ -163,7 +163,7 @@ const View = (props) => {
             <Table.Header>
               <Table.Row>
                 {state.metadata?.fieldsets?.[0]?.fields?.map(
-                  (meta) =>
+                  meta =>
                     state.metadata.properties[meta].tableType ===
                       'Table header' && (
                       <Table.HeaderCell key={`header-${meta}`}>
@@ -251,7 +251,7 @@ const View = (props) => {
                       }
                     >
                       <div className="table-flex-container">
-                        {props.data?.hiddenRowTypes?.value?.map((type) => (
+                        {props.data?.hiddenRowTypes?.value?.map(type => (
                           <div key={`hr-${trIndex}-${type}`}>
                             {type !== 'Action' && (
                               <span className="header">{type}</span>
@@ -263,7 +263,7 @@ const View = (props) => {
                               }}
                             >
                               {state.metadata?.fieldsets?.[0]?.fields?.map(
-                                (meta) => {
+                                meta => {
                                   if (
                                     state.metadata.properties[meta]
                                       .tableType === 'Hidden row' &&

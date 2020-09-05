@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import qs from 'query-string';
-import DB from 'volto-datablocks/DataBase/DB';
+import DB from '../DataBase/DB';
 import { settings } from '~/config';
 import { getDiscodataResource } from '../actions';
-let done = false;
-const ViewWrapper = (props) => {
+const ViewWrapper = props => {
   const [state, setState] = useState({
     mounted: false,
   });
@@ -38,22 +37,18 @@ const ViewWrapper = (props) => {
         let whereStatements = [],
           groupByStatements = [];
         whereStatements = Object.keys(where)
-          .filter((key) => {
+          .filter(key => {
             return (
               where[key].sqlId === sqlKey &&
               globalQuery[where[key].queryParam] &&
               where[key].key
             );
           })
-          .map((key) => {
+          .map(key => {
             return {
               discodataKey: where[key].key,
               value: Array.isArray(globalQuery[where[key].queryParam])
-                ? [
-                    ...globalQuery[where[key].queryParam].filter(
-                      (query) => query,
-                    ),
-                  ]
+                ? [...globalQuery[where[key].queryParam].filter(query => query)]
                 : globalQuery[where[key].queryParam],
               regex: where[key].regex || null,
             };
@@ -74,10 +69,10 @@ const ViewWrapper = (props) => {
         };
         if (!isCollection) {
           groupByStatements = Object.keys(groupBy)
-            .filter((key) => {
+            .filter(key => {
               return groupBy[key].sqlId === sqlKey;
             })
-            .map((key) => {
+            .map(key => {
               return {
                 discodataKey: groupBy[key].discodataKey,
                 key: groupBy[key].key,
@@ -129,7 +124,11 @@ const ViewWrapper = (props) => {
     }
     /* eslint-disable-next-line */
   }, [sqls, where, groupBy, search])
-  return <>{props.children}</>;
+  return (
+    <>
+      {props.mode === 'edit-no-children' ? 'SQL BUILDER BLOCK' : props.children}
+    </>
+  );
 };
 
 export default compose(

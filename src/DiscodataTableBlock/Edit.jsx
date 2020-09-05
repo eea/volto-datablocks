@@ -140,17 +140,19 @@ const schema = {
 };
 
 const Edit = React.forwardRef(props => {
+  useEffect(() => {
+    if (schema.metadata?.fieldSetSchema?.properties?.hiddenRowType) {
+      schema.metadata.fieldSetSchema.properties.hiddenRowType.choices = props
+        .data?.hiddenRowTypes?.value
+        ? props.data.hiddenRowTypes.value.map(type => [type, type])
+        : [];
+    }
+    /* eslint-disable-next-line */
+  }, [props.data?.hiddenRowTypes?.value]);
+
   if (__SERVER__) {
     return <div />;
   }
-
-  useEffect(() => {
-    schema.metadata.fieldSetSchema.properties.hiddenRowType.choices = props.data
-      ?.hiddenRowTypes?.value
-      ? props.data.hiddenRowTypes.value.map(type => [type, type])
-      : [];
-    /* eslint-disable-next-line */
-  }, [props.data?.hiddenRowTypes?.value]);
 
   return (
     <DiscodataSqlBuilderEdit

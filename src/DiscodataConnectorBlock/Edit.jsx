@@ -6,7 +6,7 @@ import {
   getConnectedDataParametersForProvider,
   getConnectedDataParametersForContext,
 } from '../helpers';
-import RenderFields from 'volto-addons/Widgets/RenderFields';
+import RenderFields from '../Utils/RenderFields';
 import { dataFormatChoices } from '../format';
 
 const makeChoices = keys => keys && keys.map(k => [k, k]);

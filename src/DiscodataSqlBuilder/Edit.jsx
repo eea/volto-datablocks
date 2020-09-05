@@ -3,12 +3,14 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import _uniqueId from 'lodash/uniqueId';
 import qs from 'query-string';
-import RenderFields from 'volto-addons/Widgets/RenderFields';
+import RenderFields from '../Utils/RenderFields';
 import { settings } from '~/config';
 
-const makeChoices = (keys) => keys && keys.map((k) => [k, k]);
+import View from './View';
 
-const getSchema = (props) => {
+const makeChoices = keys => keys && keys.map(k => [k, k]);
+
+const getSchema = props => {
   if (!props) return {};
   const { query } = props;
   const { search } = props.discodata_query;
@@ -27,9 +29,8 @@ const getSchema = (props) => {
       Object.entries(whereStatements).forEach(([whereKey, whereValue]) => {
         if (whereValue.sqlId === sqlKey) {
           whereArray.push(
-            `WHERE ${whereValue.key} LIKE ${
-              query?.[whereValue.queryParam] || ''
-            }`,
+            `WHERE ${whereValue.key} LIKE ${query?.[whereValue.queryParam] ||
+              ''}`,
           );
         }
       });
@@ -95,13 +96,13 @@ const getSchema = (props) => {
             title: 'Pagination',
             type: 'boolean',
             defaultValue: true,
-            disabled: (formData) => !formData.isCollection,
+            disabled: formData => !formData.isCollection,
           },
           urlQuery: {
             title: 'Use Query from url',
             type: 'boolean',
             defaultValue: true,
-            disabled: (formData) => formData.isCollection,
+            disabled: formData => formData.isCollection,
           },
           sql: {
             title: 'SQL',
@@ -109,15 +110,15 @@ const getSchema = (props) => {
           },
           packageName: {
             title: 'Package discodata key name',
-            type: (formData) => (!formData.urlQuery ? 'text' : 'array'),
-            choices: (formData) => {
+            type: formData => (!formData.urlQuery ? 'text' : 'array'),
+            choices: formData => {
               if (!formData.urlQuery) return undefined;
               return globalQuery ? makeChoices(Object.keys(globalQuery)) : [];
             },
-            disabled: (formData) => formData.isCollection,
+            disabled: formData => formData.isCollection,
           },
         },
-        required: (formData) => {
+        required: formData => {
           if (!formData.isCollection)
             return ['title', 'id', 'sql', 'packageName'];
           return ['title', 'id', 'sql'];
@@ -168,16 +169,16 @@ const getSchema = (props) => {
           },
           key: {
             title: 'Query to set',
-            type: (formData) => (!formData.urlQuery ? 'text' : 'array'),
-            choices: (formData) => {
+            type: formData => (!formData.urlQuery ? 'text' : 'array'),
+            choices: formData => {
               if (!formData.urlQuery) return undefined;
               return globalQuery ? makeChoices(Object.keys(globalQuery)) : [];
             },
           },
           queryParam: {
             title: 'Query to use',
-            type: (formData) => (!formData.urlQuery ? 'text' : 'array'),
-            choices: (formData) => {
+            type: formData => (!formData.urlQuery ? 'text' : 'array'),
+            choices: formData => {
               if (!formData.urlQuery) return undefined;
               return globalQuery ? makeChoices(Object.keys(globalQuery)) : [];
             },
@@ -242,7 +243,7 @@ const getSchema = (props) => {
   };
 };
 
-const Edit = (props) => {
+const Edit = props => {
   const [state, setState] = useState({
     schema: getSchema({ ...props, providerUrl: settings.providerUrl }),
     id: _uniqueId('block_'),
@@ -265,7 +266,7 @@ const Edit = (props) => {
         {...props}
         title={props.title || 'Discodata sql builder'}
       />
-      {props.children}
+      {props.children || <View {...props} mode="edit-no-children" />}
     </>
   );
 };
