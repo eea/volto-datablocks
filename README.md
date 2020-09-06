@@ -1,18 +1,7 @@
-# SemanticData powered Volto blocks
+# Data-connected Volto components 
 
-The purpose for this package is to provide a way to list data coming from
-a SPARQL query, as a Volto block.
+This addon has various blocks and utilities to provide "data-connected" components in Volto websites.
 
-### Development setup
+### What is a "data-connected component?"
 
-- Needs to be available at `<docker orchestration folder>/frontend-addons/volto-datablocks`
-- To have working eslint, you need to run `npm install` in the package folder.
-- You need to add the `volto-datablocks` path to the .eslintrc, to be able to
-  resolve the new development package
-- In the container, in the `/opt/addons` path, run:
-
-```
-npm link
-cd /opt/frontend
-npm link volto-datablocks
-```
+A data-connected component, as we use the term here, is a component that displays information coming from outside sources. For example, a chart would get its data from an uploaded CSV file, or a block can display values that come from a REST api server (discodata.eea.europa.eu), there's even a prototype "data-connected entity" for the draftjs richtext editor.
