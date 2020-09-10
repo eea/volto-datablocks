@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import qs from 'query-string';
 import { Table, Pagination } from 'semantic-ui-react';
 import downSVG from '@plone/volto/icons/down-key.svg';
-import rightSVG from '@plone/volto/icons/right-key.svg';
+import upSVG from '@plone/volto/icons/up-key.svg';
 import { Icon } from '@plone/volto/components';
 import DiscodataSqlBuilderView from 'volto-datablocks/DiscodataSqlBuilder/View';
 import { setQueryParam } from 'volto-datablocks/actions';
@@ -99,7 +99,7 @@ const components = {
   },
 };
 
-const View = props => {
+const View = (props) => {
   const [state, setState] = useState({
     metadata: {},
     tableHeaders: 0,
@@ -120,9 +120,9 @@ const View = props => {
     props.data.itemsCountKey?.value)
   ) {
     const collection = Object.keys(sqls).filter(
-      key => !key.includes('collection_count'),
+      (key) => !key.includes('collection_count'),
     )[0];
-    const collection_count = Object.keys(sqls).filter(key =>
+    const collection_count = Object.keys(sqls).filter((key) =>
       key.includes('collection_count'),
     )[0];
     items = props.discodata_resources.data[collection] || [];
@@ -157,179 +157,265 @@ const View = props => {
         {...props}
         pagination={{ p: activePage, nrOfHits: itemsPerPage }}
       >
-        <React.Fragment>
-          <Table>
-            {/* ==== TABLE HEADER ==== */}
-            <Table.Header>
-              <Table.Row>
-                {state.metadata?.fieldsets?.[0]?.fields?.map(
-                  meta =>
-                    state.metadata.properties[meta].tableType ===
-                      'Table header' && (
-                      <Table.HeaderCell key={`header-${meta}`}>
-                        {state.metadata.properties[meta].title}
-                      </Table.HeaderCell>
-                    ),
-                )}
-                <Table.HeaderCell />
-              </Table.Row>
-            </Table.Header>
-            {/* ==== TABLE BODY ==== */}
-            <Table.Body>
-              {items?.map((item, trIndex) => (
-                <React.Fragment key={`item-${trIndex}`}>
-                  {/* ==== TABLE ROW ====*/}
-                  <Table.Row key={`tr-${trIndex}`}>
-                    {state.metadata?.fieldsets?.[0]?.fields?.map(
-                      (meta, cellIndex) => {
-                        if (
-                          state.metadata.properties[meta].tableType ===
-                          'Table header'
-                        ) {
-                          const dataType =
-                            state.metadata.properties[meta].dataType;
-                          const show = state.metadata.properties[meta].show;
-
-                          return (
-                            <Table.Cell
-                              key={`cell-${trIndex}-${cellIndex}-${meta}`}
-                            >
-                              {components[`${dataType}_${show}`]
-                                ? components[`${dataType}_${show}`](
-                                    state.metadata.properties[meta],
-                                    meta,
-                                    item,
-                                    props,
-                                  )
-                                : components.default(
-                                    state.metadata.properties[meta],
-                                    meta,
-                                    item,
-                                    props,
-                                  )}
-                            </Table.Cell>
-                          );
-                        }
-                        return null;
-                      },
-                    )}
-                    <Table.Cell>
-                      <button
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => {
-                          if (state.selectedItemIndex === trIndex) {
-                            setState({ ...state, selectedItemIndex: -1 });
-                            return;
-                          }
-                          setState({ ...state, selectedItemIndex: trIndex });
-                        }}
-                      >
-                        <Icon
-                          name={
-                            state.selectedItemIndex === trIndex
-                              ? downSVG
-                              : rightSVG
-                          }
-                          size="3em"
-                        />
-                      </button>
-                    </Table.Cell>
-                  </Table.Row>
-                  {/* ==== TABLE HIDDEN ROW ==== */}
-                  <Table.Row
-                    className={
-                      state.selectedItemIndex === trIndex
-                        ? 'hidden-row show'
-                        : 'hidden-row hide'
-                    }
-                  >
-                    <Table.Cell
-                      colSpan={
-                        typeof state.tableHeaders === 'number'
-                          ? state.tableHeaders + 1
-                          : 1
+        {items?.length ? (
+          <React.Fragment>
+            <Table className="unstackable">
+              {/* ==== TABLE HEADER ==== */}
+              <Table.Header>
+                <Table.Row>
+                  {state.metadata?.fieldsets?.[0]?.fields?.map(
+                    (meta) =>
+                      state.metadata.properties[meta].tableType ===
+                        'Table header' && (
+                        <Table.HeaderCell key={`header-${meta}`}>
+                          {state.metadata.properties[meta].title}
+                        </Table.HeaderCell>
+                      ),
+                  )}
+                  <Table.HeaderCell />
+                </Table.Row>
+              </Table.Header>
+              {/* ==== TABLE BODY ==== */}
+              <Table.Body>
+                {items?.map((item, trIndex) => (
+                  <React.Fragment key={`item-${trIndex}`}>
+                    {/* ==== TABLE ROW ====*/}
+                    <Table.Row
+                      key={`tr-${trIndex}`}
+                      className={
+                        state.selectedItemIndex === trIndex ? 'row-active' : ''
                       }
                     >
-                      <div className="table-flex-container">
-                        {props.data?.hiddenRowTypes?.value?.map(type => (
-                          <div key={`hr-${trIndex}-${type}`}>
-                            {type !== 'Action' && (
-                              <span className="header">{type}</span>
-                            )}
-                            <div
-                              className="flex column"
-                              style={{
-                                height: type !== 'Action' ? 'auto' : '100%',
-                              }}
-                            >
-                              {state.metadata?.fieldsets?.[0]?.fields?.map(
-                                meta => {
-                                  if (
-                                    state.metadata.properties[meta]
-                                      .tableType === 'Hidden row' &&
-                                    state.metadata.properties[meta]
-                                      .hiddenRowType === type
-                                  ) {
-                                    const dataType =
-                                      state.metadata.properties[meta].dataType;
-                                    const show =
-                                      state.metadata.properties[meta].show;
+                      {state.metadata?.fieldsets?.[0]?.fields?.map(
+                        (meta, cellIndex) => {
+                          if (
+                            state.metadata.properties[meta].tableType ===
+                            'Table header'
+                          ) {
+                            const dataType =
+                              state.metadata.properties[meta].dataType;
+                            const show = state.metadata.properties[meta].show;
 
-                                    return (
-                                      <React.Fragment
-                                        key={`hidden_row_${meta}`}
-                                      >
-                                        {components[`${dataType}_${show}`]
-                                          ? components[`${dataType}_${show}`](
-                                              state.metadata.properties[meta],
-                                              meta,
-                                              item,
-                                              props,
-                                            )
-                                          : components.default(
-                                              state.metadata.properties[meta],
-                                              meta,
-                                              item,
-                                              props,
-                                            )}
-                                      </React.Fragment>
-                                    );
-                                  }
-                                  return null;
-                                },
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </Table.Cell>
-                  </Table.Row>
-                </React.Fragment>
-              ))}
-            </Table.Body>
-            {/* ==== TABLE FOOTER ==== */}
-            <Table.Footer>
-              <Table.Row>
-                <Table.HeaderCell colSpan="7" style={{ textAlign: 'center' }}>
-                  <Pagination
-                    activePage={activePage}
-                    onPageChange={(event, pagination) => {
-                      setState({
-                        ...state,
-                        pagination: {
-                          ...state.pagination,
-                          activePage: pagination.activePage,
+                            return (
+                              <Table.Cell
+                                key={`cell-${trIndex}-${cellIndex}-${meta}`}
+                              >
+                                {components[`${dataType}_${show}`]
+                                  ? components[`${dataType}_${show}`](
+                                      state.metadata.properties[meta],
+                                      meta,
+                                      item,
+                                      props,
+                                    )
+                                  : components.default(
+                                      state.metadata.properties[meta],
+                                      meta,
+                                      item,
+                                      props,
+                                    )}
+                              </Table.Cell>
+                            );
+                          }
+                          return null;
                         },
-                        selectedItemIndex: -1,
-                      });
-                    }}
-                    totalPages={Math.ceil(totalItems / itemsPerPage)}
-                  />
-                </Table.HeaderCell>
-              </Table.Row>
-            </Table.Footer>
-          </Table>
-        </React.Fragment>
+                      )}
+                      <Table.Cell>
+                        <button
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => {
+                            if (state.selectedItemIndex === trIndex) {
+                              setState({ ...state, selectedItemIndex: -1 });
+                              return;
+                            }
+                            setState({ ...state, selectedItemIndex: trIndex });
+                          }}
+                        >
+                          <Icon
+                            name={
+                              state.selectedItemIndex === trIndex
+                                ? upSVG
+                                : downSVG
+                            }
+                            size="3em"
+                          />
+                        </button>
+                      </Table.Cell>
+                    </Table.Row>
+                    {/* ==== TABLE HIDDEN ROW ==== */}
+                    <Table.Row
+                      className={
+                        state.selectedItemIndex === trIndex
+                          ? 'hidden-row show'
+                          : 'hidden-row hide'
+                      }
+                    >
+                      <Table.Cell
+                        colSpan={
+                          props.data?.hiddenRowTypes?.value?.length
+                            ? props.data.hiddenRowTypes.value.length
+                            : 1
+                        }
+                      >
+                        <div className="hidden-row-container">
+                          <div className="table-flex-container white">
+                            {props.data?.hiddenRowTypes?.value
+                              ?.filter((type) => type !== 'Action')
+                              .map((type) => (
+                                <div key={`hr-${trIndex}-${type}`}>
+                                  {type !== 'Action' && (
+                                    <span className="header">{type}</span>
+                                  )}
+                                  <div
+                                    className="flex column"
+                                    style={{
+                                      height:
+                                        type !== 'Action' ? 'auto' : '100%',
+                                    }}
+                                  >
+                                    {state.metadata?.fieldsets?.[0]?.fields?.map(
+                                      (meta) => {
+                                        if (
+                                          state.metadata.properties[meta]
+                                            .tableType === 'Hidden row' &&
+                                          state.metadata.properties[meta]
+                                            .hiddenRowType === type
+                                        ) {
+                                          const dataType =
+                                            state.metadata.properties[meta]
+                                              .dataType;
+                                          const show =
+                                            state.metadata.properties[meta]
+                                              .show;
+
+                                          return (
+                                            <React.Fragment
+                                              key={`hidden_row_${meta}`}
+                                            >
+                                              {components[`${dataType}_${show}`]
+                                                ? components[
+                                                    `${dataType}_${show}`
+                                                  ](
+                                                    state.metadata.properties[
+                                                      meta
+                                                    ],
+                                                    meta,
+                                                    item,
+                                                    props,
+                                                  )
+                                                : components.default(
+                                                    state.metadata.properties[
+                                                      meta
+                                                    ],
+                                                    meta,
+                                                    item,
+                                                    props,
+                                                  )}
+                                            </React.Fragment>
+                                          );
+                                        }
+                                        return null;
+                                      },
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                          </div>
+                          <div className="table-flex-container action">
+                            {props.data?.hiddenRowTypes?.value
+                              ?.filter((type) => type === 'Action')
+                              .map((type) => (
+                                <div key={`hr-${trIndex}-${type}`}>
+                                  <div
+                                    className="flex column"
+                                    style={{
+                                      height: '100%',
+                                    }}
+                                  >
+                                    {state.metadata?.fieldsets?.[0]?.fields?.map(
+                                      (meta) => {
+                                        if (
+                                          state.metadata.properties[meta]
+                                            .tableType === 'Hidden row' &&
+                                          state.metadata.properties[meta]
+                                            .hiddenRowType === type
+                                        ) {
+                                          const dataType =
+                                            state.metadata.properties[meta]
+                                              .dataType;
+                                          const show =
+                                            state.metadata.properties[meta]
+                                              .show;
+
+                                          return (
+                                            <React.Fragment
+                                              key={`hidden_row_${meta}`}
+                                            >
+                                              {components[`${dataType}_${show}`]
+                                                ? components[
+                                                    `${dataType}_${show}`
+                                                  ](
+                                                    state.metadata.properties[
+                                                      meta
+                                                    ],
+                                                    meta,
+                                                    item,
+                                                    props,
+                                                  )
+                                                : components.default(
+                                                    state.metadata.properties[
+                                                      meta
+                                                    ],
+                                                    meta,
+                                                    item,
+                                                    props,
+                                                  )}
+                                            </React.Fragment>
+                                          );
+                                        }
+                                        return null;
+                                      },
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                          </div>
+                        </div>
+                      </Table.Cell>
+                    </Table.Row>
+                  </React.Fragment>
+                ))}
+              </Table.Body>
+              {/* ==== TABLE FOOTER ==== */}
+              <Table.Footer>
+                <Table.Row>
+                  <Table.HeaderCell
+                    colSpan={state.tableHeaders + 1}
+                    style={{ textAlign: 'left' }}
+                  >
+                    <Pagination
+                      activePage={activePage}
+                      onPageChange={(event, pagination) => {
+                        setState({
+                          ...state,
+                          pagination: {
+                            ...state.pagination,
+                            activePage: pagination.activePage,
+                          },
+                          selectedItemIndex: -1,
+                        });
+                      }}
+                      totalPages={Math.ceil(totalItems / itemsPerPage)}
+                      firstItem={null}
+                      lastItem={null}
+                    />
+                  </Table.HeaderCell>
+                </Table.Row>
+              </Table.Footer>
+            </Table>
+          </React.Fragment>
+        ) : (
+          ''
+        )}
       </DiscodataSqlBuilderView>
     </div>
   );
