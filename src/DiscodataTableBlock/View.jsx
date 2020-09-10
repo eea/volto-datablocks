@@ -10,6 +10,7 @@ import upSVG from '@plone/volto/icons/up-key.svg';
 import { Icon } from '@plone/volto/components';
 import DiscodataSqlBuilderView from 'volto-datablocks/DiscodataSqlBuilder/View';
 import { setQueryParam } from 'volto-datablocks/actions';
+import { Dimmer, Loader } from 'semantic-ui-react';
 
 const components = {
   object_link_length: (schemaMetadata, itemMetadata, item) => {
@@ -105,10 +106,12 @@ const View = (props) => {
     tableHeaders: 0,
     pagination: {
       activePage: 1,
-      itemsPerPage: 5,
+      itemsPerPage: 25,
     },
     selectedItemIndex: -1,
   });
+  const [collection, set_collection] = useState('');
+  const [collection_count, set_collection_count] = useState('');
   const sqls = props.data?.sql?.value
     ? JSON.parse(props.data.sql.value).properties
     : {};
@@ -119,19 +122,25 @@ const View = (props) => {
     (sqls && Object.keys(sqls).length >= 2 && items,
     props.data.itemsCountKey?.value)
   ) {
-    const collection = Object.keys(sqls).filter(
+    const local_collection = Object.keys(sqls).filter(
       (key) => !key.includes('collection_count'),
     )[0];
-    const collection_count = Object.keys(sqls).filter((key) =>
+    const local_collection_count = Object.keys(sqls).filter((key) =>
       key.includes('collection_count'),
     )[0];
-    items = props.discodata_resources.data[collection] || [];
+    if (collection !== local_collection) {
+      set_collection(local_collection);
+    }
+    if (collection_count !== local_collection_count) {
+      set_collection_count(local_collection_count);
+    }
+    items = props.discodata_resources.data[local_collection] || [];
     totalItems =
       props.data.itemsCountKey?.value &&
-      props.discodata_resources.data[collection_count] &&
-      Array.isArray(props.discodata_resources.data[collection_count]) &&
-      props.discodata_resources.data[collection_count].length > 0
-        ? props.discodata_resources.data[collection_count].reduce(
+      props.discodata_resources.data[local_collection_count] &&
+      Array.isArray(props.discodata_resources.data[local_collection_count]) &&
+      props.discodata_resources.data[local_collection_count].length > 0
+        ? props.discodata_resources.data[local_collection_count].reduce(
             (acc, el) =>
               acc[props.data.itemsCountKey.value] +
               el[props.data.itemsCountKey.value],
@@ -151,6 +160,11 @@ const View = (props) => {
     });
     /* eslint-disable-next-line */
   }, [props.data?.metadata?.value])
+
+  const loader =
+    props.discodata_resources.pendingRequests[collection] ||
+    props.discodata_resources.pendingRequests[collection_count];
+
   return (
     <div className={`browse-table ${props.className ? props.className : ''}`}>
       <DiscodataSqlBuilderView
@@ -414,9 +428,12 @@ const View = (props) => {
             </Table>
           </React.Fragment>
         ) : (
-          ''
+          <div style={{ width: '100%', height: '400px' }} />
         )}
       </DiscodataSqlBuilderView>
+      <Dimmer active={loader} inverted>
+        <Loader inverted>European Environment Agency</Loader>
+      </Dimmer>
     </div>
   );
 };
