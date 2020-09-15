@@ -9,9 +9,9 @@ import { Button } from 'semantic-ui-react';
 import { getDataFromProvider } from '../actions';
 import { dataFormatChoices } from '../format';
 
-const makeChoices = keys => keys.map(k => [k, k]);
+const makeChoices = (keys) => keys.map((k) => [k, k]);
 
-const usePrevious = value => {
+const usePrevious = (value) => {
   const ref = useRef();
   useEffect(() => {
     ref.current = value;
@@ -20,11 +20,11 @@ const usePrevious = value => {
   return ref.current;
 };
 
-const MultiValuesEdit = props => {
+const MultiValuesEdit = (props) => {
   const { data, providers, schema, getDataFromProvider } = props;
   const prevProviders = usePrevious(providers);
   if (providers && !prevProviders) {
-    Object.keys(providers).forEach(key => {
+    Object.keys(providers).forEach((key) => {
       const path = providers[key].path;
       if (path) getDataFromProvider(path);
     });
@@ -70,7 +70,7 @@ const MultiValuesEdit = props => {
                 iconAction={() =>
                   props.openObjectBrowser({
                     mode: 'link',
-                    onSelectItem: path => {
+                    onSelectItem: (path) => {
                       const newData = { ...JSON.parse(JSON.stringify(data)) };
                       if (!newData.providers) newData.providers = {};
                       if (!newData.providers[k]) newData.providers[k] = {};
@@ -170,7 +170,7 @@ const MultiValuesEdit = props => {
                   <SelectWidget
                     id={`data-entity-format-${k}`}
                     title="Format"
-                    choices={dataFormatChoices.map(option => [
+                    choices={dataFormatChoices.map((option) => [
                       option.id,
                       option.label,
                     ])}
@@ -297,7 +297,7 @@ function getProviderData(state, props) {
       },
     };
   if (!providers) return;
-  Object.keys(providers).forEach(provider => {
+  Object.keys(providers).forEach((provider) => {
     const path = `${providers[provider].path}/@connector-data`;
     const url = `${addAppURL(path)}/@connector-data`;
     const data = state.data_providers.data || {};

@@ -95,6 +95,19 @@ export function installDiscodataBlocks(config) {
     group: 'data_blocks',
   };
 
+  config.blocks.blocksConfig.data_connected_embed = {
+    id: 'data_connected_embed',
+    title: 'Data connected embed',
+    view: DataConnectedEmbedView,
+    edit: DataConnectedEmbedEdit,
+    icon: chartIcon,
+    group: 'custom_addons',
+  };
+
+  return config;
+}
+
+export const installDemoBlocks = (config) => {
   config.blocks.blocksConfig.data_connected_block = {
     id: 'data_connected_block',
     title: 'Simple Data Connected Block',
@@ -113,14 +126,5 @@ export function installDiscodataBlocks(config) {
     group: 'data_blocks',
   };
 
-  config.blocks.blocksConfig.data_connected_embed = {
-    id: 'data_connected_embed',
-    title: 'Data connected embed',
-    view: DataConnectedEmbedView,
-    edit: DataConnectedEmbedEdit,
-    icon: chartIcon,
-    group: 'custom_addons',
-  };
-
   return config;
-}
+};
