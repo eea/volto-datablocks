@@ -39,7 +39,6 @@ function addCustomGroup(config, group) {
 
 export function applyConfig(config) {
   addCustomGroup(config, { id: 'custom_addons', title: 'Custom addons' });
-  addCustomGroup(config, { id: 'data_blocks', title: 'Data blocks' });
 
   config.views.contentTypesViews.discodataconnector = DataConnectorView;
 
@@ -68,6 +67,7 @@ export function applyConfig(config) {
 export function installDiscodataBlocks(config) {
   // Requires a customization of ModalForm. SchemaWidget and SchemaWidgetFieldset.
   // Refactor WIP
+  addCustomGroup(config, { id: 'data_blocks', title: 'Data blocks' });
   config.blocks.blocksConfig.discodata_connector_block = {
     id: 'discodata_connector_block',
     title: 'Discodata connector block',
@@ -108,6 +108,7 @@ export function installDiscodataBlocks(config) {
 }
 
 export const installDemoBlocks = (config) => {
+  addCustomGroup(config, { id: 'data_blocks', title: 'Data blocks' });
   config.blocks.blocksConfig.data_connected_block = {
     id: 'data_connected_block',
     title: 'Simple Data Connected Block',
