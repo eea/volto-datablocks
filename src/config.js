@@ -30,7 +30,7 @@ import addonRoutes from './routes';
 
 function addCustomGroup(config, group) {
   const hasCustomGroup = config.blocks.groupBlocksOrder.filter(
-    el => el.id === group.id,
+    (el) => el.id === group.id,
   );
   if (hasCustomGroup.length === 0) {
     config.blocks.groupBlocksOrder.push(group);
@@ -49,6 +49,50 @@ export function applyConfig(config) {
   config.addonReducers = {
     ...config.addonReducers,
     ...addonReducers,
+  };
+
+  config.settings.nonContentRoutes.push('/data-providers-view');
+  config.addonRoutes = [...(config.addonRoutes || []), ...addonRoutes];
+
+  config.widgets.type.dataProvider = DataProviderWidget;
+  // config.viewlets = [
+  //   { path: '/', component: ConnectedDataParameterWatcher },
+  //   ...(config.viewlets || []),
+  // ];
+
+  // installDraftEditorDataEntity(config);
+
+  return config;
+}
+
+export function installDiscodataBlocks(config) {
+  // Requires a customization of ModalForm. SchemaWidget and SchemaWidgetFieldset.
+  // Refactor WIP
+  config.blocks.blocksConfig.discodata_connector_block = {
+    id: 'discodata_connector_block',
+    title: 'Discodata connector block',
+    view: DiscodataConnectorBlockView,
+    edit: DiscodataConnectorBlockEdit,
+    icon: chartIcon,
+    group: 'data_blocks',
+  };
+
+  config.blocks.blocksConfig.discodata_sql_builder = {
+    id: 'discodata_sql_builder',
+    title: 'Discodata sql builder',
+    view: DiscodataSqlBuilderView,
+    edit: DiscodataSqlBuilderEdit,
+    icon: chartIcon,
+    group: 'data_blocks',
+  };
+
+  config.blocks.blocksConfig.discodata_table_block = {
+    id: 'discodata_table_block',
+    title: 'Discodata table block',
+    view: DiscodataTableBlockView,
+    edit: DiscodataTableBlockEdit,
+    icon: chartIcon,
+    group: 'data_blocks',
   };
 
   config.blocks.blocksConfig.data_connected_block = {
@@ -78,50 +122,5 @@ export function applyConfig(config) {
     group: 'custom_addons',
   };
 
-  config.settings.nonContentRoutes.push('/data-providers-view');
-  config.addonRoutes = [...(config.addonRoutes || []), ...addonRoutes];
-
-  config.widgets.type.dataProvider = DataProviderWidget;
-  // config.viewlets = [
-  //   { path: '/', component: ConnectedDataParameterWatcher },
-  //   ...(config.viewlets || []),
-  // ];
-
-  // installDraftEditorDataEntity(config);
-
   return config;
-}
-
-export function installDiscodataBlocks(config) {
-  // Requires a customization of ModalForm. SchemaWidget and SchemaWidgetFieldset.
-  // Refactor WIP
-  const newConfig = { ...config };
-  newConfig.blocks.blocksConfig.discodata_connector_block = {
-    id: 'discodata_connector_block',
-    title: 'Discodata connector block',
-    view: DiscodataConnectorBlockView,
-    edit: DiscodataConnectorBlockEdit,
-    icon: chartIcon,
-    group: 'data_blocks',
-  };
-
-  newConfig.blocks.blocksConfig.discodata_sql_builder = {
-    id: 'discodata_sql_builder',
-    title: 'Discodata sql builder',
-    view: DiscodataSqlBuilderView,
-    edit: DiscodataSqlBuilderEdit,
-    icon: chartIcon,
-    group: 'data_blocks',
-  };
-
-  newConfig.blocks.blocksConfig.discodata_table_block = {
-    id: 'discodata_table_block',
-    title: 'Discodata table block',
-    view: DiscodataTableBlockView,
-    edit: DiscodataTableBlockEdit,
-    icon: chartIcon,
-    group: 'data_blocks',
-  };
-
-  return newConfig;
 }
