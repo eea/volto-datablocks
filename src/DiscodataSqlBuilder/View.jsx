@@ -5,7 +5,7 @@ import qs from 'query-string';
 import DB from '../DataBase/DB';
 import { settings } from '~/config';
 import { getDiscodataResource } from '../actions';
-const ViewWrapper = props => {
+const ViewWrapper = (props) => {
   const [state, setState] = useState({
     mounted: false,
   });
@@ -24,6 +24,7 @@ const ViewWrapper = props => {
     : {};
   /* ========================= */
   const globalQuery = { ...query, ...search };
+  const additionalWhereStatements = props.additionalWhereStatements || [];
   useEffect(() => {
     setState({ ...state, mounted: true });
     /* eslint-disable-next-line */
@@ -37,18 +38,22 @@ const ViewWrapper = props => {
         let whereStatements = [],
           groupByStatements = [];
         whereStatements = Object.keys(where)
-          .filter(key => {
+          .filter((key) => {
             return (
               where[key].sqlId === sqlKey &&
               globalQuery[where[key].queryParam] &&
               where[key].key
             );
           })
-          .map(key => {
+          .map((key) => {
             return {
               discodataKey: where[key].key,
               value: Array.isArray(globalQuery[where[key].queryParam])
-                ? [...globalQuery[where[key].queryParam].filter(query => query)]
+                ? [
+                    ...globalQuery[where[key].queryParam].filter(
+                      (query) => query,
+                    ),
+                  ]
                 : globalQuery[where[key].queryParam],
               regex: where[key].regex || null,
             };
@@ -58,7 +63,7 @@ const ViewWrapper = props => {
           settings.providerUrl,
           hasPagination ? props.pagination : {},
         )
-          .where(whereStatements)
+          .where(whereStatements, additionalWhereStatements)
           .encode()
           .get();
         const request = {
@@ -69,10 +74,10 @@ const ViewWrapper = props => {
         };
         if (!isCollection) {
           groupByStatements = Object.keys(groupBy)
-            .filter(key => {
+            .filter((key) => {
               return groupBy[key].sqlId === sqlKey;
             })
-            .map(key => {
+            .map((key) => {
               return {
                 discodataKey: groupBy[key].discodataKey,
                 key: groupBy[key].key,
@@ -98,7 +103,10 @@ const ViewWrapper = props => {
             request.key = sqlValue.packageName || '';
           }
         } else {
-          request.requestsMetadata.where = [...whereStatements];
+          request.requestsMetadata.where = [
+            ...whereStatements,
+            ...additionalWhereStatements,
+          ];
           request.requestsMetadata.pagination = { ...hasPagination }
             ? props.pagination || { p: 1, nrOfHits: 5 }
             : null;

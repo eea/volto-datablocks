@@ -20,8 +20,12 @@ class Table {
     this.query = encodeURI(this.query);
     return this;
   }
-  where(whereStatements) {
+  where(whereStatements, additionalWhereStatements) {
     let queryString = '';
+    let additionalString = '';
+    if (additionalWhereStatements.length > 0) {
+      additionalString = additionalWhereStatements.join(' AND ');
+    }
     if (whereStatements?.length > 0) {
       const whereString = whereStatements
         .map((where, index) => {
@@ -45,8 +49,12 @@ class Table {
         .filter((value) => value)
         .join(' AND ');
       if (whereString.length) {
-        queryString += ` WHERE ${whereString}`;
+        queryString += ` WHERE ${whereString} ${additionalString}`;
+      } else if (additionalString.length > 0) {
+        queryString += ` WHERE ${additionalString}`;
       }
+    } else if (additionalWhereStatements.length > 0) {
+      queryString += ` WHERE ${additionalString}`;
     }
     if (this.query.includes(':where')) {
       this.query = this.query.replace(
