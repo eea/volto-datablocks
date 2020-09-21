@@ -49,7 +49,9 @@ class Table {
         .filter((value) => value)
         .join(' AND ');
       if (whereString.length) {
-        queryString += ` WHERE ${whereString} ${additionalString}`;
+        queryString += ` WHERE ${whereString}${
+          additionalString ? ` AND ${additionalString}` : ''
+        }`;
       } else if (additionalString.length > 0) {
         queryString += ` WHERE ${additionalString}`;
       }
