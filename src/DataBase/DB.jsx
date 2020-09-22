@@ -34,9 +34,13 @@ class Table {
           if (typeof where.value === 'string' && !where.value.length)
             return null;
           if (Array.isArray(where.value)) {
-            return `[${where.discodataKey}] IN (${where.value.map((v) => {
-              return "'" + v + "'";
-            })})`;
+            const baseSql = `([${where.discodataKey}] LIKE '%:option%')`;
+            return `(${where.value
+              .map((option) => baseSql.replace(':option', option))
+              .join(' OR ')})`;
+            // return `[${where.discodataKey}] IN (${where.value.map((v) => {
+            //   return "'" + v + "'";
+            // })})`;
           } else {
             whereString = `[${where.discodataKey}] LIKE '${
               where.regex && typeof where.regex === 'string'
