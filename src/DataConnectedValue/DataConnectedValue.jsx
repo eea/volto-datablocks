@@ -14,7 +14,7 @@ import '../css/styles.css';
 
 const EMPTY = '^';
 
-const usePrevious = value => {
+const usePrevious = (value) => {
   const ref = useRef();
   useEffect(() => {
     ref.current = value;
@@ -61,11 +61,16 @@ const getValue = (
   if (!column) return 'Set data type';
   // asuming that op is "plone.app.querystring.operation.selection.any"
   const value = values?.[0];
-  if (!data[index]) {
+
+  // compatibility with collective.taxonomy, which lower-cases index names
+  const real_index =
+    Object.keys(data).find((n) => n.toLowerCase() === index) || index;
+
+  if (!data[real_index]) {
     console.log('NOT_AN_INDEX_IN_DATA:', index, data);
     return placeholder;
   }
-  const pos = data[index].indexOf(value);
+  const pos = data[real_index].indexOf(value);
 
   if (pos === -1) {
     return `No value found in data provider for "${value}" in column "${index}"`;
@@ -73,7 +78,7 @@ const getValue = (
   return (data[column] && data[column][pos]) || placeholder;
 };
 
-const DataEntity = props => {
+const DataEntity = (props) => {
   const {
     column,
     connected_data_parameters,
