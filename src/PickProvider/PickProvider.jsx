@@ -1,8 +1,22 @@
-import PickObject from 'volto-addons/PickObject';
+// import PickObject from 'volto-addons/PickObject';
 import React, { Component } from 'react';
 import { addAppURL } from '@plone/volto/helpers';
 import { connect } from 'react-redux';
 import { getDataFromProvider } from 'volto-datablocks/actions';
+import { ObjectBrowserWidget } from '@plone/volto/components';
+
+function getId(url) {
+  const split = url.split('/');
+  return split[split.length - 1];
+}
+
+function getUrl(value) {
+  if (typeof value === 'string') return value;
+  if (Array.isArray(value) && value.length) return value[0]['@id'];
+  if (typeof value === 'object') return value['@id'];
+
+  return value; // dumb fallback
+}
 
 class PickProvider extends Component {
   componentDidMount() {
@@ -12,44 +26,65 @@ class PickProvider extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.value && this.props.value !== prevProps.value) {
-      this.props.getDataFromProvider(this.props.value);
+    const { value } = this.props;
+
+    if (value && getUrl(value) !== getUrl(prevProps.value)) {
+      this.props.getDataFromProvider(value);
     }
 
     // Optimization to help land the proper providerData to the chart
 
     // NOTE: see comments in PickVisualization.jsx, the same applies here
+    const { onLoadProviderData, providerData } = this.props;
     if (
-      JSON.stringify(this.props.providerData) !==
-      JSON.stringify(prevProps.providerData)
-    ) {
-      this.props.onLoadProviderData &&
-        this.props.onLoadProviderData(this.props.providerData);
+      JSON.stringify(providerData) !== JSON.stringify(prevProps.providerData) &&
+      onLoadProviderData
+    )
+      onLoadProviderData(this.props.providerData);
 
-      // This is a hack to pass loaded providerData. It should not be needed
-      // this.props.onChange('providerData', this.props.providerData);
-    }
+    // This is a hack to pass loaded providerData. It should not be needed
+    // this.props.onChange('providerData', this.props.providerData);
   }
 
   refresh = () => {
-    this.props.value && this.props.getDataFromProvider(this.props.value);
+    const { value } = this.props;
+    value && value.length && this.props.getDataFromProvider(value);
   };
 
   render() {
-    // console.log('pick provider value', this.props.value, this.props.onChange);
+    let { value, onChange } = this.props;
+    if (typeof value === 'string') {
+      value = [{ '@id': value, title: getId(value) }];
+    }
     return (
-      <PickObject
-        id={this.props.id || 'provider'}
-        title={this.props.title || 'Provider'}
-        value={this.props.value}
-        onChange={(v1, v2) => {
-          // console.log('v1,v2', v1, v2);
-          this.props.onChange(v1, v2);
+      <ObjectBrowserWidget
+        {...this.props}
+        value={value}
+        onChange={(id, value) => {
+          if (value && value.length) {
+            onChange(id, value[0]['@id']);
+          } else if (value) {
+            onChange(id, value['@id']);
+          } else {
+            onChange(id, null);
+          }
         }}
       />
     );
   }
 }
+//
+// return (
+//   <PickObject
+//     id={this.props.id || 'provider'}
+//     title={this.props.title || 'Provider'}
+//     value={this.props.value}
+//     onChange={(v1, v2) => {
+//       // console.log('v1,v2', v1, v2);
+//       this.props.onChange(v1, v2);
+//     }}
+//   />
+// );
 
 function getProviderData(state, props) {
   let path = props?.value || null;

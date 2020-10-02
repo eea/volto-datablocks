@@ -1,3 +1,4 @@
+import { flattenToAppURL } from '@plone/volto/helpers';
 import {
   GET_SPARQL_DATA,
   GET_DATA_FROM_PROVIDER,
@@ -33,7 +34,18 @@ export function getSparqlData(path) {
 }
 
 export function getDataFromProvider(path, filters) {
-  // console.log('getDataFromProvider call, ', path, filters);
+  console.log('getDataFromProvider call, ', path, filters);
+  path =
+    typeof path === 'object'
+      ? Array.isArray(path) && path.length
+        ? path[0]['@id']
+        : path['@id']
+      : path;
+  path = path && flattenToAppURL(path);
+  if (!path)
+    return {
+      type: GET_DATA_FROM_PROVIDER,
+    };
   return filters
     ? {
         type: GET_DATA_FROM_PROVIDER,
