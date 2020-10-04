@@ -11,7 +11,7 @@ const ViewWrapper = (props) => {
   });
   const { query } = props;
   const { search } = props.discodata_query;
-  const { data, pendingRequests } = props.discodata_resources;
+  const { data, pendingRequests, error } = props.discodata_resources;
   /* ========================= */
   const sqls = props.data?.sql?.value
     ? JSON.parse(props.data.sql.value).properties
@@ -122,8 +122,9 @@ const ViewWrapper = (props) => {
           ((!isCollection &&
             !pendingRequests[
               `${sqlKey}_${globalQuery[sqlValue.packageName]}`
-            ]) ||
-            (isCollection && !pendingRequests[sqlKey])) &&
+            ] &&
+            !error[`${sqlKey}_${globalQuery[sqlValue.packageName]}`]) ||
+            (isCollection && !pendingRequests[sqlKey] && !error[sqlKey])) &&
           requestsMetadataDiff
         ) {
           props.getDiscodataResource(request);

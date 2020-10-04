@@ -34,7 +34,10 @@ class Table {
           if (typeof where.value === 'string' && !where.value.length)
             return null;
           if (Array.isArray(where.value)) {
-            const baseSql = `([${where.discodataKey}] LIKE '%:option%')`;
+            const baseSql = `(${where.discodataKey
+              .split('.')
+              .map((item) => '[' + item + ']')
+              .join('.')} LIKE '%:option%')`;
             return `(${where.value
               .map((option) => baseSql.replace(':option', option))
               .join(' OR ')})`;
@@ -42,7 +45,10 @@ class Table {
             //   return "'" + v + "'";
             // })})`;
           } else {
-            whereString = `[${where.discodataKey}] LIKE '${
+            whereString = `${where.discodataKey
+              .split('.')
+              .map((item) => '[' + item + ']')
+              .join('.')} LIKE '${
               where.regex && typeof where.regex === 'string'
                 ? where.regex.replace(':value', where.value)
                 : where.value

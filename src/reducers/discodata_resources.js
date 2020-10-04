@@ -5,7 +5,7 @@ import {
 } from '../constants';
 
 const initialState = {
-  error: null,
+  error: {},
   data: {},
   loaded: false,
   loading: false,
@@ -22,12 +22,13 @@ export default function pages(state = initialState, action = {}) {
   const id = action.isCollection
     ? action.resourceKey
     : `${action.resourceKey}_${action.search?.[action.key]}`;
+  const error = { ...state.error };
   switch (action.type) {
     case `${GET_DISCODATA_RESOURCE}_PENDING`:
       pendingRequests[id] = true;
       return {
         ...state,
-        error: null,
+        error,
         loaded: false,
         loading: true,
         pendingRequests,
@@ -86,10 +87,11 @@ export default function pages(state = initialState, action = {}) {
         data[resourceKey] = results;
       }
       delete pendingRequests[id];
+      delete error[id];
       requestsMetadata[id] = { ...action.requestsMetadata };
       return {
         ...state,
-        error: null,
+        error,
         data,
         loaded: Object.keys(pendingRequests).length > 0 ? false : true,
         loading: Object.keys(pendingRequests).length > 0 ? true : false,
@@ -98,9 +100,10 @@ export default function pages(state = initialState, action = {}) {
       };
     case `${GET_DISCODATA_RESOURCE}_FAIL`:
       delete pendingRequests[id];
+      error[id] = action.error;
       return {
         ...state,
-        error: action.error,
+        error,
         data: {},
         loaded: false,
         loading: false,
