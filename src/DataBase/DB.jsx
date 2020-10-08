@@ -37,13 +37,12 @@ class Table {
             const baseSql = `(${where.discodataKey
               .split('.')
               .map((item) => '[' + item + ']')
-              .join('.')} LIKE '%:option%')`;
+              .join('.')} LIKE '${where.isExact ? '' : '%'}:option${
+              where.isExact ? '' : '%'
+            }')`;
             return `(${where.value
               .map((option) => baseSql.replace(':option', option))
               .join(' OR ')})`;
-            // return `[${where.discodataKey}] IN (${where.value.map((v) => {
-            //   return "'" + v + "'";
-            // })})`;
           } else {
             whereString = `${where.discodataKey
               .split('.')
