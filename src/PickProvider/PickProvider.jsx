@@ -28,7 +28,11 @@ class PickProvider extends Component {
   componentDidUpdate(prevProps) {
     const { value } = this.props;
 
-    if (value && getUrl(value) !== getUrl(prevProps.value)) {
+    if (
+      (value && getUrl(value) !== getUrl(prevProps.value)) ||
+      this.props.providerData?.length === 0
+    ) {
+      console.log('get data from pickprovider', value);
       this.props.getDataFromProvider(value);
     }
 
@@ -45,11 +49,6 @@ class PickProvider extends Component {
     // This is a hack to pass loaded providerData. It should not be needed
     // this.props.onChange('providerData', this.props.providerData);
   }
-
-  refresh = () => {
-    const { value } = this.props;
-    value && value.length && this.props.getDataFromProvider(value);
-  };
 
   render() {
     let { value, onChange } = this.props;
@@ -73,18 +72,6 @@ class PickProvider extends Component {
     );
   }
 }
-//
-// return (
-//   <PickObject
-//     id={this.props.id || 'provider'}
-//     title={this.props.title || 'Provider'}
-//     value={this.props.value}
-//     onChange={(v1, v2) => {
-//       // console.log('v1,v2', v1, v2);
-//       this.props.onChange(v1, v2);
-//     }}
-//   />
-// );
 
 function getProviderData(state, props) {
   let path = props?.value || null;
