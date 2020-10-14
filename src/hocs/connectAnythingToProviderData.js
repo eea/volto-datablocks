@@ -3,6 +3,11 @@ import { getDataFromProvider } from 'volto-datablocks/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { flattenToAppURL } from '@plone/volto/helpers';
 
+/**
+ * connectAnythingToProviderData.
+ *
+ * @param {} getProviderUrl
+ */
 export function connectAnythingToProviderData(getProviderUrl) {
   return (WrappedComponent) => {
     return (props) => {
@@ -10,8 +15,6 @@ export function connectAnythingToProviderData(getProviderUrl) {
 
       const base = getProviderUrl(props);
       const provider_url = base ? flattenToAppURL(base) : base;
-
-      // console.log('provider_url', provider_url, props);
 
       const isPending = useSelector((state) => {
         if (provider_url === null) return false;
@@ -32,6 +35,7 @@ export function connectAnythingToProviderData(getProviderUrl) {
 
       React.useEffect(() => {
         if (provider_url && !provider_data && !isPending) {
+          console.log('getDataFromProvider, connectAnythingToProviderData');
           dispatch(getDataFromProvider(provider_url));
         }
       });

@@ -54,7 +54,8 @@ const getValue = (
     return 'No context parameters';
   }
   const filter = filters[filterIndex];
-  const { i: index, v: values } = filter; // o: op,
+  let { i: index, v: values } = filter; // o: op,
+  index = index.replace('taxonomy_', '');
 
   if (!index) return 'Set "key" parameter';
   if (!values || values.length === 0) return 'Set "for" parameter';
