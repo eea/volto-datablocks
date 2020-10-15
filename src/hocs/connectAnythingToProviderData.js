@@ -35,7 +35,7 @@ export function connectAnythingToProviderData(getProviderUrl) {
 
       React.useEffect(() => {
         if (provider_url && !provider_data && !isPending) {
-          console.log('getDataFromProvider, connectAnythingToProviderData');
+          // console.log('getDataFromProvider, connectAnythingToProviderData');
           dispatch(getDataFromProvider(provider_url));
         }
       });

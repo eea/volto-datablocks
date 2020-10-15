@@ -33,7 +33,7 @@ export function connectBlockToProviderData(WrappedComponent) {
 
     React.useEffect(() => {
       if (provider_url && !provider_data && !isPending) {
-        console.log('getDataFromProvider, connectBlockToProviderData');
+        // console.log('getDataFromProvider, connectBlockToProviderData');
 
         dispatch(getDataFromProvider(provider_url));
       }
