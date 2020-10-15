@@ -53,7 +53,17 @@ const getValue = (
     );
     return 'No context parameters';
   }
-  const filter = filters[filterIndex];
+  const filter =
+    filters.find((f) => {
+      let { i: index } = f;
+      index = index.toLowerCase().replace('taxonomy_', '');
+      return Object.keys(data)
+        .map((k) => k.toLowerCase())
+        .includes(index);
+    }) || {}; // [filterIndex];
+
+  debugger;
+
   let { i: index, v: values } = filter; // o: op,
   index = index.replace('taxonomy_', '');
 
