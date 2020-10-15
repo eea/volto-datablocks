@@ -60,12 +60,10 @@ const getValue = (
       return Object.keys(data)
         .map((k) => k.toLowerCase())
         .includes(index);
-    }) || {}; // [filterIndex];
-
-  debugger;
+    }) || {};
 
   let { i: index, v: values } = filter; // o: op,
-  index = index.replace('taxonomy_', '');
+  index = index ? index.replace('taxonomy_', '') : null;
 
   if (!index) return 'Set "key" parameter';
   if (!values || values.length === 0) return 'Set "for" parameter';
