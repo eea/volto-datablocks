@@ -31,11 +31,11 @@ class DataButton extends Component {
     };
   }
 
-  onMouseDown = event => {
+  onMouseDown = (event) => {
     event.preventDefault();
   };
 
-  onButtonClick = e => {
+  onButtonClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -48,7 +48,7 @@ class DataButton extends Component {
     setEditorState(newState);
   };
 
-  onRemoveBlockAtSelection = e => {
+  onRemoveBlockAtSelection = (e) => {
     // TODO: this needs to be implemented!
     // console.log('remove block');
 
