@@ -6,9 +6,7 @@ import {
 } from '../constants';
 
 const initialState = {
-  search: {
-    siteInspireId: 'IT.CAED/640462001.SITE',
-  },
+  search: {},
   deletedQueryParams: {},
   counter: 0,
   lastAction: '',
@@ -71,7 +69,7 @@ export default function pages(state = initialState, action = {}) {
         search: {},
         deletedQueryParams: {},
         counter: 0,
-        lastAction: 'RSET',
+        lastAction: 'RESET',
       };
     case `${TRIGGER_RENDER}`:
       return {

@@ -46,6 +46,7 @@ const getValue = (
   // filter and only one filter is taken into consideration
   if (!data || (data && !Object.keys(data).length)) return 'No data provider';
   if (!hasQueryParammeters) return data[column]?.[0];
+
   if (!filters || !filters?.[filterIndex]) {
     console.log(
       filters,
@@ -53,12 +54,21 @@ const getValue = (
     );
     return 'No context parameters';
   }
-  const filter = filters[filterIndex];
-  const { i: index, v: values } = filter; // o: op,
+  const filter =
+    filters.find((f) => {
+      let { i: index } = f;
+      index = index.toLowerCase().replace('taxonomy_', '');
+      return Object.keys(data)
+        .map((k) => k.toLowerCase())
+        .includes(index);
+    }) || {};
 
-  if (!index) return 'Set "key" parameter';
-  if (!values || values.length === 0) return 'Set "for" parameter';
-  if (!column) return 'Set data type';
+  let { i: index, v: values } = filter; // o: op,
+  index = index ? index.replace('taxonomy_', '') : null;
+
+  if (!index) return ' '; // Set "key" parameter
+  if (!values || values.length === 0) return ' '; // Set "for" parameter
+  if (!column) return ' '; // Set data type
   // asuming that op is "plone.app.querystring.operation.selection.any"
   const value = values?.[0];
 
@@ -75,7 +85,8 @@ const getValue = (
   if (pos === -1) {
     return `No value found in data provider for "${value}" in column "${index}"`;
   }
-  return (data[column] && data[column][pos]) || placeholder;
+  const res = (data[column] && data[column][pos]) || placeholder;
+  return res;
 };
 
 const DataEntity = (props) => {

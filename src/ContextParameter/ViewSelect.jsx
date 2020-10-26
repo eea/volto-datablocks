@@ -2,7 +2,7 @@
 // needs to be adjusted
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Select from 'react-select';
+import loadable from '@loadable/component';
 import { getQuerystring } from '@plone/volto/actions';
 import {
   Option,
@@ -12,6 +12,8 @@ import {
 } from '@plone/volto/components/manage/Widgets/SelectStyling';
 import { setConnectedDataParameters } from '../actions';
 import { find } from 'lodash';
+
+const Select = loadable(() => import('react-select'));
 
 function indexValuesToChoices(values) {
   // values is an object such as

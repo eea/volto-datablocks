@@ -2,6 +2,11 @@ import React from 'react';
 import { getDataFromProvider } from 'volto-datablocks/actions';
 import { useDispatch, useSelector } from 'react-redux';
 
+/**
+ * connectBlockToProviderData.
+ *
+ * @param {} WrappedComponent
+ */
 export function connectBlockToProviderData(WrappedComponent) {
   return (props) => {
     const dispatch = useDispatch();
@@ -28,6 +33,8 @@ export function connectBlockToProviderData(WrappedComponent) {
 
     React.useEffect(() => {
       if (provider_url && !provider_data && !isPending) {
+        // console.log('getDataFromProvider, connectBlockToProviderData');
+
         dispatch(getDataFromProvider(provider_url));
       }
     });

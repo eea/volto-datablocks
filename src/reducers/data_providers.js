@@ -18,6 +18,7 @@ const initialState = {
 
 export default function data_providers(state = initialState, action = {}) {
   const pendingConnectors = { ...state.pendingConnectors };
+
   switch (action.type) {
     case `${GET_DATA_FROM_PROVIDER}_PENDING`:
       pendingConnectors[action.path] = true;
@@ -29,6 +30,7 @@ export default function data_providers(state = initialState, action = {}) {
         requested: [...without(state.requested, action.path), action.path],
         pendingConnectors,
       };
+
     case `${GET_DATA_FROM_PROVIDER}_SUCCESS`:
       const isExpand =
         (action.result['@components'] &&
@@ -57,6 +59,7 @@ export default function data_providers(state = initialState, action = {}) {
         requested: [...without(state.requested, action.path)],
         pendingConnectors,
       };
+
     case `${GET_DATA_FROM_PROVIDER}_FAIL`:
       delete pendingConnectors[action.path];
       return {
@@ -69,6 +72,7 @@ export default function data_providers(state = initialState, action = {}) {
         requested: [...without(state.requested, action.path)],
         pendingConnectors,
       };
+
     default:
       return state;
   }
