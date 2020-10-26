@@ -139,7 +139,7 @@ const schema = {
   },
 };
 
-const Edit = React.forwardRef(props => {
+const Edit = React.forwardRef((props, ref) => {
   useEffect(() => {
     if (schema.metadata?.fieldSetSchema?.properties?.hiddenRowType) {
       schema.metadata.fieldSetSchema.properties.hiddenRowType.choices = props
@@ -151,11 +151,12 @@ const Edit = React.forwardRef(props => {
   }, [props.data?.hiddenRowTypes?.value]);
 
   if (__SERVER__) {
-    return <div />;
+    return <div ref={ref} />;
   }
 
   return (
     <DiscodataSqlBuilderEdit
+      ref={ref}
       {...props}
       optionalSchema={schema}
       title="Discodata components block"

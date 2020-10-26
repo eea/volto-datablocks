@@ -269,6 +269,7 @@ const Edit = (props) => {
     // <div>
     <>
       <RenderFields
+        ref={props.ref}
         schema={state.schema}
         {...props}
         title={props.title || 'Discodata sql builder'}
