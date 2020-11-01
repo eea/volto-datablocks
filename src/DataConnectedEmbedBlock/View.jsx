@@ -9,7 +9,7 @@ import cx from 'classnames';
 import { connect } from 'react-redux';
 import { getConnectedDataParametersForContext } from 'volto-datablocks/helpers';
 import VisibilitySensor from 'react-visibility-sensor';
-import PrivacyProtection from 'volto-embed/PrivacyProtection';
+import PrivacyProtection from 'volto-embed/PrivacyProtection/PrivacyProtection';
 
 const messages = defineMessages({
   EmbededGoogleMaps: {
@@ -27,13 +27,13 @@ const messages = defineMessages({
 const ViewEmbedBlock = props => {
   const [visible, setVisibility] = useState(false);
   const { data, intl } = props;
-  console.log('data in embed', props)
+  console.log('data in embed', props);
   // console.log('DataConnectedEmbed props in view', this.props);
   const param = props.connected_data_parameters
     ? props.connected_data_parameters[0].v[0]
     : null;
 
-    console.log('param in view', param)
+  console.log('param in view', param);
   // TODO: automatically discover parameters
   const url =
     param && data.baseUrl

@@ -15,6 +15,7 @@ import clearSVG from '@plone/volto/icons/clear.svg';
 import aheadSVG from '@plone/volto/icons/ahead.svg';
 import mapsBlockSVG from '@plone/volto/components/manage/Blocks/Maps/block-maps.svg';
 import schema from './schema';
+import { addPrivacyProtectionToSchema } from 'volto-embed/PrivacyProtection';
 
 const messages = defineMessages({
   MapsBlockInputPlaceholder: {
@@ -210,14 +211,14 @@ class Edit extends Component {
                   value={this.state.url}
                   // Prevents propagation to the Dropzone and the opening
                   // of the upload browser dialog
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={e => e.stopPropagation()}
                 />
                 {this.state.url && (
                   <Button.Group>
                     <Button
                       basic
                       className="cancel"
-                      onClick={(e) => {
+                      onClick={e => {
                         e.stopPropagation();
                         this.setState({ url: '' });
                       }}
@@ -230,7 +231,7 @@ class Edit extends Component {
                   <Button
                     basic
                     primary
-                    onClick={(e) => {
+                    onClick={e => {
                       e.stopPropagation();
                       this.onSubmitUrl();
                     }}
@@ -258,7 +259,7 @@ class Edit extends Component {
         )}
         <SidebarPortal selected={this.props.selected}>
           <InlineForm
-            schema={schema}
+            schema={addPrivacyProtectionToSchema(schema)}
             title={schema.title}
             onChangeField={(id, value) => {
               this.props.onChangeBlock(this.props.block, {

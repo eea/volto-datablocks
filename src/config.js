@@ -30,7 +30,7 @@ import addonRoutes from './routes';
 
 function addCustomGroup(config, group) {
   const hasCustomGroup = config.blocks.groupBlocksOrder.filter(
-    (el) => el.id === group.id,
+    el => el.id === group.id,
   );
   if (hasCustomGroup.length === 0) {
     config.blocks.groupBlocksOrder.push(group);
@@ -39,6 +39,7 @@ function addCustomGroup(config, group) {
 
 export function applyConfig(config) {
   addCustomGroup(config, { id: 'custom_addons', title: 'Custom addons' });
+  addCustomGroup(config, { id: 'data_blocks', title: 'Data blocks' });
 
   config.views.contentTypesViews.discodataconnector = DataConnectorView;
 
@@ -48,6 +49,33 @@ export function applyConfig(config) {
   config.addonReducers = {
     ...config.addonReducers,
     ...addonReducers,
+  };
+
+  config.blocks.blocksConfig.data_connected_block = {
+    id: 'data_connected_block',
+    title: 'Simple Data Connected Block',
+    view: DataBlockView,
+    edit: DataBlockEdit,
+    icon: chartIcon,
+    group: 'data_blocks',
+  };
+
+  config.blocks.blocksConfig.auto_select_parameter = {
+    id: 'auto_select_parameter',
+    title: 'Auto select parameter',
+    view: ViewSelect,
+    edit: AutoSelectFromContext,
+    icon: chartIcon,
+    group: 'data_blocks',
+  };
+
+  config.blocks.blocksConfig.data_connected_embed = {
+    id: 'data_connected_embed',
+    title: 'Data connected embed',
+    view: DataConnectedEmbedView,
+    edit: DataConnectedEmbedEdit,
+    icon: chartIcon,
+    group: 'custom_addons',
   };
 
   config.settings.nonContentRoutes.push('/data-providers-view');
@@ -107,7 +135,7 @@ export function installDiscodataBlocks(config) {
   return config;
 }
 
-export const installDemoBlocks = (config) => {
+export const installDemoBlocks = config => {
   addCustomGroup(config, { id: 'data_blocks', title: 'Data blocks' });
   config.blocks.blocksConfig.data_connected_block = {
     id: 'data_connected_block',
