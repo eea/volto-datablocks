@@ -14,7 +14,7 @@ import '../css/styles.css';
 
 const EMPTY = '^';
 
-const usePrevious = (value) => {
+const usePrevious = value => {
   const ref = useRef();
   useEffect(() => {
     ref.current = value;
@@ -55,11 +55,11 @@ const getValue = (
     return 'No context parameters';
   }
   const filter =
-    filters.find((f) => {
+    filters?.find(f => {
       let { i: index } = f;
       index = index.toLowerCase().replace('taxonomy_', '');
       return Object.keys(data)
-        .map((k) => k.toLowerCase())
+        .map(k => k.toLowerCase())
         .includes(index);
     }) || {};
 
@@ -74,7 +74,7 @@ const getValue = (
 
   // compatibility with collective.taxonomy, which lower-cases index names
   const real_index =
-    Object.keys(data).find((n) => n.toLowerCase() === index) || index;
+    Object.keys(data)?.find(n => n.toLowerCase() === index) || index;
 
   if (!data[real_index]) {
     console.log('NOT_AN_INDEX_IN_DATA:', index, data);
@@ -89,7 +89,7 @@ const getValue = (
   return res;
 };
 
-const DataEntity = (props) => {
+const DataEntity = props => {
   const {
     column,
     connected_data_parameters,
