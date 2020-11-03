@@ -78,6 +78,15 @@ export function applyConfig(config) {
     group: 'custom_addons',
   };
 
+  config.blocks.blocksConfig.discodata_connector_block = {
+    id: 'discodata_connector_block',
+    title: 'Discodata connector block',
+    view: DiscodataConnectorBlockView,
+    edit: DiscodataConnectorBlockEdit,
+    icon: chartIcon,
+    group: 'data_blocks',
+  };
+
   config.settings.nonContentRoutes.push('/data-providers-view');
   config.addonRoutes = [...(config.addonRoutes || []), ...addonRoutes];
 
@@ -96,14 +105,6 @@ export function installDiscodataBlocks(config) {
   // Requires a customization of ModalForm. SchemaWidget and SchemaWidgetFieldset.
   // Refactor WIP
   addCustomGroup(config, { id: 'data_blocks', title: 'Data blocks' });
-  config.blocks.blocksConfig.discodata_connector_block = {
-    id: 'discodata_connector_block',
-    title: 'Discodata connector block',
-    view: DiscodataConnectorBlockView,
-    edit: DiscodataConnectorBlockEdit,
-    icon: chartIcon,
-    group: 'data_blocks',
-  };
 
   config.blocks.blocksConfig.discodata_sql_builder = {
     id: 'discodata_sql_builder',
@@ -121,15 +122,6 @@ export function installDiscodataBlocks(config) {
     edit: DiscodataTableBlockEdit,
     icon: chartIcon,
     group: 'data_blocks',
-  };
-
-  config.blocks.blocksConfig.data_connected_embed = {
-    id: 'data_connected_embed',
-    title: 'Data connected embed',
-    view: DataConnectedEmbedView,
-    edit: DataConnectedEmbedEdit,
-    icon: chartIcon,
-    group: 'custom_addons',
   };
 
   return config;
