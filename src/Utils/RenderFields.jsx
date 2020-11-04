@@ -16,7 +16,7 @@ import { getDataFromProvider } from '../actions';
 const makeChoices = (keys) => keys.map((k) => [k, k]);
 
 const RenderFields = (props) => {
-  const { schema, title, withFormManager, noValueKey } = props;
+  const { schema, title, withFormManager, noValueKey, ref } = props;
   const onChangeBlock = (data) => {
     props.onChangeBlock(props.block, data);
   };
@@ -84,7 +84,7 @@ const RenderFields = (props) => {
     return finalValue;
   };
   const fieldsView = (
-    <Segment.Group>
+    <Segment.Group ref={ref}>
       <header className="header pulled">
         <h2>{title}</h2>
       </header>
