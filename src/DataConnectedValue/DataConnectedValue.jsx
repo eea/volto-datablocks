@@ -14,6 +14,10 @@ import '../css/styles.css';
 
 const EMPTY = '^';
 
+function isObject(item) {
+  return typeof item === 'object' && !Array.isArray(item) && item !== null;
+}
+
 const usePrevious = value => {
   const ref = useRef();
   useEffect(() => {
@@ -54,6 +58,14 @@ const getValue = (
     );
     return 'No context parameters';
   }
+  if (
+    !Array.isArray(filters) &&
+    isObject(filters) &&
+    Object.keys(filters).length
+  ) {
+    filters = Object.keys(filters).map(filter => filters[filter]);
+  }
+
   const filter =
     filters?.find(f => {
       let { i: index } = f;
