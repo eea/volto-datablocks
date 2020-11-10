@@ -243,7 +243,8 @@ const Edit = props => {
       schema: getSchema(props),
     });
     /* eslint-disable-next-line */
-  }, [props.data_providers, props.data.data_providers])
+  }, [props.data_providers, props.data.data_providers]);
+  console.log('state schema', state.schema);
   return (
     <div>
       <RenderFields

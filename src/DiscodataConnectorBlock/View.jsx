@@ -52,7 +52,7 @@ const providerView = (dataProviderKey, dataProvider, defaultDataParameters) => {
             placeholder="_"
           />
         )}
-        {' ' + (dataProvider.measurmentUnit || '')}
+        {dataProvider.measurmentUnit || ''}
       </span>
       {' ' + (dataProvider.additionalText || '')}
     </div>
@@ -113,7 +113,7 @@ const View = props => {
         },
       );
     /* eslint-disable-next-line */
-  }, [props.data?.data_providers])
+  }, [props.data?.data_providers]);
   const parentsDataProviders = {};
   dataProviders &&
     Object.entries(dataProviders).forEach(([dataProviderKey, dataProvider]) => {

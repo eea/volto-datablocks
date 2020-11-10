@@ -10,7 +10,6 @@
   /* background-color: white; */
 }
 
-
 bla {
   -webkit-user-select: none; /* Safari */
   -moz-user-select: none; /* Firefox */
@@ -22,4 +21,8 @@ bla {
   background-color: lightblue;
   /* width: 200px; */
   /* height: 20px; */
+}
+
+.block-container .data-content span {
+  white-space: break-spaces;
 }
