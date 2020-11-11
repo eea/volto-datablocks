@@ -58,22 +58,27 @@ const getValue = (
     );
     return 'No context parameters';
   }
+
+  let filter =
+    (filters?.find &&
+      filters?.find(f => {
+        let { i: index } = f;
+        index = index.toLowerCase().replace('taxonomy_', '');
+        return Object.keys(data)
+          .map(k => k.toLowerCase())
+          .includes(index);
+      })) ||
+    {};
+
   if (
     !Array.isArray(filters) &&
     isObject(filters) &&
     Object.keys(filters).length
   ) {
-    filters = Object.keys(filters).map(filter => filters[filter]);
+    filter = filters[filterIndex];
   }
 
-  const filter =
-    filters?.find(f => {
-      let { i: index } = f;
-      index = index.toLowerCase().replace('taxonomy_', '');
-      return Object.keys(data)
-        .map(k => k.toLowerCase())
-        .includes(index);
-    }) || {};
+  console.log('filterstuff', filter, filters, filterIndex);
 
   let { i: index, v: values } = filter; // o: op,
   index = index ? index.replace('taxonomy_', '') : null;
