@@ -348,7 +348,6 @@ const RenderFields = props => {
                       onChangeAction({
                         ...data,
                         ...newData,
-                        ...newData,
                       });
                     } catch {}
                   }}

@@ -46,6 +46,7 @@ export default function pages(state = initialState, action = {}) {
           );
         });
       const resourceKey = action.resourceKey;
+
       if (resourceKey && !data[resourceKey]) data[resourceKey] = {};
       if (!action.isCollection) {
         const groupBy = action.groupBy || [];
@@ -57,16 +58,10 @@ export default function pages(state = initialState, action = {}) {
         }
         groupBy?.length > 0 &&
           groupBy.forEach((group) => {
-            if (
-              group?.key &&
-              data[resourceKey][entity] &&
-              !data[resourceKey][entity][group.key]
-            ) {
+            if (group && group.key && group.discodataKey) {
               data[resourceKey][entity][group.key] = {};
-            }
-            results &&
-              results.forEach((item, index) => {
-                if (group && group.key && group.discodataKey) {
+              results &&
+                results.forEach((item, index) => {
                   if (
                     index === 0 ||
                     !data[resourceKey][entity][group.key][
@@ -80,8 +75,8 @@ export default function pages(state = initialState, action = {}) {
                   data[resourceKey][entity][group.key][
                     item[group.discodataKey]
                   ].push(item);
-                }
-              });
+                });
+            }
           });
       } else {
         data[resourceKey] = results;

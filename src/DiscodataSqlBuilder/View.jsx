@@ -57,6 +57,7 @@ const ViewWrapper = (props) => {
                 : globalQuery[where[key].queryParam],
               regex: where[key].regex || null,
               isExact: where[key].isExact || false,
+              collation: where[key].collation || '_',
             };
           });
         const url = DB.table(

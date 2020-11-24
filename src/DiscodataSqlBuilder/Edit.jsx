@@ -147,6 +147,7 @@ const getSchema = (props) => {
               'key',
               'queryParam',
               'regex',
+              'collation',
             ],
           },
         ],
@@ -197,6 +198,15 @@ const getSchema = (props) => {
               ['%:value%', '%Value%'],
               [':value%', 'Value%'],
               ['%:value', '%Value'],
+            ],
+          },
+          collation: {
+            title: 'Collaltion',
+            type: 'array',
+            choices: [
+              ['_', 'No value'],
+              ['latin_ci_ai', 'Latin_CI_AI'],
+              ['latin_ci_as', 'Latin_CI_AS'],
             ],
           },
         },

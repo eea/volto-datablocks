@@ -1,3 +1,9 @@
+const collation = {
+  _: ' ',
+  latin_ci_ai: ' COLLATE Latin1_General_CI_AI ',
+  latin_ci_as: ' COLLATE Latin1_General_CI_AS ',
+};
+
 class DB {
   static table(query, path = '', pagination = {}) {
     return new Table(query, path, pagination);
@@ -37,9 +43,9 @@ class Table {
             const baseSql = `(${where.discodataKey
               .split('.')
               .map((item) => '[' + item + ']')
-              .join('.')} LIKE '${where.isExact ? '' : '%'}:option${
+              .join('.')}${collation[where.collation || '_']}LIKE '${
               where.isExact ? '' : '%'
-            }')`;
+            }:option${where.isExact ? '' : '%'}')`;
             return `(${where.value
               .map((option) => baseSql.replace(':option', option))
               .join(' OR ')})`;
@@ -47,7 +53,7 @@ class Table {
             whereString = `${where.discodataKey
               .split('.')
               .map((item) => '[' + item + ']')
-              .join('.')} LIKE '${
+              .join('.')}${collation[where.collation || '_']}LIKE '${
               where.regex && typeof where.regex === 'string'
                 ? where.regex.replace(':value', where.value)
                 : where.value
