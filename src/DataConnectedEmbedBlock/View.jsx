@@ -33,48 +33,38 @@ const ViewEmbedBlock = props => {
     ? props.connected_data_parameters[0].v[0]
     : null;
 
-  console.log('param in view', param);
   // TODO: automatically discover parameters
   const url =
     param && data.baseUrl
-      ? data.baseUrl.replace('<<NUTS_CODE>>', param)
+      ? decodeURIComponent(data.baseUrl).replace('<<NUTS_CODE>>', param)
       : data.baseUrl;
-  return param && url ? (
+
+  console.log('param in view', param, url);
+  return url ? (
     <PrivacyProtection data={data}>
-      <VisibilitySensor
-        partialVisibility={true}
-        onChange={isVisible => {
-          !visible && isVisible && setVisibility(true);
-        }}
+      <p
+        className={cx(
+          'block maps align',
+          {
+            center: !Boolean(data.align),
+          },
+          data.align,
+        )}
       >
-        <p
-          className={cx(
-            'block maps align',
-            {
-              center: !Boolean(data.align),
-            },
-            data.align,
-          )}
+        <div
+          className={cx('video-inner', {
+            'full-width': data.align === 'full',
+          })}
         >
-          <div
-            className={cx('video-inner', {
-              'full-width': data.align === 'full',
-            })}
-          >
-            {visible ? (
-              <iframe
-                title={intl.formatMessage(messages.EmbededGoogleMaps)}
-                src={url}
-                className="google-map"
-                frameBorder="0"
-                allowFullScreen
-              />
-            ) : (
-              ''
-            )}
-          </div>
-        </p>
-      </VisibilitySensor>
+          <iframe
+            title={intl.formatMessage(messages.EmbededGoogleMaps)}
+            src={url}
+            className="google-map"
+            frameBorder="0"
+            allowFullScreen
+          />
+        </div>
+      </p>
     </PrivacyProtection>
   ) : (
     ''
