@@ -183,16 +183,16 @@ class DataProviderWidget extends Component {
           onChange={({ target }) =>
             onChange(id, target.value === '' ? undefined : target.value)
           }
-          ref={(node) => {
+          ref={node => {
             this.node = node;
           }}
         />
         <button
           className="data-provider-widget-button"
-          onClick={(event) => {
+          onClick={event => {
             this.props.openObjectBrowser({
               mode: 'link',
-              onSelectItem: (path) => {
+              onSelectItem: path => {
                 onChange(id, path === '' ? undefined : path);
                 if (
                   !this.props.data_providers.pendingConnectors[path] &&

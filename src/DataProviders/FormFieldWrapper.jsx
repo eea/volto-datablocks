@@ -70,7 +70,7 @@ class FormFieldWrapper extends Component {
       <>
         {this.props.children}
 
-        {map(error, (message) => (
+        {map(error, message => (
           <Label key={message} basic color="red" pointing>
             {message}
           </Label>

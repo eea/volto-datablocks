@@ -3,12 +3,11 @@
  * @module components/manage/Blocks/Maps/View
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { defineMessages, injectIntl } from 'react-intl';
 import cx from 'classnames';
 import { connect } from 'react-redux';
 import { getConnectedDataParametersForContext } from 'volto-datablocks/helpers';
-import VisibilitySensor from 'react-visibility-sensor';
 import PrivacyProtection from 'volto-embed/PrivacyProtection/PrivacyProtection';
 
 const messages = defineMessages({
@@ -24,10 +23,9 @@ const messages = defineMessages({
  * @extends Component
  */
 
-const ViewEmbedBlock = (props) => {
-  const [visible, setVisibility] = useState(false);
+const ViewEmbedBlock = props => {
   const { data, intl } = props;
-  console.log('data in embed', props);
+  // console.log('data in embed', props);
   // console.log('DataConnectedEmbed props in view', this.props);
   const param = props.connected_data_parameters
     ? props.connected_data_parameters[0].v[0]
@@ -39,7 +37,7 @@ const ViewEmbedBlock = (props) => {
       ? decodeURIComponent(data.baseUrl).replace('<<NUTS_CODE>>', param)
       : data.baseUrl;
 
-  console.log('param in view', param, url);
+  // console.log('param in view', param, url);
   return url ? (
     <PrivacyProtection data={data}>
       <p
@@ -71,11 +69,14 @@ const ViewEmbedBlock = (props) => {
   );
 };
 
-export default connect((state, props) => {
-  return {
-    connected_data_parameters: getConnectedDataParametersForContext(
-      state?.connected_data_parameters,
-      state.router?.location?.pathname,
-    ),
-  };
-}, {})(injectIntl(ViewEmbedBlock));
+export default connect(
+  (state, props) => {
+    return {
+      connected_data_parameters: getConnectedDataParametersForContext(
+        state?.connected_data_parameters,
+        state.router?.location?.pathname,
+      ),
+    };
+  },
+  {},
+)(injectIntl(ViewEmbedBlock));

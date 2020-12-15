@@ -5,7 +5,7 @@ import { DATACONNECTOR_PARAMS_GROUP } from '../constants';
 
 function filterIndexes(indexes) {
   const res = {};
-  Object.keys(indexes).forEach((k) => {
+  Object.keys(indexes).forEach(k => {
     if (indexes[k].group === DATACONNECTOR_PARAMS_GROUP) res[k] = indexes[k];
   });
 
@@ -14,7 +14,7 @@ function filterIndexes(indexes) {
 }
 
 export default connect(
-  (state) => ({
+  state => ({
     indexes: filterIndexes(state.querystring.indexes),
   }),
   { getQuerystring },

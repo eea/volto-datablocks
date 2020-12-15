@@ -8,7 +8,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Segment } from 'semantic-ui-react';
 import withObjectBrowser from '@plone/volto/components/manage/Sidebar/ObjectBrowser';
-import { SidebarPortal, TextWidget } from '@plone/volto/components';
+import { SidebarPortal } from '@plone/volto/components';
 import { changeSidebarState } from 'volto-datablocks/actions';
 import MultiValuesEdit from './MultiValuesEdit';
 
@@ -18,7 +18,7 @@ class EditForm extends Component {
   }
 
   render() {
-    const { data, title, onChange, schema, block } = this.props;
+    const { data, title, schema, block } = this.props;
     if (this.props.selected) this.props.changeSidebarState(true);
     /*
      * data is like:
@@ -46,8 +46,11 @@ class EditForm extends Component {
 // TODO: use the redux store to cache the provider data, as it doesn't change
 // often
 
-const ConnectedEditForm = connect(null, {
-  changeSidebarState,
-})(EditForm);
+const ConnectedEditForm = connect(
+  null,
+  {
+    changeSidebarState,
+  },
+)(EditForm);
 
 export default withObjectBrowser(ConnectedEditForm);

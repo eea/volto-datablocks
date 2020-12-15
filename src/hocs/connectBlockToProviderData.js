@@ -8,13 +8,13 @@ import { useDispatch, useSelector } from 'react-redux';
  * @param {} WrappedComponent
  */
 export function connectBlockToProviderData(WrappedComponent) {
-  return (props) => {
+  return props => {
     const dispatch = useDispatch();
 
     const { data = {} } = props;
     const { provider_url = null } = data;
 
-    const isPending = useSelector((state) => {
+    const isPending = useSelector(state => {
       if (provider_url === null) return false;
 
       const url = `${provider_url}`;
@@ -24,7 +24,7 @@ export function connectBlockToProviderData(WrappedComponent) {
       return rv;
     });
 
-    const provider_data = useSelector((state) => {
+    const provider_data = useSelector(state => {
       if (provider_url === null) return null;
 
       const url = `${provider_url}/@connector-data`;

@@ -21,22 +21,12 @@ import { getBaseUrl } from '@plone/volto/helpers';
  */
 
 class Edit extends Component {
-  constructor(props) {
-    super(props);
-    console.log('constructor props', props);
-
-    // this.state = {
-    //   sparql_object_url: props.data.sparql_object_url || '',
-    // };
-  }
-
   componentDidUpdate(prevProps) {
     if (
       prevProps.data.sparql_object_url !== this.props.data.sparql_object_url
     ) {
       const path = this.props.data.sparql_object_url;
       const url = `${getBaseUrl(path)}`;
-      console.log('new sparql', url);
       if (path) this.props.getSparqlData(url);
     }
   }
@@ -80,7 +70,6 @@ class Edit extends Component {
                         })
                 }
                 onChange={(name, value) => {
-                  console.log('onchange', data);
                   this.props.onChangeBlock(this.props.block, {
                     ...data,
                     sparql_object_url: value,

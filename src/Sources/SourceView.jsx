@@ -67,13 +67,12 @@ const SourceView = ({
       {(providerUrl || connectorsDataProviders) &&
         (download_button === undefined || download_button === true) && (
           <VoltoIcon
-            size="22px"
             className="discreet download-button"
             title="Download data"
             onClick={() => {
               const connectorsData = {};
               connectorsDataProviders &&
-                Object.keys(connectorsDataProviders).forEach((key) => {
+                Object.keys(connectorsDataProviders).forEach(key => {
                   if (
                     connectorsDataProviders[key].path &&
                     data_providers?.data?.[
@@ -130,7 +129,7 @@ const SourceView = ({
               dlAnchorElem.click();
             }}
             name={downloadSVG}
-            size="20"
+            size="20px"
           />
         )}
 
@@ -151,7 +150,7 @@ const SourceView = ({
           {initialSource}
         </a>
         {multipleSources && multipleSources.length
-          ? multipleSources.map((item) =>
+          ? multipleSources.map(item =>
               item.chart_source_link ? (
                 <a
                   key={item.chart_source_link}

@@ -27,13 +27,13 @@ function valueIsNumber(value) {
 }
 
 export const valueFormatters = {
-  raw: (value) => value,
-  compactnumber: (value) => {
+  raw: value => value,
+  compactnumber: value => {
     return (
       (value && isNumber(value) && Humanize.compactInteger(value, 1)) || value
     );
   },
-  percentage: (value) => {
+  percentage: value => {
     return (
       (value &&
         valueIsNumber(value) &&
@@ -41,19 +41,19 @@ export const valueFormatters = {
       value
     );
   },
-  format_precise: (value) => {
+  format_precise: value => {
     return (
       (value && valueIsNumber(value) && `${Humanize.formatNumber(value, 2)}`) ||
       value
     );
   },
-  format_precise_one: (value) => {
+  format_precise_one: value => {
     return (
       (value && valueIsNumber(value) && `${Humanize.formatNumber(value, 1)}`) ||
       value
     );
   },
-  percentage_format_precise: (value) => {
+  percentage_format_precise: value => {
     return (
       (value &&
         valueIsNumber(value) &&
@@ -61,7 +61,7 @@ export const valueFormatters = {
       value
     );
   },
-  format_int: (value) => {
+  format_int: value => {
     return (
       (value && valueIsNumber(value) && `${Humanize.intComma(value)}`) || value
     );

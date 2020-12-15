@@ -40,7 +40,7 @@ export default function pages(state = initialState, action = {}) {
           const str = JSON.stringify(item);
           return (
             index ===
-            action.result.results.findIndex((duplicate) => {
+            action.result.results.findIndex(duplicate => {
               return JSON.stringify(duplicate) === str;
             })
           );
@@ -57,7 +57,7 @@ export default function pages(state = initialState, action = {}) {
           data[resourceKey][entity] = { ...(results?.[0] || {}), results };
         }
         groupBy?.length > 0 &&
-          groupBy.forEach((group) => {
+          groupBy.forEach(group => {
             if (group && group.key && group.discodataKey) {
               data[resourceKey][entity][group.key] = {};
               results &&

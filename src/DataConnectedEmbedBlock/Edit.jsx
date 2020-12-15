@@ -21,7 +21,6 @@ import imageFitSVG from '@plone/volto/icons/image-fit.svg';
 import imageFullSVG from '@plone/volto/icons/image-full.svg';
 import globeSVG from '@plone/volto/icons/globe.svg';
 
-import { SidebarPortal } from '@plone/volto/components';
 const messages = defineMessages({
   ImageBlockInputPlaceholder: {
     id: 'Enter Map URL',

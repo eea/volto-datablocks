@@ -39,7 +39,7 @@ export default function pages(state = initialState, action = {}) {
       };
     case DELETE_QUERY_PARAM:
       if (Array.isArray(action.queryParam)) {
-        action.queryParam.forEach((param) => {
+        action.queryParam.forEach(param => {
           delete search?.[param];
           deletedQueryParams[param] = true;
         });
@@ -56,7 +56,7 @@ export default function pages(state = initialState, action = {}) {
       };
     case RESET_QUERY_PARAM:
       if (Array.isArray(action.queryParam)) {
-        action.queryParam.forEach((param) => {
+        action.queryParam.forEach(param => {
           delete search?.[param];
           deletedQueryParams[param] = true;
         });

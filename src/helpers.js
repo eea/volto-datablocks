@@ -63,8 +63,8 @@ export function updateChartDataFromProvider(chartData, providerData) {
 
   const providerDataColumns = Object.keys(providerData);
 
-  const res = chartData.map((trace) => {
-    Object.keys(trace).forEach((tk) => {
+  const res = chartData.map(trace => {
+    Object.keys(trace).forEach(tk => {
       const originalColumn = tk.replace(/src$/, '');
       if (
         tk.endsWith('src') &&

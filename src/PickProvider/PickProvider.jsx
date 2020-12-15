@@ -32,7 +32,6 @@ class PickProvider extends Component {
       (value && getUrl(value) !== getUrl(prevProps.value)) ||
       this.props.providerData?.length === 0
     ) {
-      console.log('get data from pickprovider', value);
       this.props.getDataFromProvider(value);
     }
 

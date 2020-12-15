@@ -3,8 +3,8 @@
  * the example is incomplete and old, and not used.
  */
 import React, { Component } from 'react';
-import { Icon, SidebarPortal, TextWidget } from '@plone/volto/components';
-import { Button, Input, Message, Segment } from 'semantic-ui-react';
+import { SidebarPortal, TextWidget } from '@plone/volto/components';
+import { Segment } from 'semantic-ui-react';
 import navTreeSVG from '@plone/volto/icons/nav.svg';
 
 export default class BlockEdit extends Component {

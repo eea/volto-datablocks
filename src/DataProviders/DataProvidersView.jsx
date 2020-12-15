@@ -36,7 +36,7 @@ class DataProvidersView extends Component {
     // console.log('state', this.state.providers);
     return this.state.providers ? (
       <div>
-        {this.state.providers.map((el) => {
+        {this.state.providers.map(el => {
           return (
             <div key={el['@id']}>
               {el['@id']} {el.title}
@@ -51,7 +51,7 @@ class DataProvidersView extends Component {
 }
 
 export default connect(
-  (state) => ({
+  state => ({
     providers: state.search.items,
   }),
   { searchContent },

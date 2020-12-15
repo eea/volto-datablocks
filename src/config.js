@@ -30,7 +30,7 @@ import addonRoutes from './routes';
 
 function addCustomGroup(config, group) {
   const hasCustomGroup = config.blocks.groupBlocksOrder.filter(
-    (el) => el.id === group.id,
+    el => el.id === group.id,
   );
   if (hasCustomGroup.length === 0) {
     config.blocks.groupBlocksOrder.push(group);
@@ -127,7 +127,7 @@ export function installDiscodataBlocks(config) {
   return config;
 }
 
-export const installDemoBlocks = (config) => {
+export const installDemoBlocks = config => {
   addCustomGroup(config, { id: 'data_blocks', title: 'Data blocks' });
   config.blocks.blocksConfig.data_connected_block = {
     id: 'data_connected_block',

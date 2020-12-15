@@ -18,7 +18,7 @@ const Select = loadable(() => import('react-select'));
 function indexValuesToChoices(values) {
   // values is an object such as
   // values: { BG: { title: "BG"}}
-  return Object.keys(values).map((k) => [k, values[k].title]);
+  return Object.keys(values).map(k => [k, values[k].title]);
 }
 
 function adjustedParams(data_query, index, value) {
@@ -32,7 +32,7 @@ function adjustedParams(data_query, index, value) {
   //               ]
   //             }
   //     ],
-  return (data_query || []).map((iov) =>
+  return (data_query || []).map(iov =>
     iov.i !== index
       ? iov
       : {
@@ -85,7 +85,7 @@ class ViewSelect extends Component {
               className="react-select-container"
               classNamePrefix="react-select"
               options={[
-                ...choices.map((option) => ({
+                ...choices.map(option => ({
                   value: option[0],
                   label: option[1],
                 })),
@@ -99,7 +99,7 @@ class ViewSelect extends Component {
               components={{ DropdownIndicator, Option }}
               defaultValue={value}
               onChange={({ value }) => {
-                console.log('onchange', value);
+                // console.log('onchange', value);
                 this.props.setConnectedDataParameters(
                   providerUrl,
                   adjustedParams(data_query, i, value),
