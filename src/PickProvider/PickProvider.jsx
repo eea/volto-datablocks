@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { addAppURL } from '@plone/volto/helpers';
 import { connect } from 'react-redux';
-import { getDataFromProvider } from 'volto-datablocks/actions';
+import { getDataFromProvider } from '@eeacms/volto-datablocks/actions';
 import { ObjectBrowserWidget } from '@plone/volto/components';
 
 function getId(url) {

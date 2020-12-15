@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { SidebarPortal } from '@plone/volto/components';
 import { TextWidget } from '@plone/volto/components';
-import { getSparqlData } from 'volto-datablocks/actions';
+import { getSparqlData } from '@eeacms/volto-datablocks/actions';
 import { connect } from 'react-redux';
 import { getBaseUrl } from '@plone/volto/helpers';
 

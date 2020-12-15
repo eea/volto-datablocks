@@ -42,17 +42,17 @@ class Table {
           if (Array.isArray(where.value)) {
             const baseSql = `(${where.discodataKey
               .split('.')
-              .map(item => '[' + item + ']')
+              .map((item) => '[' + item + ']')
               .join('.')}${collation[where.collation || '_']}LIKE '${
               where.isExact ? '' : '%'
             }:option${where.isExact ? '' : '%'}')`;
             return `(${where.value
-              .map(option => baseSql.replace(':option', option))
+              .map((option) => baseSql.replace(':option', option))
               .join(' OR ')})`;
           } else {
             whereString = `${where.discodataKey
               .split('.')
-              .map(item => '[' + item + ']')
+              .map((item) => '[' + item + ']')
               .join('.')}${collation[where.collation || '_']}LIKE '${
               where.regex && typeof where.regex === 'string'
                 ? where.regex.replace(':value', where.value)
@@ -61,7 +61,7 @@ class Table {
           }
           return whereString;
         })
-        .filter(value => value)
+        .filter((value) => value)
         .join(' AND ');
       if (whereString.length) {
         queryString += ` WHERE ${whereString}${

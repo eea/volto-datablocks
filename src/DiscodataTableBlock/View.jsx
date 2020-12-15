@@ -7,8 +7,8 @@ import { Table, Pagination } from 'semantic-ui-react';
 import downSVG from '@plone/volto/icons/down-key.svg';
 import upSVG from '@plone/volto/icons/up-key.svg';
 import { Icon } from '@plone/volto/components';
-import DiscodataSqlBuilderView from 'volto-datablocks/DiscodataSqlBuilder/View';
-import { setQueryParam } from 'volto-datablocks/actions';
+import DiscodataSqlBuilderView from '@eeacms/volto-datablocks/DiscodataSqlBuilder/View';
+import { setQueryParam } from '@eeacms/volto-datablocks/actions';
 import { Dimmer, Loader } from 'semantic-ui-react';
 
 const components = {
@@ -99,7 +99,7 @@ const components = {
   },
 };
 
-const View = props => {
+const View = (props) => {
   const [state, setState] = useState({
     metadata: {},
     tableHeaders: 0,
@@ -122,9 +122,9 @@ const View = props => {
     props.data.itemsCountKey?.value)
   ) {
     const local_collection = Object.keys(sqls).filter(
-      key => !key.includes('collection_count'),
+      (key) => !key.includes('collection_count'),
     )[0];
-    const local_collection_count = Object.keys(sqls).filter(key =>
+    const local_collection_count = Object.keys(sqls).filter((key) =>
       key.includes('collection_count'),
     )[0];
     if (collection !== local_collection) {
@@ -177,7 +177,7 @@ const View = props => {
               <Table.Header>
                 <Table.Row>
                   {state.metadata?.fieldsets?.[0]?.fields?.map(
-                    meta =>
+                    (meta) =>
                       state.metadata.properties[meta].tableType ===
                         'Table header' && (
                         <Table.HeaderCell key={`header-${meta}`}>
@@ -272,8 +272,8 @@ const View = props => {
                         <div className="hidden-row-container">
                           <div className="table-flex-container white">
                             {props.data?.hiddenRowTypes?.value
-                              ?.filter(type => type !== 'Action')
-                              .map(type => (
+                              ?.filter((type) => type !== 'Action')
+                              .map((type) => (
                                 <div key={`hr-${trIndex}-${type}`}>
                                   {type !== 'Action' && (
                                     <span className="header">{type}</span>
@@ -286,7 +286,7 @@ const View = props => {
                                     }}
                                   >
                                     {state.metadata?.fieldsets?.[0]?.fields?.map(
-                                      meta => {
+                                      (meta) => {
                                         if (
                                           state.metadata.properties[meta]
                                             .tableType === 'Hidden row' &&
@@ -335,8 +335,8 @@ const View = props => {
                           </div>
                           <div className="table-flex-container action">
                             {props.data?.hiddenRowTypes?.value
-                              ?.filter(type => type === 'Action')
-                              .map(type => (
+                              ?.filter((type) => type === 'Action')
+                              .map((type) => (
                                 <div key={`hr-${trIndex}-${type}`}>
                                   <div
                                     className="flex column"
@@ -345,7 +345,7 @@ const View = props => {
                                     }}
                                   >
                                     {state.metadata?.fieldsets?.[0]?.fields?.map(
-                                      meta => {
+                                      (meta) => {
                                         if (
                                           state.metadata.properties[meta]
                                             .tableType === 'Hidden row' &&

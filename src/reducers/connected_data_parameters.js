@@ -7,7 +7,7 @@ import {
   SET_CONNECTED_DATA_PARAMETERS,
   DELETE_CONNECTED_DATA_PARAMETERS,
 } from '../constants';
-import { getBasePath } from 'volto-datablocks/helpers';
+import { getBasePath } from '@eeacms/volto-datablocks/helpers';
 
 const initialState = {
   byProviderPath: {},

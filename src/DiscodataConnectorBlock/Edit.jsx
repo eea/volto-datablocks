@@ -9,9 +9,9 @@ import {
 import RenderFields from '../Utils/RenderFields';
 import { dataFormatChoices } from '../format';
 
-const makeChoices = keys => keys && keys.map(k => [k, k]);
+const makeChoices = (keys) => keys && keys.map((k) => [k, k]);
 
-const dataParameters = props => {
+const dataParameters = (props) => {
   return (
     getConnectedDataParametersForProvider(
       props.connected_data_parameters,
@@ -24,7 +24,7 @@ const dataParameters = props => {
   );
 };
 
-const getSchema = props => {
+const getSchema = (props) => {
   const data_providers = props.data.data_providers?.value
     ? JSON.parse(props.data.data_providers?.value).properties
     : {};
@@ -83,13 +83,13 @@ const getSchema = props => {
           path: {
             type: 'dataProvider',
             title: 'Discodata connector',
-            disabled: formData => !formData.hasDiscodataConnector,
+            disabled: (formData) => !formData.hasDiscodataConnector,
           },
           displayColumn: {
             type: 'select',
             title: 'Display column',
-            disabled: formData => !formData.hasDiscodataConnector,
-            choices: formData =>
+            disabled: (formData) => !formData.hasDiscodataConnector,
+            choices: (formData) =>
               makeChoices(
                 Object.keys(
                   props.data_providers?.data?.[
@@ -101,8 +101,11 @@ const getSchema = props => {
           displayFormat: {
             type: 'select',
             title: 'Display format',
-            disabled: formData => !formData.hasDiscodataConnector,
-            choices: dataFormatChoices.map(option => [option.id, option.label]),
+            disabled: (formData) => !formData.hasDiscodataConnector,
+            choices: dataFormatChoices.map((option) => [
+              option.id,
+              option.label,
+            ]),
           },
           measurmentUnit: {
             type: 'text',
@@ -120,13 +123,16 @@ const getSchema = props => {
           className: {
             type: 'select',
             title: 'Class name',
-            choices: [['data', 'Data'], ['data-content', 'Data content']],
+            choices: [
+              ['data', 'Data'],
+              ['data-content', 'Data content'],
+            ],
           },
           parent: {
             type: 'select',
             title: 'Parent',
-            disabled: formData => !formData.hasParent,
-            choices: formData => {
+            disabled: (formData) => !formData.hasParent,
+            choices: (formData) => {
               const data_providers_filtered = { ...data_providers };
               data_providers_filtered[formData.id] &&
                 delete data_providers_filtered[formData.id];
@@ -136,7 +142,7 @@ const getSchema = props => {
           wrapperClassName: {
             type: 'select',
             title: 'Wrapper class name',
-            disabled: formData => !!formData?.hasParent,
+            disabled: (formData) => !!formData?.hasParent,
             choices: [
               ['data-wrapper brown', 'Brown wrapper'],
               ['data-wrapper green', 'Green wrapper'],
@@ -152,9 +158,9 @@ const getSchema = props => {
           queryParameterColumn: {
             type: 'select',
             title: 'Query parameter column',
-            disabled: formData => formData?.hasQueryParameters !== true,
+            disabled: (formData) => formData?.hasQueryParameters !== true,
             defaultValue: dataParameters(props)?.[0]?.i,
-            choices: formData => {
+            choices: (formData) => {
               return formData.path
                 ? [
                     [
@@ -180,7 +186,7 @@ const getSchema = props => {
           queryParameterValue: {
             type: 'array',
             title: 'Query parameter value',
-            disabled: formData => formData?.hasQueryParameters !== true,
+            disabled: (formData) => formData?.hasQueryParameters !== true,
             defaultValue: dataParameters(props)?.[0]?.v,
           },
         },
@@ -232,7 +238,7 @@ const getSchema = props => {
   };
 };
 
-const Edit = props => {
+const Edit = (props) => {
   const [state, setState] = useState({
     id: _uniqueId('block_'),
     schema: getSchema(props),

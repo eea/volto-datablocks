@@ -11,7 +11,7 @@ import { setConnectedDataParameters } from '../actions';
 
 import { getBasePath } from '../helpers';
 
-const dataParameters = props => {
+const dataParameters = (props) => {
   return (
     getConnectedDataParametersForProvider(
       props.connected_data_parameters,
@@ -60,7 +60,7 @@ const providerView = (dataProviderKey, dataProvider, defaultDataParameters) => {
   );
 };
 
-const bulletListView = items => (
+const bulletListView = (items) => (
   <div className="ui bulleted list">
     {items &&
       Object.entries(items).map(([key, item]) => (
@@ -72,9 +72,9 @@ const bulletListView = items => (
   </div>
 );
 
-const View = props => {
+const View = (props) => {
   const [state, setState] = useState({
-    onChange: newState => {
+    onChange: (newState) => {
       setState({ ...state, ...newState });
     },
   });
@@ -83,7 +83,7 @@ const View = props => {
     JSON.parse(props.data?.data_providers?.value);
   const dataProviders = {};
   dataProvidersSchema?.fieldsets?.[0]?.fields &&
-    dataProvidersSchema.fieldsets[0].fields.forEach(dataProvider => {
+    dataProvidersSchema.fieldsets[0].fields.forEach((dataProvider) => {
       dataProviders[dataProvider] = {
         ...dataProvidersSchema.properties[dataProvider],
       };
@@ -155,13 +155,10 @@ const View = props => {
                       dataProvider,
                       dataParameters(props),
                     )}
-                    {Object.entries(dataProvider.children).map(
-                      ([cildrenKey, children]) =>
-                        providerView(
-                          cildrenKey,
-                          children,
-                          dataParameters(props),
-                        ),
+                    {Object.entries(
+                      dataProvider.children,
+                    ).map(([cildrenKey, children]) =>
+                      providerView(cildrenKey, children, dataParameters(props)),
                     )}
                   </div>
                 );

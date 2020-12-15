@@ -2,13 +2,13 @@ import { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 
 import { addAppURL } from '@plone/volto/helpers';
-import { getDataFromProvider } from 'volto-datablocks/actions';
+import { getDataFromProvider } from '@eeacms/volto-datablocks/actions';
 import {
   getConnectedDataParametersForProvider,
   getConnectedDataParametersForContext,
   getConnectedDataParametersForPath,
-} from 'volto-datablocks/helpers';
-import { formatValue } from 'volto-datablocks/format';
+} from '@eeacms/volto-datablocks/helpers';
+import { formatValue } from '@eeacms/volto-datablocks/format';
 
 import '../css/styles.css';
 
@@ -18,7 +18,7 @@ function isObject(item) {
   return typeof item === 'object' && !Array.isArray(item) && item !== null;
 }
 
-const usePrevious = value => {
+const usePrevious = (value) => {
   const ref = useRef();
   useEffect(() => {
     ref.current = value;
@@ -61,11 +61,11 @@ const getValue = (
 
   let filter =
     (filters?.find &&
-      filters?.find(f => {
+      filters?.find((f) => {
         let { i: index } = f;
         index = index.toLowerCase().replace('taxonomy_', '');
         return Object.keys(data)
-          .map(k => k.toLowerCase())
+          .map((k) => k.toLowerCase())
           .includes(index);
       })) ||
     {};
@@ -91,7 +91,7 @@ const getValue = (
 
   // compatibility with collective.taxonomy, which lower-cases index names
   const real_index =
-    Object.keys(data)?.find(n => n.toLowerCase() === index) || index;
+    Object.keys(data)?.find((n) => n.toLowerCase() === index) || index;
 
   if (!data[real_index]) {
     // console.log('NOT_AN_INDEX_IN_DATA:', index, data);
@@ -106,7 +106,7 @@ const getValue = (
   return res;
 };
 
-const DataEntity = props => {
+const DataEntity = (props) => {
   const {
     column,
     connected_data_parameters,

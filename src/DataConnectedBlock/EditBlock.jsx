@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import { Segment } from 'semantic-ui-react';
 import withObjectBrowser from '@plone/volto/components/manage/Sidebar/ObjectBrowser';
 import { SidebarPortal } from '@plone/volto/components';
-import { changeSidebarState } from 'volto-datablocks/actions';
+import { changeSidebarState } from '@eeacms/volto-datablocks/actions';
 import MultiValuesEdit from './MultiValuesEdit';
 
 class EditForm extends Component {
@@ -46,11 +46,8 @@ class EditForm extends Component {
 // TODO: use the redux store to cache the provider data, as it doesn't change
 // often
 
-const ConnectedEditForm = connect(
-  null,
-  {
-    changeSidebarState,
-  },
-)(EditForm);
+const ConnectedEditForm = connect(null, {
+  changeSidebarState,
+})(EditForm);
 
 export default withObjectBrowser(ConnectedEditForm);

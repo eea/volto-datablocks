@@ -7,7 +7,7 @@ import React from 'react';
 import { defineMessages, injectIntl } from 'react-intl';
 import cx from 'classnames';
 import { connect } from 'react-redux';
-import { getConnectedDataParametersForContext } from 'volto-datablocks/helpers';
+import { getConnectedDataParametersForContext } from '@eeacms/volto-datablocks/helpers';
 import PrivacyProtection from 'volto-embed/PrivacyProtection/PrivacyProtection';
 
 const messages = defineMessages({
@@ -23,7 +23,7 @@ const messages = defineMessages({
  * @extends Component
  */
 
-const ViewEmbedBlock = props => {
+const ViewEmbedBlock = (props) => {
   const { data, intl } = props;
   // console.log('data in embed', props);
   // console.log('DataConnectedEmbed props in view', this.props);
@@ -69,14 +69,11 @@ const ViewEmbedBlock = props => {
   );
 };
 
-export default connect(
-  (state, props) => {
-    return {
-      connected_data_parameters: getConnectedDataParametersForContext(
-        state?.connected_data_parameters,
-        state.router?.location?.pathname,
-      ),
-    };
-  },
-  {},
-)(injectIntl(ViewEmbedBlock));
+export default connect((state, props) => {
+  return {
+    connected_data_parameters: getConnectedDataParametersForContext(
+      state?.connected_data_parameters,
+      state.router?.location?.pathname,
+    ),
+  };
+}, {})(injectIntl(ViewEmbedBlock));

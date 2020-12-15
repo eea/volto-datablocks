@@ -72,7 +72,7 @@ const SourceView = ({
             onClick={() => {
               const connectorsData = {};
               connectorsDataProviders &&
-                Object.keys(connectorsDataProviders).forEach(key => {
+                Object.keys(connectorsDataProviders).forEach((key) => {
                   if (
                     connectorsDataProviders[key].path &&
                     data_providers?.data?.[
@@ -150,7 +150,7 @@ const SourceView = ({
           {initialSource}
         </a>
         {multipleSources && multipleSources.length
-          ? multipleSources.map(item =>
+          ? multipleSources.map((item) =>
               item.chart_source_link ? (
                 <a
                   key={item.chart_source_link}

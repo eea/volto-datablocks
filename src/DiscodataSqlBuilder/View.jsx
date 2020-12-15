@@ -5,7 +5,7 @@ import qs from 'query-string';
 import DB from '../DataBase/DB';
 import { settings } from '~/config';
 import { getDiscodataResource } from '../actions';
-const ViewWrapper = props => {
+const ViewWrapper = (props) => {
   const [state, setState] = useState({
     mounted: false,
   });
@@ -38,18 +38,22 @@ const ViewWrapper = props => {
         let whereStatements = [],
           groupByStatements = [];
         whereStatements = Object.keys(where)
-          .filter(key => {
+          .filter((key) => {
             return (
               where[key].sqlId === sqlKey &&
               globalQuery[where[key].queryParam] &&
               where[key].key
             );
           })
-          .map(key => {
+          .map((key) => {
             return {
               discodataKey: where[key].key,
               value: Array.isArray(globalQuery[where[key].queryParam])
-                ? [...globalQuery[where[key].queryParam].filter(query => query)]
+                ? [
+                    ...globalQuery[where[key].queryParam].filter(
+                      (query) => query,
+                    ),
+                  ]
                 : globalQuery[where[key].queryParam],
               regex: where[key].regex || null,
               isExact: where[key].isExact || false,
@@ -72,10 +76,10 @@ const ViewWrapper = props => {
         };
         if (!isCollection) {
           groupByStatements = Object.keys(groupBy)
-            .filter(key => {
+            .filter((key) => {
               return groupBy[key].sqlId === sqlKey;
             })
-            .map(key => {
+            .map((key) => {
               return {
                 discodataKey: groupBy[key].discodataKey,
                 key: groupBy[key].key,

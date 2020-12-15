@@ -1,5 +1,5 @@
 import React from 'react';
-import { getDataFromProvider } from 'volto-datablocks/actions';
+import { getDataFromProvider } from '@eeacms/volto-datablocks/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { flattenToAppURL } from '@plone/volto/helpers';
 
@@ -9,14 +9,14 @@ import { flattenToAppURL } from '@plone/volto/helpers';
  * @param {} getProviderUrl
  */
 export function connectAnythingToProviderData(getProviderUrl) {
-  return WrappedComponent => {
-    return props => {
+  return (WrappedComponent) => {
+    return (props) => {
       const dispatch = useDispatch();
 
       const base = getProviderUrl(props);
       const provider_url = base ? flattenToAppURL(base) : base;
 
-      const isPending = useSelector(state => {
+      const isPending = useSelector((state) => {
         if (provider_url === null) return false;
 
         const url = `${provider_url}`;
@@ -26,7 +26,7 @@ export function connectAnythingToProviderData(getProviderUrl) {
         return rv;
       });
 
-      const provider_data = useSelector(state => {
+      const provider_data = useSelector((state) => {
         if (provider_url === null) return null;
 
         const url = `${provider_url}/@connector-data`;
