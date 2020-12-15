@@ -8,7 +8,7 @@ import { defineMessages, injectIntl } from 'react-intl';
 import cx from 'classnames';
 import { connect } from 'react-redux';
 import { getConnectedDataParametersForContext } from '@eeacms/volto-datablocks/helpers';
-import PrivacyProtection from 'volto-embed/PrivacyProtection/PrivacyProtection';
+import PrivacyProtection from '@eeacms/volto-embed/PrivacyProtection/PrivacyProtection';
 
 const messages = defineMessages({
   EmbededGoogleMaps: {

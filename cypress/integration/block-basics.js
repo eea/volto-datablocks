@@ -28,17 +28,17 @@ describe('Blocks Tests', () => {
   });
 });
 
-describe('Discodata sql builder tests', () => {
-  beforeEach(setupBeforeEach);
-  afterEach(tearDownAfterEach);
+// describe('Discodata sql builder tests', () => {
+//   beforeEach(setupBeforeEach);
+//   afterEach(tearDownAfterEach);
 
-  it('Add Block: Empty', () => {
-    changePageTitle('Volto datablocks tests');
-    addBlock(group.title, group.id, 'discodata_sql_builder');
-    openSidebarTab('Block');
-    cy.get('input#field-field-widget-provider_url').should(
-      'have.value',
-      'https://discodata.eea.europa.eu/sql',
-    );
-  });
-});
+//   it('Add Block: Empty', () => {
+//     changePageTitle('Volto datablocks tests');
+//     addBlock(group.title, group.id, 'discodata_sql_builder');
+//     openSidebarTab('Block');
+//     cy.get('input#field-field-widget-provider_url').should(
+//       'have.value',
+//       'https://discodata.eea.europa.eu/sql',
+//     );
+//   });
+// });
