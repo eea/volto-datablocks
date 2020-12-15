@@ -13,11 +13,11 @@ import { addAppURL } from '@plone/volto/helpers';
 import AddLinkForm from './AddLinkForm';
 import { getDataFromProvider } from '../actions';
 
-const makeChoices = keys => keys.map(k => [k, k]);
+const makeChoices = (keys) => keys.map((k) => [k, k]);
 
-const RenderFields = props => {
+const RenderFields = (props) => {
   const { schema, title, withFormManager, noValueKey } = props;
-  const onChangeBlock = data => {
+  const onChangeBlock = (data) => {
     props.onChangeBlock(props.block, data);
   };
   const data = withFormManager ? { ...props.formData } : { ...props.data };
@@ -53,7 +53,7 @@ const RenderFields = props => {
           !finalValue &&
           schema.defaultValue &&
           typeof schema.defaultValue === 'string' &&
-          schema.choices.filter(item => {
+          schema.choices.filter((item) => {
             return item[0] === schema.defaultValue;
           }).length > 0
         ) {
@@ -61,7 +61,7 @@ const RenderFields = props => {
         }
         if (
           typeof finalValue === 'string' &&
-          schema.choices.filter(item => {
+          schema.choices.filter((item) => {
             return item[0] === finalValue;
           }).length === 0
         ) {
@@ -89,7 +89,7 @@ const RenderFields = props => {
         <h2>{title}</h2>
       </header>
       {schema &&
-        Object.keys(schema).map(key => (
+        Object.keys(schema).map((key) => (
           <React.Fragment key={key}>
             {![
               'schema',
@@ -148,9 +148,7 @@ const RenderFields = props => {
                   deleteFieldset={schema[key].deleteFieldset}
                   value={
                     props.data?.[key]?.value ||
-                    `{"fieldsets":[{"id":"${schema[key].fieldSetId}","title":"${
-                      schema[key].title
-                    }","fields":[]}],"properties":{}}`
+                    `{"fieldsets":[{"id":"${schema[key].fieldSetId}","title":"${schema[key].title}","fields":[]}],"properties":{}}`
                   }
                 />
               </Segment>
@@ -381,7 +379,7 @@ function getProviderData(state, props) {
       },
     };
   if (!providers) return;
-  Object.keys(providers).forEach(provider => {
+  Object.keys(providers).forEach((provider) => {
     const path = `${providers[provider].path}/@connector-data`;
     const url = `${addAppURL(path)}/@connector-data`;
     const data = state.data_providers.data || {};

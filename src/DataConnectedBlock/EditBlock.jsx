@@ -46,11 +46,8 @@ class EditForm extends Component {
 // TODO: use the redux store to cache the provider data, as it doesn't change
 // often
 
-const ConnectedEditForm = connect(
-  null,
-  {
-    changeSidebarState,
-  },
-)(EditForm);
+const ConnectedEditForm = connect(null, {
+  changeSidebarState,
+})(EditForm);
 
 export default withObjectBrowser(ConnectedEditForm);

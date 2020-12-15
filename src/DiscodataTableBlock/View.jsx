@@ -159,7 +159,7 @@ const View = (props) => {
       tableHeaders: metadata?.fieldsets?.[0]?.fields?.length,
     });
     /* eslint-disable-next-line */
-  }, [props.data?.metadata?.value])
+  }, [props.data?.metadata?.value]);
 
   const loader =
     props.discodata_resources.pendingRequests[collection] ||

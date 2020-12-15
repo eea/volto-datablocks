@@ -274,7 +274,12 @@ const Edit = (props) => {
       }),
     });
     /* eslint-disable-next-line */
-  }, [props.data, props.discodata_resources, props.discodata_query.search, props.optionalSchema])
+  }, [
+    props.data,
+    props.discodata_resources,
+    props.discodata_query.search,
+    props.optionalSchema,
+  ]);
   return (
     // <div>
     <>

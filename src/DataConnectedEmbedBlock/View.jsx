@@ -24,7 +24,7 @@ const messages = defineMessages({
  * @extends Component
  */
 
-const ViewEmbedBlock = props => {
+const ViewEmbedBlock = (props) => {
   const [visible, setVisibility] = useState(false);
   const { data, intl } = props;
   console.log('data in embed', props);
@@ -71,14 +71,11 @@ const ViewEmbedBlock = props => {
   );
 };
 
-export default connect(
-  (state, props) => {
-    return {
-      connected_data_parameters: getConnectedDataParametersForContext(
-        state?.connected_data_parameters,
-        state.router?.location?.pathname,
-      ),
-    };
-  },
-  {},
-)(injectIntl(ViewEmbedBlock));
+export default connect((state, props) => {
+  return {
+    connected_data_parameters: getConnectedDataParametersForContext(
+      state?.connected_data_parameters,
+      state.router?.location?.pathname,
+    ),
+  };
+}, {})(injectIntl(ViewEmbedBlock));

@@ -28,7 +28,7 @@ const ViewWrapper = (props) => {
   useEffect(() => {
     setState({ ...state, mounted: true });
     /* eslint-disable-next-line */
-  }, [])
+  }, []);
   useEffect(() => {
     if (state.mounted) {
       Object.entries(sqls).forEach(([sqlKey, sqlValue]) => {
@@ -134,7 +134,7 @@ const ViewWrapper = (props) => {
       });
     }
     /* eslint-disable-next-line */
-  }, [sqls, where, groupBy, search])
+  }, [sqls, where, groupBy, search]);
   return (
     <>
       {props.mode === 'edit-no-children' ? 'SQL BUILDER BLOCK' : props.children}

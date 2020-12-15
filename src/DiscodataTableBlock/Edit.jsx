@@ -72,9 +72,12 @@ const schema = {
         show: {
           type: 'string',
           title: 'Display option',
-          choices: formData => {
+          choices: (formData) => {
             if (['string', 'textarea'].includes(formData.dataType))
-              return [['value', 'Value'], ['link_value', 'Link value']];
+              return [
+                ['value', 'Value'],
+                ['link_value', 'Link value'],
+              ];
             if (['button'].includes(formData.dataType))
               return [['link_value', 'Link value']];
             if (['array', 'object'].includes(formData.dataType))
@@ -88,7 +91,7 @@ const schema = {
           },
         },
         urlFieldId: {
-          disabled: formData =>
+          disabled: (formData) =>
             !['link_value', 'link_length', 'link_keys'].includes(
               formData?.show,
             ),
@@ -97,7 +100,7 @@ const schema = {
           description: 'Add only if "Display option" is set to "Link*"',
         },
         queriesToSet: {
-          disabled: formData =>
+          disabled: (formData) =>
             !['link_value', 'link_length', 'link_keys'].includes(
               formData?.show,
             ),
@@ -108,7 +111,7 @@ const schema = {
           },
         },
         discodataQueriesKeys: {
-          disabled: formData =>
+          disabled: (formData) =>
             !['link_value', 'link_length', 'link_keys'].includes(
               formData?.show,
             ),
@@ -119,14 +122,14 @@ const schema = {
           },
         },
         hiddenRowType: {
-          disabled: formData => formData?.tableType !== 'Hidden row',
+          disabled: (formData) => formData?.tableType !== 'Hidden row',
           type: 'string',
           title: 'Hidden row type',
           description: "Add only if 'Table type' is set to 'Hidden row'",
           choices: [],
         },
         className: {
-          disabled: formData => formData?.dataType !== 'button',
+          disabled: (formData) => formData?.dataType !== 'button',
           type: 'string',
           title: 'Add a classname',
           description: "Add only if 'button' data type is selected",
@@ -139,12 +142,12 @@ const schema = {
   },
 };
 
-const Edit = React.forwardRef(props => {
+const Edit = React.forwardRef((props) => {
   useEffect(() => {
     if (schema.metadata?.fieldSetSchema?.properties?.hiddenRowType) {
       schema.metadata.fieldSetSchema.properties.hiddenRowType.choices = props
         .data?.hiddenRowTypes?.value
-        ? props.data.hiddenRowTypes.value.map(type => [type, type])
+        ? props.data.hiddenRowTypes.value.map((type) => [type, type])
         : [];
     }
     /* eslint-disable-next-line */
@@ -167,7 +170,7 @@ const Edit = React.forwardRef(props => {
 
 export default compose(
   injectIntl,
-  connect(state => ({
+  connect((state) => ({
     content: state.content.data,
   })),
 )(Edit);
