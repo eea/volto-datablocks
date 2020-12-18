@@ -3,7 +3,6 @@ pipeline {
 
   environment {
         GIT_NAME = "volto-datablocks"
-        NAMESPACE = "@eeacms"
         SONARQUBE_TAGS = "volto.eea.europa.eu"
         DEPENDENCIES = "github:eea/volto-embed#1.0.0"
     }

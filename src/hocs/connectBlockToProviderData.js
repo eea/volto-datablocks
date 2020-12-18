@@ -1,5 +1,5 @@
 import React from 'react';
-import { getDataFromProvider } from '@eeacms/volto-datablocks/actions';
+import { getDataFromProvider } from 'volto-datablocks/actions';
 import { useDispatch, useSelector } from 'react-redux';
 
 /**

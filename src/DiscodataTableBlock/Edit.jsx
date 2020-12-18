@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { injectIntl } from 'react-intl';
 import View from './View';
-import DiscodataSqlBuilderEdit from '@eeacms/volto-datablocks/DiscodataSqlBuilder/Edit';
+import DiscodataSqlBuilderEdit from 'volto-datablocks/DiscodataSqlBuilder/Edit';
 
 const schema = {
   itemsCountKey: {

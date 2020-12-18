@@ -7,8 +7,8 @@ import { Table, Pagination } from 'semantic-ui-react';
 import downSVG from '@plone/volto/icons/down-key.svg';
 import upSVG from '@plone/volto/icons/up-key.svg';
 import { Icon } from '@plone/volto/components';
-import DiscodataSqlBuilderView from '@eeacms/volto-datablocks/DiscodataSqlBuilder/View';
-import { setQueryParam } from '@eeacms/volto-datablocks/actions';
+import DiscodataSqlBuilderView from 'volto-datablocks/DiscodataSqlBuilder/View';
+import { setQueryParam } from 'volto-datablocks/actions';
 import { Dimmer, Loader } from 'semantic-ui-react';
 
 const components = {

@@ -2,13 +2,13 @@ import { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 
 import { addAppURL } from '@plone/volto/helpers';
-import { getDataFromProvider } from '@eeacms/volto-datablocks/actions';
+import { getDataFromProvider } from 'volto-datablocks/actions';
 import {
   getConnectedDataParametersForProvider,
   getConnectedDataParametersForContext,
   getConnectedDataParametersForPath,
-} from '@eeacms/volto-datablocks/helpers';
-import { formatValue } from '@eeacms/volto-datablocks/format';
+} from 'volto-datablocks/helpers';
+import { formatValue } from 'volto-datablocks/format';
 
 import '../css/styles.css';
 

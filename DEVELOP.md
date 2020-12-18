@@ -12,7 +12,7 @@ Before starting make sure your development environment is properly set. See [Vol
 
 1.  Create new volto app
 
-        $ yo @plone/volto my-volto-project --addon @eeacms/volto-datablocks --workspace src/addons/volto-datablocks
+        $ yo @plone/volto my-volto-project --addon volto-datablocks --workspace src/addons/volto-datablocks
         $ cd my-volto-project
 
 1.  Add the following to `mrs.developer.json`:
@@ -20,7 +20,7 @@ Before starting make sure your development environment is properly set. See [Vol
         {
             "volto-datablocks": {
                 "url": "https://github.com/eea/volto-datablocks.git",
-                "package": "@eeacms/volto-datablocks",
+                "package": "volto-datablocks",
                 "branch": "develop",
                 "path": "src"
             }

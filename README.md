@@ -15,21 +15,21 @@ A data-connected component, as we use the term here, is a component that display
 
    ```
    $ npm install -g yo @plone/generator-volto
-   $ yo @plone/volto my-volto-project --addon @eeacms/volto-datablocks
+   $ yo @plone/volto my-volto-project --addon volto-datablocks
 
    $ cd my-volto-project
-   $ yarn add -W @eeacms/volto-datablocks
+   $ yarn add -W volto-datablocks
    ```
 
 1. If you already have a volto project, just update `package.json`:
 
    ```JSON
    "addons": [
-       "@eeacms/volto-datablocks"
+       "volto-datablocks"
    ],
 
    "dependencies": {
-       "@eeacms/volto-datablocks": "^1.1.0"
+       "volto-datablocks": "^1.1.0"
    }
    ```
 
