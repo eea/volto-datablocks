@@ -8,6 +8,7 @@ const IframeSchema = {
       fields: [
         'baseUrl',
         'align',
+        'height',
         'privacy_statement',
         'privacy_cookie_key',
         'enabled',
@@ -23,6 +24,11 @@ const IframeSchema = {
       title: 'Alignment',
       widget: 'align',
       type: 'string',
+    },
+    height: {
+      title: 'Height',
+      description: 'Map height',
+      type: 'integer',
     },
     privacy_statement: {
       title: 'Privacy statement',

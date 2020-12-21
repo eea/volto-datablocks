@@ -36,7 +36,9 @@ const ViewEmbedBlock = (props) => {
     param && data.baseUrl
       ? decodeURIComponent(data.baseUrl).replace('<<NUTS_CODE>>', param)
       : data.baseUrl;
-
+  const styles = {
+    height: `${data.height}px`,
+  };
   // console.log('param in view', param, url);
   return url ? (
     <PrivacyProtection data={data}>
@@ -53,6 +55,7 @@ const ViewEmbedBlock = (props) => {
           className={cx('video-inner', {
             'full-width': data.align === 'full',
           })}
+          style={data.height ? styles : {}}
         >
           <iframe
             title={intl.formatMessage(messages.EmbededGoogleMaps)}
