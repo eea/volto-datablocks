@@ -58,6 +58,7 @@ const ViewEmbedBlock = (props) => {
           style={data.height ? styles : {}}
         >
           <iframe
+            style={{ minHeight: '100%' }}
             title={intl.formatMessage(messages.EmbededGoogleMaps)}
             src={url}
             className="google-map"
