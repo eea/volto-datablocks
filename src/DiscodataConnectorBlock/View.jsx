@@ -73,28 +73,77 @@ const bulletListView = (items) => (
 );
 
 const View = (props) => {
-  const [state, setState] = useState({
-    onChange: (newState) => {
-      setState({ ...state, ...newState });
-    },
-  });
-  const dataProvidersSchema =
-    props.data?.data_providers?.value &&
-    JSON.parse(props.data?.data_providers?.value);
-  const dataProviders = {};
-  dataProvidersSchema?.fieldsets?.[0]?.fields &&
-    dataProvidersSchema.fieldsets[0].fields.forEach((dataProvider) => {
-      dataProviders[dataProvider] = {
-        ...dataProvidersSchema.properties[dataProvider],
-      };
-    });
+  const [dataProviders, setDataProviders] = useState({});
+  const [parentsDataProviders, setParentsDataProviders] = useState({});
   const bulletList =
     props.data?.bullet_list?.value &&
     JSON.parse(props.data?.bullet_list?.value).properties;
   const path = getBasePath(props.content['@id']);
-  useEffect(() => {
+
+  const updateDataProviders = () => {
+    let newDataProviders = { ...dataProviders };
+    if (props.data.data_providers) {
+      if (
+        typeof props.data.data_providers === 'object' &&
+        props.data.data_providers.value
+      ) {
+        newDataProviders = {};
+        const dataProvidersSchema =
+          props.data?.data_providers?.value &&
+          JSON.parse(props.data?.data_providers?.value);
+        dataProvidersSchema?.fieldsets?.[0]?.fields &&
+          dataProvidersSchema.fieldsets[0].fields.forEach((dataProvider) => {
+            newDataProviders[dataProvider] = {
+              ...dataProvidersSchema.properties[dataProvider],
+            };
+          });
+      } else if (Array.isArray(props.data.data_providers)) {
+        newDataProviders = {};
+        props.data.data_providers.forEach((provider) => {
+          newDataProviders[provider.id] = { ...provider };
+        });
+      }
+    }
+    setDataProviders({ ...newDataProviders });
+    return newDataProviders;
+  };
+
+  const updateParentsDataProviders = () => {
+    const newParentsDataProviders = {};
     dataProviders &&
       Object.entries(dataProviders).forEach(
+        ([dataProviderKey, dataProvider]) => {
+          if (!dataProvider.hasParent) {
+            newParentsDataProviders[dataProviderKey] = { ...dataProvider };
+          } else if (
+            dataProvider.parent &&
+            newParentsDataProviders[dataProvider.parent]
+          ) {
+            if (!newParentsDataProviders[dataProvider.parent].children) {
+              newParentsDataProviders[dataProvider.parent].children = {};
+            }
+            newParentsDataProviders[dataProvider.parent].children[
+              dataProviderKey
+            ] = dataProvider;
+          }
+        },
+      );
+    setParentsDataProviders({ ...newParentsDataProviders });
+    return newParentsDataProviders;
+  };
+
+  useEffect(() => {
+    updateDataProviders();
+  }, []);
+
+  useEffect(() => {
+    updateParentsDataProviders();
+  }, [JSON.stringify(dataProviders)]);
+
+  useEffect(() => {
+    const newDataProviders = updateDataProviders();
+    newDataProviders &&
+      Object.entries(newDataProviders).forEach(
         ([dataProviderKey, dataProvider]) => {
           if (
             dataProvider.queryParameterColumn &&
@@ -114,24 +163,7 @@ const View = (props) => {
         },
       );
     /* eslint-disable-next-line */
-  }, [props.data?.data_providers]);
-  const parentsDataProviders = {};
-  dataProviders &&
-    Object.entries(dataProviders).forEach(([dataProviderKey, dataProvider]) => {
-      if (!dataProvider.hasParent) {
-        parentsDataProviders[dataProviderKey] = { ...dataProvider };
-      } else if (
-        dataProvider.parent &&
-        parentsDataProviders[dataProvider.parent]
-      ) {
-        if (!parentsDataProviders[dataProvider.parent].children) {
-          parentsDataProviders[dataProvider.parent].children = {};
-        }
-        parentsDataProviders[dataProvider.parent].children[
-          dataProviderKey
-        ] = dataProvider;
-      }
-    });
+  }, [JSON.stringify(props.data?.data_providers)]);
 
   const view = (
     <div className="flex h-100 pa-1">
@@ -199,5 +231,3 @@ export default compose(
     content: state.content.data,
   })),
 )(View);
-
-// export default View;
