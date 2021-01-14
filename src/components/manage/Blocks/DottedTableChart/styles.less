@@ -1,0 +1,41 @@
+.dotted-table-chart {
+  .inner {
+    width: 100%;
+    overflow-x: auto;
+
+    .dot-cells {
+      width: 80px;
+      display: flex;
+      flex-flow: row wrap;
+      // justify-content: space-between;
+
+      & > div {
+        width: 17px;
+        height: 17px;
+        border-radius: 50%;
+        background-color: red;
+        margin: 4px;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .dotted-table-chart {
+    table.ui.table {
+      thead {
+        th {
+          text-align: left!important;
+        }
+      }
+    }
+
+    .inner .dot-cells {
+      width: 70px;
+      & > div {
+        width: 12px;
+        height: 12px;
+      }
+    }
+  }
+}

@@ -1,0 +1,97 @@
+.simple-data-table {
+  overflow-x: auto;
+  padding: 1em;
+
+  table {
+    > thead {
+      > tr > th {
+        background: none !important;
+        vertical-align: bottom !important;
+        text-transform: inherit !important;
+        color: #000 !important;
+
+        &::after {
+          content: '';
+          display: block;
+          border-bottom: 0.1rem solid #000;
+          padding-top: 0.7rem;
+          width: 100%;
+        }
+
+        &::before {
+          display: none !important;
+        }
+
+        &.left::after {
+          /* Nothing here for now. */
+        }
+
+        &.center::after {
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        &.right::after {
+          margin-left: auto;
+        }
+
+        &.justify::after {
+          width: 100%;
+        }
+
+        &.left {
+          text-align: left!important;
+        }
+
+        &.right {
+          text-align: right!important;
+        }
+
+        &.center {
+          text-align: center!important;
+        }
+
+        &.justify {
+          text-align: justify!important;
+        }
+      }
+    }
+  }
+
+  .table-title {
+    font-size: 15px;
+  }
+
+  .title-border {
+    display: table;
+    border-bottom: 2px solid #000;
+    >*:first-child {
+      margin-bottom: 0!important;
+    }
+  }
+
+  table.no-borders {
+    border: none !important;
+
+    tr > th:first-child,
+    tr > td:first-child {
+      padding-left: 0;
+    }
+
+    tr > th:last-child,
+    tr > td:last-child {
+      padding-right: 0;
+    }
+
+    th, td {
+      border:none !important;
+    }
+  }
+
+  table.compact-table {
+    tr td {
+      padding-top: 0.3em!important;
+      padding-bottom: 0.3em!important;
+    }
+  }
+}

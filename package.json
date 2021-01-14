@@ -21,7 +21,9 @@
   "dependencies": {
     "humanize-plus": "^1.8.2",
     "performant-array-to-tree": "^1.7.1",
-    "@eeacms/volto-widgets-view": "github:eea/volto-widgets-view#1.0.3"
+    "plotly.js": "1.57.0",
+    "react-plotly.js": "~2.5.0",
+    "volto-slate": "github:eea/volto-slate#1.0.7"
   },
   "peerDependencies": {
     "@plone/volto": "^4.0.0"

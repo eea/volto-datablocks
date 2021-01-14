@@ -6,7 +6,7 @@ import {
   getConnectedDataParametersForContext,
 } from 'volto-datablocks/helpers';
 import DataConnectedValue from './DataConnectedValue';
-import { ViewSourcesBlock } from 'volto-datablocks/components';
+import { SourcesBlockView } from 'volto-datablocks/components';
 import { setConnectedDataParameters } from 'volto-datablocks/actions';
 
 import { getBasePath } from 'volto-datablocks/helpers';
@@ -212,7 +212,7 @@ const View = (props) => {
         {bulletList && bulletListView(bulletList)}
         {props?.data?.chart_sources && (
           <div>
-            <ViewSourcesBlock
+            <SourcesBlockView
               multipleSources={props?.data?.chart_sources}
               connectorsDataProviders={dataProviders}
               download_button={props?.data?.download_button?.value}

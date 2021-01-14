@@ -13,7 +13,9 @@ import {
   SET_QUERY_PARAM,
   RESET_QUERY_PARAM,
   TRIGGER_RENDER,
-} from './constants';
+} from 'volto-datablocks/constants';
+
+export * from './getBlockData';
 
 export function changeSidebarState(open) {
   return {
