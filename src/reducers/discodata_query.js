@@ -12,7 +12,7 @@ const initialState = {
   lastAction: '',
 };
 
-export default function pages(state = initialState, action = {}) {
+export default function discodata_query(state = initialState, action = {}) {
   let search = { ...state.search };
   let deletedQueryParams = { ...state.deletedQueryParams };
   switch (action.type) {

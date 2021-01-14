@@ -22,10 +22,6 @@ export default function sparql_data(state = initialState, action = {}) {
         ...state,
         error: null,
         sparql_data: action.result.items,
-        // .map(item => ({
-        //   ...item,
-        //   // url: item['@id'].replace(settings.apiPath, ''),
-        // })),
         loaded: true,
         loading: false,
       };

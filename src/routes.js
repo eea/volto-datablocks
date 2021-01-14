@@ -1,4 +1,4 @@
-import DataProvidersView from './DataProviders/DataProvidersView';
+import { DataProvidersView } from './components';
 
 const routes = [
   {

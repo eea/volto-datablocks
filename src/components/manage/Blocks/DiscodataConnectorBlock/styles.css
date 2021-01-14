@@ -1,0 +1,16 @@
+.connected-data-block {
+  background-color: lightblue;
+}
+
+.block-container .data-content span {
+  white-space: break-spaces;
+}
+
+#sidebar-properties .accordion .ui.menu {
+  flex-wrap: wrap;
+}
+
+#sidebar-properties .accordion .ui.menu .active.item {
+  border: 1px solid #D4D4D5;
+  border-radius: 0.28rem !important;
+}

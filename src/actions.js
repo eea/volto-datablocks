@@ -34,7 +34,6 @@ export function getSparqlData(path) {
 }
 
 export function getDataFromProvider(path, filters) {
-  // console.log('getDataFromProvider call, ', path, filters);
   path =
     typeof path === 'object'
       ? Array.isArray(path) && path.length
@@ -137,7 +136,6 @@ export function setDiscodataQuery(query) {
 }
 
 export function setQueryParam({ queryParam }) {
-  // console.log('SET QUERY PARAM', queryParam);
   return {
     type: SET_QUERY_PARAM,
     queryParam,
@@ -145,7 +143,6 @@ export function setQueryParam({ queryParam }) {
 }
 
 export function deleteQueryParam({ queryParam }) {
-  // console.log('DELETE QUERY PARAM', queryParam);
   return {
     type: DELETE_QUERY_PARAM,
     queryParam,

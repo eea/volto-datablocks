@@ -13,7 +13,7 @@ const initialState = {
   requestsMetadata: {},
 };
 
-export default function pages(state = initialState, action = {}) {
+export default function discodata_resources(state = initialState, action = {}) {
   let requestsMetadata = { ...state.requestsMetadata };
   const pendingRequests = { ...state.pendingRequests };
   const data = {

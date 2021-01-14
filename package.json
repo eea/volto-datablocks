@@ -9,7 +9,7 @@
   "keywords": [
     "volto-addon",
     "volto-block",
-    "volto-grid",
+    "volto-datablocks",
     "volto",
     "plone",
     "react"
@@ -20,7 +20,8 @@
   },
   "dependencies": {
     "humanize-plus": "^1.8.2",
-    "performant-array-to-tree": "^1.7.1"
+    "performant-array-to-tree": "^1.7.1",
+    "@eeacms/volto-widgets-view": "github:eea/volto-widgets-view#1.0.3"
   },
   "peerDependencies": {
     "@plone/volto": "^4.0.0"

@@ -1,6 +1,16 @@
 import { settings } from '~/config';
 import { getBaseUrl } from '@plone/volto/helpers';
 
+export function addCustomGroup(config, group) {
+  const hasCustomGroup = config.blocks.groupBlocksOrder.filter(
+    (el) => el.id === group.id,
+  );
+  if (hasCustomGroup.length === 0) {
+    config.blocks.groupBlocksOrder.push(group);
+  }
+  return config.blocks.groupBlocksOrder;
+}
+
 export function getBasePath(url) {
   return getBaseUrl(url)
     .replace(settings.apiPath, '')
@@ -82,37 +92,3 @@ export function updateChartDataFromProvider(chartData, providerData) {
   });
   return res;
 }
-
-// function getConnectedDataParameters(state, props) {
-//   let path = props?.url || '';
-//
-//   path = path
-//     .replace(settings.apiPath, '')
-//     .replace(settings.internalApiPath, '');
-//
-//   // NOTE: we fetch first the general parameter. This is temporary, it should
-//   // be handled for more cases. Doing it this way means that there's no way to
-//   // have multiple data selectors on the page, because the first one overrides
-//   // the second. There's multiple things that need to be improved here.
-//   // The whole volto-datablocks, volto-plotlycharts need to be updated if this
-//   // code and cases change.
-//   const res =
-//     state.connected_data_parameters.byPath?.[''] ||
-//     state.connected_data_parameters.byPath?.[path] ||
-//     null;
-//   console.log('DCV conn data res', res, state, path);
-//   return res;
-// }
-// NOTE: we fetch first the general parameter. This is temporary, it should
-// be handled for more cases. Doing it this way means that there's no way to
-// have multiple data selectors on the page, because the first one overrides
-// the second. There's multiple things that need to be improved here.
-// The whole volto-datablocks, volto-plotlycharts need to be updated if this
-// code and cases change.
-// const res =
-//   state.connected_data_parameters.byPath?.[''] ||
-//   state.connected_data_parameters.byPath?.[path] ||
-//   null;
-// console.log('state connected', state.connected_data_parameters);
-// console.log('state connected path', path);
-// console.log('parameters returned', res);
