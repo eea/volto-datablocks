@@ -1,17 +1,43 @@
 import React from 'react';
 
-const ColumnSchema = () => ({
+const columnSchema = {
   title: 'Column',
   fieldsets: [
     {
       id: 'default',
       title: 'Default',
-      fields: ['column', 'title', 'textTemplate', 'specifier', 'textAlign'],
+      fields: [
+        'column',
+        'title',
+        'component',
+        'render_as',
+        'textTemplate',
+        'specifier',
+        'textAlign',
+      ],
     },
   ],
   properties: {
     title: {
       title: 'Header',
+    },
+    component: {
+      title: 'Component type',
+      choices: [
+        ['text', 'Text'],
+        ['link', 'Link'],
+      ],
+      defaultValue: 'text',
+    },
+    target: {
+      title: 'Target',
+      choices: [
+        ['_blank', 'New window'],
+        ['_self', 'Same window'],
+      ],
+    },
+    render_as: {
+      title: 'HTML tag',
     },
     specifier: {
       title: 'Format specifier',
@@ -40,9 +66,37 @@ const ColumnSchema = () => ({
       title: 'Data column',
       choices: [],
     },
+    column_link: {
+      title: 'Data column link',
+      choices: [],
+    },
   },
   required: ['column'],
-});
+};
+
+const getColumnSchema = (schema, child) => {
+  return {
+    ...columnSchema,
+    fieldsets: [
+      {
+        id: 'default',
+        title: 'Default',
+        fields: [
+          'column',
+          ...(child.component === 'link' ? ['column_link'] : []),
+          'title',
+          'component',
+          ...(child.component === 'link' ? ['target'] : []),
+          'render_as',
+          'textTemplate',
+          'specifier',
+          'textAlign',
+        ],
+      },
+    ],
+    required: ['column', 'column_link'],
+  };
+};
 
 const SimpleDataTableSchema = () => ({
   title: 'DataConnected Table',
@@ -82,7 +136,8 @@ const SimpleDataTableSchema = () => ({
     columns: {
       title: 'Columns',
       description: 'Leave empty to show all columns',
-      schema: ColumnSchema(),
+      schema: columnSchema,
+      schemaExtender: (schema, child) => getColumnSchema(schema, child),
       widget: 'object_list_inline',
     },
 
