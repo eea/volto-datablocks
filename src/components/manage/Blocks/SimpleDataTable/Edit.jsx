@@ -20,6 +20,7 @@ class Edit extends Component {
     ]);
 
     schema.properties.columns.schema.properties.column.choices = choices;
+    schema.properties.columns.schema.properties.column_link.choices = choices;
     return schema;
   };
 

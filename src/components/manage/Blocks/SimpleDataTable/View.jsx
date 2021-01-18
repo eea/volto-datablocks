@@ -3,11 +3,11 @@ import { compose } from 'redux';
 import React from 'react';
 import { connectBlockToProviderData } from 'volto-datablocks/hocs';
 import { serializeNodes } from 'volto-slate/editor/render';
-import { FormattedValue } from 'volto-datablocks/Utils';
 import {
   filterDataByParameters,
   connectToDataParameters,
 } from 'volto-datablocks/helpers';
+import RenderComponent from './components';
 
 import './styles.less';
 
@@ -31,18 +31,6 @@ const selectedColumnValidator = (allColDefs) => (colDef) => {
   return typeof colDef === 'string'
     ? false
     : allColDefs.includes(colDef?.column);
-};
-
-const getCellValue = (tableData, colDef, rowIndex) => {
-  return typeof colDef === 'string' ? (
-    <span>tableData[colDef]?.[rowIndex]</span>
-  ) : (
-    <FormattedValue
-      textTemplate={colDef.textTemplate}
-      value={tableData[colDef.column]?.[rowIndex]}
-      specifier={colDef.specifier}
-    />
-  );
 };
 
 const SimpleDataTableView = (props) => {
@@ -106,7 +94,12 @@ const SimpleDataTableView = (props) => {
                       key={`${i}-${getNameOfColumn(colDef)}`}
                       textAlign={getAlignmentOfColumn(colDef, j)}
                     >
-                      {getCellValue(tableData, colDef, i)}
+                      <RenderComponent
+                        tableData={tableData}
+                        colDef={colDef}
+                        row={i}
+                        {...props}
+                      />
                     </Table.Cell>
                   ))}
                 </Table.Row>
