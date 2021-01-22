@@ -6,7 +6,7 @@ import {
   connectToDataParameters,
 } from 'volto-datablocks/helpers';
 import { compose } from 'redux';
-import { serializeNodes } from 'volto-slate/editor/render';
+import { serializeNodes } from '../SimpleDataTable/helpers';
 import { FormattedValue } from 'volto-datablocks/Utils';
 import { DEFAULT_MAX_DOT_COUNT } from './constants';
 import './styles.less';

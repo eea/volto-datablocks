@@ -2,7 +2,7 @@ import { Table } from 'semantic-ui-react';
 import { compose } from 'redux';
 import React from 'react';
 import { connectBlockToProviderData } from 'volto-datablocks/hocs';
-import { serializeNodes } from 'volto-slate/editor/render';
+import { serializeNodes } from './helpers';
 import {
   filterDataByParameters,
   connectToDataParameters,
