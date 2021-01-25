@@ -1,10 +1,6 @@
-import { flattenToAppURL } from '@plone/volto/helpers';
 import {
   GET_SPARQL_DATA,
-  GET_DATA_FROM_PROVIDER,
   CHANGE_SIDEBAR_STATE,
-  SET_CONNECTED_DATA_PARAMETERS,
-  DELETE_CONNECTED_DATA_PARAMETERS,
   GET_DISCODATA_RESOURCE,
   SET_DISCODATA_RESOURCE,
   SET_DISCODATA_RESOURCE_PENDING,
@@ -16,6 +12,7 @@ import {
 } from 'volto-datablocks/constants';
 
 export * from './getBlockData';
+export * from './getDataProvider';
 
 export function changeSidebarState(open) {
   return {
@@ -32,61 +29,6 @@ export function getSparqlData(path) {
       op: 'get',
       path: url,
     },
-  };
-}
-
-export function getDataFromProvider(path, filters) {
-  path =
-    typeof path === 'object'
-      ? Array.isArray(path) && path.length
-        ? path[0]['@id']
-        : path['@id']
-      : path;
-  path = path && flattenToAppURL(path);
-  if (!path)
-    return {
-      type: GET_DATA_FROM_PROVIDER,
-    };
-  return filters
-    ? {
-        type: GET_DATA_FROM_PROVIDER,
-        path: path,
-        request: {
-          op: 'post',
-          path: path + '/@connector-data/',
-          data: { query: filters },
-        },
-      }
-    : {
-        type: GET_DATA_FROM_PROVIDER,
-        path: path,
-        request: {
-          op: 'get',
-          path: path + '/@connector-data/',
-        },
-      };
-}
-
-export function setConnectedDataParameters(
-  path,
-  parameters,
-  index,
-  manuallySet = false,
-) {
-  return {
-    type: SET_CONNECTED_DATA_PARAMETERS,
-    path,
-    parameters,
-    index,
-    manuallySet,
-  };
-}
-
-export function deleteConnectedDataParameters(path, index) {
-  return {
-    type: DELETE_CONNECTED_DATA_PARAMETERS,
-    path,
-    index,
   };
 }
 

@@ -8,7 +8,11 @@ import './styles.css';
 
 export class DataConnectorView extends Component {
   componentWillMount() {
-    this.props.getDataFromProvider(this.props.location.pathname);
+    this.props.getDataFromProvider(
+      this.props.location.pathname,
+      null,
+      this.props.location.search,
+    );
   }
 
   componentDidUpdate(prevProps) {

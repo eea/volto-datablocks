@@ -21,7 +21,7 @@ export default function data_providers(state = initialState, action = {}) {
 
   switch (action.type) {
     case `${GET_DATA_FROM_PROVIDER}_PENDING`:
-      pendingConnectors[action.path] = true;
+      pendingConnectors[action.path + action.queryString] = true;
       return {
         ...state,
         error: null,
@@ -50,7 +50,7 @@ export default function data_providers(state = initialState, action = {}) {
         error: null,
         data: {
           ...state.data,
-          [id]: isExpand
+          [id + action.queryString]: isExpand
             ? action.result['@components']['connector-data'].data
             : action.result.data,
         },
