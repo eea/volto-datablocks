@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getDataFromProvider } from 'volto-datablocks/actions';
-import { addAppURL } from '@plone/volto/helpers';
+import { addAppURL, flattenToAppURL } from '@plone/volto/helpers';
 import { Table } from 'semantic-ui-react';
 
 import './styles.css';
@@ -62,11 +62,12 @@ export class DataConnectorView extends Component {
 }
 
 function getProviderData(state, props) {
-  const path = `${props.location.pathname}/@connector-data`;
-  const url = `${addAppURL(props.location.pathname)}/@connector-data`;
-  // console.log('data providers', state.data_providers.data, url);
+  const path = `${flattenToAppURL(props.location.pathname).replace(
+    /\/$/,
+    '',
+  )}/@connector-data${props.location.search}`;
   const data = state.data_providers.data || {};
-  return data[url] || data[path];
+  return data[path];
 }
 
 export default connect(
