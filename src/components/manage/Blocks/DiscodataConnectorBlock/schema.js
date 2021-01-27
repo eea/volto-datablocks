@@ -32,15 +32,7 @@ const dataProviderSchemaExtender = (schema, child = {}, props) => {
     ...schema,
     fieldsets: [
       {
-        id: 'default',
-        title: 'Default',
-        fields: [
-          'title',
-          'id',
-          'hasDiscodataConnector',
-          'hasParent',
-          'hasQueryParameters',
-        ],
+        ...schema.fieldsets[0],
       },
       {
         id: 'properties',
@@ -61,7 +53,7 @@ const dataProviderSchemaExtender = (schema, child = {}, props) => {
             {
               id: 'parent',
               title: 'Parent',
-              fields: ['parent', 'wrapperClassName'],
+              fields: ['parent'],
             },
           ]
         : []),
@@ -132,6 +124,7 @@ const dataProviderSchema = {
         'hasDiscodataConnector',
         'hasParent',
         'hasQueryParameters',
+        'wrapperClassName',
       ],
     },
     {
