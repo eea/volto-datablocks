@@ -225,6 +225,31 @@ const dataProviderSchema = {
   required: ['title', 'id'],
 };
 
+const SourceSchema = {
+  title: 'Source',
+
+  fieldsets: [
+    {
+      id: 'default',
+      title: 'Default',
+      fields: ['chart_source', 'chart_source_link'],
+    },
+  ],
+
+  properties: {
+    chart_source: {
+      type: 'string',
+      title: 'Source',
+    },
+    chart_source_link: {
+      type: 'string',
+      title: 'Link',
+    },
+  },
+
+  required: ['source'],
+};
+
 export const getSchema = (props) => ({
   title: 'Discodata connector block',
   fieldsets: [
@@ -238,6 +263,11 @@ export const getSchema = (props) => ({
       title: 'Advanced',
       fields: ['data_providers'],
     },
+    {
+      id: 'sources',
+      title: 'Sources',
+      fields: ['chartSources', 'download_button'],
+    },
   ],
   properties: {
     block_title: {
@@ -247,6 +277,12 @@ export const getSchema = (props) => ({
     download_button: {
       title: 'Download button',
       type: 'boolean',
+    },
+    chartSources: {
+      widget: 'objectlist',
+      title: 'Sources',
+      // this is an invention, should confront with dexterity serializer
+      schema: SourceSchema,
     },
     data_providers: {
       title: 'Data providers',
