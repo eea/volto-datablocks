@@ -210,10 +210,10 @@ const View = (props) => {
             },
           )}
         {bulletList && bulletListView(bulletList)}
-        {props?.data?.chart_sources && (
+        {props?.data?.chartSources && (
           <div>
             <SourcesBlockView
-              multipleSources={props?.data?.chart_sources}
+              multipleSources={props?.data?.chartSources}
               connectorsDataProviders={dataProviders}
               download_button={props?.data?.download_button?.value}
             />
