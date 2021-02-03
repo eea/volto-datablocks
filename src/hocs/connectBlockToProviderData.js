@@ -8,10 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
  *
  * @param {} WrappedComponent
  */
-export function connectBlockToProviderData(
-  WrappedComponent,
-  additionalProps = {},
-) {
+export function connectBlockToProviderData(WrappedComponent, config = {}) {
   return (props) => {
     let history = useHistory();
     const dispatch = useDispatch();
@@ -19,7 +16,7 @@ export function connectBlockToProviderData(
       activePage: 1,
       itemsPerPage: 5,
       totalItems: 0,
-      enabled: additionalProps.paginationEnabled || false,
+      enabled: config.hasPagination || false,
     });
 
     const { data = {} } = props;

@@ -3,7 +3,7 @@ import { compose } from 'redux';
 import React, { useEffect } from 'react';
 import { connectBlockToProviderData } from 'volto-datablocks/hocs';
 import { Icon } from '@plone/volto/components';
-import { serializeNodes } from './helpers';
+import { serializeNodes } from 'volto-datablocks/serialize';
 import {
   filterDataByParameters,
   connectToDataParameters,
@@ -168,7 +168,7 @@ const SimpleDataTableView = (props) => {
 export default compose(
   () =>
     connectBlockToProviderData(SimpleDataTableView, {
-      paginationEnabled: true,
+      hasPagination: true,
     }),
   connectToDataParameters,
 )(SimpleDataTableView);

@@ -1,21 +1,22 @@
 import React from 'react';
 import { getValue, getCellValue } from '../../helpers';
+import { Link } from 'react-router-dom';
 
-const Link = (props) => {
+const LinkView = (props) => {
   const { tableData = {}, colDef = {}, row = 0 } = props;
   const Tag = colDef.render_as ? colDef.render_as.toLowerCase() : 'p';
   return (
     <>
       <Tag>
-        <a
-          href={getValue(tableData, colDef.column_link, row)}
+        <Link
+          to={getValue(tableData, colDef.column_link, row, colDef.linkTemplate)}
           target={colDef.target}
         >
           {getCellValue(tableData, colDef, row)}
-        </a>
+        </Link>
       </Tag>
     </>
   );
 };
 
-export default Link;
+export default LinkView;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { getCellValue } from '../../helpers';
 
-const Text = (props) => {
+const TextView = (props) => {
   const { tableData = {}, colDef = {}, row = 0 } = props;
   const Tag = colDef.render_as ? colDef.render_as.toLowerCase() : 'p';
   return (
@@ -11,4 +11,4 @@ const Text = (props) => {
   );
 };
 
-export default Text;
+export default TextView;

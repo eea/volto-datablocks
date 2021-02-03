@@ -36,6 +36,10 @@ const columnSchema = {
         ['_self', 'Same window'],
       ],
     },
+    linkTemplate: {
+      title: 'Link template',
+      description: 'Add suffix/prefix to text. Use {} for value placeholder',
+    },
     render_as: {
       title: 'HTML tag',
     },
@@ -86,7 +90,7 @@ const getColumnSchema = (schema, child) => {
           ...(child.component === 'link' ? ['column_link'] : []),
           'title',
           'component',
-          ...(child.component === 'link' ? ['target'] : []),
+          ...(child.component === 'link' ? ['target', 'linkTemplate'] : []),
           'render_as',
           'textTemplate',
           'specifier',

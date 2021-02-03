@@ -26,6 +26,7 @@ class Edit extends Component {
 
   render() {
     const schema = this.getSchema();
+
     return (
       <>
         <SimpleDataTableView data={this.props.data} />
@@ -48,4 +49,4 @@ class Edit extends Component {
   }
 }
 
-export default connectBlockToProviderData(Edit);
+export default connectBlockToProviderData(Edit, { hasPagination: true });
