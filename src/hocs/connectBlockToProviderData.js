@@ -8,7 +8,10 @@ import { useDispatch, useSelector } from 'react-redux';
  *
  * @param {} WrappedComponent
  */
-export function connectBlockToProviderData(WrappedComponent) {
+export function connectBlockToProviderData(
+  WrappedComponent,
+  additionalProps = {},
+) {
   return (props) => {
     let history = useHistory();
     const dispatch = useDispatch();
@@ -16,7 +19,7 @@ export function connectBlockToProviderData(WrappedComponent) {
       activePage: 1,
       itemsPerPage: 5,
       totalItems: 0,
-      enabled: false,
+      enabled: additionalProps.paginationEnabled || false,
     });
 
     const { data = {} } = props;
@@ -24,7 +27,7 @@ export function connectBlockToProviderData(WrappedComponent) {
     const search = history.location.search;
     const paginationString = pagination.enabled
       ? search.length
-        ? `p=${pagination.activePage}&nrOfHits=${pagination.itemsPerPage}`
+        ? `&p=${pagination.activePage}&nrOfHits=${pagination.itemsPerPage}`
         : `?p=${pagination.activePage}&nrOfHits=${pagination.itemsPerPage}`
       : '';
 
@@ -35,7 +38,7 @@ export function connectBlockToProviderData(WrappedComponent) {
     const isPending = useSelector((state) => {
       if (provider_url === null) return false;
 
-      const url = `${provider_url}${search}`;
+      const url = `${provider_url}${search}${paginationString}`;
       const rv = provider_url
         ? state.data_providers?.pendingConnectors?.[url]
         : false;

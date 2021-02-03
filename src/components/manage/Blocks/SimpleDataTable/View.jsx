@@ -55,7 +55,6 @@ const SimpleDataTableView = (props) => {
             : max_count
           : max_count || 5,
         totalItems: provider_data[Object.keys(provider_data)[0]]?.length,
-        enabled: true,
       });
     }
   }, [JSON.stringify(provider_data)]);
@@ -167,6 +166,9 @@ const SimpleDataTableView = (props) => {
 };
 
 export default compose(
-  connectBlockToProviderData,
+  () =>
+    connectBlockToProviderData(SimpleDataTableView, {
+      paginationEnabled: true,
+    }),
   connectToDataParameters,
 )(SimpleDataTableView);
