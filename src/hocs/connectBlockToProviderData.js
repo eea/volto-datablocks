@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
+import { withRouter } from 'react-router';
 import { useHistory } from 'react-router-dom';
-import { getDataFromProvider } from 'volto-datablocks/actions';
 import { useDispatch, useSelector } from 'react-redux';
+import { getMatchParams } from 'volto-datablocks/helpers';
+import { getDataFromProvider } from 'volto-datablocks/actions';
+import { flattenToAppURL } from '@plone/volto/helpers';
+import qs from 'querystring';
 
 /**
  * connectBlockToProviderData.
@@ -9,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
  * @param {} WrappedComponent
  */
 export function connectBlockToProviderData(WrappedComponent, config = {}) {
-  return (props) => {
+  return withRouter((props) => {
     let history = useHistory();
     const dispatch = useDispatch();
     const [pagination, setPagination] = useState({
@@ -21,21 +25,27 @@ export function connectBlockToProviderData(WrappedComponent, config = {}) {
 
     const { data = {} } = props;
     const { provider_url = null } = data;
-    const search = history.location.search;
-    const paginationString = pagination.enabled
-      ? search.length
-        ? `&p=${pagination.activePage}&nrOfHits=${pagination.itemsPerPage}`
-        : `?p=${pagination.activePage}&nrOfHits=${pagination.itemsPerPage}`
-      : '';
+    const contentPath = flattenToAppURL(props.properties?.['@id'] || '');
+    const matchParams = getMatchParams(props.match);
 
-    const updatePagination = (data) => {
-      setPagination({ ...pagination, ...data });
-    };
+    const router_parameters = useSelector((state) => {
+      return { ...matchParams, ...state.router_parameters.data };
+    });
+
+    const params =
+      '?' +
+      qs.stringify({
+        ...qs.parse(history.location.search.replace('?', '')),
+        ...(router_parameters || {}),
+        ...(pagination.enabled
+          ? { p: pagination.activePage, nrOfHits: pagination.itemsPerPage }
+          : {}),
+      });
 
     const isPending = useSelector((state) => {
       if (provider_url === null) return false;
 
-      const url = `${provider_url}${search}${paginationString}`;
+      const url = `${provider_url}${params}`;
       const rv = provider_url
         ? state.data_providers?.pendingConnectors?.[url]
         : false;
@@ -44,17 +54,22 @@ export function connectBlockToProviderData(WrappedComponent, config = {}) {
 
     const provider_data = useSelector((state) => {
       if (provider_url === null) return null;
-      const url = `${provider_url}/@connector-data${search}${paginationString}`;
+      const url = `${provider_url}/@connector-data${params}`;
       return provider_url ? state.data_providers?.data?.[url] : null;
     });
 
+    const ready = contentPath === props.path;
+
+    const updatePagination = (data) => {
+      setPagination({ ...pagination, ...data });
+    };
+
     React.useEffect(() => {
-      if (provider_url && !provider_data && !isPending) {
-        dispatch(
-          getDataFromProvider(provider_url, null, search, paginationString),
-        );
+      if (ready && provider_url && !provider_data && !isPending) {
+        dispatch(getDataFromProvider(provider_url, null, params));
       }
     });
+
     return (
       <WrappedComponent
         {...props}
@@ -63,7 +78,7 @@ export function connectBlockToProviderData(WrappedComponent, config = {}) {
         pagination={pagination}
       />
     );
-  };
+  });
 }
 
 export default connectBlockToProviderData;

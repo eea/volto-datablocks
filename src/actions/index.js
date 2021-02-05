@@ -13,6 +13,7 @@ import {
 
 export * from './getBlockData';
 export * from './getDataProvider';
+export * from './getRouterParameters';
 
 export function changeSidebarState(open) {
   return {

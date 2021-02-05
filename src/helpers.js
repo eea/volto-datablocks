@@ -2,6 +2,11 @@ import { connect } from 'react-redux';
 import { settings } from '~/config';
 import { getBaseUrl } from '@plone/volto/helpers';
 
+export {
+  getMatchParams,
+  getRouterParameterValue,
+} from 'volto-datablocks/components/manage/Blocks/RouterDataParameter';
+
 export function addCustomGroup(config, group) {
   const hasCustomGroup = config.blocks.groupBlocksOrder.filter(
     (el) => el.id === group.id,

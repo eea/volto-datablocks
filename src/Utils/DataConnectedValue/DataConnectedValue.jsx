@@ -1,15 +1,18 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import qs from 'querystring';
 
-import { addAppURL } from '@plone/volto/helpers';
 import { getDataFromProvider } from 'volto-datablocks/actions';
 import {
+  getMatchParams,
   getConnectedDataParametersForProvider,
   getConnectedDataParametersForContext,
   getConnectedDataParametersForPath,
 } from 'volto-datablocks/helpers';
 import { formatValue } from 'volto-datablocks/format';
-
 import './styles.css';
 
 const EMPTY = '^';
@@ -17,15 +20,6 @@ const EMPTY = '^';
 function isObject(item) {
   return typeof item === 'object' && !Array.isArray(item) && item !== null;
 }
-
-const usePrevious = (value) => {
-  const ref = useRef();
-  useEffect(() => {
-    ref.current = value;
-  }, [value]);
-
-  return ref.current;
-};
 
 const getValue = (
   data,
@@ -52,10 +46,6 @@ const getValue = (
   if (!hasQueryParammeters) return data[column]?.[0];
 
   if (!filters || !filters?.[filterIndex]) {
-    // console.log(
-    //   filters,
-    //   'This DataConnectedValue is used in a context without parameters',
-    // );
     return 'No context parameters';
   }
 
@@ -78,8 +68,6 @@ const getValue = (
     filter = filters[filterIndex];
   }
 
-  // console.debug('filterstuff', filter, filters, filterIndex);
-
   let { i: index, v: values } = filter; // o: op,
   index = index ? index.replace('taxonomy_', '') : null;
 
@@ -94,7 +82,6 @@ const getValue = (
     Object.keys(data)?.find((n) => n.toLowerCase() === index) || index;
 
   if (!data[real_index]) {
-    // console.log('NOT_AN_INDEX_IN_DATA:', index, data);
     return placeholder;
   }
   const pos = data[real_index].indexOf(value);
@@ -113,47 +100,78 @@ const DataEntity = (props) => {
     filterIndex,
     format,
     placeholder,
-    data_providers,
     content,
-    url,
     hasQueryParammeters,
   } = props;
-  // provider_data: getProviderData(state, props),
-  const [state, setState] = useState({
-    firstDataProviderUpdate: true,
+
+  let history = useHistory();
+  const provider_url = props.url;
+  // const contentPath = flattenToAppURL(content['@id']);
+  const matchParams = getMatchParams(props.match);
+
+  const router_parameters = useSelector((state) => {
+    return { ...matchParams, ...state.router_parameters.data };
   });
-  const prevUrl = usePrevious(url);
-  const data_provider = url
-    ? data_providers?.data?.[`${url}/@connector-data`] ||
-      data_providers?.data?.[`${addAppURL(url)}/@connector-data`]
-    : {};
-  if (
-    __CLIENT__ &&
-    !data_provider &&
-    !data_providers.pendingConnectors[url] &&
-    ((prevUrl && prevUrl !== url) || (url && state.firstDataProviderUpdate))
-  ) {
-    url &&
-      state.firstDataProviderUpdate &&
-      setState({
-        ...state,
-        firstDataProviderUpdate: false,
-      });
-    props.getDataFromProvider(url);
-  }
+
+  const params =
+    '?' +
+    qs.stringify({
+      ...qs.parse(history.location.search.replace('?', '')),
+      ...(router_parameters || {}),
+    });
+
+  const paramsObj = qs.parse(params.replace('?', ''));
+
+  const paramsObjKeys = Object.keys(paramsObj);
+
+  const isPending = useSelector((state) => {
+    if (provider_url === null) return false;
+
+    const url = `${provider_url}${params}`;
+    const rv = provider_url
+      ? state.data_providers?.pendingConnectors?.[url]
+      : false;
+    return rv;
+  });
+
+  const provider_data = useSelector((state) => {
+    if (provider_url === null) return null;
+    const url = `${provider_url}/@connector-data${params}`;
+    return provider_url ? state.data_providers?.data?.[url] : null;
+  });
+
+  useEffect(() => {
+    if (provider_url && !provider_data && !isPending) {
+      props.getDataFromProvider(provider_url, null, params);
+    }
+  });
+
+  const filtersByQueryParams = paramsObjKeys.length
+    ? paramsObjKeys.map((key) => ({
+        i: key,
+        o: 'plone.app.querystring.operation.selection.any',
+        v: [paramsObj[key]],
+      }))
+    : null;
+
   const dataParameters =
+    filtersByQueryParams ||
     getConnectedDataParametersForPath(
       connected_data_parameters,
       content['@id'],
       filterIndex,
     ) ||
-    getConnectedDataParametersForProvider(connected_data_parameters, url) ||
+    getConnectedDataParametersForProvider(
+      connected_data_parameters,
+      provider_url,
+    ) ||
     getConnectedDataParametersForContext(
       connected_data_parameters,
       content['@id'],
     );
+
   const value = getValue(
-    data_provider,
+    provider_data,
     column,
     dataParameters,
     filterIndex,
@@ -166,11 +184,11 @@ const DataEntity = (props) => {
 
 export default connect(
   (state, props) => ({
-    data_providers: state.data_providers,
     content: state.content.data,
     connected_data_parameters: state.connected_data_parameters,
+    router_parameters: state.router_parameters,
   }),
   {
     getDataFromProvider,
   },
-)(DataEntity);
+)(withRouter(DataEntity));

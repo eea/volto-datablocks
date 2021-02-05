@@ -6,12 +6,7 @@ import {
 } from 'volto-datablocks/constants';
 import qs from 'query-string';
 
-export function getDataFromProvider(
-  path,
-  filters = null,
-  queryString = '',
-  pagination = '',
-) {
+export function getDataFromProvider(path, filters = null, queryString = '') {
   path =
     typeof path === 'object'
       ? Array.isArray(path) && path.length
@@ -36,13 +31,12 @@ export function getDataFromProvider(
     : {
         type: GET_DATA_FROM_PROVIDER,
         path: path,
-        queryString: queryString + pagination,
+        queryString: queryString,
         request: {
           op: 'get',
-          path: `${path}/@connector-data/${queryString}${pagination}`,
+          path: `${path}/@connector-data/${queryString}`,
           params: {
             ...qs.parse(queryString),
-            ...qs.parse(pagination),
           },
         },
       };
