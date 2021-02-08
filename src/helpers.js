@@ -2,10 +2,7 @@ import { connect } from 'react-redux';
 import { settings } from '~/config';
 import { getBaseUrl } from '@plone/volto/helpers';
 
-export {
-  getMatchParams,
-  getRouterParameterValue,
-} from 'volto-datablocks/components/manage/Blocks/RouterDataParameter';
+export * from 'volto-datablocks/components/manage/Blocks/RouteParameter';
 
 export function addCustomGroup(config, group) {
   const hasCustomGroup = config.blocks.groupBlocksOrder.filter(
@@ -21,6 +18,18 @@ export function getBasePath(url) {
   return getBaseUrl(url)
     .replace(settings.apiPath, '')
     .replace(settings.internalApiPath, '');
+}
+
+export function getConnectedDataParametersForRoute(
+  connected_data_parameters,
+  url,
+) {
+  const provider_url = getBasePath(url || '');
+  const { byRouteParameters = {} } = connected_data_parameters;
+
+  return byRouteParameters[provider_url]?.length > 0
+    ? byRouteParameters[provider_url]
+    : null;
 }
 
 export function getConnectedDataParametersForPath(
@@ -215,7 +224,6 @@ export function mixProviderData(chartData, providerData, parameters) {
 }
 
 export const connectToDataParameters = connect((state, props) => {
-  // console.log('props', props);
   const providerUrl = props?.data?.provider_url || props?.data?.url || null;
 
   const FILTER = true; // this is a filter??
@@ -226,16 +234,15 @@ export const connectToDataParameters = connect((state, props) => {
       FILTER,
     ) || {};
 
-  // console.log('byPath', byPath);
   const byProvider = getConnectedDataParametersForProvider(
     state.connected_data_parameters,
     providerUrl,
   );
+
   const byContext = getConnectedDataParametersForContext(
     state.connected_data_parameters,
     state.router.location.pathname,
   );
-  // console.log('byContext', byContext);
 
   const connected_data_parameters =
     providerUrl !== null
@@ -244,11 +251,6 @@ export const connectToDataParameters = connect((state, props) => {
         : byContext || byProvider
       : null;
 
-  // console.log(
-  //   'final connected_data_parameters',
-  //   providerUrl,
-  //   connected_data_parameters,
-  // );
   return {
     connected_data_parameters,
   };

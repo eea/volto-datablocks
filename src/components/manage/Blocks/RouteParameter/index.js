@@ -1,5 +1,6 @@
 import { settings } from '~/config';
 import worldSVG from '@plone/volto/icons/world.svg';
+import { getConnectedDataParametersForRoute } from 'volto-datablocks/helpers';
 import View from './View';
 import Edit from './Edit';
 
@@ -16,17 +17,31 @@ export function getMatchParams(match) {
     }, {});
 }
 
-export function getRouterParameterValue(value, defaultValue) {
+export function getRouteParameterValue(value, defaultValue) {
   if (settings.ignoreRouterParams.includes(value)) {
     return defaultValue || 'NULL';
   }
   return value || defaultValue || 'NULL';
 }
 
+export function getRouteParameters(providerUrl, dataParameters, match) {
+  const connectedDataParameters = getConnectedDataParametersForRoute(
+    dataParameters,
+    providerUrl,
+  );
+  const parameters = { ...getMatchParams(match) };
+  if (connectedDataParameters?.length) {
+    connectedDataParameters.forEach((parameter) => {
+      parameters[parameter.i] = parameter.v[0];
+    });
+  }
+  return parameters || {};
+}
+
 export default (config) => {
-  config.blocks.blocksConfig.routerDataParameter = {
-    id: 'routerDataParameter',
-    title: 'Router data parameter',
+  config.blocks.blocksConfig.routeParameter = {
+    id: 'routeParameter',
+    title: 'Route parameter',
     icon: worldSVG,
     group: 'data_blocks',
     view: View,

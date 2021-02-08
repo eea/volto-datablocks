@@ -12,6 +12,7 @@ export DottedTableChartEdit from './manage/Blocks/DottedTableChart/Edit';
 export SimpleDataTableEdit from './manage/Blocks/SimpleDataTable/Edit';
 export SourcesBlockEdit from './manage/Blocks/SourcesBlock/Edit';
 export TreemapEdit from './manage/Blocks/Treemap/Edit';
+export RouteParameterEdit from './manage/Blocks/RouteParameter/Edit';
 
 export BubbleChartView from './manage/Blocks/BubbleChart/View';
 export CountryFlagView from './manage/Blocks/CountryFlag/View';
@@ -23,6 +24,7 @@ export DottedTableChartView from './manage/Blocks/DottedTableChart/View';
 export SimpleDataTableView from './manage/Blocks/SimpleDataTable/View';
 export SourcesBlockView from './manage/Blocks/SourcesBlock/View';
 export TreemapView from './manage/Blocks/Treemap/View';
+export RouteParameterView from './manage/Blocks/RouteParameter/View';
 
 export PickObjectWidget from './manage/Widgets/PickObjectWidget';
 export DataQueryWidget from './manage/Widgets/DataQueryWidget';

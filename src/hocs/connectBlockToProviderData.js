@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { withRouter } from 'react-router';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getMatchParams } from 'volto-datablocks/helpers';
+import { getRouteParameters } from 'volto-datablocks/helpers';
 import { getDataFromProvider } from 'volto-datablocks/actions';
 import { flattenToAppURL } from '@plone/volto/helpers';
 import qs from 'querystring';
@@ -25,22 +25,23 @@ export function connectBlockToProviderData(WrappedComponent, config = {}) {
 
     const { data = {} } = props;
     const { provider_url = null } = data;
-    const contentPath = flattenToAppURL(props.properties?.['@id'] || '');
-    const matchParams = getMatchParams(props.match);
 
-    const router_parameters = useSelector((state) => {
-      return { ...matchParams, ...state.router_parameters.data };
+    const params = useSelector((state) => {
+      return (
+        '?' +
+        qs.stringify({
+          ...qs.parse(history.location.search.replace('?', '')),
+          ...getRouteParameters(
+            provider_url,
+            state.connected_data_parameters,
+            props.match,
+          ),
+          ...(pagination.enabled
+            ? { p: pagination.activePage, nrOfHits: pagination.itemsPerPage }
+            : {}),
+        })
+      );
     });
-
-    const params =
-      '?' +
-      qs.stringify({
-        ...qs.parse(history.location.search.replace('?', '')),
-        ...(router_parameters || {}),
-        ...(pagination.enabled
-          ? { p: pagination.activePage, nrOfHits: pagination.itemsPerPage }
-          : {}),
-      });
 
     const isPending = useSelector((state) => {
       if (provider_url === null) return false;
@@ -58,14 +59,14 @@ export function connectBlockToProviderData(WrappedComponent, config = {}) {
       return provider_url ? state.data_providers?.data?.[url] : null;
     });
 
-    const ready = contentPath === props.path;
-
     const updatePagination = (data) => {
       setPagination({ ...pagination, ...data });
     };
 
+    console.log('HERE', provider_url, provider_data, isPending);
+
     React.useEffect(() => {
-      if (ready && provider_url && !provider_data && !isPending) {
+      if (provider_url && !provider_data && !isPending) {
         dispatch(getDataFromProvider(provider_url, null, params));
       }
     });

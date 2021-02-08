@@ -6,7 +6,7 @@ import installBubbleChart from './components/manage/Blocks/BubbleChart';
 import installDottedTableChart from './components/manage/Blocks/DottedTableChart';
 import installCountryFlag from './components/manage/Blocks/CountryFlag';
 import installTreemap from './components/manage/Blocks/Treemap';
-import installRouterDataParameter from './components/manage/Blocks/RouterDataParameter';
+import installRouteParameter from './components/manage/Blocks/RouteParameter';
 
 import { DataConnectorView } from './components';
 import { DataQueryWidget, PickProviderWidget } from './components';
@@ -47,6 +47,6 @@ export default (config) => {
     installDottedTableChart,
     installCountryFlag,
     installTreemap,
-    installRouterDataParameter,
+    installRouteParameter,
   ].reduce((acc, apply) => apply(acc), config);
 };

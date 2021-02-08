@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { getDataFromProvider } from 'volto-datablocks/actions';
-import { getMatchParams } from 'volto-datablocks/helpers';
+import { getRouteParameters } from 'volto-datablocks/helpers';
 import { ObjectBrowserWidget } from '@plone/volto/components';
 import qs from 'querystring';
 
@@ -53,19 +53,16 @@ class PickProvider extends Component {
     // this.props.onChange('providerData', providerData);
   }
 
-  getParams = () => {
-    const matchParams = getMatchParams(this.props.match);
-
-    const router_parameters = {
-      ...matchParams,
-      ...this.props.router_parameters.data,
-    };
-
+  getParams = (provider_url) => {
     const params =
       '?' +
       qs.stringify({
         ...qs.parse(this.props.location.search.replace('?', '')),
-        ...(router_parameters || {}),
+        ...(getRouteParameters(
+          provider_url,
+          this.props.connected_data_parameters,
+          this.props.match,
+        ) || {}),
       });
 
     return params || '';
@@ -74,13 +71,13 @@ class PickProvider extends Component {
   getProviderData = (provider_url) => {
     return provider_url
       ? this.props.data_providers?.data?.[
-          `${provider_url}/@connector-data${this.getParams()}`
+          `${provider_url}/@connector-data${this.getParams(provider_url)}`
         ]
       : null;
   };
 
   getDataFromProvider = (provider_url) => {
-    const params = this.getParams();
+    const params = this.getParams(provider_url);
 
     const isPending = provider_url
       ? this.props.data_providers?.pendingConnectors?.[
@@ -125,7 +122,7 @@ class PickProvider extends Component {
 export default connect(
   (state, props) => ({
     data_providers: state.data_providers,
-    router_parameters: state.router_parameters,
+    connected_data_parameters: state.connected_data_parameters,
   }),
   { getDataFromProvider },
 )(withRouter(PickProvider));
