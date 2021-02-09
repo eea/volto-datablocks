@@ -59,7 +59,8 @@ const SimpleDataTableView = (props) => {
     }
   }, [JSON.stringify(provider_data)]);
   // TODO: sorting
-  const row_size = Math.min(pagination.itemsPerPage, pagination.totalItems);
+  const row_size =
+    Math.min(pagination.itemsPerPage, pagination.totalItems) || 0;
   const providerColumns = Object.keys(provider_data || {});
   const sureToShowAllColumns = !Array.isArray(columns) || columns.length === 0;
   const validator = selectedColumnValidator(providerColumns);

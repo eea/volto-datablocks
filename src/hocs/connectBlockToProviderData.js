@@ -4,7 +4,6 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getRouteParameters } from 'volto-datablocks/helpers';
 import { getDataFromProvider } from 'volto-datablocks/actions';
-import { flattenToAppURL } from '@plone/volto/helpers';
 import qs from 'querystring';
 
 /**
@@ -62,8 +61,6 @@ export function connectBlockToProviderData(WrappedComponent, config = {}) {
     const updatePagination = (data) => {
       setPagination({ ...pagination, ...data });
     };
-
-    console.log('HERE', provider_url, provider_data, isPending);
 
     React.useEffect(() => {
       if (provider_url && !provider_data && !isPending) {
