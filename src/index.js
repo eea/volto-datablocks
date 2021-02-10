@@ -11,6 +11,7 @@ import installRouteParameter from './components/manage/Blocks/RouteParameter';
 import { DataConnectorView } from './components';
 import { DataQueryWidget, PickProviderWidget } from './components';
 import { addCustomGroup } from './helpers';
+import { dataProvider } from './middlewares';
 import * as addonReducers from './reducers';
 export * from './config';
 
@@ -29,6 +30,8 @@ export default (config) => {
   config.widgets.id.data_query = DataQueryWidget;
   config.widgets.widget.data_provider = PickProviderWidget;
   config.widgets.widget.pick_provider = PickProviderWidget;
+
+  config.settings.storeExtenders = [dataProvider];
 
   config.addonReducers = {
     ...config.addonReducers,

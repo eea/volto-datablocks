@@ -22,6 +22,7 @@ export default function data_providers(state = initialState, action = {}) {
   switch (action.type) {
     case `${GET_DATA_FROM_PROVIDER}_PENDING`:
       pendingConnectors[action.path + action.queryString] = true;
+
       return {
         ...state,
         error: null,
@@ -44,7 +45,7 @@ export default function data_providers(state = initialState, action = {}) {
       )
         .replace(settings.apiPath, '')
         .replace(settings.internalApiPath, '');
-      delete pendingConnectors[action.path];
+      delete pendingConnectors[action.path + action.queryString];
       return {
         ...state,
         error: null,
@@ -61,7 +62,7 @@ export default function data_providers(state = initialState, action = {}) {
       };
 
     case `${GET_DATA_FROM_PROVIDER}_FAIL`:
-      delete pendingConnectors[action.path];
+      delete pendingConnectors[action.path + action.queryString];
       return {
         ...state,
         error: action.error,

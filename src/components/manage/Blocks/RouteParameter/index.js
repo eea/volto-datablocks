@@ -35,6 +35,7 @@ export function getRouteParameters(providerUrl, dataParameters, match) {
       parameters[parameter.i] = parameter.v[0];
     });
   }
+
   return parameters || {};
 }
 

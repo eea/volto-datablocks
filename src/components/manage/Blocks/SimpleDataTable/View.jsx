@@ -41,23 +41,22 @@ const SimpleDataTableView = (props) => {
     data = {},
     provider_data = {},
     pagination = {},
-    updatePagination,
-    connected_data_parameters,
+    connected_data_parameters = {},
+    updatePagination = () => {},
   } = props;
   const { show_header, description, max_count, columns } = data;
 
   useEffect(() => {
-    if (provider_data) {
-      updatePagination({
-        itemsPerPage: max_count
-          ? typeof max_count !== 'number'
-            ? parseInt(max_count) || 5
-            : max_count
-          : max_count || 5,
-        totalItems: provider_data[Object.keys(provider_data)[0]]?.length,
-      });
-    }
-  }, [JSON.stringify(provider_data)]);
+    updatePagination({
+      itemsPerPage: max_count
+        ? typeof max_count !== 'number'
+          ? parseInt(max_count) || 5
+          : max_count
+        : max_count || 5,
+      totalItems: provider_data?.[Object.keys(provider_data)?.[0]]?.length,
+    });
+  }, [JSON.stringify(provider_data), max_count]);
+
   // TODO: sorting
   const row_size =
     Math.min(pagination.itemsPerPage, pagination.totalItems) || 0;
@@ -166,10 +165,18 @@ const SimpleDataTableView = (props) => {
   );
 };
 
-export default compose(
-  () =>
-    connectBlockToProviderData(SimpleDataTableView, {
-      hasPagination: true,
-    }),
-  connectToDataParameters,
-)(SimpleDataTableView);
+export default compose(() => {
+  return connectBlockToProviderData(SimpleDataTableView, {
+    pagination: {
+      getEnabled: () => true,
+      getItemsPerPage: (props) => {
+        const { max_count = 5 } = props.data;
+        return max_count
+          ? typeof max_count !== 'number'
+            ? parseInt(max_count) || 5
+            : max_count
+          : max_count || 5;
+      },
+    },
+  });
+}, connectToDataParameters)(SimpleDataTableView);

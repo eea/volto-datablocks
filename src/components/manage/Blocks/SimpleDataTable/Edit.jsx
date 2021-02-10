@@ -49,4 +49,16 @@ class Edit extends Component {
   }
 }
 
-export default connectBlockToProviderData(Edit, { hasPagination: true });
+export default connectBlockToProviderData(Edit, {
+  pagination: {
+    getEnabled: () => true,
+    getItemsPerPage: (props) => {
+      const { max_count = 5 } = props.data;
+      return max_count
+        ? typeof max_count !== 'number'
+          ? parseInt(max_count) || 5
+          : max_count
+        : max_count || 5;
+    },
+  },
+});

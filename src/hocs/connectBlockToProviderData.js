@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { withRouter } from 'react-router';
-import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getRouteParameters } from 'volto-datablocks/helpers';
 import { getDataFromProvider } from 'volto-datablocks/actions';
@@ -13,50 +12,48 @@ import qs from 'querystring';
  */
 export function connectBlockToProviderData(WrappedComponent, config = {}) {
   return withRouter((props) => {
-    let history = useHistory();
     const dispatch = useDispatch();
     const [pagination, setPagination] = useState({
       activePage: 1,
-      itemsPerPage: 5,
+      itemsPerPage: config.pagination?.getItemsPerPage?.(props),
       totalItems: 0,
-      enabled: config.hasPagination || false,
+      enabled: config.pagination?.getEnabled?.(props) || false,
     });
 
     const { data = {} } = props;
     const { provider_url = null } = data;
 
-    const params = useSelector((state) => {
-      return (
-        '?' +
-        qs.stringify({
-          ...qs.parse(history.location.search.replace('?', '')),
-          ...getRouteParameters(
-            provider_url,
-            state.connected_data_parameters,
-            props.match,
-          ),
-          ...(pagination.enabled
-            ? { p: pagination.activePage, nrOfHits: pagination.itemsPerPage }
-            : {}),
-        })
-      );
+    const state = useSelector((state) => {
+      return {
+        connected_data_parameters: state.connected_data_parameters,
+        data_providers: state.data_providers,
+      };
     });
 
-    const isPending = useSelector((state) => {
-      if (provider_url === null) return false;
+    const params =
+      '?' +
+      qs.stringify({
+        ...qs.parse(props.location.search.replace('?', '')),
+        ...getRouteParameters(
+          provider_url,
+          state.connected_data_parameters,
+          props.match,
+        ),
+        ...(pagination.enabled
+          ? { p: pagination.activePage, nrOfHits: pagination.itemsPerPage }
+          : {}),
+      });
 
-      const url = `${provider_url}${params}`;
-      const rv = provider_url
-        ? state.data_providers?.pendingConnectors?.[url]
-        : false;
-      return rv;
-    });
+    const url = `${provider_url}${params}`;
+    const urlConnector = `${provider_url}/@connector-data${params}`;
 
-    const provider_data = useSelector((state) => {
-      if (provider_url === null) return null;
-      const url = `${provider_url}/@connector-data${params}`;
-      return provider_url ? state.data_providers?.data?.[url] : null;
-    });
+    const isPending = provider_url
+      ? state.data_providers?.pendingConnectors?.[url]
+      : false;
+
+    const provider_data = provider_url
+      ? state.data_providers?.data?.[urlConnector]
+      : null;
 
     const updatePagination = (data) => {
       setPagination({ ...pagination, ...data });

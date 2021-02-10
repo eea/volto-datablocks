@@ -1,8 +1,6 @@
 import { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import qs from 'querystring';
 
 import { getDataFromProvider } from 'volto-datablocks/actions';
@@ -105,13 +103,12 @@ const DataEntity = (props) => {
     hasQueryParammeters,
   } = props;
 
-  let history = useHistory();
   const provider_url = props.url;
 
   const params =
     '?' +
     qs.stringify({
-      ...qs.parse(history.location.search.replace('?', '')),
+      ...qs.parse(props.location.search.replace('?', '')),
       ...getRouteParameters(
         provider_url,
         connected_data_parameters,
@@ -119,21 +116,16 @@ const DataEntity = (props) => {
       ),
     });
 
-  const isPending = useSelector((state) => {
-    if (provider_url === null) return false;
+  const url = `${provider_url}${params}`;
+  const urlConnector = `${provider_url}/@connector-data${params}`;
 
-    const url = `${provider_url}${params}`;
-    const rv = provider_url
-      ? state.data_providers?.pendingConnectors?.[url]
-      : false;
-    return rv;
-  });
+  const isPending = provider_url
+    ? props.data_providers?.pendingConnectors?.[url]
+    : false;
 
-  const provider_data = useSelector((state) => {
-    if (provider_url === null) return null;
-    const url = `${provider_url}/@connector-data${params}`;
-    return provider_url ? state.data_providers?.data?.[url] : null;
-  });
+  const provider_data = provider_url
+    ? props.data_providers?.data?.[urlConnector]
+    : null;
 
   useEffect(() => {
     if (provider_url && !provider_data && !isPending) {
@@ -176,6 +168,7 @@ export default connect(
   (state, props) => ({
     content: state.content.data,
     connected_data_parameters: state.connected_data_parameters,
+    data_providers: state.data_providers,
   }),
   {
     getDataFromProvider,
