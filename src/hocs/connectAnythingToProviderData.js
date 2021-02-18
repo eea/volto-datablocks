@@ -1,46 +1,81 @@
-import React from 'react';
-import { getDataFromProvider } from 'volto-datablocks/actions';
+import React, { useState } from 'react';
+import { withRouter } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
+import { getRouteParameters } from 'volto-datablocks/helpers';
+import { getDataFromProvider } from 'volto-datablocks/actions';
 import { flattenToAppURL } from '@plone/volto/helpers';
+import qs from 'querystring';
 
 /**
  * connectAnythingToProviderData.
  *
  * @param {} getProviderUrl
  */
-export function connectAnythingToProviderData(getProviderUrl) {
+export function connectAnythingToProviderData(getProviderUrl, config = {}) {
   return (WrappedComponent) => {
-    return (props) => {
+    return withRouter((props) => {
       const dispatch = useDispatch();
+      const [pagination, setPagination] = useState({
+        activePage: 1,
+        itemsPerPage: config.pagination?.getItemsPerPage?.(props) || 5,
+        totalItems: 0,
+        enabled: config.pagination?.getEnabled?.(props) || false,
+      });
 
       const base = getProviderUrl(props);
       const provider_url = base ? flattenToAppURL(base) : base;
 
-      const isPending = useSelector((state) => {
-        if (provider_url === null) return false;
-
-        const url = `${provider_url}`;
-        const rv = provider_url
-          ? state.data_providers?.pendingConnectors?.[url]
-          : false;
-        return rv;
+      const state = useSelector((state) => {
+        return {
+          connected_data_parameters: state.connected_data_parameters,
+          data_providers: state.data_providers,
+        };
       });
 
-      const provider_data = useSelector((state) => {
-        if (provider_url === null) return null;
+      const params =
+        '?' +
+        qs.stringify({
+          ...qs.parse(props.location.search.replace('?', '')),
+          ...getRouteParameters(
+            provider_url,
+            state.connected_data_parameters,
+            props.match,
+          ),
+          ...(pagination.enabled
+            ? { p: pagination.activePage, nrOfHits: pagination.itemsPerPage }
+            : {}),
+        });
 
-        const url = `${provider_url}/@connector-data`;
-        return provider_url ? state.data_providers?.data?.[url] : null;
-      });
+      const url = `${provider_url}${params}`;
+      const urlConnector = `${provider_url}/@connector-data${params}`;
+
+      const isPending = provider_url
+        ? state.data_providers?.pendingConnectors?.[url]
+        : false;
+
+      const provider_data = provider_url
+        ? state.data_providers?.data?.[urlConnector]
+        : null;
+
+      const updatePagination = (data) => {
+        setPagination({ ...pagination, ...data });
+      };
 
       React.useEffect(() => {
         if (provider_url && !provider_data && !isPending) {
-          // console.log('getDataFromProvider, connectAnythingToProviderData');
-          dispatch(getDataFromProvider(provider_url));
+          dispatch(getDataFromProvider(provider_url, null, params));
         }
       });
-      return <WrappedComponent {...props} provider_data={provider_data} />;
-    };
+
+      return (
+        <WrappedComponent
+          {...props}
+          provider_data={provider_data}
+          updatePagination={updatePagination}
+          pagination={pagination}
+        />
+      );
+    });
   };
 }
 

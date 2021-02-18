@@ -15,13 +15,12 @@ export function connectBlockToProviderData(WrappedComponent, config = {}) {
     const dispatch = useDispatch();
     const [pagination, setPagination] = useState({
       activePage: 1,
-      itemsPerPage: config.pagination?.getItemsPerPage?.(props),
+      itemsPerPage: config.pagination?.getItemsPerPage?.(props) || 5,
       totalItems: 0,
       enabled: config.pagination?.getEnabled?.(props) || false,
     });
 
-    const { data = {} } = props;
-    const { provider_url = null } = data;
+    const { provider_url = null } = props.data;
 
     const state = useSelector((state) => {
       return {

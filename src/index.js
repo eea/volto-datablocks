@@ -9,7 +9,11 @@ import installTreemap from './components/manage/Blocks/Treemap';
 import installRouteParameter from './components/manage/Blocks/RouteParameter';
 
 import { DataConnectorView } from './components';
-import { DataQueryWidget, PickProviderWidget } from './components';
+import {
+  PickObjectWidget,
+  DataQueryWidget,
+  PickProviderWidget,
+} from './components';
 import { addCustomGroup } from './helpers';
 import { dataProvider } from './middlewares';
 import * as addonReducers from './reducers';
@@ -28,6 +32,7 @@ export default (config) => {
   config.views.contentTypesViews.discodataconnector = DataConnectorView;
 
   config.widgets.id.data_query = DataQueryWidget;
+  config.widgets.widget.object_by_path = PickObjectWidget;
   config.widgets.widget.data_provider = PickProviderWidget;
   config.widgets.widget.pick_provider = PickProviderWidget;
 

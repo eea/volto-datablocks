@@ -12,7 +12,7 @@ const getSchema = () => ({
   properties: {
     providerUrl: {
       title: 'Data provider',
-      widget: 'pick_provider',
+      widget: 'object_by_path',
     },
     parameterKey: {
       title: 'Parameter key',

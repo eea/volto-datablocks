@@ -7,7 +7,7 @@ const withBlockData = (WrappedComponent) => (props) => {
   const { id } = props;
   const dispatch = useDispatch();
   const blockData = useSelector((state) => state.blockdata[id]);
-  const pathname = useSelector((state) => state.router.location.pathname);
+  const pathname = props.path;
 
   React.useEffect(() => {
     if (!blockData) {
