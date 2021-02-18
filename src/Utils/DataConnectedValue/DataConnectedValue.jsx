@@ -127,8 +127,12 @@ const DataEntity = (props) => {
     ? props.data_providers?.data?.[urlConnector]
     : null;
 
+  const isFailed = provider_url
+    ? props.data_providers?.failedConnectors?.[url]
+    : false;
+
   useEffect(() => {
-    if (provider_url && !provider_data && !isPending) {
+    if (provider_url && !provider_data && !isPending && !isFailed) {
       props.getDataFromProvider(provider_url, null, params);
     }
   });

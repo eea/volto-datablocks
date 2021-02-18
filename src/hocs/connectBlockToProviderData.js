@@ -50,6 +50,10 @@ export function connectBlockToProviderData(WrappedComponent, config = {}) {
       ? state.data_providers?.pendingConnectors?.[url]
       : false;
 
+    const isFailed = provider_url
+      ? state.data_providers?.failedConnectors?.[url]
+      : false;
+
     const provider_data = provider_url
       ? state.data_providers?.data?.[urlConnector]
       : null;
@@ -59,7 +63,7 @@ export function connectBlockToProviderData(WrappedComponent, config = {}) {
     };
 
     React.useEffect(() => {
-      if (provider_url && !provider_data && !isPending) {
+      if (provider_url && !provider_data && !isPending && !isFailed) {
         dispatch(getDataFromProvider(provider_url, null, params));
       }
     });

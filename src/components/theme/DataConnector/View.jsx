@@ -58,6 +58,16 @@ const DataConnectorView = (props) => {
     return rv;
   });
 
+  const isFailed = useSelector((state) => {
+    if (provider_url === null) return false;
+
+    const url = `${provider_url}${params}`;
+    const rv = provider_url
+      ? state.data_providers?.failedConnectors?.[url]
+      : false;
+    return rv;
+  });
+
   const provider_data = useSelector((state) => {
     if (provider_url === null) return null;
     const url = `${provider_url}/@connector-data${params}`;
@@ -65,7 +75,7 @@ const DataConnectorView = (props) => {
   });
 
   React.useEffect(() => {
-    if (provider_url && !provider_data && !isPending) {
+    if (provider_url && !provider_data && !isPending && !isFailed) {
       dispatch(getDataFromProvider(provider_url, null, params));
     }
   });

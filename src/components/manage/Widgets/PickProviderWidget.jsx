@@ -85,13 +85,19 @@ class PickProvider extends Component {
         ]
       : false;
 
+    const isFailed = provider_url
+      ? this.props.data_providers?.failedConnectors?.[
+          `${provider_url}${params}`
+        ]
+      : false;
+
     const provider_data = provider_url
       ? this.props.data_providers?.data?.[
           `${provider_url}/@connector-data${params}`
         ]
       : null;
 
-    if (provider_url && !provider_data && !isPending) {
+    if (provider_url && !provider_data && !isPending && !isFailed) {
       this.props.getDataFromProvider(provider_url, null, params);
     }
   };

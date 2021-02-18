@@ -13,15 +13,18 @@ const initialState = {
   loaded: false,
   loading: false,
   pendingConnectors: {},
+  failedConnectors: {},
   requested: [],
 };
 
 export default function data_providers(state = initialState, action = {}) {
   const pendingConnectors = { ...state.pendingConnectors };
+  const failedConnectors = { ...state.failedConnectors };
 
   switch (action.type) {
     case `${GET_DATA_FROM_PROVIDER}_PENDING`:
       pendingConnectors[action.path + action.queryString] = true;
+      delete failedConnectors[action.path + action.queryString];
 
       return {
         ...state,
@@ -30,6 +33,7 @@ export default function data_providers(state = initialState, action = {}) {
         loading: true,
         requested: [...without(state.requested, action.path), action.path],
         pendingConnectors,
+        failedConnectors,
       };
 
     case `${GET_DATA_FROM_PROVIDER}_SUCCESS`:
@@ -59,10 +63,13 @@ export default function data_providers(state = initialState, action = {}) {
         loading: false,
         requested: [...without(state.requested, action.path)],
         pendingConnectors,
+        failedConnectors,
       };
 
     case `${GET_DATA_FROM_PROVIDER}_FAIL`:
       delete pendingConnectors[action.path + action.queryString];
+      failedConnectors[action.path + action.queryString] = true;
+
       return {
         ...state,
         error: action.error,
@@ -72,6 +79,7 @@ export default function data_providers(state = initialState, action = {}) {
         // TODO: retry get?
         requested: [...without(state.requested, action.path)],
         pendingConnectors,
+        failedConnectors,
       };
 
     default:
