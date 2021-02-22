@@ -15,7 +15,7 @@ import clearSVG from '@plone/volto/icons/clear.svg';
 import aheadSVG from '@plone/volto/icons/ahead.svg';
 import mapsBlockSVG from '@plone/volto/components/manage/Blocks/Maps/block-maps.svg';
 import schema from './schema';
-import { addPrivacyProtectionToSchema } from 'volto-embed/PrivacyProtection';
+import { addPrivacyProtectionToSchema } from 'volto-embed';
 
 const messages = defineMessages({
   MapsBlockInputPlaceholder: {
