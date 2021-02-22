@@ -20,7 +20,7 @@ const withEditBlockData = (WrappedComponent) => (props) => {
     if (!blockData?.chartData?.data) {
       dispatch(getBlockData(getBaseUrl(pathname), id)); // || blockData.error
     }
-  }, [blockData?.chartData?.data, dispatch, id, pathname]);
+  }, [blockData.chartData.data, dispatch, id, pathname]);
 
   // console.log('data', blockData.data, props.data);
   return <WrappedComponent {...props} data={blockData?.data || props.data} />;

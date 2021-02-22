@@ -1,6 +1,6 @@
 import { setupBeforeEach, tearDownAfterEach } from '../support';
 import { changePageTitle, addBlock } from '../helpers';
-import { openSidebarTab } from '../helpers';
+//import { openSidebarTab } from '../helpers';
 
 const group = {
   title: 'Data blocks',
