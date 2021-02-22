@@ -6,7 +6,7 @@ import InlineForm from '@plone/volto/components/manage/Form/InlineForm';
 import CountryFlagSchema from './schema';
 import { connectBlockToProviderData } from 'volto-datablocks/hocs';
 import CountryFlagView from './View';
-import countryNames from './data/countries.json';
+import countryNames from './data/countries';
 
 class Edit extends Component {
   getSchema = () => {

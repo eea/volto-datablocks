@@ -1,5 +1,5 @@
 import React from 'react';
-import countryNames from './data/countries.json';
+import countryNames from './data/countries';
 import './styles.less';
 
 const CountryFlagView = ({ data = {} }) => {
