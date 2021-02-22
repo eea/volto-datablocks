@@ -2,10 +2,10 @@ pipeline {
   agent any
 
   environment {
-        GIT_NAME = "volto-datablocks"
-        SONARQUBE_TAGS = "volto.eea.europa.eu"
-        DEPENDENCIES = "github:eea/volto-embed#1.1.0"
-    }
+    GIT_NAME = "volto-datablocks"
+    SONARQUBE_TAGS = "volto.eea.europa.eu"
+    DEPENDENCIES = "volto-embed"
+  }
 
   stages {
 
