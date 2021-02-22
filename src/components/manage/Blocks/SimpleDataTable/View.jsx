@@ -55,6 +55,7 @@ const SimpleDataTableView = (props) => {
         : max_count || 5,
       totalItems: provider_data?.[Object.keys(provider_data)?.[0]]?.length,
     });
+    /* eslint-disable-next-line */
   }, [JSON.stringify(provider_data), max_count]);
 
   // TODO: sorting

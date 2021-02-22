@@ -18,7 +18,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import loadable from '@loadable/component';
 
-const ReactBubbleChartD3  = loadable.lib(() => {
+const ReactBubbleChartD3 = loadable.lib(() => {
   return import('./ReactBubbleChartD3');
 });
 
@@ -166,17 +166,14 @@ class ReactBubbleChart extends React.Component {
   componentDidMount() {
     window.addEventListener('resize', this.handleResize);
     if (typeof this.rbc === 'function') {
-      this.bubbleChart = new this.rbc(
-        this.getDOMNode(),
-        this.getChartState(),
-      );
+      this.bubbleChart = new this.rbc(this.getDOMNode(), this.getChartState());
     }
   }
 
   /** When we update, update our friend, the bubble chart */
   componentDidUpdate() {
-    if (typeof this.rbc === 'function') {
-      this.bubbleChart?.update(this.getDOMNode(), this.getChartState());
+    if (typeof this.rbc === 'function' && this.bubbleChart) {
+      this.bubbleChart.update(this.getDOMNode(), this.getChartState());
     }
   }
 
@@ -205,7 +202,9 @@ class ReactBubbleChart extends React.Component {
   /** When we're piecing out, remove the handler and destroy the chart */
   componentWillUnmount() {
     window.removeEventListener('resize', this.handleResize);
-    this.bubbleChart?.destroy(this.getDOMNode());
+    if (this.bubbleChart) {
+      this.bubbleChart.destroy(this.getDOMNode());
+    }
   }
 
   /** Helper method to reference this dom node */
@@ -217,8 +216,10 @@ class ReactBubbleChart extends React.Component {
   _handleResize(e) {
     this.__resizeTimeout && clearTimeout(this.__resizeTimeout);
     this.__resizeTimeout = setTimeout(() => {
-      this.bubbleChart?.adjustSize(this.getDOMNode());
-      this.bubbleChart?.update(this.getDOMNode(), this.getChartState());
+      if (this.bubbleChart) {
+        this.bubbleChart.adjustSize(this.getDOMNode());
+        this.bubbleChart.update(this.getDOMNode(), this.getChartState());
+      }
       delete this.__resizeTimeout;
     }, 200);
   }

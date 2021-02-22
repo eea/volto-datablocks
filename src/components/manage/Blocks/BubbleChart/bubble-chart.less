@@ -1,52 +1,52 @@
 /* Center the contents of the bubble chart */
 .bubble-chart-container {
-  flex: 1;
   position: relative;
   display: flex;
-  user-select: none;
-  justify-content: center;
-  height: 400px;
   width: 100%;
+  height: 400px;
+  flex: 1;
+  justify-content: center;
+  user-select: none;
 
   .bubble-chart-text {
     /* Center text in the circle, and hide any overflow */
     .bubble-label {
-      text-align: center;
-      overflow: hidden;
-      cursor: pointer;
       display: flex;
+      overflow: hidden;
+
+      /* Begin: Styles for the underline animation */
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
       border-radius: 50%;
-      will-change: left, top, height, width;
+      cursor: pointer;
       font-weight: bold;
+      text-align: center;
       white-space: nowrap;
+      will-change: left, top, height, width;
 
       &:hover {
         /* Show the overflow when hovering over a label */
         overflow: visible;
       }
 
-      /* Begin: Styles for the underline animation */
-      flex-direction: column;
-      justify-content: center;
-
       &::after {
-        content: '';
-        opacity: 0;
         width: 0;
+        height: 1%;
+        box-sizing: border-box;
 
         margin: 0;
         margin-top: 10%;
         background-color: currentColor;
-        height: 1%;
+        content: '';
+        opacity: 0;
         transition: opacity 0.4s, width 0.4s;
-        box-sizing: border-box;
       }
 
       &:hover {
         &::after {
-          opacity: 1;
           width: 50%;
+          opacity: 1;
         }
       }
       /* End: Styles for the underline animation */

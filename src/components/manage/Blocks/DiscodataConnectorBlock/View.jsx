@@ -134,10 +134,12 @@ const View = (props) => {
 
   useEffect(() => {
     updateDataProviders();
+    /* eslint-disable-next-line */
   }, []);
 
   useEffect(() => {
     updateParentsDataProviders();
+    /* eslint-disable-next-line */
   }, [JSON.stringify(dataProviders)]);
 
   useEffect(() => {

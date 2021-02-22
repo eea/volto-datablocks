@@ -140,7 +140,7 @@ export function filterDataByParameters(providerData, parameters) {
     (k) => k.toLowerCase() === filterName.toLowerCase(),
   );
   if (!fixedFilterName) {
-    console.warn(`providerData has no such column: ${filterName}`, parameters);
+    // console.warn(`providerData has no such column: ${filterName}`, parameters);
     // console.log(providerData);
     return providerData;
   }

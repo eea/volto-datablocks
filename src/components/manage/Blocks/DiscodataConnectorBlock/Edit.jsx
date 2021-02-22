@@ -44,6 +44,7 @@ const Edit = (props) => {
         ...newData,
       });
     }
+    /* eslint-disable-next-line */
   }, []);
 
   useEffect(() => {

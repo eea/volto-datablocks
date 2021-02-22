@@ -199,7 +199,7 @@ export default class ReactBubbleChartD3 {
       typeof tp === 'string' ? { css: tp, prop: tp, display: tp } : tp,
     );
     // create a div for each of the tooltip props
-    for (var { css, prop } of this.tooltipProps) {
+    for (var { css } of this.tooltipProps) {
       this.tooltip.append('div').attr('class', css);
     }
   }
@@ -234,7 +234,7 @@ export default class ReactBubbleChartD3 {
     const data = props.data;
     if (!data) return;
 
-    const fontFactor = this.fontSizeFactor;
+    // const fontFactor = this.fontSizeFactor;
     const duration = this.duration;
     const delay = this.delay;
 

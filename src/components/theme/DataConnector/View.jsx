@@ -87,6 +87,7 @@ const DataConnectorView = (props) => {
         totalItems: provider_data[Object.keys(provider_data)[0]]?.length,
       });
     }
+    /* eslint-disable-next-line */
   }, [JSON.stringify(provider_data)]);
 
   return (
