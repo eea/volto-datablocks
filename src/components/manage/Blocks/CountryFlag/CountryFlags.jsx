@@ -2,7 +2,6 @@
  * A country flags provider.
  */
 /* eslint-disable */
-
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getContent } from '@plone/volto/actions';

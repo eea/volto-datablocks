@@ -1,5 +1,6 @@
+/* eslint-disable */
 import React from 'react';
-import countryNames from 'volto-datablocks/components/manage/Blocks/CountryFlag/data/countries';
+import countryNames from './data/countries';
 import './styles.less';
 
 const CountryFlagView = ({ data = {} }) => {
