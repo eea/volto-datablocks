@@ -1,4 +1,0 @@
-{
-  "presets": ["@babel/preset-env", 'razzle/babel', "@babel/preset-react"],
-  "plugins": ["@babel/plugin-proposal-class-properties"]
-}

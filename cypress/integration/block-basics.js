@@ -2,19 +2,26 @@ import { setupBeforeEach, tearDownAfterEach } from '../support';
 import { changePageTitle, addBlock } from '../helpers';
 //import { openSidebarTab } from '../helpers';
 
-const group = {
-  title: 'Data blocks',
-  id: 'data_blocks',
+const groups = {
+  data_blocks: {
+    title: 'Data blocks',
+    id: 'data_blocks',
+  },
+  custom_addons: {
+    title: 'Custom addons',
+    id: 'custom_addons',
+  },
 };
 
-const blocksIds = [
-  'data_connected_block',
-  'auto_select_parameter',
-  'discodata_connector_block',
-  'discodata_sql_builder',
-  'discodata_table_block',
-  'discodata_components_block',
+const data_blocks_ids = [
+  'bubbleChart',
+  'dataqueryfilter',
+  'dottedTableChart',
+  'routeParameter',
+  'simpleDataConnectedTable',
 ];
+
+const custom_addons_ids = ['countryFlag'];
 
 describe('Blocks Tests', () => {
   beforeEach(setupBeforeEach);
@@ -22,23 +29,11 @@ describe('Blocks Tests', () => {
 
   it('Add Blocks: Empty', () => {
     changePageTitle('Volto datablocks tests');
-    blocksIds.forEach((id) => {
-      addBlock(group.title, group.id, id);
+    data_blocks_ids.forEach((id) => {
+      addBlock(groups.data_blocks.title, groups.data_blocks.id, id);
+    });
+    custom_addons_ids.forEach((id) => {
+      addBlock(groups.custom_addons.title, groups.custom_addons.id, id);
     });
   });
 });
-
-// describe('Discodata sql builder tests', () => {
-//   beforeEach(setupBeforeEach);
-//   afterEach(tearDownAfterEach);
-
-//   it('Add Block: Empty', () => {
-//     changePageTitle('Volto datablocks tests');
-//     addBlock(group.title, group.id, 'discodata_sql_builder');
-//     openSidebarTab('Block');
-//     cy.get('input#field-field-widget-provider_url').should(
-//       'have.value',
-//       'https://discodata.eea.europa.eu/sql',
-//     );
-//   });
-// });

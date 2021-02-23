@@ -302,6 +302,14 @@ function setBaseAndExtent(...args) {
   document.getSelection().setBaseAndExtent(...args);
 }
 
+function getIfExists(selector, action = () => {}) {
+  cy.get('body').then((body) => {
+    if (body.find(selector).length > 0) {
+      action();
+    }
+  });
+}
+
 Cypress.Commands.add('navigate', (route = '') => {
   return cy.window().its('appHistory').invoke('push', route);
 });
@@ -313,3 +321,5 @@ Cypress.Commands.add('store', () => {
 Cypress.Commands.add('settings', (key, value) => {
   return cy.window().its('settings');
 });
+
+Cypress.Commands.add('getIfExists', getIfExists);
