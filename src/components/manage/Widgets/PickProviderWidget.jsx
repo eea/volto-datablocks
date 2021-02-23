@@ -65,7 +65,7 @@ class PickProvider extends Component {
         ) || {}),
       });
 
-    return params || '';
+    return params.length > 1 ? params : '';
   };
 
   getProviderData = (provider_url) => {

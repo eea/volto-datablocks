@@ -105,7 +105,7 @@ const DataEntity = (props) => {
 
   const provider_url = props.url;
 
-  const params =
+  let params =
     '?' +
     qs.stringify({
       ...qs.parse(props.location.search.replace('?', '')),
@@ -116,8 +116,12 @@ const DataEntity = (props) => {
       ),
     });
 
-  const url = `${provider_url}${params}`;
-  const urlConnector = `${provider_url}/@connector-data${params}`;
+  params = params.length === 1 ? '' : params;
+
+  const url = provider_url ? `${provider_url}${params}` : null;
+  const urlConnector = provider_url
+    ? `${provider_url}/@connector-data${params}`
+    : null;
 
   const isPending = provider_url
     ? props.data_providers?.pendingConnectors?.[url]

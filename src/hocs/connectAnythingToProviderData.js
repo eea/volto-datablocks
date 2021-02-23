@@ -32,7 +32,7 @@ export function connectAnythingToProviderData(getProviderUrl, config = {}) {
         };
       });
 
-      const params =
+      let params =
         '?' +
         qs.stringify({
           ...qs.parse(props.location.search.replace('?', '')),
@@ -46,8 +46,12 @@ export function connectAnythingToProviderData(getProviderUrl, config = {}) {
             : {}),
         });
 
-      const url = `${provider_url}${params}`;
-      const urlConnector = `${provider_url}/@connector-data${params}`;
+      params = params.length === 1 ? '' : params;
+
+      const url = provider_url ? `${provider_url}${params}` : null;
+      const urlConnector = provider_url
+        ? `${provider_url}/@connector-data${params}`
+        : null;
 
       const isPending = provider_url
         ? state.data_providers?.pendingConnectors?.[url]
