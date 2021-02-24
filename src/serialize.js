@@ -2,7 +2,7 @@ import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import cx from 'classnames';
 import { isEmpty, isEqual, omit } from 'lodash';
-
+import { Node, Text } from 'slate';
 import { settings } from '~/config';
 
 const OMITTED = ['editor', 'path'];
