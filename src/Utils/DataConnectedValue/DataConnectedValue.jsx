@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import qs from 'querystring';
@@ -11,7 +11,7 @@ import {
   getConnectedDataParametersForContext,
   getConnectedDataParametersForPath,
 } from 'volto-datablocks/helpers';
-import { formatValue } from 'volto-datablocks/format';
+import { FormattedValue } from 'volto-datablocks/Utils';
 import './styles.css';
 
 const EMPTY = '^';
@@ -25,7 +25,7 @@ const getValue = (
   column,
   filters,
   filterIndex = 0,
-  placeholder = EMPTY,
+  placeholder = null,
   hasQueryParammeters = true,
 ) => {
   /*
@@ -41,7 +41,7 @@ const getValue = (
    */
   // TODO: we implement now a very simplistic filtering, with only one type of
   // filter and only one filter is taken into consideration
-  if (!data || (data && !Object.keys(data).length)) return 'No data provider';
+  if (!data || (data && !Object.keys(data).length)) return '-';
   if (!hasQueryParammeters) return data[column]?.[0];
 
   if (!filters || !filters?.[filterIndex]) {
@@ -92,15 +92,16 @@ const getValue = (
   return res;
 };
 
-const DataEntity = (props) => {
+const DataConnectedValue = (props) => {
   const {
     column,
     connected_data_parameters,
     filterIndex,
-    format,
-    placeholder,
+    placeholder = EMPTY,
     content,
     hasQueryParammeters,
+    specifier,
+    textTemplate,
   } = props;
 
   const provider_url = props.url;
@@ -169,7 +170,15 @@ const DataEntity = (props) => {
     hasQueryParammeters,
   );
 
-  return formatValue(value, format);
+  return value ? (
+    <FormattedValue
+      textTemplate={textTemplate}
+      value={value}
+      specifier={specifier}
+    />
+  ) : (
+    placeholder
+  );
 };
 
 export default connect(
@@ -181,4 +190,4 @@ export default connect(
   {
     getDataFromProvider,
   },
-)(withRouter(DataEntity));
+)(withRouter(DataConnectedValue));

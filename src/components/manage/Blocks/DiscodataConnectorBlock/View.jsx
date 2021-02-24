@@ -5,7 +5,7 @@ import {
   getConnectedDataParametersForProvider,
   getConnectedDataParametersForContext,
 } from 'volto-datablocks/helpers';
-import DataConnectedValue from './DataConnectedValue';
+import { DataConnectedValue } from 'volto-datablocks/Utils';
 import { SourcesBlockView } from 'volto-datablocks/components';
 import { setConnectedDataParameters } from 'volto-datablocks/actions';
 
