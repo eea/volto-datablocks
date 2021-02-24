@@ -1,0 +1,64 @@
+.custom-chart-sidebar {
+  &.no-inline-form-header {
+    > .ui.segment,
+    > .ui.segment:not(.tab) {
+      padding: 0;
+      border-top: 0;
+      border-bottom: 0;
+      box-shadow: none;
+    }
+
+    > .ui.segments.form {
+      border-top: 0;
+      border-bottom: 0;
+      box-shadow: none;
+
+      > header {
+        display: none;
+      }
+
+      > div {
+        > .ui.segment {
+          padding-top: 0;
+        }
+      }
+    }
+
+    .buttons-wrapper {
+      padding: 1em;
+
+      .ui.icon.button {
+        border: none;
+        background-color: transparent !important;
+        box-shadow: none !important;
+
+        :hover {
+          background-color: transparent !important;
+          box-shadow: none !important;
+        }
+
+        :focus {
+          background-color: transparent !important;
+          box-shadow: none !important;
+          outline: none;
+        }
+      }
+    }
+  }
+
+  > .ui.segment {
+    box-shadow: none;
+  }
+
+  > .ui.segment,
+  > .ui.segments.form {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  #blockform-fieldset-default {
+    .inline.field {
+      padding-bottom: 1em;
+    }
+  }
+}
