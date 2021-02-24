@@ -10,12 +10,12 @@ import './style.less';
 
 const Edit = (props) => {
   const schema = getSchema();
-  const chartType = props.data.chartType;
+  const type = props.data.type;
   const customSchema =
-    blocks.blocksConfig.custom_connected_block.blocks?.[chartType]?.getSchema?.(
+    blocks.blocksConfig.custom_connected_block.blocks?.[type]?.getSchema?.(
       props,
     ) ||
-    blocks.blocksConfig.custom_connected_block.blocks?.[chartType]?.schema ||
+    blocks.blocksConfig.custom_connected_block.blocks?.[type]?.schema ||
     null;
 
   return (

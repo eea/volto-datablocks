@@ -4,21 +4,20 @@ import { connectBlockToProviderData } from 'volto-datablocks/hocs';
 import './style.less';
 
 const View = (props) => {
-  const chartType = props.data.chartType;
+  const type = props.data.type;
   const DefaultView = () => (
     <>
-      {props.mode === 'edit' && !props.data.chartType ? (
-        <p>Please select a chart from sidebar</p>
-      ) : props.mode === 'edit' && props.data.chartType ? (
-        <p>Chart selected: {props.data.chartType}</p>
+      {props.mode === 'edit' && !props.data.type ? (
+        <p>Please select a block type from sidebar</p>
+      ) : props.mode === 'edit' && props.data.type ? (
+        <p>Block type selected: {props.data.type}</p>
       ) : (
         ''
       )}
     </>
   );
   const CustomView =
-    blocks.blocksConfig.custom_connected_block.blocks?.[chartType]?.view ||
-    null;
+    blocks.blocksConfig.custom_connected_block.blocks?.[type]?.view || null;
 
   const RenderChartView = CustomView || DefaultView;
 
