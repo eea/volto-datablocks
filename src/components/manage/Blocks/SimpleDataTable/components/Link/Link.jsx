@@ -8,12 +8,31 @@ const LinkView = (props) => {
   return (
     <>
       <Tag>
-        <Link
-          to={getValue(tableData, colDef.column_link, row, colDef.linkTemplate)}
-          target={colDef.target}
-        >
-          {getCellValue(tableData, colDef, row)}
-        </Link>
+        {colDef.external ? (
+          <a
+            href={getValue(
+              tableData,
+              colDef.column_link,
+              row,
+              colDef.linkTemplate,
+            )}
+            target={colDef.target}
+          >
+            {getCellValue(tableData, colDef, row)}
+          </a>
+        ) : (
+          <Link
+            to={getValue(
+              tableData,
+              colDef.column_link,
+              row,
+              colDef.linkTemplate,
+            )}
+            target={colDef.target}
+          >
+            {getCellValue(tableData, colDef, row)}
+          </Link>
+        )}
       </Tag>
     </>
   );

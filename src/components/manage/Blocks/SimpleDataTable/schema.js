@@ -36,6 +36,10 @@ const columnSchema = {
         ['_self', 'Same window'],
       ],
     },
+    external: {
+      title: 'External link',
+      type: 'boolean',
+    },
     linkTemplate: {
       title: 'Link template',
       description: 'Add suffix/prefix to text. Use {} for value placeholder',
@@ -90,7 +94,9 @@ const getColumnSchema = (schema, child) => {
           ...(child.component === 'link' ? ['column_link'] : []),
           'title',
           'component',
-          ...(child.component === 'link' ? ['target', 'linkTemplate'] : []),
+          ...(child.component === 'link'
+            ? ['target', 'external', 'linkTemplate']
+            : []),
           'render_as',
           'textTemplate',
           'specifier',
