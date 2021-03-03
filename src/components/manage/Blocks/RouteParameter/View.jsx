@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router';
@@ -10,7 +10,6 @@ import {
 import { getConnectedDataParametersForRoute } from 'volto-datablocks/helpers';
 
 const View = (props) => {
-  const [index, setIndex] = useState(-1);
   const { dataParameters = [] } = props;
   const {
     providerUrl = null,
@@ -18,21 +17,6 @@ const View = (props) => {
     defaultValue = null,
   } = props.data;
   const parameters = props.match.params;
-
-  const updateIndex = () => {
-    let newIndex = index;
-    if (providerUrl && dataParameters?.length) {
-      newIndex = dataParameters.length;
-    } else if (providerUrl && !dataParameters?.length) {
-      newIndex = 0;
-    } else {
-      newIndex = -1;
-    }
-    if (newIndex !== index) {
-      setIndex(newIndex);
-    }
-    return newIndex;
-  };
 
   const getRouteParameter = (parameterKey, parameterValue, defaultValue) => {
     return {
@@ -43,17 +27,16 @@ const View = (props) => {
   };
 
   React.useEffect(() => {
-    const nextIndex = updateIndex();
-    if (nextIndex > -1 && providerUrl) {
+    if (providerUrl && !dataParameters?.length) {
       props.setRouteParameter(
         providerUrl,
-        nextIndex,
+        0,
         getRouteParameter(parameterKey, parameters[parameterKey], defaultValue),
       );
     }
-    return () => {
-      props.deleteRouteParameter(providerUrl, nextIndex);
-    };
+    // return () => {
+    //   props.deleteRouteParameter(providerUrl, nextIndex);
+    // };
     /* eslint-disable-next-line */
   }, []);
 
@@ -85,7 +68,7 @@ export default compose(
     (state, props) => ({
       dataParameters: getConnectedDataParametersForRoute(
         state.connected_data_parameters,
-        props.providerUrl,
+        props.data.providerUrl,
       ),
     }),
     { setRouteParameter, deleteRouteParameter },
