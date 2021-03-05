@@ -3,7 +3,7 @@
  * @module reducers/data_providers
  */
 
-import { settings } from '~/config';
+import config from '@plone/volto/registry';
 import { GET_DATA_FROM_PROVIDER } from '../constants';
 import { without } from 'lodash';
 
@@ -47,8 +47,8 @@ export default function data_providers(state = initialState, action = {}) {
         ? action.result['@components']['connector-data']['@id']
         : action.result['@id']
       )
-        .replace(settings.apiPath, '')
-        .replace(settings.internalApiPath, '');
+        .replace(config.settings.apiPath, '')
+        .replace(config.settings.internalApiPath, '');
       delete pendingConnectors[action.path + action.queryString];
       return {
         ...state,

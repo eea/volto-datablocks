@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import downloadSVG from '@plone/volto/icons/download.svg';
 import { Icon as VoltoIcon } from '@plone/volto/components';
 // import { Grid } from 'semantic-ui-react';
-import { settings } from '~/config';
+import config from '@plone/volto/registry';
 
 function convertToCSV(objArray) {
   var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
@@ -124,7 +124,7 @@ const SourceView = ({
               const dlAnchorElem = document.createElement('a');
               dlAnchorElem.setAttribute(
                 'href',
-                `${settings.apiPath}${providerUrl}/@@download`,
+                `${config.settings.apiPath}${providerUrl}/@@download`,
               );
               dlAnchorElem.click();
             }}

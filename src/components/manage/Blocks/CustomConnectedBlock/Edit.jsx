@@ -2,7 +2,7 @@ import React from 'react';
 import { SidebarPortal } from '@plone/volto/components';
 import InlineForm from '@plone/volto/components/manage/Form/InlineForm';
 import { Segment } from 'semantic-ui-react';
-import { blocks } from '~/config';
+import config from '@plone/volto/registry';
 import getSchema from './schema';
 import { connectBlockToProviderData } from 'volto-datablocks/hocs';
 import CustomView from './View';
@@ -12,10 +12,10 @@ const Edit = (props) => {
   const schema = getSchema();
   const type = props.data.type;
   const customSchema =
-    blocks.blocksConfig.custom_connected_block.blocks?.[type]?.getSchema?.(
-      props,
-    ) ||
-    blocks.blocksConfig.custom_connected_block.blocks?.[type]?.schema ||
+    config.blocks.config.Config.custom_connected_block.blocks?.[
+      type
+    ]?.getSchema?.(props) ||
+    config.blocks.blocksConfig.custom_connected_block.blocks?.[type]?.schema ||
     null;
 
   return (

@@ -12,7 +12,7 @@ import {
 } from 'volto-datablocks/helpers';
 import { Placeholder } from 'volto-datablocks/components';
 
-import { settings } from '~/config';
+import config from '@plone/volto/registry';
 
 // import './fixes.css';
 
@@ -34,7 +34,7 @@ function Treemap(props) {
     autosize: true,
     dragmode: false,
     font: {
-      family: settings.chartLayoutFontFamily || "'Roboto', sans-serif",
+      family: config.settings.chartLayoutFontFamily || "'Roboto', sans-serif",
     },
     margin: { b: 10, l: 10, pad: 0, r: 10, t: 10 },
   };

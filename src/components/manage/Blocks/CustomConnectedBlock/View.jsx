@@ -1,5 +1,5 @@
 import React from 'react';
-import { blocks } from '~/config';
+import config from '@plone/volto/registry';
 import { connectBlockToProviderData } from 'volto-datablocks/hocs';
 import './style.less';
 
@@ -17,7 +17,8 @@ const View = (props) => {
     </>
   );
   const CustomView =
-    blocks.blocksConfig.custom_connected_block.blocks?.[type]?.view || null;
+    config.blocks.blocksConfig.custom_connected_block.blocks?.[type]?.view ||
+    null;
 
   const RenderChartView = CustomView || DefaultView;
 

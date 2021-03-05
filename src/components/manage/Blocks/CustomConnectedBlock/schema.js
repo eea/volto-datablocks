@@ -1,4 +1,4 @@
-import { blocks } from '~/config';
+import config from '@plone/volto/registry';
 
 const SourceSchema = {
   title: 'Source',
@@ -51,7 +51,7 @@ const getSchema = () => ({
       type: 'array',
       choices: [
         ...Object.keys(
-          blocks.blocksConfig.custom_connected_block?.blocks || {},
+          config.blocks.blocksConfig.custom_connected_block?.blocks || {},
         )?.map((block) => [block, block]),
       ],
     },

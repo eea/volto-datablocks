@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { settings } from '~/config';
+import config from '@plone/volto/registry';
 import { getBaseUrl } from '@plone/volto/helpers';
 
 export * from 'volto-datablocks/components/manage/Blocks/RouteParameter';
@@ -16,8 +16,8 @@ export function addCustomGroup(config, group) {
 
 export function getBasePath(url) {
   return getBaseUrl(url)
-    .replace(settings.apiPath, '')
-    .replace(settings.internalApiPath, '');
+    .replace(config.settings.apiPath, '')
+    .replace(config.settings.internalApiPath, '');
 }
 
 export function getConnectedDataParametersForRoute(

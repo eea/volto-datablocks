@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import qs from 'query-string';
 import DB from 'volto-datablocks/Utils/DataBase/DB';
-import { settings } from '~/config';
+import config from '@plone/volto/registry';
 import { getDiscodataResource } from 'volto-datablocks/actions';
 const ViewWrapper = (props) => {
   const [state, setState] = useState({
@@ -62,7 +62,7 @@ const ViewWrapper = (props) => {
           });
         const url = DB.table(
           sqlValue.sql,
-          settings.providerUrl,
+          config.settings.providerUrl,
           hasPagination ? props.pagination : {},
         )
           .where(whereStatements, additionalWhereStatements)
