@@ -12,7 +12,7 @@ const Edit = (props) => {
   const schema = getSchema();
   const type = props.data.type;
   const customSchema =
-    config.blocks.config.Config.custom_connected_block.blocks?.[
+    config.blocks.blocksConfig.custom_connected_block.blocks?.[
       type
     ]?.getSchema?.(props) ||
     config.blocks.blocksConfig.custom_connected_block.blocks?.[type]?.schema ||

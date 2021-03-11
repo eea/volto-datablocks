@@ -110,7 +110,10 @@ const DataConnectorView = (props) => {
                 .map((_, i) => (
                   <Table.Row key={i}>
                     {Object.keys(provider_data).map((k) => (
-                      <Table.Cell key={`${i}-${k}`}>
+                      <Table.Cell
+                        key={`${i}-${k}`}
+                        style={{ whiteSpace: 'nowrap' }}
+                      >
                         {provider_data[k][i]}
                       </Table.Cell>
                     ))}

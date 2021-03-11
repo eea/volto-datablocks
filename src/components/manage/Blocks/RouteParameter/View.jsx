@@ -10,7 +10,6 @@ import {
 import { getConnectedDataParametersForRoute } from 'volto-datablocks/helpers';
 
 const View = (props) => {
-  const { dataParameters = [] } = props;
   const {
     providerUrl = null,
     parameterKey = null,
@@ -27,16 +26,18 @@ const View = (props) => {
   };
 
   React.useEffect(() => {
-    if (providerUrl && !dataParameters?.length) {
+    if (providerUrl) {
       props.setRouteParameter(
         providerUrl,
         0,
         getRouteParameter(parameterKey, parameters[parameterKey], defaultValue),
       );
     }
-    // return () => {
-    //   props.deleteRouteParameter(providerUrl, nextIndex);
-    // };
+    return () => {
+      if (providerUrl) {
+        props.deleteRouteParameter(providerUrl, 0);
+      }
+    };
     /* eslint-disable-next-line */
   }, []);
 

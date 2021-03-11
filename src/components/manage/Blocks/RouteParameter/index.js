@@ -10,7 +10,7 @@ export function getMatchParams(match) {
     .filter((key) => isNaN(key))
     .reduce((obj, key) => {
       obj[key] = match.params[key];
-      if (config.settings.ignoreRouteParams.includes(match.params[key])) {
+      if (config.settings.ignoreRouteParams?.includes(match.params[key])) {
         obj[key] = 'NULL';
       }
       return obj;
@@ -18,7 +18,7 @@ export function getMatchParams(match) {
 }
 
 export function getRouteParameterValue(value, defaultValue) {
-  if (config.settings.ignoreRouteParams.includes(value)) {
+  if (config.settings.ignoreRouteParams?.includes(value)) {
     return defaultValue || 'NULL';
   }
   return value || defaultValue || 'NULL';
