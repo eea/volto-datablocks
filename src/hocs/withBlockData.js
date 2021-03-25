@@ -3,11 +3,14 @@ import { getBlockData } from 'volto-datablocks/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { getBaseUrl } from '@plone/volto/helpers';
 
+import { useLocation } from 'react-router-dom';
+
 const withBlockData = (WrappedComponent) => (props) => {
   const { id } = props;
   const dispatch = useDispatch();
   const blockData = useSelector((state) => state.blockdata[id]);
-  const pathname = props.path || '';
+  const location = useLocation();
+  const pathname = props.path || location.pathname;
 
   React.useEffect(() => {
     if (!blockData) {
