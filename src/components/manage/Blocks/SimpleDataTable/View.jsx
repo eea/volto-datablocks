@@ -44,7 +44,13 @@ const SimpleDataTableView = (props) => {
     connected_data_parameters = {},
     updatePagination = () => {},
   } = props;
-  const { show_header, description, max_count, columns } = data;
+  const {
+    has_pagination = true,
+    show_header,
+    description,
+    max_count,
+    columns,
+  } = data;
 
   useEffect(() => {
     updatePagination({
@@ -60,7 +66,9 @@ const SimpleDataTableView = (props) => {
 
   // TODO: sorting
   const row_size =
-    Math.min(pagination.itemsPerPage, pagination.totalItems) || 0;
+    has_pagination || max_count > 0
+      ? Math.min(pagination.itemsPerPage, pagination.totalItems) || 0
+      : pagination.totalItems;
   const providerColumns = Object.keys(provider_data || {});
   const sureToShowAllColumns = !Array.isArray(columns) || columns.length === 0;
   const validator = selectedColumnValidator(providerColumns);
@@ -119,45 +127,49 @@ const SimpleDataTableView = (props) => {
                 </Table.Row>
               ))}
           </Table.Body>
-          <Table.Footer>
-            <Table.Row>
-              <Table.HeaderCell
-                colSpan={selectedColumns.length}
-                style={{ textAlign: 'center' }}
-              >
-                <Menu pagination>
-                  <Menu.Item
-                    as="a"
-                    icon
-                    disabled={pagination.activePage === 1}
-                    onClick={() => {
-                      if (pagination.activePage > 1) {
-                        updatePagination({
-                          activePage: pagination.activePage - 1,
-                        });
-                      }
-                    }}
-                  >
-                    <Icon name={leftSVG} size="24px" />
-                  </Menu.Item>
-                  <Menu.Item
-                    as="a"
-                    icon
-                    disabled={row_size < pagination.itemsPerPage}
-                    onClick={() => {
-                      if (row_size === pagination.itemsPerPage) {
-                        updatePagination({
-                          activePage: pagination.activePage + 1,
-                        });
-                      }
-                    }}
-                  >
-                    <Icon name={rightSVG} size="24px" />
-                  </Menu.Item>
-                </Menu>
-              </Table.HeaderCell>
-            </Table.Row>
-          </Table.Footer>
+          {has_pagination ? (
+            <Table.Footer>
+              <Table.Row>
+                <Table.HeaderCell
+                  colSpan={selectedColumns.length}
+                  style={{ textAlign: 'center' }}
+                >
+                  <Menu pagination>
+                    <Menu.Item
+                      as="a"
+                      icon
+                      disabled={pagination.activePage === 1}
+                      onClick={() => {
+                        if (pagination.activePage > 1) {
+                          updatePagination({
+                            activePage: pagination.activePage - 1,
+                          });
+                        }
+                      }}
+                    >
+                      <Icon name={leftSVG} size="24px" />
+                    </Menu.Item>
+                    <Menu.Item
+                      as="a"
+                      icon
+                      disabled={row_size < pagination.itemsPerPage}
+                      onClick={() => {
+                        if (row_size === pagination.itemsPerPage) {
+                          updatePagination({
+                            activePage: pagination.activePage + 1,
+                          });
+                        }
+                      }}
+                    >
+                      <Icon name={rightSVG} size="24px" />
+                    </Menu.Item>
+                  </Menu>
+                </Table.HeaderCell>
+              </Table.Row>
+            </Table.Footer>
+          ) : (
+            ''
+          )}
         </Table>
       ) : (
         'No results'
@@ -169,7 +181,7 @@ const SimpleDataTableView = (props) => {
 export default compose(() => {
   return connectBlockToProviderData(SimpleDataTableView, {
     pagination: {
-      getEnabled: () => true,
+      getEnabled: (props) => props.data.has_pagination,
       getItemsPerPage: (props) => {
         const { max_count = 5 } = props.data;
         return max_count

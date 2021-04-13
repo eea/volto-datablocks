@@ -126,6 +126,7 @@ const SimpleDataTableSchema = () => ({
       id: 'styling',
       title: 'Styling',
       fields: [
+        'has_pagination',
         'show_header',
         'underline',
         'striped',
@@ -164,6 +165,11 @@ const SimpleDataTableSchema = () => ({
       title: 'Max results',
       widget: 'number',
       defaultValue: 5,
+    },
+    has_pagination: {
+      title: 'Pagination',
+      type: 'boolean',
+      default: true,
     },
     show_header: {
       title: 'Show header?',
