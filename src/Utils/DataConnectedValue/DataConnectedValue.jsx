@@ -93,6 +93,7 @@ const getValue = (
 };
 
 const DataConnectedValue = (props) => {
+  const [collapsed, setCollapsed] = React.useState(true);
   const {
     column,
     connected_data_parameters,
@@ -102,6 +103,7 @@ const DataConnectedValue = (props) => {
     hasQueryParammeters,
     specifier,
     textTemplate,
+    collapseLimit = null,
   } = props;
 
   const provider_url = props.url;
@@ -170,12 +172,31 @@ const DataConnectedValue = (props) => {
     hasQueryParammeters,
   );
 
+  const collapsable = props.collapsable && value.length > collapseLimit;
+
   return value ? (
-    <FormattedValue
-      textTemplate={textTemplate}
-      value={value}
-      specifier={specifier}
-    />
+    <>
+      <FormattedValue
+        textTemplate={textTemplate}
+        value={value}
+        specifier={specifier}
+        collapsed={collapsable && collapsed}
+      />
+      {collapsable ? (
+        <div>
+          <button
+            className="readmore-button"
+            onClick={() => {
+              setCollapsed(!collapsed);
+            }}
+          >
+            {collapsed ? 'READ MORE' : 'COLLAPSE'}
+          </button>
+        </div>
+      ) : (
+        ''
+      )}
+    </>
   ) : (
     placeholder
   );
