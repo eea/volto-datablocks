@@ -1,0 +1,26 @@
+#main .colored_table {
+  table {
+    border: 1px solid #efefef !important;
+    border-radius: 12px !important;
+    border-collapse: separate !important;
+    overflow: hidden;
+
+    th {
+      border-top: none !important;
+
+      &:after {
+        border: none;
+        padding: 0;
+      }
+    }
+
+    td:first-child,
+    th:first-child {
+      border-left: none !important;
+    }
+
+    tr td {
+      border-bottom: 1px solid #efefef !important;
+    }
+  }
+}
