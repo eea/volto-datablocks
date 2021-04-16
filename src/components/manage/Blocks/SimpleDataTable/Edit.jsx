@@ -59,7 +59,7 @@ class Edit extends Component {
 
 export default connectBlockToProviderData(Edit, {
   pagination: {
-    getEnabled: () => true,
+    getEnabled: (props) => props.data.has_pagination,
     getItemsPerPage: (props) => {
       const { max_count = 5 } = props.data;
       return max_count

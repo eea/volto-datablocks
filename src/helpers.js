@@ -226,29 +226,25 @@ export function mixProviderData(chartData, providerData, parameters) {
 export const connectToDataParameters = connect((state, props) => {
   const providerUrl = props?.data?.provider_url || props?.data?.url || null;
 
-  const FILTER = true; // this is a filter??
-  const byPath =
-    getConnectedDataParametersForPath(
-      state.connected_data_parameters,
-      providerUrl,
-      FILTER,
-    ) || {};
-
-  const byProvider = getConnectedDataParametersForProvider(
-    state.connected_data_parameters,
-    providerUrl,
-  );
-
-  const byContext = getConnectedDataParametersForContext(
-    state.connected_data_parameters,
-    state.router.location.pathname,
-  );
-
   const connected_data_parameters =
     providerUrl !== null
-      ? byPath
-        ? byPath[FILTER] || byContext || byProvider
-        : byContext || byProvider
+      ? getConnectedDataParametersForRoute(
+          state.connected_data_parameters,
+          providerUrl,
+        ) ||
+        getConnectedDataParametersForPath(
+          state.connected_data_parameters,
+          state.router.location.pathname,
+          false,
+        ) ||
+        getConnectedDataParametersForProvider(
+          state.connected_data_parameters,
+          providerUrl,
+        ) ||
+        getConnectedDataParametersForContext(
+          state.connected_data_parameters,
+          state.router.location.pathname,
+        )
       : null;
 
   return {

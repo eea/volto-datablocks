@@ -117,7 +117,7 @@ const View = (props) => {
                     <Menu.Item
                       as="a"
                       icon
-                      disabled={pagination.activePage === 1}
+                      disabled={props.isPending || pagination.activePage === 1}
                       onClick={() => {
                         if (pagination.activePage > 1) {
                           updatePagination({
@@ -131,7 +131,12 @@ const View = (props) => {
                     <Menu.Item
                       as="a"
                       icon
-                      disabled={row_size < pagination.itemsPerPage}
+                      disabled={
+                        props.isPending ||
+                        row_size < pagination.itemsPerPage ||
+                        pagination.activePage * pagination.itemsPerPage >=
+                          pagination.maxItems
+                      }
                       onClick={() => {
                         if (row_size === pagination.itemsPerPage) {
                           updatePagination({

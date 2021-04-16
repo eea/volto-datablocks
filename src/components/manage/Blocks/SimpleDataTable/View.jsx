@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { compose } from 'redux';
 import config from '@plone/volto/registry';
 
@@ -9,9 +9,17 @@ import { connectToDataParameters } from 'volto-datablocks/helpers';
 import { DefaultView } from './templates/default';
 import './styles.less';
 
+const getProviderData = (provider_data) => {
+  return provider_data &&
+    Object.keys(provider_data).length &&
+    provider_data[Object.keys(provider_data)[0]].length
+    ? provider_data
+    : null;
+};
+
 const SimpleDataTableView = (props) => {
-  const { data = {}, provider_data = {}, updatePagination = () => {} } = props;
-  const { description, max_count, template } = data;
+  const { data = {} } = props;
+  const { description, template, has_pagination = false } = data;
 
   const tableTemplate = template || 'default';
   const TableView =
@@ -19,17 +27,10 @@ const SimpleDataTableView = (props) => {
       tableTemplate
     ]?.view || DefaultView;
 
-  useEffect(() => {
-    updatePagination({
-      itemsPerPage: max_count
-        ? typeof max_count !== 'number'
-          ? parseInt(max_count) || 5
-          : max_count
-        : max_count || 5,
-      totalItems: provider_data?.[Object.keys(provider_data)?.[0]]?.length,
-    });
-    /* eslint-disable-next-line */
-  }, [JSON.stringify(provider_data), max_count]);
+  const provider_data = has_pagination
+    ? getProviderData(props.provider_data) ||
+      getProviderData(props.prev_provider_data)
+    : getProviderData(props.provider_data);
 
   return (
     <div className={`simple-data-table ${template}`}>
@@ -37,12 +38,12 @@ const SimpleDataTableView = (props) => {
         {description ? serializeNodes(description) : ''}
       </div>
 
-      <TableView {...props} />
+      <TableView {...props} provider_data={provider_data} />
     </div>
   );
 };
 
-export default compose(() => {
+export default compose(connectToDataParameters, (SimpleDataTableView) => {
   return connectBlockToProviderData(SimpleDataTableView, {
     pagination: {
       getEnabled: (props) => props.data.has_pagination,
@@ -56,4 +57,4 @@ export default compose(() => {
       },
     },
   });
-}, connectToDataParameters)(SimpleDataTableView);
+})(SimpleDataTableView);

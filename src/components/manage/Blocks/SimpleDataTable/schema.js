@@ -171,7 +171,7 @@ export const SimpleDataTableSchema = (config, templateSchema = {}) => {
         description: 'Allows rich text formatting',
       },
       provider_url: {
-        widget: 'pick_provider',
+        widget: 'object_by_path',
         title: 'Data provider',
       },
       max_count: {
@@ -188,7 +188,7 @@ export const SimpleDataTableSchema = (config, templateSchema = {}) => {
       has_pagination: {
         title: 'Pagination',
         type: 'boolean',
-        default: true,
+        default: false,
       },
       show_header: {
         title: 'Show header?',
