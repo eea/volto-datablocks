@@ -112,32 +112,39 @@ export function connectBlockToProviderData(WrappedComponent, config = {}) {
       if (provider_url && !provider_data && !isPending && !isFailed) {
         dispatch(getDataFromProvider(provider_url, null, connector.params));
       }
-      if (
-        provider_data &&
-        !isPending &&
-        pagination.enabled &&
-        !pagination.renderedPages.includes(pagination.activePage)
-      ) {
+      if (provider_data && !isPending) {
+        let newPagination = { ...pagination };
         const dataLength =
           provider_data[Object.keys(provider_data)[0]]?.length || 0;
         const totalItems = pagination.totalItems + dataLength;
-        setPagination({
-          ...pagination,
-          activePage:
-            !dataLength && pagination.activePage > 1
-              ? pagination.prevPage
-              : pagination.activePage,
-          prevPage:
-            !dataLength && pagination.activePage > 1
-              ? null
-              : pagination.prevPage,
-          totalItems,
-          maxItems:
-            dataLength < pagination.itemsPerPage
-              ? totalItems
-              : pagination.maxItems,
-          renderedPages: [...pagination.renderedPages, pagination.activePage],
-        });
+        newPagination.totalItems = totalItems;
+
+        if (!pagination.enabled && !pagination.totalItems) {
+          setPagination({ ...newPagination });
+        }
+
+        if (
+          pagination.enabled &&
+          !pagination.renderedPages.includes(pagination.activePage)
+        ) {
+          newPagination = {
+            ...newPagination,
+            activePage:
+              !dataLength && pagination.activePage > 1
+                ? pagination.prevPage
+                : pagination.activePage,
+            prevPage:
+              !dataLength && pagination.activePage > 1
+                ? null
+                : pagination.prevPage,
+            maxItems:
+              dataLength < pagination.itemsPerPage
+                ? totalItems
+                : pagination.maxItems,
+            renderedPages: [...pagination.renderedPages, pagination.activePage],
+          };
+          setPagination({ ...newPagination });
+        }
       }
     }, [
       connector.params,
