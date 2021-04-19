@@ -40,7 +40,12 @@ const View = (props) => {
   // console.log('data', data);
   const { bg_color, template } = data;
 
-  const { has_pagination = true, show_header, max_count, columns } = data;
+  const {
+    has_pagination = false,
+    show_header = false,
+    max_count = 5,
+    columns,
+  } = data;
 
   // TODO: sorting
   const row_size =
