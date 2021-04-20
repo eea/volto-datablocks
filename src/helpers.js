@@ -4,16 +4,6 @@ import { getBaseUrl } from '@plone/volto/helpers';
 
 export * from 'volto-datablocks/components/manage/Blocks/RouteParameter';
 
-export function addCustomGroup(config, group) {
-  const hasCustomGroup = config.blocks.groupBlocksOrder.filter(
-    (el) => el.id === group.id,
-  );
-  if (hasCustomGroup.length === 0) {
-    config.blocks.groupBlocksOrder.push(group);
-  }
-  return config.blocks.groupBlocksOrder;
-}
-
 export function getBasePath(url) {
   return getBaseUrl(url)
     .replace(config.settings.apiPath, '')
