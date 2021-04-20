@@ -19,7 +19,9 @@ const colorSchema = (props) => {
       },
       color: {
         title: 'Color',
-        type: 'string',
+        widget: 'simple_color',
+        available_colors:
+          config.blocks.blocksConfig.simpleDataConnectedTable.available_colors,
       },
     },
 
@@ -35,18 +37,18 @@ const coloredTableSchema = (props) => {
       {
         id: 'default',
         title: 'Default',
-        fields: ['bg_color', 'rows_color'],
+        fields: ['th_color', 'td_color'],
       },
     ],
 
     properties: {
-      bg_color: {
+      th_color: {
         title: 'Table header color',
         widget: 'simple_color',
         available_colors:
           config.blocks.blocksConfig.simpleDataConnectedTable.available_colors,
       },
-      rows_color: {
+      td_color: {
         title: 'Table rows color',
         widget: 'objectlist',
         schema: colorSchema(props),

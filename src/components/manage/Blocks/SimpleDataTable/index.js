@@ -3,11 +3,7 @@ import SimpleDataTableEdit from './Edit';
 import SimpleDataTableView from './View';
 
 import { DefaultView, defaultSchema } from './templates/default';
-import {
-  ColoredTableView,
-  ColoredTableEdit,
-  coloredTableSchema,
-} from './templates/colored';
+import { ColoredTableView, coloredTableSchema } from './templates/colored';
 
 export default (config) => {
   config.blocks.blocksConfig.simpleDataConnectedTable = {
@@ -40,9 +36,14 @@ export default (config) => {
     available_colors: [
       '#FCE0E0',
       '#E2F1E4',
+      '#EB2631',
+      '#F06630',
+      '#FBDC35',
+      '#41B34F',
+      '#8EC54A',
+      '#D5DF3F',
       '#EFEFEF',
       '#EB9694',
-      '#FAD0C3',
       '#FEF3BD',
       '#C1E1C5',
       '#BEDADC',

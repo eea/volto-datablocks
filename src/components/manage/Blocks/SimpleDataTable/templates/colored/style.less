@@ -1,26 +1,45 @@
 #main .colored_table {
   table {
-    border: 1px solid #efefef !important;
+    border: 1px solid #e8e8e8 !important;
     border-radius: 12px !important;
     border-collapse: separate !important;
     overflow: hidden;
 
     th {
-      border-top: none !important;
-
+      font-weight: bold;
       &:after {
         border: none;
         padding: 0;
       }
     }
 
-    td:first-child,
-    th:first-child {
-      border-left: none !important;
+    th,
+    td {
+      padding-left: 0 !important;
+      border-bottom: 1px solid #e8e8e8 !important;
     }
 
-    tr td {
-      border-bottom: 1px solid #efefef !important;
+    tbody {
+      td {
+        height: 46px;
+      }
+
+      &:after {
+        content: '';
+        display: block;
+        height: 10px;
+      }
+    }
+
+    .colored-cell {
+      padding: 0 !important;
+
+      .color-marker {
+        width: 4px;
+        height: 100%;
+        display: block;
+        background-color: transparent;
+      }
     }
   }
 }

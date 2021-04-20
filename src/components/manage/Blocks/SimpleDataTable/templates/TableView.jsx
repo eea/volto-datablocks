@@ -37,14 +37,14 @@ const View = (props) => {
     updatePagination = () => {},
   } = props;
 
-  // console.log('data', data);
-  const { bg_color, template } = data;
-
   const {
     has_pagination = false,
     show_header = false,
     max_count = 5,
     columns,
+    template,
+    th_color,
+    td_color,
   } = data;
 
   // TODO: sorting
@@ -63,6 +63,18 @@ const View = (props) => {
     ? filterDataByParameters(provider_data, connected_data_parameters)
     : provider_data;
 
+  const getColorOfTableCell = (i) => {
+    return selectedColumns
+      .map((col) => {
+        const column = col.column;
+        const cell = td_color?.find(
+          (c) => c.label === provider_data[column][i],
+        );
+        return cell?.color;
+      })
+      .filter((v) => v);
+  };
+
   return (
     <div>
       {row_size ? (
@@ -73,12 +85,9 @@ const View = (props) => {
           ${data.compact_table ? 'compact-table' : ''}`}
         >
           {show_header ? (
-            <Table.Header
-              style={{
-                backgroundColor: template === 'colored_table' ? bg_color : '',
-              }}
-            >
+            <Table.Header style={{ backgroundColor: th_color }}>
               <Table.Row>
+                {template === 'colored_table' && <Table.HeaderCell />}
                 {selectedColumns.map((colDef, j) => (
                   <Table.HeaderCell
                     key={getNameOfColumn(colDef)}
@@ -95,6 +104,18 @@ const View = (props) => {
               .fill()
               .map((_, i) => (
                 <Table.Row key={i}>
+                  {template === 'colored_table' && (
+                    <Table.Cell className="colored-cell">
+                      <span
+                        className="color-marker"
+                        style={{
+                          backgroundColor: td_color
+                            ? getColorOfTableCell(i)
+                            : '',
+                        }}
+                      />
+                    </Table.Cell>
+                  )}
                   {selectedColumns.map((colDef, j) => (
                     <Table.Cell
                       key={`${i}-${getNameOfColumn(colDef)}`}
