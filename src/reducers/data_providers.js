@@ -4,12 +4,13 @@
  */
 
 import config from '@plone/volto/registry';
-import { GET_DATA_FROM_PROVIDER } from '../constants';
+import { GET_DATA_FROM_PROVIDER, SET_PROVIDER_CONTENT } from '../constants';
 import { without } from 'lodash';
 
 const initialState = {
   error: null,
   data: {},
+  content: {},
   loaded: false,
   loading: false,
   pendingConnectors: {},
@@ -80,6 +81,12 @@ export default function data_providers(state = initialState, action = {}) {
         requested: [...without(state.requested, action.path)],
         pendingConnectors,
         failedConnectors,
+      };
+
+    case SET_PROVIDER_CONTENT:
+      return {
+        ...state,
+        content: { ...state.content, [action.path]: action.content },
       };
 
     default:

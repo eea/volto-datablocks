@@ -6,29 +6,41 @@ import { getDataFromProvider } from 'volto-datablocks/actions';
 import qs from 'querystring';
 
 const getConnectorURL = (
-  location,
   provider_url,
+  location,
   routeParmeters,
+  allowedParams,
   pagination,
 ) => {
-  let params =
+  const params = {
+    ...qs.parse(location.search.replace('?', '')),
+    ...routeParmeters,
+  };
+  let allowedParamsObj = null;
+  if (allowedParams) {
+    allowedParamsObj = {};
+    allowedParams.forEach((param) => {
+      allowedParamsObj[param] = params[param];
+    });
+  }
+
+  let paramsStr =
     '?' +
     qs.stringify({
-      ...qs.parse(location.search.replace('?', '')),
-      ...routeParmeters,
+      ...(allowedParamsObj || params),
       ...(pagination.enabled
         ? { p: pagination.activePage, nrOfHits: pagination.itemsPerPage }
         : {}),
     });
 
-  params = params.length === 1 ? '' : params;
+  paramsStr = paramsStr.length === 1 ? '' : paramsStr;
 
   return {
-    url: provider_url ? `${provider_url}${params}` : null,
+    url: provider_url ? `${provider_url}${paramsStr}` : null,
     urlConnector: provider_url
-      ? `${provider_url}/@connector-data${params}`
+      ? `${provider_url}/@connector-data${paramsStr}`
       : null,
-    params,
+    params: paramsStr,
   };
 };
 
@@ -45,17 +57,21 @@ export function connectBlockToProviderData(WrappedComponent, config = {}) {
       enabled: config.pagination?.getEnabled?.(props) || false,
       itemsPerPage: config.pagination?.getItemsPerPage?.(props) || 5,
       prevPage: null,
-      totalItems: 0,
+      totalItems: null,
       maxItems: Infinity,
       renderedPages: [],
     });
-
     const { provider_url = null } = props.data;
+
+    const allowedParams = props.data.allowedParams?.length
+      ? props.data.allowedParams
+      : null;
 
     const state = useSelector((state) => {
       return {
         connected_data_parameters: state.connected_data_parameters,
         data_providers: state.data_providers,
+        search: state.search,
       };
     });
 
@@ -66,18 +82,25 @@ export function connectBlockToProviderData(WrappedComponent, config = {}) {
     );
 
     const connector = getConnectorURL(
-      props.location,
       provider_url,
+      props.location,
       routeParameters,
+      allowedParams,
       pagination,
     );
 
     const prevConnector =
       pagination.enabled && pagination.prevPage
-        ? getConnectorURL(props.location, provider_url, routeParameters, {
-            ...pagination,
-            activePage: pagination.prevPage,
-          })
+        ? getConnectorURL(
+            provider_url,
+            props.location,
+            routeParameters,
+            allowedParams,
+            {
+              ...pagination,
+              activePage: pagination.prevPage,
+            },
+          )
         : null;
 
     const isPending = provider_url
@@ -116,10 +139,9 @@ export function connectBlockToProviderData(WrappedComponent, config = {}) {
         let newPagination = { ...pagination };
         const dataLength =
           provider_data[Object.keys(provider_data)[0]]?.length || 0;
-        const totalItems = pagination.totalItems + dataLength;
-        newPagination.totalItems = totalItems;
+        newPagination.totalItems = pagination.totalItems + dataLength;
 
-        if (!pagination.enabled && !pagination.totalItems) {
+        if (!pagination.enabled && pagination.totalItems === null) {
           setPagination({ ...newPagination });
         }
 
@@ -139,7 +161,7 @@ export function connectBlockToProviderData(WrappedComponent, config = {}) {
                 : pagination.prevPage,
             maxItems:
               dataLength < pagination.itemsPerPage
-                ? totalItems
+                ? newPagination.totalItems
                 : pagination.maxItems,
             renderedPages: [...pagination.renderedPages, pagination.activePage],
           };
