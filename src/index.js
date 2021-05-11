@@ -39,7 +39,10 @@ export default (config) => {
   config.widgets.widget.data_provider = PickProviderWidget;
   config.widgets.widget.pick_provider = PickProviderWidget;
 
-  config.settings.storeExtenders = [dataProvider];
+  config.settings.storeExtenders = [
+    ...(config.settings.storeExtenders || []),
+    dataProvider,
+  ];
 
   config.addonReducers = {
     ...config.addonReducers,
