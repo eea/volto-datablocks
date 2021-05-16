@@ -1,13 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { compose } from 'redux';
 import { withRouter } from 'react-router';
-import { getRouteParameterValue } from './';
+import { flattenToAppURL } from '@plone/volto/helpers';
 import {
   setRouteParameter,
   deleteRouteParameter,
 } from 'volto-datablocks/actions';
-import { getConnectedDataParametersForRoute } from 'volto-datablocks/helpers';
 
 const View = (props) => {
   const {
@@ -15,27 +13,24 @@ const View = (props) => {
     parameterKey = null,
     defaultValue = null,
   } = props.data;
+  const route_parameters = props.route_parameters;
   const parameters = props.match.params;
-
-  const getRouteParameter = (parameterKey, parameterValue, defaultValue) => {
-    return {
-      i: parameterKey,
-      o: 'plone.app.querystring.operation.selection.any',
-      v: [getRouteParameterValue(parameterValue, defaultValue)],
-    };
-  };
+  const contentPath = flattenToAppURL(props.properties['@id']);
+  const path = props.mode === 'edit' ? contentPath : props.path;
 
   React.useEffect(() => {
-    if (providerUrl) {
-      props.setRouteParameter(
-        providerUrl,
-        0,
-        getRouteParameter(parameterKey, parameters[parameterKey], defaultValue),
+    if (parameterKey && defaultValue && path === contentPath) {
+      props.dispatch(
+        setRouteParameter(
+          parameterKey,
+          parameters[parameterKey] || defaultValue,
+        ),
       );
     }
+
     return () => {
-      if (providerUrl) {
-        props.deleteRouteParameter(providerUrl, 0);
+      if (parameterKey && route_parameters[parameterKey]) {
+        props.dispatch(deleteRouteParameter(parameterKey));
       }
     };
     /* eslint-disable-next-line */
@@ -45,13 +40,12 @@ const View = (props) => {
     <>
       {props.mode === 'edit' ? (
         <>
-          {!providerUrl ? <p>Set data provider</p> : ''}
           {!parameterKey ? <p>Set parameter key</p> : ''}
           {!defaultValue ? <p>Set default value</p> : ''}
           {providerUrl && parameterKey && defaultValue ? (
             <p>
-              Router data parameter is up and running for {providerUrl} with '
-              {parameterKey}' key
+              Router parameter is up and running for '{parameterKey}' with '
+              {defaultValue}' as default value
             </p>
           ) : (
             ''
@@ -64,14 +58,6 @@ const View = (props) => {
   );
 };
 
-export default compose(
-  connect(
-    (state, props) => ({
-      dataParameters: getConnectedDataParametersForRoute(
-        state.connected_data_parameters,
-        props.data.providerUrl,
-      ),
-    }),
-    { setRouteParameter, deleteRouteParameter },
-  ),
-)(withRouter(View));
+export default connect((state) => ({
+  route_parameters: state.route_parameters,
+}))(withRouter(View));

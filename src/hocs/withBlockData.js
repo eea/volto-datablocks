@@ -16,6 +16,7 @@ const withBlockData = (WrappedComponent) => (props) => {
     if (!blockData) {
       dispatch(getBlockData(getBaseUrl(pathname), id)); // || blockData.error
     }
+    /* eslint-disable-next-line */
   }, [blockData, dispatch, id, pathname]);
 
   return <WrappedComponent {...props} data={blockData?.data || props.data} />;

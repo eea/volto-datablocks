@@ -1,21 +1,23 @@
 .simple-data-table {
   .colored-table {
     table {
-      background: #fff !important;
-      border: 1px solid #e8e8e8 !important;
-      border-radius: 12px !important;
-      border-collapse: separate !important;
       overflow: hidden;
+      border: 1px solid #e8e8e8 !important;
+      background: #fff !important;
+      border-collapse: separate !important;
+      border-radius: 12px !important;
 
-      thead, td {
+      thead,
+      td {
         background-color: #fff;
       }
 
       th {
         font-weight: bold !important;
+
         &:after {
-          border: none;
           padding: 0;
+          border: none;
         }
       }
 
@@ -31,9 +33,9 @@
         }
 
         &:after {
-          content: '';
           display: block;
           height: 10px;
+          content: '';
         }
       }
 
@@ -41,9 +43,9 @@
         padding: 0 !important;
 
         span {
+          display: block;
           width: 4px;
           height: 100%;
-          display: block;
           background-color: transparent;
         }
       }

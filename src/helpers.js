@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import config from '@plone/volto/registry';
 import { getBaseUrl } from '@plone/volto/helpers';
+import qs from 'querystring';
 
 export * from 'volto-datablocks/components/manage/Blocks/RouteParameter';
 
@@ -8,18 +9,6 @@ export function getBasePath(url) {
   return getBaseUrl(url)
     .replace(config.settings.apiPath, '')
     .replace(config.settings.internalApiPath, '');
-}
-
-export function getConnectedDataParametersForRoute(
-  connected_data_parameters,
-  url,
-) {
-  const provider_url = getBasePath(url || '');
-  const { byRouteParameters = {} } = connected_data_parameters;
-
-  return byRouteParameters[provider_url]?.length > 0
-    ? byRouteParameters[provider_url]
-    : null;
 }
 
 export function getConnectedDataParametersForPath(
@@ -67,6 +56,47 @@ export function getConnectedDataParametersForProvider(
 
   return res;
 }
+
+export const getConnector = (
+  provider_url,
+  location,
+  routeParmeters = {},
+  allowedParams = {},
+  pagination = {},
+) => {
+  const params = {
+    ...routeParmeters,
+    ...qs.parse(location.search.replace('?', '')),
+  };
+  let allowedParamsObj = null;
+  if (Object.keys(allowedParams || {}).length) {
+    allowedParamsObj = {};
+    allowedParams.forEach((param) => {
+      if (params[param]) {
+        allowedParamsObj[param] = params[param];
+      }
+    });
+  }
+
+  let paramsStr =
+    '?' +
+    qs.stringify({
+      ...(allowedParamsObj || params),
+      ...(pagination.enabled
+        ? { p: pagination.activePage, nrOfHits: pagination.itemsPerPage }
+        : {}),
+    });
+
+  paramsStr = paramsStr.length === 1 ? '' : paramsStr;
+
+  return {
+    url: provider_url ? `${provider_url}${paramsStr}` : null,
+    urlConnector: provider_url
+      ? `${provider_url}/@connector-data${paramsStr}`
+      : null,
+    params: paramsStr,
+  };
+};
 
 /*
  * refreshes chart data using data from provider
@@ -218,11 +248,7 @@ export const connectToDataParameters = connect((state, props) => {
 
   const connected_data_parameters =
     providerUrl !== null
-      ? getConnectedDataParametersForRoute(
-          state.connected_data_parameters,
-          providerUrl,
-        ) ||
-        getConnectedDataParametersForPath(
+      ? getConnectedDataParametersForPath(
           state.connected_data_parameters,
           state.router.location.pathname,
           false,

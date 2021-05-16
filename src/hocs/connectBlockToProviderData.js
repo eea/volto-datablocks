@@ -1,48 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { withRouter } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
-import { getRouteParameters } from 'volto-datablocks/helpers';
 import { getDataFromProvider } from 'volto-datablocks/actions';
-import qs from 'querystring';
-
-const getConnectorURL = (
-  provider_url,
-  location,
-  routeParmeters,
-  allowedParams,
-  pagination,
-) => {
-  const params = {
-    ...qs.parse(location.search.replace('?', '')),
-    ...routeParmeters,
-  };
-  let allowedParamsObj = null;
-  if (allowedParams) {
-    allowedParamsObj = {};
-    allowedParams.forEach((param) => {
-      allowedParamsObj[param] = params[param];
-    });
-  }
-
-  let paramsStr =
-    '?' +
-    qs.stringify({
-      ...(allowedParamsObj || params),
-      ...(pagination.enabled
-        ? { p: pagination.activePage, nrOfHits: pagination.itemsPerPage }
-        : {}),
-    });
-
-  paramsStr = paramsStr.length === 1 ? '' : paramsStr;
-
-  return {
-    url: provider_url ? `${provider_url}${paramsStr}` : null,
-    urlConnector: provider_url
-      ? `${provider_url}/@connector-data${paramsStr}`
-      : null,
-    params: paramsStr,
-  };
-};
+import { getConnector } from 'volto-datablocks/helpers';
 
 /**
  * connectBlockToProviderData.
@@ -52,6 +12,7 @@ const getConnectorURL = (
 export function connectBlockToProviderData(WrappedComponent, config = {}) {
   return withRouter((props) => {
     const dispatch = useDispatch();
+    const [mounted, setMounted] = useState(false);
     const [pagination, setPagination] = useState({
       activePage: 1,
       enabled: config.pagination?.getEnabled?.(props) || false,
@@ -63,38 +24,31 @@ export function connectBlockToProviderData(WrappedComponent, config = {}) {
     });
     const { provider_url = null } = props.data;
 
+    const state = useSelector((state) => {
+      return {
+        route_parameters: state.route_parameters,
+        data_providers: state.data_providers,
+      };
+    });
+
     const allowedParams = props.data.allowedParams?.length
       ? props.data.allowedParams
       : null;
 
-    const state = useSelector((state) => {
-      return {
-        connected_data_parameters: state.connected_data_parameters,
-        data_providers: state.data_providers,
-        search: state.search,
-      };
-    });
-
-    const routeParameters = getRouteParameters(
-      provider_url,
-      state.connected_data_parameters,
-      props.match,
-    );
-
-    const connector = getConnectorURL(
+    const connector = getConnector(
       provider_url,
       props.location,
-      routeParameters,
+      state.route_parameters,
       allowedParams,
       pagination,
     );
 
     const prevConnector =
       pagination.enabled && pagination.prevPage
-        ? getConnectorURL(
+        ? getConnector(
             provider_url,
             props.location,
-            routeParameters,
+            state.route_parameters,
             allowedParams,
             {
               ...pagination,
@@ -120,6 +74,9 @@ export function connectBlockToProviderData(WrappedComponent, config = {}) {
         ? state.data_providers?.data?.[prevConnector.urlConnector]
         : null;
 
+    const readyToDispatch =
+      mounted && provider_url && !provider_data && !isPending && !isFailed;
+
     const updatePagination = useCallback(
       (data) => {
         const newPagination = { ...pagination, ...data };
@@ -132,9 +89,14 @@ export function connectBlockToProviderData(WrappedComponent, config = {}) {
     );
 
     useEffect(() => {
-      if (provider_url && !provider_data && !isPending && !isFailed) {
+      if (!mounted) {
+        setMounted(true);
+      }
+
+      if (readyToDispatch) {
         dispatch(getDataFromProvider(provider_url, null, connector.params));
       }
+
       if (provider_data && !isPending) {
         let newPagination = { ...pagination };
         const dataLength =
@@ -169,9 +131,10 @@ export function connectBlockToProviderData(WrappedComponent, config = {}) {
         }
       }
     }, [
-      connector.params,
-      isFailed,
+      mounted,
+      readyToDispatch,
       isPending,
+      connector.params,
       dispatch,
       pagination,
       provider_data,

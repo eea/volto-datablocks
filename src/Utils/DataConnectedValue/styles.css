@@ -20,13 +20,19 @@ bla {
 .formatted-value.collapsed {
   display: inline-block;
   max-height: 180px;
-  -webkit-mask-image: -webkit-gradient(linear,left top,left bottom,from(#000),to(transparent));
+  -webkit-mask-image: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    from(#000),
+    to(transparent)
+  );
 }
 
 button.readmore-button {
-  margin-top: 1rem;
-  cursor: pointer;
-  background-color: transparent;
-  border: none;
   padding: 0;
+  border: none;
+  margin-top: 1rem;
+  background-color: transparent;
+  cursor: pointer;
 }
