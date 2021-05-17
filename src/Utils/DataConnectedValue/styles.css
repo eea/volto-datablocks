@@ -15,6 +15,7 @@ bla {
 
 .formatted-value {
   overflow: hidden;
+  white-space: pre-line;
 }
 
 .formatted-value.collapsed {

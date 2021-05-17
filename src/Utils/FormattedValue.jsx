@@ -1,7 +1,7 @@
 import React from 'react';
 import loadable from '@loadable/component';
 import cx from 'classnames';
-
+import sanitizeHtml from 'sanitize-html';
 const D3 = loadable.lib(() => import('d3'));
 
 const FormattedValue = ({ textTemplate, specifier, value, collapsed }) => {
@@ -19,9 +19,10 @@ const FormattedValue = ({ textTemplate, specifier, value, collapsed }) => {
         return (
           <span
             className={cx('formatted-value', collapsed ? 'collapsed' : null)}
-          >
-            {value || ''}
-          </span>
+            dangerouslySetInnerHTML={{
+              __html: sanitizeHtml(value) || '',
+            }}
+          />
         );
       }}
     </D3>

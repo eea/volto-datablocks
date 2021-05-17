@@ -11,6 +11,16 @@ export function getBasePath(url) {
     .replace(config.settings.internalApiPath, '');
 }
 
+export function getConnectedDataParametersForRoute(route_parameters) {
+  const keys = Object.keys(route_parameters || {});
+  if (!keys?.length) return null;
+  return keys.map((key) => ({
+    i: key,
+    o: 'plone.app.querystring.operation.selection.any',
+    v: [route_parameters[key]],
+  }));
+}
+
 export function getConnectedDataParametersForPath(
   connected_data_parameters,
   url,

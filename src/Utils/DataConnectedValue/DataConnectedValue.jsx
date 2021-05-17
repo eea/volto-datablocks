@@ -5,6 +5,7 @@ import { withRouter } from 'react-router';
 import { getDataFromProvider } from 'volto-datablocks/actions';
 import {
   getConnector,
+  getConnectedDataParametersForRoute,
   getConnectedDataParametersForProvider,
   getConnectedDataParametersForContext,
   getConnectedDataParametersForPath,
@@ -143,6 +144,7 @@ const DataConnectedValue = (props) => {
   }, [mounted, readyToDispatch, provider_url, connector.params]);
 
   const dataParameters =
+    getConnectedDataParametersForRoute(route_parameters) ||
     getConnectedDataParametersForPath(
       connected_data_parameters,
       content['@id'],
