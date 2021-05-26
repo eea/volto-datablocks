@@ -9,8 +9,17 @@ import navTreeSVG from '@plone/volto/icons/nav.svg';
 import withObjectBrowser from '@plone/volto/components/manage/Sidebar/ObjectBrowser';
 import React from 'react';
 
-const ObjectBrowserWrapper = withObjectBrowser(
-  ({ id, title, value, onSelectItem, openObjectBrowser, required }) => (
+const ObjectBrowserWrapper = withObjectBrowser((props) => {
+  const {
+    id,
+    title,
+    value,
+    onSelectItem,
+    openObjectBrowser,
+    required,
+    onChangeBlock,
+  } = props;
+  return (
     <TextWidget
       id={id}
       title={value ? <Link to={value}>{title}</Link> : title}
@@ -22,10 +31,12 @@ const ObjectBrowserWrapper = withObjectBrowser(
           ? (id, value) => onSelectItem(null)
           : () => openObjectBrowser({ mode: 'link', onSelectItem })
       }
-      onChange={() => {}}
+      onChange={(id, value) => {
+        onChangeBlock(props.id, value);
+      }}
     />
-  ),
-);
+  );
+});
 
 const ObjectBrowserAdapter = ({ onChange, value, ...props }) => {
   return (

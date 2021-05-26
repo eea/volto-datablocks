@@ -3,13 +3,21 @@ import React, { Component } from 'react';
 import { SidebarPortal } from '@plone/volto/components'; // EditBlock
 import InlineForm from '@plone/volto/components/manage/Form/InlineForm';
 
-import SimpleDataTableSchema from './schema';
+import config from '@plone/volto/registry';
+
 import { connectBlockToProviderData } from 'volto-datablocks/hocs';
+import { SimpleDataTableSchema } from './schema';
 import SimpleDataTableView from './View';
 
 class Edit extends Component {
   getSchema = () => {
-    const schema = SimpleDataTableSchema();
+    const template = this.props.data.template || 'default';
+    const templateSchema =
+      config.blocks.blocksConfig.simpleDataConnectedTable?.templates?.[template]
+        ?.schema || {};
+
+    const schema = SimpleDataTableSchema(config, templateSchema(config));
+
     // TODO: create picker for columns to include
     const { provider_data } = this.props;
     if (!provider_data) return schema;
@@ -51,7 +59,7 @@ class Edit extends Component {
 
 export default connectBlockToProviderData(Edit, {
   pagination: {
-    getEnabled: () => true,
+    getEnabled: (props) => props.data.has_pagination,
     getItemsPerPage: (props) => {
       const { max_count = 5 } = props.data;
       return max_count

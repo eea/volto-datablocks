@@ -1,5 +1,3 @@
-import config from '@plone/volto/registry';
-
 const SourceSchema = {
   title: 'Source',
 
@@ -25,44 +23,68 @@ const SourceSchema = {
   required: ['source'],
 };
 
-const getSchema = () => ({
-  title: 'Edit chart',
+const getSchema = (props, config, templateSchema = {}) => {
+  const blocksConfig =
+    config.blocks.blocksConfig.custom_connected_block?.blocks || {};
+  const blocks = Object.keys(blocksConfig).map((block) => [
+    block,
+    blocksConfig[block].title || block,
+  ]);
+  const defaultFieldset =
+    templateSchema.fieldsets?.filter(
+      (fieldset) => fieldset.id === 'default',
+    )[0] || {};
 
-  fieldsets: [
-    {
-      id: 'default',
-      title: 'Default',
-      fields: ['provider_url', 'type'],
-    },
-    {
-      id: 'sources',
-      title: 'Sources',
-      fields: ['sources'],
-    },
-  ],
+  return {
+    title: templateSchema.title || 'Edit custom connected block',
+    fieldsets: [
+      {
+        id: 'default',
+        title: 'Default',
+        fields: [
+          'provider_url',
+          'allowedParams',
+          'type',
+          ...(defaultFieldset?.fields || []),
+        ],
+      },
+      ...(templateSchema.fieldsets?.filter(
+        (fieldset) => fieldset.id !== 'default',
+      ) || []),
+      {
+        id: 'sources',
+        title: 'Sources',
+        fields: ['sources'],
+      },
+    ],
 
-  properties: {
-    provider_url: {
-      widget: 'pick_provider',
-      title: 'Data provider',
+    properties: {
+      provider_url: {
+        title: 'Data provider',
+        widget: 'object_by_path',
+      },
+      allowedParams: {
+        title: 'Allowed params',
+        type: 'array',
+        items: {
+          choices: [],
+        },
+      },
+      type: {
+        title: 'Select block type',
+        type: 'array',
+        choices: [...blocks],
+      },
+      sources: {
+        widget: 'objectlist',
+        title: 'Sources',
+        schema: SourceSchema,
+      },
+      ...(templateSchema.properties || {}),
     },
-    type: {
-      title: 'Select block type',
-      type: 'array',
-      choices: [
-        ...Object.keys(
-          config.blocks.blocksConfig.custom_connected_block?.blocks || {},
-        )?.map((block) => [block, block]),
-      ],
-    },
-    sources: {
-      widget: 'objectlist',
-      title: 'Sources',
-      schema: SourceSchema,
-    },
-  },
 
-  required: ['url'],
-});
+    required: ['url', ...(templateSchema.required || [])],
+  };
+};
 
 export default getSchema;

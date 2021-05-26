@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import qs from 'querystring';
 
 import { getDataFromProvider } from 'volto-datablocks/actions';
 import {
-  getRouteParameters,
+  getConnector,
   getConnectedDataParametersForRoute,
   getConnectedDataParametersForProvider,
   getConnectedDataParametersForContext,
@@ -93,60 +92,59 @@ const getValue = (
 };
 
 const DataConnectedValue = (props) => {
+  const [mounted, setMounted] = React.useState(false);
+  const [collapsed, setCollapsed] = React.useState(true);
   const {
+    location,
     column,
+    data_providers,
     connected_data_parameters,
+    route_parameters,
     filterIndex,
     placeholder = EMPTY,
     content,
     hasQueryParammeters,
     specifier,
     textTemplate,
+    collapseLimit = null,
   } = props;
 
   const provider_url = props.url;
 
-  let params =
-    '?' +
-    qs.stringify({
-      ...qs.parse(props.location.search.replace('?', '')),
-      ...getRouteParameters(
-        provider_url,
-        connected_data_parameters,
-        props.match,
-      ),
-    });
+  // const allowedParams = props.data.allowedParams?.length
+  //   ? props.data.allowedParams
+  //   : null;
 
-  params = params.length === 1 ? '' : params;
-
-  const url = provider_url ? `${provider_url}${params}` : null;
-  const urlConnector = provider_url
-    ? `${provider_url}/@connector-data${params}`
-    : null;
+  const connector = getConnector(provider_url, location, route_parameters);
 
   const isPending = provider_url
-    ? props.data_providers?.pendingConnectors?.[url]
+    ? data_providers?.pendingConnectors?.[connector.url]
+    : false;
+
+  const isFailed = provider_url
+    ? data_providers?.failedConnectors?.[connector.url]
     : false;
 
   const provider_data = provider_url
-    ? props.data_providers?.data?.[urlConnector]
+    ? data_providers?.data?.[connector.urlConnector]
     : null;
 
-  const isFailed = provider_url
-    ? props.data_providers?.failedConnectors?.[url]
-    : false;
+  const readyToDispatch =
+    mounted && provider_url && !provider_data && !isPending && !isFailed;
 
-  useEffect(() => {
-    if (provider_url && !provider_data && !isPending && !isFailed) {
-      props.getDataFromProvider(provider_url, null, params);
+  React.useEffect(() => {
+    if (!mounted) {
+      setMounted(true);
     }
-  });
+
+    if (readyToDispatch) {
+      props.getDataFromProvider(provider_url, null, connector.params);
+    }
+    /* eslint-disable-next-line */
+  }, [mounted, readyToDispatch, provider_url, connector.params]);
 
   const dataParameters =
-    getConnectedDataParametersForRoute(
-      connected_data_parameters,
-      provider_url,
-    ) ||
+    getConnectedDataParametersForRoute(route_parameters) ||
     getConnectedDataParametersForPath(
       connected_data_parameters,
       content['@id'],
@@ -170,12 +168,31 @@ const DataConnectedValue = (props) => {
     hasQueryParammeters,
   );
 
+  const collapsable = props.collapsable && value.length > collapseLimit;
+
   return value ? (
-    <FormattedValue
-      textTemplate={textTemplate}
-      value={value}
-      specifier={specifier}
-    />
+    <>
+      <FormattedValue
+        textTemplate={textTemplate}
+        value={value}
+        specifier={specifier}
+        collapsed={collapsable && collapsed}
+      />
+      {collapsable ? (
+        <div>
+          <button
+            className="readmore-button"
+            onClick={() => {
+              setCollapsed(!collapsed);
+            }}
+          >
+            {collapsed ? 'READ MORE' : 'COLLAPSE'}
+          </button>
+        </div>
+      ) : (
+        ''
+      )}
+    </>
   ) : (
     placeholder
   );
@@ -185,6 +202,7 @@ export default connect(
   (state, props) => ({
     content: state.content.data,
     connected_data_parameters: state.connected_data_parameters,
+    route_parameters: state.route_parameters,
     data_providers: state.data_providers,
   }),
   {

@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from '@plone/volto/components';
 import { flattenToAppURL } from '@plone/volto/helpers';
-import { getRouteParameters } from 'volto-datablocks/helpers';
 import { getDataFromProvider } from 'volto-datablocks/actions';
+import { getConnector } from 'volto-datablocks/helpers';
 import { Container, Table, Menu } from 'semantic-ui-react';
-import qs from 'querystring';
 
 import leftSVG from '@plone/volto/icons/left-key.svg';
 import rightSVG from '@plone/volto/icons/right-key.svg';
@@ -15,68 +14,49 @@ import rightSVG from '@plone/volto/icons/right-key.svg';
 import './styles.css';
 
 const DataConnectorView = (props) => {
-  const history = useHistory();
   const dispatch = useDispatch();
   const [pagination, setPagination] = useState({
     activePage: 1,
     itemsPerPage: 20,
     totalItems: 0,
   });
-
   const { content = {} } = props;
+
   const provider_url = flattenToAppURL(props.location.pathname || '').replace(
     /\/$/,
     '',
   );
 
+  const state = useSelector((state) => {
+    return {
+      data_providers: state.data_providers,
+    };
+  });
+
   const row_size =
     Math.min(pagination.itemsPerPage, pagination.totalItems) || 0;
 
-  const params = useSelector((state) => {
-    return (
-      '?' +
-      qs.stringify({
-        ...qs.parse(history.location.search.replace('?', '')),
-        ...getRouteParameters(
-          provider_url,
-          state.connected_data_parameters,
-          props.match,
-        ),
-        p: pagination.activePage,
-        nrOfHits: pagination.itemsPerPage,
-      })
-    );
-  });
+  const connector = getConnector(
+    provider_url,
+    props.location,
+    state.route_parameters,
+  );
 
-  const isPending = useSelector((state) => {
-    if (provider_url === null) return false;
+  const isPending = provider_url
+    ? state.data_providers?.pendingConnectors?.[connector.url]
+    : false;
 
-    const url = `${provider_url}${params}`;
-    const rv = provider_url
-      ? state.data_providers?.pendingConnectors?.[url]
-      : false;
-    return rv;
-  });
+  const isFailed = provider_url
+    ? state.data_providers?.failedConnectors?.[connector.url]
+    : false;
 
-  const isFailed = useSelector((state) => {
-    if (provider_url === null) return false;
-
-    const url = `${provider_url}${params}`;
-    const rv = provider_url
-      ? state.data_providers?.failedConnectors?.[url]
-      : false;
-    return rv;
-  });
-
-  const provider_data = useSelector((state) => {
-    if (provider_url === null) return null;
-    const url = `${provider_url}/@connector-data${params}`;
-    return provider_url ? state.data_providers?.data?.[url] : null;
-  });
+  const provider_data = provider_url
+    ? state.data_providers?.data?.[connector.urlConnector]
+    : null;
 
   React.useEffect(() => {
     if (provider_url && !provider_data && !isPending && !isFailed) {
-      dispatch(getDataFromProvider(provider_url, null, params));
+      dispatch(getDataFromProvider(provider_url, null, connector.params));
     }
   });
 
@@ -110,7 +90,10 @@ const DataConnectorView = (props) => {
                 .map((_, i) => (
                   <Table.Row key={i}>
                     {Object.keys(provider_data).map((k) => (
-                      <Table.Cell key={`${i}-${k}`}>
+                      <Table.Cell
+                        key={`${i}-${k}`}
+                        style={{ whiteSpace: 'nowrap' }}
+                      >
                         {provider_data[k][i]}
                       </Table.Cell>
                     ))}
@@ -160,4 +143,6 @@ const DataConnectorView = (props) => {
   );
 };
 
-export default withRouter(DataConnectorView);
+export default connect((state, props) => ({
+  route_parameters: state.route_parameters,
+}))(withRouter(DataConnectorView));

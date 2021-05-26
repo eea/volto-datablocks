@@ -4,7 +4,7 @@ import {
 } from 'volto-datablocks/constants';
 
 export * from './blockData';
-export * from './connectedDataParameters';
+export * from './routeParameters';
 export * from './dataProvider';
 export * from './discodataResource';
 export * from './queryParameters';

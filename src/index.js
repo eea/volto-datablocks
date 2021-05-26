@@ -15,20 +15,22 @@ import {
   DataQueryWidget,
   PickProviderWidget,
 } from './components';
-import { addCustomGroup } from './helpers';
 import { dataProvider } from './middlewares';
 import * as addonReducers from './reducers';
 export * from './config';
 
 export default (config) => {
-  addCustomGroup(config, {
-    id: 'data_blocks',
-    title: 'Data blocks',
-  });
-  addCustomGroup(config, {
-    id: 'custom_addons',
-    title: 'Custom addons',
-  });
+  config.blocks.groupBlocksOrder = [
+    ...config.blocks.groupBlocksOrder,
+    {
+      id: 'data_blocks',
+      title: 'Data blocks',
+    },
+    {
+      id: 'custom_addons',
+      title: 'Custom addons',
+    },
+  ];
 
   config.views.contentTypesViews.discodataconnector = DataConnectorView;
 
@@ -37,7 +39,10 @@ export default (config) => {
   config.widgets.widget.data_provider = PickProviderWidget;
   config.widgets.widget.pick_provider = PickProviderWidget;
 
-  config.settings.storeExtenders = [dataProvider];
+  config.settings.storeExtenders = [
+    ...(config.settings.storeExtenders || []),
+    dataProvider,
+  ];
 
   config.addonReducers = {
     ...config.addonReducers,

@@ -108,86 +108,111 @@ const getColumnSchema = (schema, child) => {
   };
 };
 
-const SimpleDataTableSchema = () => ({
-  title: 'DataConnected Table',
+export const SimpleDataTableSchema = (config, templateSchema = {}) => {
+  const templatesConfig =
+    config.blocks.blocksConfig.simpleDataConnectedTable.templates;
 
-  fieldsets: [
-    {
-      id: 'default',
-      title: 'Default',
-      fields: ['description'], // title
-    },
-    {
-      id: 'source',
-      title: 'Data source',
-      fields: ['provider_url', 'max_count', 'columns'],
-    },
-    {
-      id: 'styling',
-      title: 'Styling',
-      fields: [
-        'show_header',
-        'underline',
-        'striped',
-        'bordered',
-        'compact_table',
-      ],
-    },
-  ],
+  const templates = Object.keys(templatesConfig).map((template) => [
+    template,
+    templatesConfig[template].title || template,
+  ]);
 
-  properties: {
-    // columns: {
-    //   title: 'Columns',
-    //   description: 'Leave empty to show all columns',
-    //   isMulti: true,
-    //   choices: [],
-    //   widget: 'multi_select',
-    // },
-    columns: {
-      title: 'Columns',
-      description: 'Leave empty to show all columns',
-      schema: columnSchema,
-      schemaExtender: (schema, child) => getColumnSchema(schema, child),
-      widget: 'object_list_inline',
+  const defaultFieldset = templateSchema.fieldsets.filter((fieldset) => {
+    return fieldset.id === 'default';
+  })[0];
+
+  return {
+    title: 'DataConnected Table',
+
+    fieldsets: [
+      {
+        id: 'default',
+        title: 'Default',
+        fields: ['description', 'template', ...(defaultFieldset?.fields || {})], // title
+      },
+      {
+        id: 'source',
+        title: 'Data source',
+        fields: ['provider_url', 'max_count', 'columns'],
+      },
+      {
+        id: 'styling',
+        title: 'Styling',
+        fields: [
+          'has_pagination',
+          'show_header',
+          'underline',
+          'striped',
+          'bordered',
+          'compact_table',
+        ],
+      },
+    ],
+
+    properties: {
+      // columns: {
+      //   title: 'Columns',
+      //   description: 'Leave empty to show all columns',
+      //   isMulti: true,
+      //   choices: [],
+      //   widget: 'multi_select',
+      // },
+      columns: {
+        title: 'Columns',
+        description: 'Leave empty to show all columns',
+        schema: columnSchema,
+        schemaExtender: (schema, child) => getColumnSchema(schema, child),
+        widget: 'object_list_inline',
+      },
+
+      description: {
+        title: 'Description',
+        widget: 'slate_richtext',
+        description: 'Allows rich text formatting',
+      },
+      provider_url: {
+        widget: 'object_by_path',
+        title: 'Data provider',
+      },
+      max_count: {
+        title: 'Max results',
+        widget: 'number',
+        defaultValue: 5,
+      },
+      template: {
+        title: 'Template',
+        type: 'array',
+        choices: [...templates],
+        default: 'default',
+      },
+      has_pagination: {
+        title: 'Pagination',
+        type: 'boolean',
+        default: false,
+      },
+      show_header: {
+        title: 'Show header?',
+        type: 'boolean',
+      },
+      striped: {
+        title: 'Color alternate rows',
+        type: 'boolean',
+      },
+      bordered: {
+        title: 'Remove table border',
+        type: 'boolean',
+      },
+      compact_table: {
+        title: 'Compact table',
+        type: 'boolean',
+      },
+      underline: {
+        title: 'Title underline',
+        type: 'boolean',
+      },
+      ...(templateSchema.properties || {}),
     },
 
-    description: {
-      title: 'Description',
-      widget: 'slate_richtext',
-      description: 'Allows rich text formatting',
-    },
-    provider_url: {
-      widget: 'pick_provider',
-      title: 'Data provider',
-    },
-    max_count: {
-      title: 'Max results',
-      widget: 'number',
-      defaultValue: 5,
-    },
-    show_header: {
-      title: 'Show header?',
-      type: 'boolean',
-    },
-    striped: {
-      title: 'Color alternate rows',
-      type: 'boolean',
-    },
-    bordered: {
-      title: 'Remove table border',
-      type: 'boolean',
-    },
-    compact_table: {
-      title: 'Compact table',
-      type: 'boolean',
-    },
-    underline: {
-      title: 'Title underline',
-      type: 'boolean',
-    },
-  },
-
-  required: ['provider_url'],
-});
-
-export default SimpleDataTableSchema;
+    required: ['provider_url', ...(templateSchema.required || [])],
+  };
+};

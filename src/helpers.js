@@ -1,18 +1,9 @@
 import { connect } from 'react-redux';
 import config from '@plone/volto/registry';
 import { getBaseUrl } from '@plone/volto/helpers';
+import qs from 'querystring';
 
 export * from 'volto-datablocks/components/manage/Blocks/RouteParameter';
-
-export function addCustomGroup(config, group) {
-  const hasCustomGroup = config.blocks.groupBlocksOrder.filter(
-    (el) => el.id === group.id,
-  );
-  if (hasCustomGroup.length === 0) {
-    config.blocks.groupBlocksOrder.push(group);
-  }
-  return config.blocks.groupBlocksOrder;
-}
 
 export function getBasePath(url) {
   return getBaseUrl(url)
@@ -20,16 +11,14 @@ export function getBasePath(url) {
     .replace(config.settings.internalApiPath, '');
 }
 
-export function getConnectedDataParametersForRoute(
-  connected_data_parameters,
-  url,
-) {
-  const provider_url = getBasePath(url || '');
-  const { byRouteParameters = {} } = connected_data_parameters;
-
-  return byRouteParameters[provider_url]?.length > 0
-    ? byRouteParameters[provider_url]
-    : null;
+export function getConnectedDataParametersForRoute(route_parameters) {
+  const keys = Object.keys(route_parameters || {});
+  if (!keys?.length) return null;
+  return keys.map((key) => ({
+    i: key,
+    o: 'plone.app.querystring.operation.selection.any',
+    v: [route_parameters[key]],
+  }));
 }
 
 export function getConnectedDataParametersForPath(
@@ -77,6 +66,47 @@ export function getConnectedDataParametersForProvider(
 
   return res;
 }
+
+export const getConnector = (
+  provider_url,
+  location,
+  routeParmeters = {},
+  allowedParams = {},
+  pagination = {},
+) => {
+  const params = {
+    ...routeParmeters,
+    ...qs.parse(location.search.replace('?', '')),
+  };
+  let allowedParamsObj = null;
+  if (Object.keys(allowedParams || {}).length) {
+    allowedParamsObj = {};
+    allowedParams.forEach((param) => {
+      if (params[param]) {
+        allowedParamsObj[param] = params[param];
+      }
+    });
+  }
+
+  let paramsStr =
+    '?' +
+    qs.stringify({
+      ...(allowedParamsObj || params),
+      ...(pagination.enabled
+        ? { p: pagination.activePage, nrOfHits: pagination.itemsPerPage }
+        : {}),
+    });
+
+  paramsStr = paramsStr.length === 1 ? '' : paramsStr;
+
+  return {
+    url: provider_url ? `${provider_url}${paramsStr}` : null,
+    urlConnector: provider_url
+      ? `${provider_url}/@connector-data${paramsStr}`
+      : null,
+    params: paramsStr,
+  };
+};
 
 /*
  * refreshes chart data using data from provider
@@ -226,29 +256,21 @@ export function mixProviderData(chartData, providerData, parameters) {
 export const connectToDataParameters = connect((state, props) => {
   const providerUrl = props?.data?.provider_url || props?.data?.url || null;
 
-  const FILTER = true; // this is a filter??
-  const byPath =
-    getConnectedDataParametersForPath(
-      state.connected_data_parameters,
-      providerUrl,
-      FILTER,
-    ) || {};
-
-  const byProvider = getConnectedDataParametersForProvider(
-    state.connected_data_parameters,
-    providerUrl,
-  );
-
-  const byContext = getConnectedDataParametersForContext(
-    state.connected_data_parameters,
-    state.router.location.pathname,
-  );
-
   const connected_data_parameters =
     providerUrl !== null
-      ? byPath
-        ? byPath[FILTER] || byContext || byProvider
-        : byContext || byProvider
+      ? getConnectedDataParametersForPath(
+          state.connected_data_parameters,
+          state.router.location.pathname,
+          false,
+        ) ||
+        getConnectedDataParametersForProvider(
+          state.connected_data_parameters,
+          providerUrl,
+        ) ||
+        getConnectedDataParametersForContext(
+          state.connected_data_parameters,
+          state.router.location.pathname,
+        )
       : null;
 
   return {

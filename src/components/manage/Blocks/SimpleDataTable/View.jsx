@@ -1,17 +1,15 @@
-import { Table, Menu } from 'semantic-ui-react';
+import React from 'react';
 import { compose } from 'redux';
-import React, { useEffect } from 'react';
+import config from '@plone/volto/registry';
+
 import { connectBlockToProviderData } from 'volto-datablocks/hocs';
-import { Icon } from '@plone/volto/components';
 import { serializeNodes } from 'volto-datablocks/serialize';
 import {
   filterDataByParameters,
   connectToDataParameters,
 } from 'volto-datablocks/helpers';
-import RenderComponent from './components';
-import leftSVG from '@plone/volto/icons/left-key.svg';
-import rightSVG from '@plone/volto/icons/right-key.svg';
 
+import { DefaultView } from './templates/default';
 import './styles.less';
 
 const getAlignmentOfColumn = (col, idx) => {
@@ -36,31 +34,41 @@ const selectedColumnValidator = (allColDefs) => (colDef) => {
     : allColDefs.includes(colDef?.column);
 };
 
-const SimpleDataTableView = (props) => {
-  const {
-    data = {},
-    provider_data = {},
-    pagination = {},
-    connected_data_parameters = {},
-    updatePagination = () => {},
-  } = props;
-  const { show_header, description, max_count, columns } = data;
+const getProviderData = (provider_data) => {
+  return provider_data &&
+    Object.keys(provider_data).length &&
+    provider_data[Object.keys(provider_data)[0]].length
+    ? provider_data
+    : null;
+};
 
-  useEffect(() => {
-    updatePagination({
-      itemsPerPage: max_count
-        ? typeof max_count !== 'number'
-          ? parseInt(max_count) || 5
-          : max_count
-        : max_count || 5,
-      totalItems: provider_data?.[Object.keys(provider_data)?.[0]]?.length,
-    });
-    /* eslint-disable-next-line */
-  }, [JSON.stringify(provider_data), max_count]);
+const SimpleDataTableView = (props) => {
+  const { data = {}, pagination = {}, connected_data_parameters = {} } = props;
+  const {
+    has_pagination = false,
+    show_header = false,
+    max_count = 5,
+    description,
+    template,
+    columns,
+  } = data;
+
+  const provider_data = has_pagination
+    ? getProviderData(props.provider_data) ||
+      getProviderData(props.prev_provider_data)
+    : getProviderData(props.provider_data);
+
+  const tableTemplate = template || 'default';
+  const TableView =
+    config.blocks.blocksConfig.simpleDataConnectedTable?.templates?.[
+      tableTemplate
+    ]?.view || DefaultView;
 
   // TODO: sorting
   const row_size =
-    Math.min(pagination.itemsPerPage, pagination.totalItems) || 0;
+    has_pagination || max_count > 0
+      ? Math.min(pagination.itemsPerPage, pagination.totalItems) || 0
+      : pagination.totalItems;
   const providerColumns = Object.keys(provider_data || {});
   const sureToShowAllColumns = !Array.isArray(columns) || columns.length === 0;
   const validator = selectedColumnValidator(providerColumns);
@@ -77,99 +85,27 @@ const SimpleDataTableView = (props) => {
       <div className={`table-title ${data.underline ? 'title-border' : ''}`}>
         {description ? serializeNodes(description) : ''}
       </div>
-      {row_size ? (
-        <Table
-          textAlign="left"
-          striped={data.striped}
-          className={`unstackable ${data.bordered ? 'no-borders' : ''}
-          ${data.compact_table ? 'compact-table' : ''}`}
-        >
-          {show_header ? (
-            <Table.Header>
-              <Table.Row>
-                {selectedColumns.map((colDef, j) => (
-                  <Table.HeaderCell
-                    key={getNameOfColumn(colDef)}
-                    className={getAlignmentOfColumn(colDef, j)}
-                  >
-                    {getTitleOfColumn(colDef)}
-                  </Table.HeaderCell>
-                ))}
-              </Table.Row>
-            </Table.Header>
-          ) : null}
-          <Table.Body>
-            {Array(Math.max(0, row_size))
-              .fill()
-              .map((_, i) => (
-                <Table.Row key={i}>
-                  {selectedColumns.map((colDef, j) => (
-                    <Table.Cell
-                      key={`${i}-${getNameOfColumn(colDef)}`}
-                      textAlign={getAlignmentOfColumn(colDef, j)}
-                    >
-                      <RenderComponent
-                        tableData={tableData}
-                        colDef={colDef}
-                        row={i}
-                        {...props}
-                      />
-                    </Table.Cell>
-                  ))}
-                </Table.Row>
-              ))}
-          </Table.Body>
-          <Table.Footer>
-            <Table.Row>
-              <Table.HeaderCell
-                colSpan={selectedColumns.length}
-                style={{ textAlign: 'center' }}
-              >
-                <Menu pagination>
-                  <Menu.Item
-                    as="a"
-                    icon
-                    disabled={pagination.activePage === 1}
-                    onClick={() => {
-                      if (pagination.activePage > 1) {
-                        updatePagination({
-                          activePage: pagination.activePage - 1,
-                        });
-                      }
-                    }}
-                  >
-                    <Icon name={leftSVG} size="24px" />
-                  </Menu.Item>
-                  <Menu.Item
-                    as="a"
-                    icon
-                    disabled={row_size < pagination.itemsPerPage}
-                    onClick={() => {
-                      if (row_size === pagination.itemsPerPage) {
-                        updatePagination({
-                          activePage: pagination.activePage + 1,
-                        });
-                      }
-                    }}
-                  >
-                    <Icon name={rightSVG} size="24px" />
-                  </Menu.Item>
-                </Menu>
-              </Table.HeaderCell>
-            </Table.Row>
-          </Table.Footer>
-        </Table>
-      ) : (
-        'No results'
-      )}
+
+      <TableView
+        {...props}
+        getAlignmentOfColumn={getAlignmentOfColumn}
+        getTitleOfColumn={getTitleOfColumn}
+        getNameOfColumn={getNameOfColumn}
+        selectedColumns={selectedColumns}
+        tableData={tableData}
+        provider_data={provider_data}
+        has_pagination={has_pagination}
+        show_header={show_header}
+        row_size={row_size}
+      />
     </div>
   );
 };
 
-export default compose(() => {
+export default compose(connectToDataParameters, (SimpleDataTableView) => {
   return connectBlockToProviderData(SimpleDataTableView, {
     pagination: {
-      getEnabled: () => true,
+      getEnabled: (props) => props.data.has_pagination,
       getItemsPerPage: (props) => {
         const { max_count = 5 } = props.data;
         return max_count
@@ -180,4 +116,4 @@ export default compose(() => {
       },
     },
   });
-}, connectToDataParameters)(SimpleDataTableView);
+})(SimpleDataTableView);

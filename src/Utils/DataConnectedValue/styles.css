@@ -12,3 +12,28 @@ bla {
 .block-container .data-content span {
   white-space: break-spaces;
 }
+
+.formatted-value {
+  overflow: hidden;
+  white-space: pre-line;
+}
+
+.formatted-value.collapsed {
+  display: inline-block;
+  max-height: 180px;
+  -webkit-mask-image: -webkit-gradient(
+    linear,
+    left top,
+    left bottom,
+    from(#000),
+    to(transparent)
+  );
+}
+
+button.readmore-button {
+  padding: 0;
+  border: none;
+  margin-top: 1rem;
+  background-color: transparent;
+  cursor: pointer;
+}

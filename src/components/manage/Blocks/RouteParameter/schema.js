@@ -5,15 +5,11 @@ const getSchema = () => ({
     {
       id: 'default',
       title: 'Default',
-      fields: ['providerUrl', 'parameterKey', 'defaultValue'],
+      fields: ['parameterKey', 'defaultValue'],
     },
   ],
 
   properties: {
-    providerUrl: {
-      title: 'Data provider',
-      widget: 'object_by_path',
-    },
     parameterKey: {
       title: 'Parameter key',
       type: 'title',
@@ -24,7 +20,7 @@ const getSchema = () => ({
     },
   },
 
-  required: ['providerUrl', 'parameterKey', 'defaultValue'],
+  required: ['parameterKey', 'defaultValue'],
 });
 
 export default getSchema;

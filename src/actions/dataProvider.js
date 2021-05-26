@@ -1,6 +1,7 @@
 import { flattenToAppURL } from '@plone/volto/helpers';
 import {
   GET_DATA_FROM_PROVIDER,
+  SET_PROVIDER_CONTENT,
   SET_CONNECTED_DATA_PARAMETERS,
   DELETE_CONNECTED_DATA_PARAMETERS,
 } from 'volto-datablocks/constants';
@@ -40,6 +41,14 @@ export function getDataFromProvider(path, filters = null, queryString = '') {
           },
         },
       };
+}
+
+export function setProviderContent(path, content) {
+  return {
+    type: SET_PROVIDER_CONTENT,
+    path,
+    content,
+  };
 }
 
 export function setConnectedDataParameters(

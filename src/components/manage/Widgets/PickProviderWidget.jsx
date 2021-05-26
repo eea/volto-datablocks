@@ -1,10 +1,9 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import { connect, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router';
-import { getDataFromProvider } from 'volto-datablocks/actions';
-import { getRouteParameters } from 'volto-datablocks/helpers';
 import { ObjectBrowserWidget } from '@plone/volto/components';
-import qs from 'querystring';
+import { getDataFromProvider } from 'volto-datablocks/actions';
+import { getConnector } from 'volto-datablocks/helpers';
 
 function getId(url) {
   const split = url.split('/');
@@ -19,116 +18,75 @@ function getUrl(value) {
   return value;
 }
 
-class PickProvider extends Component {
-  constructor(props) {
-    super(props);
-    this.getParams = this.getParams.bind(this);
-    this.getProviderData = this.getProviderData.bind(this);
-    this.getDataFromProvider = this.getDataFromProvider.bind(this);
+const PickProvider = (props) => {
+  const dispatch = useDispatch();
+  const [mounted, setMounted] = React.useState(false);
+  let { value, onChange } = props;
+  if (typeof value === 'string') {
+    value = [{ '@id': value, title: getId(value) }];
   }
+  const provider_url = getUrl(value);
+  const connector = getConnector(
+    provider_url,
+    props.location,
+    props.route_parameters,
+  );
 
-  componentDidMount() {
-    const provider_url = getUrl(this.props.value);
-    this.getDataFromProvider(provider_url);
-  }
+  const isPending = provider_url
+    ? props.data_providers?.pendingConnectors?.[connector.url]
+    : false;
 
-  componentDidUpdate(prevProps) {
-    const provider_url = getUrl(this.props.value);
-    const prev_provider_url = getUrl(prevProps.value);
-    const providerData = this.getProviderData(provider_url);
-    const prevProviderData = this.getProviderData(prev_provider_url);
-    this.getDataFromProvider(provider_url);
+  const isFailed = provider_url
+    ? props.data_providers?.failedConnectors?.[connector.url]
+    : false;
 
-    // Optimization to help land the proper providerData to the chart
+  const provider_data = provider_url
+    ? props.data_providers?.data?.[connector.urlConnector]
+    : null;
 
-    // NOTE: see comments in PickVisualization.jsx, the same applies here
-    const { onLoadProviderData } = this.props;
-    if (
-      JSON.stringify(providerData) !== JSON.stringify(prevProviderData) &&
-      onLoadProviderData
-    )
-      onLoadProviderData(providerData);
+  const readyToDispatch =
+    mounted && provider_url && !provider_data && !isPending && !isFailed;
 
-    // This is a hack to pass loaded providerData. It should not be needed
-    // this.props.onChange('providerData', providerData);
-  }
-
-  getParams = (provider_url) => {
-    const params =
-      '?' +
-      qs.stringify({
-        ...qs.parse(this.props.location.search.replace('?', '')),
-        ...(getRouteParameters(
-          provider_url,
-          this.props.connected_data_parameters,
-          this.props.match,
-        ) || {}),
-      });
-
-    return params.length > 1 ? params : '';
-  };
-
-  getProviderData = (provider_url) => {
-    return provider_url
-      ? this.props.data_providers?.data?.[
-          `${provider_url}/@connector-data${this.getParams(provider_url)}`
-        ]
-      : null;
-  };
-
-  getDataFromProvider = (provider_url) => {
-    const params = this.getParams(provider_url);
-
-    const isPending = provider_url
-      ? this.props.data_providers?.pendingConnectors?.[
-          `${provider_url}${params}`
-        ]
-      : false;
-
-    const isFailed = provider_url
-      ? this.props.data_providers?.failedConnectors?.[
-          `${provider_url}${params}`
-        ]
-      : false;
-
-    const provider_data = provider_url
-      ? this.props.data_providers?.data?.[
-          `${provider_url}/@connector-data${params}`
-        ]
-      : null;
-
-    if (provider_url && !provider_data && !isPending && !isFailed) {
-      this.props.getDataFromProvider(provider_url, null, params);
+  React.useEffect(() => {
+    if (!mounted) {
+      setMounted(true);
     }
-  };
 
-  render() {
-    let { value, onChange } = this.props;
-    if (typeof value === 'string') {
-      value = [{ '@id': value, title: getId(value) }];
+    if (readyToDispatch) {
+      dispatch(getDataFromProvider(provider_url, null, connector.params));
     }
-    return (
-      <ObjectBrowserWidget
-        {...this.props}
-        value={value}
-        onChange={(id, value) => {
-          if (value && value.length) {
-            onChange(id, value[0]['@id']);
-          } else if (value) {
-            onChange(id, value['@id']);
-          } else {
-            onChange(id, null);
-          }
-        }}
-      />
-    );
-  }
-}
+  }, [
+    mounted,
+    readyToDispatch,
+    connector.params,
+    dispatch,
+    provider_data,
+    provider_url,
+  ]);
+
+  return (
+    <ObjectBrowserWidget
+      {...props}
+      value={value}
+      mode="link"
+      onChange={(id, value) => {
+        if (value && value.length) {
+          onChange(id, value[0]['@id']);
+        } else if (value) {
+          onChange(id, value['@id']);
+        } else {
+          onChange(id, null);
+        }
+      }}
+    />
+  );
+};
 
 export default connect(
   (state, props) => ({
     data_providers: state.data_providers,
     connected_data_parameters: state.connected_data_parameters,
+    route_parameters: state.route_parameters,
   }),
   { getDataFromProvider },
 )(withRouter(PickProvider));
