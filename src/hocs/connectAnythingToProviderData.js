@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { withRouter } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
-import { getDataFromProvider } from 'volto-datablocks/actions';
+import { getDataFromProvider } from '@eeacms/volto-datablocks/actions';
 import { flattenToAppURL } from '@plone/volto/helpers';
-import { getConnector } from 'volto-datablocks/helpers';
+import { getConnector } from '@eeacms/volto-datablocks/helpers';
 
 /**
  * connectAnythingToProviderData.

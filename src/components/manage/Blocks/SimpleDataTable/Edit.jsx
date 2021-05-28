@@ -5,7 +5,7 @@ import InlineForm from '@plone/volto/components/manage/Form/InlineForm';
 
 import config from '@plone/volto/registry';
 
-import { connectBlockToProviderData } from 'volto-datablocks/hocs';
+import { connectBlockToProviderData } from '@eeacms/volto-datablocks/hocs';
 import { SimpleDataTableSchema } from './schema';
 import SimpleDataTableView from './View';
 

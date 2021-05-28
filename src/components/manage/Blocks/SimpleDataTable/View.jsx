@@ -2,12 +2,12 @@ import React from 'react';
 import { compose } from 'redux';
 import config from '@plone/volto/registry';
 
-import { connectBlockToProviderData } from 'volto-datablocks/hocs';
-import { serializeNodes } from 'volto-datablocks/serialize';
+import { connectBlockToProviderData } from '@eeacms/volto-datablocks/hocs';
+import { serializeNodes } from '@eeacms/volto-datablocks/serialize';
 import {
   filterDataByParameters,
   connectToDataParameters,
-} from 'volto-datablocks/helpers';
+} from '@eeacms/volto-datablocks/helpers';
 
 import { DefaultView } from './templates/default';
 import './styles.less';

@@ -4,7 +4,7 @@ import {
   SET_PROVIDER_CONTENT,
   SET_CONNECTED_DATA_PARAMETERS,
   DELETE_CONNECTED_DATA_PARAMETERS,
-} from 'volto-datablocks/constants';
+} from '@eeacms/volto-datablocks/constants';
 import qs from 'query-string';
 
 export function getDataFromProvider(path, filters = null, queryString = '') {

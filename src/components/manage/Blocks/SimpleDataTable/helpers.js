@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormattedValue } from 'volto-datablocks/Utils';
+import { FormattedValue } from '@eeacms/volto-datablocks/Utils';
 
 export const getValue = (tableData, column, rowIndex, textTemplate) => {
   let value = tableData[column]?.[rowIndex];

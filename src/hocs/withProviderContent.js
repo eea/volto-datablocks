@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { searchContent } from '@plone/volto/actions';
-import { setProviderContent } from 'volto-datablocks/actions';
+import { setProviderContent } from '@eeacms/volto-datablocks/actions';
 /**
  * withProviderContent.
  *

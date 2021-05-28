@@ -7,8 +7,8 @@ import {
   selectTheme,
   customSelectStyles,
 } from '@plone/volto/components/manage/Widgets/SelectStyling';
-import { setConnectedDataParameters } from 'volto-datablocks/actions';
-import { connectBlockToProviderData } from 'volto-datablocks/hocs';
+import { setConnectedDataParameters } from '@eeacms/volto-datablocks/actions';
+import { connectBlockToProviderData } from '@eeacms/volto-datablocks/hocs';
 
 const Select = loadable(() => import('react-select'));
 

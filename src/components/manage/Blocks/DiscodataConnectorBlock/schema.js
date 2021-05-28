@@ -1,8 +1,8 @@
-import { dataFormatChoices } from 'volto-datablocks/format';
+import { dataFormatChoices } from '@eeacms/volto-datablocks/format';
 import {
   getConnectedDataParametersForProvider,
   getConnectedDataParametersForContext,
-} from 'volto-datablocks/helpers';
+} from '@eeacms/volto-datablocks/helpers';
 
 const makeChoices = (keys) => keys && keys.map((k) => [k, k]);
 

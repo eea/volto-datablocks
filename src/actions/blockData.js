@@ -1,4 +1,4 @@
-import { GET_BLOCKDATA } from 'volto-datablocks/constants';
+import { GET_BLOCKDATA } from '@eeacms/volto-datablocks/constants';
 
 export function getBlockData(path, blockid) {
   path = `${path}/@blocks/${blockid}`;

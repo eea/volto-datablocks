@@ -1,6 +1,6 @@
 import React from 'react';
 import config from '@plone/volto/registry';
-import { connectBlockToProviderData } from 'volto-datablocks/hocs';
+import { connectBlockToProviderData } from '@eeacms/volto-datablocks/hocs';
 import './style.less';
 
 const View = (props) => {

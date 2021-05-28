@@ -4,12 +4,12 @@ import { compose } from 'redux';
 import {
   getConnectedDataParametersForProvider,
   getConnectedDataParametersForContext,
-} from 'volto-datablocks/helpers';
-import { DataConnectedValue } from 'volto-datablocks/Utils';
-import { SourcesBlockView } from 'volto-datablocks/components';
-import { setConnectedDataParameters } from 'volto-datablocks/actions';
+} from '@eeacms/volto-datablocks/helpers';
+import { DataConnectedValue } from '@eeacms/volto-datablocks/Utils';
+import { SourcesBlockView } from '@eeacms/volto-datablocks/components';
+import { setConnectedDataParameters } from '@eeacms/volto-datablocks/actions';
 
-import { getBasePath } from 'volto-datablocks/helpers';
+import { getBasePath } from '@eeacms/volto-datablocks/helpers';
 
 const dataParameters = (props) => {
   return (

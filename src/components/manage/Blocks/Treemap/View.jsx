@@ -1,6 +1,6 @@
 import React from 'react';
 import Treemap from './Treemap';
-import { withBlockData } from 'volto-datablocks/hocs';
+import { withBlockData } from '@eeacms/volto-datablocks/hocs';
 
 const TreemapView = (props) => {
   const { data = {} } = props;

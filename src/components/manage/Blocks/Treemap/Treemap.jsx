@@ -4,13 +4,13 @@
 
 import React from 'react';
 import { compose } from 'redux';
-import { connectAnythingToProviderData } from 'volto-datablocks/hocs';
+import { connectAnythingToProviderData } from '@eeacms/volto-datablocks/hocs';
 import loadable from '@loadable/component';
 import {
   filterDataByParameters,
   connectToDataParameters,
-} from 'volto-datablocks/helpers';
-import { Placeholder } from 'volto-datablocks/components';
+} from '@eeacms/volto-datablocks/helpers';
+import { Placeholder } from '@eeacms/volto-datablocks/components';
 
 import config from '@plone/volto/registry';
 

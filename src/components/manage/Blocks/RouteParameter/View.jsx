@@ -5,7 +5,7 @@ import { flattenToAppURL } from '@plone/volto/helpers';
 import {
   setRouteParameter,
   deleteRouteParameter,
-} from 'volto-datablocks/actions';
+} from '@eeacms/volto-datablocks/actions';
 
 const View = (props) => {
   const {

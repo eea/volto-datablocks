@@ -1,7 +1,7 @@
 import {
   GET_SPARQL_DATA,
   CHANGE_SIDEBAR_STATE,
-} from 'volto-datablocks/constants';
+} from '@eeacms/volto-datablocks/constants';
 
 export * from './blockData';
 export * from './routeParameters';

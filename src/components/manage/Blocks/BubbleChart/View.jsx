@@ -1,5 +1,5 @@
 import React from 'react';
-import { connectBlockToProviderData } from 'volto-datablocks/hocs';
+import { connectBlockToProviderData } from '@eeacms/volto-datablocks/hocs';
 import BubbleChart from './lib/ReactBubbleChart';
 import './bubble-chart.less';
 

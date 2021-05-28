@@ -7,7 +7,7 @@ import React from 'react';
 import { defineMessages, injectIntl } from 'react-intl';
 import cx from 'classnames';
 import { connect } from 'react-redux';
-import { getConnectedDataParametersForContext } from 'volto-datablocks/helpers';
+import { getConnectedDataParametersForContext } from '@eeacms/volto-datablocks/helpers';
 import PrivacyProtection from 'volto-embed/PrivacyProtection/PrivacyProtection';
 
 const messages = defineMessages({

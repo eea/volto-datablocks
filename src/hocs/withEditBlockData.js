@@ -1,5 +1,5 @@
 import React from 'react';
-import { getBlockData } from 'volto-datablocks/actions';
+import { getBlockData } from '@eeacms/volto-datablocks/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { getBaseUrl } from '@plone/volto/helpers';
 

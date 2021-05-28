@@ -4,8 +4,8 @@ import { withRouter } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from '@plone/volto/components';
 import { flattenToAppURL } from '@plone/volto/helpers';
-import { getDataFromProvider } from 'volto-datablocks/actions';
-import { getConnector } from 'volto-datablocks/helpers';
+import { getDataFromProvider } from '@eeacms/volto-datablocks/actions';
+import { getConnector } from '@eeacms/volto-datablocks/helpers';
 import { Container, Table, Menu } from 'semantic-ui-react';
 
 import leftSVG from '@plone/volto/icons/left-key.svg';

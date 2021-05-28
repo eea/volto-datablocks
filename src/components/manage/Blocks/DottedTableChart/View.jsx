@@ -1,13 +1,13 @@
 import React from 'react';
 import { Popup, Table } from 'semantic-ui-react';
-import { connectBlockToProviderData } from 'volto-datablocks/hocs';
+import { connectBlockToProviderData } from '@eeacms/volto-datablocks/hocs';
 import {
   filterDataByParameters,
   connectToDataParameters,
-} from 'volto-datablocks/helpers';
+} from '@eeacms/volto-datablocks/helpers';
 import { compose } from 'redux';
-import { serializeNodes } from 'volto-datablocks/serialize';
-import { FormattedValue } from 'volto-datablocks/Utils';
+import { serializeNodes } from '@eeacms/volto-datablocks/serialize';
+import { FormattedValue } from '@eeacms/volto-datablocks/Utils';
 import { DEFAULT_MAX_DOT_COUNT } from './constants';
 import './styles.less';
 
