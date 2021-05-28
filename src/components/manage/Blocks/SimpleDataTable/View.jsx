@@ -1,15 +1,15 @@
 import React from 'react';
 import { compose } from 'redux';
 import config from '@plone/volto/registry';
+import { DefaultView } from './templates/default';
 
-import { connectBlockToProviderData } from 'volto-datablocks/hocs';
-import { serializeNodes } from 'volto-datablocks/serialize';
+import { connectBlockToProviderData } from '../../../../hocs';
+import { serializeNodes } from '../../../../serialize';
 import {
   filterDataByParameters,
   connectToDataParameters,
-} from 'volto-datablocks/helpers';
+} from '../../../../helpers';
 
-import { DefaultView } from './templates/default';
 import './styles.less';
 
 const getAlignmentOfColumn = (col, idx) => {

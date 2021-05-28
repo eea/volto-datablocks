@@ -1,8 +1,8 @@
-import { dataFormatChoices } from 'volto-datablocks/format';
+import { dataFormatChoices } from '../../../../format';
 import {
   getConnectedDataParametersForProvider,
   getConnectedDataParametersForContext,
-} from 'volto-datablocks/helpers';
+} from '../../../../helpers';
 
 const makeChoices = (keys) => keys && keys.map((k) => [k, k]);
 

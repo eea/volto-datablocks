@@ -9,7 +9,7 @@ import {
   SET_ROUTE_PARAMETER,
   DELETE_ROUTE_PARAMETER,
 } from '../constants';
-import { getBasePath } from 'volto-datablocks/helpers';
+import { getBasePath } from '../helpers';
 
 const initialState = {
   byProviderPath: {},

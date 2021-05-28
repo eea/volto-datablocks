@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import _uniqueId from 'lodash/uniqueId';
 import qs from 'query-string';
-import RenderFields from 'volto-datablocks/Utils/RenderFields';
 import config from '@plone/volto/registry';
+import RenderFields from '../../../../Utils/RenderFields';
 
 import View from './View';
 

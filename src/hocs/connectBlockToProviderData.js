@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { withRouter } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
-import { getDataFromProvider } from 'volto-datablocks/actions';
-import { getConnector } from 'volto-datablocks/helpers';
+import { getDataFromProvider } from '../actions';
+import { getConnector } from '../helpers';
 
 /**
  * connectBlockToProviderData.

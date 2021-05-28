@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+
+import { DataConnectedValue } from '../../../../Utils';
+import { SourcesBlockView } from '../../../../components';
+import { setConnectedDataParameters } from '../../../../actions';
 import {
   getConnectedDataParametersForProvider,
   getConnectedDataParametersForContext,
-} from 'volto-datablocks/helpers';
-import { DataConnectedValue } from 'volto-datablocks/Utils';
-import { SourcesBlockView } from 'volto-datablocks/components';
-import { setConnectedDataParameters } from 'volto-datablocks/actions';
-
-import { getBasePath } from 'volto-datablocks/helpers';
+  getBasePath,
+} from '../../../../helpers';
 
 const dataParameters = (props) => {
   return (

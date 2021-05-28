@@ -1,4 +1,4 @@
-import { GET_BLOCKDATA } from 'volto-datablocks/constants';
+import { GET_BLOCKDATA } from '../constants';
 
 export default function blockdata(state = {}, action = {}) {
   let { result } = action;

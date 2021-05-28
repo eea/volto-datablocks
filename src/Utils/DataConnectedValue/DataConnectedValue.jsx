@@ -2,15 +2,15 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 
-import { getDataFromProvider } from 'volto-datablocks/actions';
+import { getDataFromProvider } from '../../actions';
 import {
   getConnector,
   getConnectedDataParametersForRoute,
   getConnectedDataParametersForProvider,
   getConnectedDataParametersForContext,
   getConnectedDataParametersForPath,
-} from 'volto-datablocks/helpers';
-import { FormattedValue } from 'volto-datablocks/Utils';
+} from '../../helpers';
+import { FormattedValue } from '../';
 import './styles.css';
 
 const EMPTY = '^';

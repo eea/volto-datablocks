@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
+import { Container, Table, Menu } from 'semantic-ui-react';
 import { Icon } from '@plone/volto/components';
 import { flattenToAppURL } from '@plone/volto/helpers';
-import { getDataFromProvider } from 'volto-datablocks/actions';
-import { getConnector } from 'volto-datablocks/helpers';
-import { Container, Table, Menu } from 'semantic-ui-react';
+import { getDataFromProvider } from '../../../actions';
+import { getConnector } from '../../../helpers';
 
 import leftSVG from '@plone/volto/icons/left-key.svg';
 import rightSVG from '@plone/volto/icons/right-key.svg';

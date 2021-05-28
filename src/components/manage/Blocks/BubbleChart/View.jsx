@@ -1,7 +1,7 @@
 import React from 'react';
-import { connectBlockToProviderData } from 'volto-datablocks/hocs';
 import BubbleChart from './lib/ReactBubbleChart';
 import './bubble-chart.less';
+import { connectBlockToProviderData } from '../../../../hocs';
 
 var colorLegend = [
   //reds from dark to light
