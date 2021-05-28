@@ -2,8 +2,8 @@ import React from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router';
 import { ObjectBrowserWidget } from '@plone/volto/components';
-import { getDataFromProvider } from '@eeacms/volto-datablocks/actions';
-import { getConnector } from '@eeacms/volto-datablocks/helpers';
+import { getDataFromProvider } from '../../../actions';
+import { getConnector } from '../../../helpers';
 
 function getId(url) {
   const split = url.split('/');

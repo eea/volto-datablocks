@@ -5,9 +5,9 @@ import { SidebarPortal } from '@plone/volto/components'; // EditBlock
 import InlineForm from '@plone/volto/components/manage/Form/InlineForm';
 
 import CountryFlagSchema from './schema';
-import { connectBlockToProviderData } from '@eeacms/volto-datablocks/hocs';
 import CountryFlagView from './View';
 import countryNames from './data/countries';
+import { connectBlockToProviderData } from '../../../../hocs';
 
 class Edit extends Component {
   getSchema = () => {

@@ -3,7 +3,7 @@ import config from '@plone/volto/registry';
 import { getBaseUrl } from '@plone/volto/helpers';
 import qs from 'querystring';
 
-export * from '@eeacms/volto-datablocks/components/manage/Blocks/RouteParameter';
+export * from './components/manage/Blocks/RouteParameter';
 
 export function getBasePath(url) {
   return getBaseUrl(url)

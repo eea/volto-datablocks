@@ -4,7 +4,7 @@ import {
   SET_QUERY_PARAM,
   RESET_QUERY_PARAM,
   TRIGGER_RENDER,
-} from '@eeacms/volto-datablocks/constants';
+} from '../constants';
 
 export function setDiscodataQuery(query) {
   return {

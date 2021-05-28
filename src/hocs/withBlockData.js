@@ -1,9 +1,8 @@
 import React from 'react';
-import { getBlockData } from '@eeacms/volto-datablocks/actions';
 import { useDispatch, useSelector } from 'react-redux';
-import { getBaseUrl } from '@plone/volto/helpers';
-
 import { useLocation } from 'react-router-dom';
+import { getBaseUrl } from '@plone/volto/helpers';
+import { getBlockData } from '../actions';
 
 const withBlockData = (WrappedComponent) => (props) => {
   const { id } = props;

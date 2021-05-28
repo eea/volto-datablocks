@@ -1,7 +1,7 @@
 import React from 'react';
 import { SidebarPortal } from '@plone/volto/components'; // EditBlock
 import InlineForm from '@plone/volto/components/manage/Form/InlineForm';
-import { connectBlockToProviderData } from '@eeacms/volto-datablocks/hocs';
+import { connectBlockToProviderData } from '../../../../hocs';
 import DottedTableChartView from './View';
 import { DottedTableChartSchema } from './schema';
 import { DEFAULT_MAX_DOT_COUNT } from './constants';

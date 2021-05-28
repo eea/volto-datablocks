@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import qs from 'query-string';
-import DB from '@eeacms/volto-datablocks/Utils/DataBase/DB';
 import config from '@plone/volto/registry';
-import { getDiscodataResource } from '@eeacms/volto-datablocks/actions';
+import DB from '../../../../Utils/DataBase/DB';
+import { getDiscodataResource } from '../../../../actions';
+
 const ViewWrapper = (props) => {
   const [state, setState] = useState({
     mounted: false,

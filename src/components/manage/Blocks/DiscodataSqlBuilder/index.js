@@ -2,7 +2,7 @@ import worldSVG from '@plone/volto/icons/world.svg';
 import DiscodataSqlBuilderEdit from './Edit';
 import DiscodataSqlBuilderView from './View';
 
-import * as addonReducers from '@eeacms/volto-datablocks/reducers';
+import * as addonReducers from '../../../../reducers';
 
 export default (config) => {
   config.blocks.blocksConfig.discodata_sql_builder = {

@@ -1,14 +1,15 @@
 import React from 'react';
 import { Popup, Table } from 'semantic-ui-react';
-import { connectBlockToProviderData } from '@eeacms/volto-datablocks/hocs';
+import { connectBlockToProviderData } from '../../../../hocs';
+import { DEFAULT_MAX_DOT_COUNT } from './constants';
 import {
   filterDataByParameters,
   connectToDataParameters,
-} from '@eeacms/volto-datablocks/helpers';
+} from '../../../../helpers';
 import { compose } from 'redux';
-import { serializeNodes } from '@eeacms/volto-datablocks/serialize';
-import { FormattedValue } from '@eeacms/volto-datablocks/Utils';
-import { DEFAULT_MAX_DOT_COUNT } from './constants';
+import { serializeNodes } from '../../../../serialize';
+import { FormattedValue } from '../../../../Utils';
+
 import './styles.less';
 
 const DottedTableChartView = (props) => {

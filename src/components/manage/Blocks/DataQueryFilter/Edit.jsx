@@ -6,7 +6,7 @@ import DataQueryFilterView from './View';
 
 import schema from './schema';
 import cloneDeep from 'lodash/cloneDeep';
-import { connectBlockToProviderData } from '@eeacms/volto-datablocks/hocs';
+import { connectBlockToProviderData } from '../../../../hocs';
 
 const Edit = (props) => {
   const { selected, data, block, onChangeBlock, provider_data } = props;

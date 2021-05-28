@@ -2,10 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { flattenToAppURL } from '@plone/volto/helpers';
-import {
-  setRouteParameter,
-  deleteRouteParameter,
-} from '@eeacms/volto-datablocks/actions';
+import { setRouteParameter, deleteRouteParameter } from '../../../../actions';
 
 const View = (props) => {
   const {

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import QuerystringWidget from '@plone/volto/components/manage/Widgets/QuerystringWidget';
 import { getQuerystring } from '@plone/volto/actions';
-import { DATACONNECTOR_PARAMS_GROUP } from '@eeacms/volto-datablocks/constants';
+import { DATACONNECTOR_PARAMS_GROUP } from '../../../constants';
 
 function filterIndexes(indexes) {
   const res = {};

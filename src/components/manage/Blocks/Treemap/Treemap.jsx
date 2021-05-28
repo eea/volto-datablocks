@@ -4,15 +4,14 @@
 
 import React from 'react';
 import { compose } from 'redux';
-import { connectAnythingToProviderData } from '@eeacms/volto-datablocks/hocs';
 import loadable from '@loadable/component';
+import config from '@plone/volto/registry';
+import { connectAnythingToProviderData } from '../../../../hocs';
 import {
   filterDataByParameters,
   connectToDataParameters,
-} from '@eeacms/volto-datablocks/helpers';
-import { Placeholder } from '@eeacms/volto-datablocks/components';
-
-import config from '@plone/volto/registry';
+} from '../../../../helpers';
+import { Placeholder } from '../../../../components';
 
 // import './fixes.css';
 

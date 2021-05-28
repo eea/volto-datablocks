@@ -2,7 +2,7 @@ import {
   GET_DISCODATA_RESOURCE,
   SET_DISCODATA_RESOURCE,
   SET_DISCODATA_RESOURCE_PENDING,
-} from '@eeacms/volto-datablocks/constants';
+} from '../constants';
 
 export function getDiscodataResource({
   url,
