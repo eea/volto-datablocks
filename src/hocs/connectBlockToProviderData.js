@@ -31,7 +31,7 @@ export function connectBlockToProviderData(WrappedComponent, config = {}) {
       };
     });
 
-    const allowedParams = props.data.allowedParams?.length
+    const allowedParams = props.data?.allowedParams?.length
       ? props.data.allowedParams
       : null;
 

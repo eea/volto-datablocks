@@ -15,16 +15,16 @@
     "react"
   ],
   "addons": [
-    "volto-embed"
+    "@eeacms/volto-embed"
   ],
   "dependencies": {
+    "@eeacms/volto-embed": "2.0.1",
     "humanize-plus": "^1.8.2",
     "performant-array-to-tree": "^1.7.1",
     "plotly.js": "1.57.0",
     "react-plotly.js": "~2.5.0",
     "sanitize-html": "^2.3.3",
-    "slate": "0.63.0",
-    "volto-embed": "github:eea/volto-embed#2.0.0"
+    "slate": "0.63.0"
   },
   "devDependencies": {
     "@cypress/code-coverage": "^3.9.5",
