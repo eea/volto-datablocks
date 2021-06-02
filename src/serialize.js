@@ -2,18 +2,11 @@ import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import cx from 'classnames';
 import { isEmpty, isEqual, omit } from 'lodash';
+import { Node, Text } from 'slate';
 import loadable from '@loadable/component';
 import config from '@plone/volto/registry';
 
 const OMITTED = ['editor', 'path'];
-
-const Node = loadable.lib(() => {
-  return import('slate');
-});
-
-const Text = loadable.lib(() => {
-  return import('slate');
-});
 
 // TODO: read, see if relevant
 // https://reactjs.org/docs/higher-order-components.html#dont-use-hocs-inside-the-render-method
