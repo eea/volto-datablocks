@@ -3,7 +3,6 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import cx from 'classnames';
 import { isEmpty, isEqual, omit } from 'lodash';
 import { Node, Text } from 'slate';
-import loadable from '@loadable/component';
 import config from '@plone/volto/registry';
 
 const OMITTED = ['editor', 'path'];
