@@ -11,6 +11,5 @@ build
 .env.test.local
 .env.production.local
 
-data
 *~
 package-lock.json
