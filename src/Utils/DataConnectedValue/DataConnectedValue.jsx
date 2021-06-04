@@ -13,7 +13,7 @@ import {
 import { FormattedValue } from '../';
 import './styles.css';
 
-const EMPTY = '^';
+const EMPTY = '-';
 
 function isObject(item) {
   return typeof item === 'object' && !Array.isArray(item) && item !== null;
@@ -24,7 +24,7 @@ const getValue = (
   column,
   filters,
   filterIndex = 0,
-  placeholder = null,
+  placeholder = EMPTY,
   hasQueryParammeters = true,
 ) => {
   /*
@@ -40,7 +40,7 @@ const getValue = (
    */
   // TODO: we implement now a very simplistic filtering, with only one type of
   // filter and only one filter is taken into consideration
-  if (!data || (data && !Object.keys(data).length)) return '-';
+  if (!data || (data && !Object.keys(data).length)) return placeholder;
   if (!hasQueryParammeters) return data[column]?.[0];
 
   if (!filters || !filters?.[filterIndex]) {

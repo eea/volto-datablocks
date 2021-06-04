@@ -9,16 +9,17 @@ import rightSVG from '@plone/volto/icons/right-key.svg';
 const View = (props) => {
   const {
     data = {},
-    pagination = {},
-    updatePagination = () => {},
     getAlignmentOfColumn,
-    getTitleOfColumn,
     getNameOfColumn,
-    selectedColumns,
-    tableData,
-    show_header,
+    getTitleOfColumn,
     has_pagination,
+    pagination = {},
+    placeholder,
     row_size,
+    selectedColumns,
+    show_header,
+    tableData,
+    updatePagination = () => {},
   } = props;
 
   return (
@@ -113,7 +114,7 @@ const View = (props) => {
           ) : null}
         </Table>
       ) : (
-        'No results'
+        <p>{placeholder}</p>
       )}
     </div>
   );

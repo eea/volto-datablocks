@@ -5,6 +5,7 @@ import './style.less';
 
 const View = (props) => {
   const type = props.data.type;
+
   const DefaultView = () => (
     <>
       {props.mode === 'edit' && !props.data.type ? (
@@ -20,9 +21,14 @@ const View = (props) => {
     config.blocks.blocksConfig.custom_connected_block.blocks?.[type]?.view ||
     null;
 
-  const RenderChartView = CustomView || DefaultView;
+  const RenderCustomConnectedBlock = CustomView || DefaultView;
 
-  return <RenderChartView {...props} mode={props.mode} />;
+  return (
+    <RenderCustomConnectedBlock
+      {...props}
+      mode={props.mode}
+      placeholder={props.data.placeholder}
+    />
+  );
 };
-
 export default connectBlockToProviderData(View);
