@@ -94,6 +94,7 @@ export function connectBlockToProviderData(WrappedComponent, config = {}) {
       }
 
       if (readyToDispatch) {
+        console.log('HERE', provider_url, connector.params);
         dispatch(getDataFromProvider(provider_url, null, connector.params));
       }
 

@@ -35,7 +35,7 @@ export function getDataFromProvider(path, filters = null, queryString = '') {
         queryString: queryString,
         request: {
           op: 'get',
-          path: `${path}/@connector-data/${queryString}`,
+          path: `${path}/@connector-data/`,
           params: {
             ...qs.parse(queryString),
           },
