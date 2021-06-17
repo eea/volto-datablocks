@@ -100,8 +100,8 @@ const SourceView = ({
                 exportCSVFile(array, providerUrl);
                 return;
               }
-
-              if (connectorsData) {
+              const ExternalCSVPath = Object.keys(connectorsData)[0];
+              if (connectorsData && !ExternalCSVPath?.includes('.csv')) {
                 let title = '';
                 let array = [];
                 Object.entries(connectorsData).forEach(
@@ -119,12 +119,14 @@ const SourceView = ({
                 return;
               }
 
-              if (!providerUrl) return;
+              if (!providerUrl && !ExternalCSVPath) return;
 
               const dlAnchorElem = document.createElement('a');
               dlAnchorElem.setAttribute(
                 'href',
-                `${config.settings.apiPath}${providerUrl}/@@download`,
+                `${config.settings.apiPath}${
+                  providerUrl || ExternalCSVPath
+                }/@@download`,
               );
               dlAnchorElem.click();
             }}
