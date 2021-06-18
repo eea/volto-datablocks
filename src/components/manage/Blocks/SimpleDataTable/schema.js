@@ -128,7 +128,12 @@ export const SimpleDataTableSchema = (config, templateSchema = {}) => {
       {
         id: 'default',
         title: 'Default',
-        fields: ['description', 'template', ...(defaultFieldset?.fields || {})], // title
+        fields: [
+          'description',
+          'placeholder',
+          'template',
+          ...(defaultFieldset?.fields || {}),
+        ], // title
       },
       {
         id: 'source',
@@ -178,6 +183,11 @@ export const SimpleDataTableSchema = (config, templateSchema = {}) => {
         title: 'Max results',
         widget: 'number',
         defaultValue: 5,
+      },
+      placeholder: {
+        title: 'Placeholder',
+        widget: 'textarea',
+        default: 'No results',
       },
       template: {
         title: 'Template',

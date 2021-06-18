@@ -45,12 +45,13 @@ const getProviderData = (provider_data) => {
 const SimpleDataTableView = (props) => {
   const { data = {}, pagination = {}, connected_data_parameters = {} } = props;
   const {
-    has_pagination = false,
-    show_header = false,
-    max_count = 5,
-    description,
-    template,
     columns,
+    description,
+    has_pagination = false,
+    max_count = 5,
+    placeholder = 'No results',
+    show_header = false,
+    template,
   } = data;
 
   const provider_data = has_pagination
@@ -88,15 +89,16 @@ const SimpleDataTableView = (props) => {
 
       <TableView
         {...props}
-        getAlignmentOfColumn={getAlignmentOfColumn}
-        getTitleOfColumn={getTitleOfColumn}
-        getNameOfColumn={getNameOfColumn}
-        selectedColumns={selectedColumns}
-        tableData={tableData}
-        provider_data={provider_data}
         has_pagination={has_pagination}
-        show_header={show_header}
+        placeholder={placeholder}
+        provider_data={provider_data}
         row_size={row_size}
+        selectedColumns={selectedColumns}
+        show_header={show_header}
+        tableData={tableData}
+        getAlignmentOfColumn={getAlignmentOfColumn}
+        getNameOfColumn={getNameOfColumn}
+        getTitleOfColumn={getTitleOfColumn}
       />
     </div>
   );

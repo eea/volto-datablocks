@@ -44,6 +44,7 @@ const getSchema = (props, config, templateSchema = {}) => {
         fields: [
           'provider_url',
           'allowedParams',
+          'placeholder',
           'type',
           ...(defaultFieldset?.fields || []),
         ],
@@ -69,6 +70,10 @@ const getSchema = (props, config, templateSchema = {}) => {
         items: {
           choices: [],
         },
+      },
+      placeholder: {
+        title: 'Placeholder',
+        widget: 'textarea',
       },
       type: {
         title: 'Select block type',

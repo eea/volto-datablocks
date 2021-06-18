@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon } from '@plone/volto/components';
-import { Table, Menu } from 'semantic-ui-react';
+import { Table, Menu, Loader } from 'semantic-ui-react';
 import RenderComponent from '../../components';
 
 import leftSVG from '@plone/volto/icons/left-key.svg';
@@ -11,17 +11,18 @@ import './style.less';
 const View = (props) => {
   const {
     data = {},
-    pagination = {},
-    updatePagination = () => {},
     getAlignmentOfColumn,
-    getTitleOfColumn,
     getNameOfColumn,
-    selectedColumns,
-    tableData,
-    provider_data,
+    getTitleOfColumn,
     has_pagination,
-    show_header,
+    pagination = {},
+    placeholder,
+    provider_data,
     row_size,
+    selectedColumns,
+    show_header,
+    tableData,
+    updatePagination = () => {},
   } = props;
 
   const { th_color, td_color } = data;
@@ -116,6 +117,14 @@ const View = (props) => {
                     >
                       <Icon name={leftSVG} size="24px" />
                     </Menu.Item>
+                    <Menu.Item fitted>
+                      <Loader
+                        disabled={!props.isPending}
+                        active
+                        inline
+                        size="tiny"
+                      />
+                    </Menu.Item>
                     <Menu.Item
                       as="a"
                       icon
@@ -142,7 +151,39 @@ const View = (props) => {
           ) : null}
         </Table>
       ) : (
-        'No results'
+        // TODO: find a better solution to keep headers
+        <Table
+          textAlign="left"
+          striped={data.striped}
+          className={`unstackable ${data.bordered ? 'no-borders' : ''}
+          ${data.compact_table ? 'compact-table' : ''}`}
+        >
+          {show_header ? (
+            <Table.Header style={{ backgroundColor: th_color }}>
+              <Table.Row>
+                <Table.HeaderCell />
+                {data?.columns?.map((header) => (
+                  <Table.HeaderCell
+                    key={header.column}
+                    className={header.textAlign || 'left'}
+                  >
+                    <p>{header.title}</p>
+                  </Table.HeaderCell>
+                ))}
+              </Table.Row>
+            </Table.Header>
+          ) : null}
+          <Table.Body>
+            <Table.Row>
+              <Table.Cell className="colored-cell">
+                <span />
+              </Table.Cell>
+              <Table.Cell colSpan={data?.columns?.length || 1}>
+                <p>{placeholder}</p>
+              </Table.Cell>
+            </Table.Row>
+          </Table.Body>
+        </Table>
       )}
     </div>
   );

@@ -62,6 +62,23 @@
         margin-bottom: 0;
       }
     }
+
+    > tfoot {
+      .ui.menu.pagination {
+        .item {
+          &.fitted {
+            min-width: auto;
+            padding: 0;
+          }
+        }
+
+        .ui.loader {
+          &.disabled {
+            visibility: hidden;
+          }
+        }
+      }
+    }
   }
 
   .table-title {

@@ -5,7 +5,6 @@ import {
   SET_CONNECTED_DATA_PARAMETERS,
   DELETE_CONNECTED_DATA_PARAMETERS,
 } from '../constants';
-import qs from 'query-string';
 
 export function getDataFromProvider(path, filters = null, queryString = '') {
   path =
@@ -36,9 +35,6 @@ export function getDataFromProvider(path, filters = null, queryString = '') {
         request: {
           op: 'get',
           path: `${path}/@connector-data/${queryString}`,
-          params: {
-            ...qs.parse(queryString),
-          },
         },
       };
 }

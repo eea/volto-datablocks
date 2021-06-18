@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon } from '@plone/volto/components';
-import { Table, Menu } from 'semantic-ui-react';
+import { Table, Menu, Loader } from 'semantic-ui-react';
 import RenderComponent from '../../components';
 
 import leftSVG from '@plone/volto/icons/left-key.svg';
@@ -9,16 +9,17 @@ import rightSVG from '@plone/volto/icons/right-key.svg';
 const View = (props) => {
   const {
     data = {},
-    pagination = {},
-    updatePagination = () => {},
     getAlignmentOfColumn,
-    getTitleOfColumn,
     getNameOfColumn,
-    selectedColumns,
-    tableData,
-    show_header,
+    getTitleOfColumn,
     has_pagination,
+    pagination = {},
+    placeholder,
     row_size,
+    selectedColumns,
+    show_header,
+    tableData,
+    updatePagination = () => {},
   } = props;
 
   return (
@@ -87,6 +88,14 @@ const View = (props) => {
                     >
                       <Icon name={leftSVG} size="24px" />
                     </Menu.Item>
+                    <Menu.Item fitted>
+                      <Loader
+                        disabled={!props.isPending}
+                        active
+                        inline
+                        size="tiny"
+                      />
+                    </Menu.Item>
                     <Menu.Item
                       as="a"
                       icon
@@ -113,7 +122,7 @@ const View = (props) => {
           ) : null}
         </Table>
       ) : (
-        'No results'
+        <p>{placeholder}</p>
       )}
     </div>
   );
