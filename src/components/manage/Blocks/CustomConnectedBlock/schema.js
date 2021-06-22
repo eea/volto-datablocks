@@ -81,7 +81,7 @@ const getSchema = (props, config, templateSchema = {}) => {
         choices: [...blocks],
       },
       sources: {
-        widget: 'objectlist',
+        widget: 'object_list',
         title: 'Sources',
         schema: SourceSchema,
       },
