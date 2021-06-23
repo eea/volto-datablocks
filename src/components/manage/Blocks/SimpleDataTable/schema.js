@@ -91,10 +91,10 @@ const getColumnSchema = (schema, child) => {
         title: 'Default',
         fields: [
           'column',
-          ...(child.component === 'link' ? ['column_link'] : []),
+          ...(child?.component === 'link' ? ['column_link'] : []),
           'title',
           'component',
-          ...(child.component === 'link'
+          ...(child?.component === 'link'
             ? ['target', 'external', 'linkTemplate']
             : []),
           'render_as',
