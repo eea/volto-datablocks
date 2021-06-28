@@ -1,4 +1,4 @@
-import { dataFormatChoices } from '../../../../format';
+import React from 'react';
 import {
   getConnectedDataParametersForProvider,
   getConnectedDataParametersForContext,
@@ -44,7 +44,7 @@ const dataProviderSchemaExtender = (schema, child = {}, props) => {
             {
               id: 'Discodata connector',
               title: 'Discodata connector',
-              fields: ['path', 'displayColumn', 'displayFormat'],
+              fields: ['path', 'displayColumn', 'textTemplate', 'specifier'],
             },
           ]
         : []),
@@ -133,7 +133,8 @@ const dataProviderSchema = {
       fields: [
         'path',
         'displayColumn',
-        'displayFormat',
+        'textTemplate',
+        'specifier',
         'measurmentUnit',
         'additionalText',
         'className',
@@ -174,10 +175,25 @@ const dataProviderSchema = {
       title: 'Display column',
       choices: [],
     },
-    displayFormat: {
-      type: 'select',
-      title: 'Display format',
-      choices: dataFormatChoices.map((option) => [option.id, option.label]),
+    textTemplate: {
+      title: 'Text template',
+      widget: 'textarea',
+      description: 'Add suffix/prefix to text. Use {} for value placeholder',
+    },
+    specifier: {
+      title: 'Format',
+      description: (
+        <>
+          See{' '}
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://github.com/d3/d3-format"
+          >
+            D3 format documentation
+          </a>
+        </>
+      ),
     },
     measurmentUnit: {
       type: 'text',
@@ -256,7 +272,7 @@ export const getSchema = (props) => ({
     {
       id: 'default',
       title: 'Default',
-      fields: ['block_title', 'download_button'],
+      fields: ['block_title'],
     },
     {
       id: 'advanced',
@@ -281,12 +297,11 @@ export const getSchema = (props) => ({
     chartSources: {
       widget: 'object_list',
       title: 'Sources',
-      // this is an invention, should confront with dexterity serializer
       schema: SourceSchema,
     },
     data_providers: {
       title: 'Data providers',
-      widget: 'object_list_inline',
+      widget: 'object_list',
       schema: dataProviderSchema,
       schemaExtender: (schema, child) =>
         dataProviderSchemaExtender(schema, child, props),

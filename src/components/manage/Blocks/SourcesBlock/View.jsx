@@ -6,15 +6,23 @@ import { Icon as VoltoIcon } from '@plone/volto/components';
 import config from '@plone/volto/registry';
 
 function convertToCSV(objArray) {
-  var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
-  var str = '';
+  let array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+  let str = '';
 
-  for (var i = 0; i < array.length; i++) {
-    var line = '';
-    for (var index in array[i]) {
+  // Add headers
+  for (let key in array[0]) {
+    if (str !== '') str += ',';
+    str += key;
+  }
+
+  str += '\r\n';
+
+  for (let i = 0; i < array.length; i++) {
+    let line = '';
+    for (let key in array[i]) {
       if (line !== '') line += ',';
 
-      line += array[i][index];
+      line += array[i][key];
     }
 
     str += line + '\r\n';
@@ -53,106 +61,97 @@ function exportCSVFile(items, fileTitle) {
   }
 }
 
-const SourceView = ({
-  initialSource,
-  initialSourceLink,
-  multipleSources,
-  providerUrl,
-  data_providers,
-  connectorsDataProviders,
-  download_button,
-}) => {
+const SourceView = (props) => {
+  const {
+    initialSource,
+    initialSourceLink,
+    multipleSources,
+    providerUrl,
+    data_providers,
+    connectorsDataProviders,
+    download_button,
+  } = props;
+
   return (
     <React.Fragment>
-      {(providerUrl || connectorsDataProviders) &&
-        (download_button === undefined || download_button === true) && (
-          <VoltoIcon
-            className="discreet download-button"
-            title="Download data"
-            onClick={() => {
-              const connectorsData = {};
-              connectorsDataProviders &&
-                Object.keys(connectorsDataProviders).forEach((key) => {
-                  if (
-                    connectorsDataProviders[key].path &&
+      {(providerUrl || connectorsDataProviders) && download_button === true && (
+        <VoltoIcon
+          className="discreet download-button"
+          title="Download data"
+          onClick={() => {
+            const connectorsData = {};
+            connectorsDataProviders &&
+              Object.keys(connectorsDataProviders).forEach((key) => {
+                if (
+                  connectorsDataProviders[key].path &&
+                  data_providers?.data?.[
+                    `${connectorsDataProviders[key].path}/@connector-data`
+                  ]
+                ) {
+                  connectorsData[connectorsDataProviders[key].path] =
                     data_providers?.data?.[
                       `${connectorsDataProviders[key].path}/@connector-data`
-                    ]
-                  ) {
-                    connectorsData[connectorsDataProviders[key].path] =
-                      data_providers?.data?.[
-                        `${connectorsDataProviders[key].path}/@connector-data`
-                      ];
-                  }
-                });
-              const connectorData =
-                data_providers?.data?.[`${providerUrl}/@connector-data`];
+                    ];
+                }
+              });
+            const connectorData =
+              data_providers?.data?.[`${providerUrl}/@connector-data`];
 
-              if (connectorData) {
-                let array = [];
-                connectorData &&
-                  Object.entries(connectorData).forEach(([key, items]) => {
+            if (connectorData) {
+              let array = [];
+              connectorData &&
+                Object.entries(connectorData).forEach(([key, items]) => {
+                  items.forEach((item, index) => {
+                    if (!array[index]) array[index] = {};
+                    array[index][key] = item;
+                  });
+                });
+              exportCSVFile(array, providerUrl);
+              return;
+            }
+
+            const ExternalCSVPath = Object.keys(connectorsData)[0];
+            if (connectorsData && !ExternalCSVPath?.includes('.csv')) {
+              let title = '';
+              let array = [];
+              Object.entries(connectorsData).forEach(
+                ([connectorKey, connector]) => {
+                  title += connectorKey + ' & ';
+                  Object.entries(connector).forEach(([key, items]) => {
                     items.forEach((item, index) => {
                       if (!array[index]) array[index] = {};
                       array[index][key] = item;
                     });
                   });
-                exportCSVFile(array, providerUrl);
-                return;
-              }
-              const ExternalCSVPath = Object.keys(connectorsData)[0];
-              if (connectorsData && !ExternalCSVPath?.includes('.csv')) {
-                let title = '';
-                let array = [];
-                Object.entries(connectorsData).forEach(
-                  ([connectorKey, connector]) => {
-                    title += connectorKey + ' & ';
-                    Object.entries(connector).forEach(([key, items]) => {
-                      items.forEach((item, index) => {
-                        if (!array[index]) array[index] = {};
-                        array[index][key] = item;
-                      });
-                    });
-                  },
-                );
-                exportCSVFile(array, title.slice(0, -3));
-                return;
-              }
-
-              if (!providerUrl && !ExternalCSVPath) return;
-
-              const dlAnchorElem = document.createElement('a');
-              dlAnchorElem.setAttribute(
-                'href',
-                `${config.settings.apiPath}${
-                  providerUrl || ExternalCSVPath
-                }/@@download`,
+                },
               );
-              dlAnchorElem.click();
-            }}
-            name={downloadSVG}
-            size="20px"
-          />
-        )}
+              exportCSVFile(array, title.slice(0, -3));
+              return;
+            }
 
-      <div className="sources">
-        <span className="discreet">
-          {initialSource || (multipleSources && multipleSources.length)
-            ? multipleSources && multipleSources.length
-              ? 'Sources: '
-              : 'Source: '
-            : ''}
-        </span>
-        <a
-          className="discreet block_source"
-          href={initialSourceLink}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {initialSource}
-        </a>
-        {multipleSources && multipleSources.length
-          ? multipleSources.map((item) =>
+            if (!providerUrl && !ExternalCSVPath) return;
+
+            const dlAnchorElem = document.createElement('a');
+            dlAnchorElem.setAttribute(
+              'href',
+              `${config.settings.apiPath}${
+                providerUrl || ExternalCSVPath
+              }/@@download`,
+            );
+            dlAnchorElem.click();
+          }}
+          name={downloadSVG}
+          size="20px"
+        />
+      )}
+
+      {initialSource || (multipleSources && multipleSources.length) ? (
+        <div className="sources">
+          <span className="discreet">
+            {multipleSources?.length > 1 ? 'Sources: ' : 'Source: '}
+          </span>
+          {multipleSources && multipleSources.length ? (
+            multipleSources.map((item) =>
               item.chart_source_link ? (
                 <a
                   key={item.chart_source_link}
@@ -169,8 +168,20 @@ const SourceView = ({
                 </div>
               ),
             )
-          : ''}
-      </div>
+          ) : (
+            <a
+              className="discreet block_source"
+              href={initialSourceLink}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {initialSource}
+            </a>
+          )}
+        </div>
+      ) : (
+        ''
+      )}
     </React.Fragment>
   );
 };

@@ -49,7 +49,8 @@ const providerView = (dataProviderKey, dataProvider, defaultDataParameters) => {
             filterIndex={hasDefaultQueryParams ? 0 : dataProviderKey}
             url={dataProvider.path}
             column={dataProvider.displayColumn}
-            format={dataProvider.displayFormat}
+            textTemplate={dataProvider.textTemplate}
+            specifier={dataProvider.specifier}
             placeholder="_"
           />
         )}
@@ -170,11 +171,7 @@ const View = (props) => {
   const view = (
     <div className="flex h-100 pa-1">
       <div className="flex flex-column w-100">
-        {props.data?.block_title?.value ? (
-          <h5>{props.data.block_title.value}</h5>
-        ) : (
-          ''
-        )}
+        {/* {props.data?.block_title ? <h5>{props.data.block_title}</h5> : ''} */}
         {parentsDataProviders &&
           Object.entries(parentsDataProviders).map(
             ([dataProviderKey, dataProvider]) => {
@@ -217,7 +214,7 @@ const View = (props) => {
             <SourcesBlockView
               multipleSources={props?.data?.chartSources}
               connectorsDataProviders={dataProviders}
-              download_button={props?.data?.download_button?.value}
+              download_button={props?.data?.download_button}
             />
           </div>
         )}
