@@ -1,4 +1,6 @@
 import { flattenToAppURL } from '@plone/volto/helpers';
+import config from '@plone/volto/registry';
+import qs from 'querystring';
 import {
   GET_DATA_FROM_PROVIDER,
   SET_PROVIDER_CONTENT,
@@ -14,6 +16,13 @@ export function getDataFromProvider(path, filters = null, queryString = '') {
         : path['@id']
       : path;
   path = path && flattenToAppURL(path).replace(/\/$/, '');
+  const db_version =
+    process.env.RAZZLE_DB_VERSION || config.settings.db_version || 'latest';
+  const query = {
+    ...qs.parse(queryString.replace('?', '')),
+    db_version,
+  };
+
   if (!path)
     return {
       type: GET_DATA_FROM_PROVIDER,
@@ -34,7 +43,7 @@ export function getDataFromProvider(path, filters = null, queryString = '') {
         queryString: queryString,
         request: {
           op: 'get',
-          path: `${path}/@connector-data/${queryString}`,
+          path: `${path}/@connector-data/?${qs.stringify(query)}`,
         },
       };
 }

@@ -293,6 +293,7 @@ export const getSchema = (props) => ({
     download_button: {
       title: 'Download button',
       type: 'boolean',
+      defaultValue: true,
     },
     chartSources: {
       widget: 'object_list',
