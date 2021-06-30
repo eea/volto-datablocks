@@ -148,7 +148,7 @@ const RenderFields = (props) => {
                   deleteFieldset={schema[key].deleteFieldset}
                   value={
                     props.data?.[key]?.value ||
-                    `{"fieldsets":[{"id":"${schema[key].fieldSetId}","title":"${schema[key].title}","fields":[]}],"properties":{}}`
+                    `{"fieldsets":[{"id":"${schema[key].fieldSetId}","title":"${schema[key].title}","fields":[]}],"properties":{}, "required":[]}`
                   }
                 />
               </Segment>
