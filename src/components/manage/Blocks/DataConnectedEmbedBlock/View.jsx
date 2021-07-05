@@ -34,9 +34,9 @@ const ViewEmbedBlock = (props) => {
 
   // TODO: automatically discover parameters
   const url =
-    param && data.baseUrl
-      ? decodeURIComponent(data.baseUrl).replace('<<NUTS_CODE>>', param)
-      : data.baseUrl;
+    param && data.url
+      ? decodeURIComponent(data.url).replace('<<NUTS_CODE>>', param)
+      : data.url;
   const styles = {
     height: `${data.height}px`,
   };
