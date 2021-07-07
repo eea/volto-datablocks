@@ -5,7 +5,6 @@ import InlineForm from '@plone/volto/components/manage/Form/InlineForm';
 
 import config from '@plone/volto/registry';
 
-import { connectBlockToProviderData } from '../../../../hocs';
 import { SimpleDataTableSchema } from './schema';
 import SimpleDataTableView from './View';
 
@@ -34,7 +33,6 @@ class Edit extends Component {
 
   render() {
     const schema = this.getSchema();
-
     return (
       <>
         <SimpleDataTableView data={this.props.data} />
@@ -57,16 +55,4 @@ class Edit extends Component {
   }
 }
 
-export default connectBlockToProviderData(Edit, {
-  pagination: {
-    getEnabled: (props) => props.data.has_pagination,
-    getItemsPerPage: (props) => {
-      const { max_count = 5 } = props.data;
-      return max_count
-        ? typeof max_count !== 'number'
-          ? parseInt(max_count) || 5
-          : max_count
-        : max_count || 5;
-    },
-  },
-});
+export default Edit;

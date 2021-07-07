@@ -54,10 +54,18 @@ const SimpleDataTableView = (props) => {
     template,
   } = data;
 
-  const provider_data = has_pagination
-    ? getProviderData(props.provider_data) ||
-      getProviderData(props.prev_provider_data)
-    : getProviderData(props.provider_data);
+  const prev_provider_data =
+    has_pagination && pagination.activePage !== pagination.prevPage
+      ? getProviderData(pagination.providerData[pagination.prevPage])
+      : null;
+  const prev_provider_data_length = prev_provider_data
+    ? prev_provider_data[Object.keys(prev_provider_data)[0]]?.length || 0
+    : 0;
+  const provider_data =
+    getProviderData(props.provider_data) || prev_provider_data;
+  const provider_data_length = provider_data
+    ? provider_data[Object.keys(provider_data)[0]]?.length || 0
+    : 0;
 
   const tableTemplate = template || 'default';
   const TableView =
@@ -66,10 +74,14 @@ const SimpleDataTableView = (props) => {
     ]?.view || DefaultView;
 
   // TODO: sorting
-  const row_size =
-    has_pagination || max_count > 0
-      ? Math.min(pagination.itemsPerPage, pagination.totalItems) || 0
-      : pagination.totalItems;
+  const row_size = has_pagination
+    ? !pagination.renderedPages.includes(pagination.activePage)
+      ? prev_provider_data_length
+      : Math.min(pagination.itemsPerPage, provider_data_length) || 0
+    : max_count > 0
+    ? Math.min(max_count, provider_data_length)
+    : provider_data_length;
+
   const providerColumns = Object.keys(provider_data || {});
   const sureToShowAllColumns = !Array.isArray(columns) || columns.length === 0;
   const validator = selectedColumnValidator(providerColumns);
@@ -110,11 +122,7 @@ export default compose(connectToDataParameters, (SimpleDataTableView) => {
       getEnabled: (props) => props.data.has_pagination,
       getItemsPerPage: (props) => {
         const { max_count = 5 } = props.data;
-        return max_count
-          ? typeof max_count !== 'number'
-            ? parseInt(max_count) || 5
-            : max_count
-          : max_count || 5;
+        return typeof max_count !== 'number' ? parseInt(max_count) : max_count;
       },
     },
   });

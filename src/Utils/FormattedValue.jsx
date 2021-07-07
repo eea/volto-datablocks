@@ -4,7 +4,13 @@ import cx from 'classnames';
 import sanitizeHtml from 'sanitize-html';
 const D3 = loadable.lib(() => import('d3'));
 
-const FormattedValue = ({ textTemplate, specifier, value, collapsed }) => {
+const FormattedValue = ({
+  textTemplate,
+  specifier,
+  value,
+  collapsed,
+  wrapped = true,
+}) => {
   return (
     <D3 fallback={null}>
       {({ format }) => {
@@ -16,13 +22,15 @@ const FormattedValue = ({ textTemplate, specifier, value, collapsed }) => {
           value = textTemplate.replace('{}', value);
         }
 
-        return (
+        return wrapped ? (
           <span
             className={cx('formatted-value', collapsed ? 'collapsed' : null)}
             dangerouslySetInnerHTML={{
               __html: sanitizeHtml(value) || '',
             }}
           />
+        ) : (
+          sanitizeHtml(value) || ''
         );
       }}
     </D3>

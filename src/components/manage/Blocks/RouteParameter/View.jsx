@@ -5,11 +5,7 @@ import { flattenToAppURL } from '@plone/volto/helpers';
 import { setRouteParameter, deleteRouteParameter } from '../../../../actions';
 
 const View = (props) => {
-  const {
-    providerUrl = null,
-    parameterKey = null,
-    defaultValue = null,
-  } = props.data;
+  const { parameterKey = null, defaultValue = null } = props.data;
   const route_parameters = props.route_parameters;
   const parameters = props.match.params;
   const contentPath = flattenToAppURL(props.properties['@id']);
@@ -39,7 +35,7 @@ const View = (props) => {
         <>
           {!parameterKey ? <p>Set parameter key</p> : ''}
           {!defaultValue ? <p>Set default value</p> : ''}
-          {providerUrl && parameterKey && defaultValue ? (
+          {parameterKey && defaultValue ? (
             <p>
               Router parameter is up and running for '{parameterKey}' with '
               {defaultValue}' as default value
