@@ -167,7 +167,7 @@ export const SimpleDataTableSchema = (config, templateSchema = {}) => {
         description: 'Leave empty to show all columns',
         schema: columnSchema,
         schemaExtender: (schema, child) => getColumnSchema(schema, child),
-        widget: 'object_list_inline',
+        widget: 'object_list',
       },
 
       description: {

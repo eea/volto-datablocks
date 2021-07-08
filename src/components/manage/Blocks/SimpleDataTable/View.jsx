@@ -34,12 +34,14 @@ const selectedColumnValidator = (allColDefs) => (colDef) => {
     : allColDefs.includes(colDef?.column);
 };
 
+const getProviderDataLength = (provider_data) => {
+  return provider_data
+    ? provider_data[Object.keys(provider_data)[0]]?.length || 0
+    : 0;
+};
+
 const getProviderData = (provider_data) => {
-  return provider_data &&
-    Object.keys(provider_data).length &&
-    provider_data[Object.keys(provider_data)[0]].length
-    ? provider_data
-    : null;
+  return getProviderDataLength(provider_data) ? provider_data : null;
 };
 
 const SimpleDataTableView = (props) => {
@@ -58,14 +60,10 @@ const SimpleDataTableView = (props) => {
     has_pagination && pagination.activePage !== pagination.prevPage
       ? getProviderData(pagination.providerData[pagination.prevPage])
       : null;
-  const prev_provider_data_length = prev_provider_data
-    ? prev_provider_data[Object.keys(prev_provider_data)[0]]?.length || 0
-    : 0;
+  const prev_provider_data_length = getProviderDataLength(prev_provider_data);
   const provider_data =
     getProviderData(props.provider_data) || prev_provider_data;
-  const provider_data_length = provider_data
-    ? provider_data[Object.keys(provider_data)[0]]?.length || 0
-    : 0;
+  const provider_data_length = getProviderDataLength(provider_data);
 
   const tableTemplate = template || 'default';
   const TableView =
@@ -98,12 +96,12 @@ const SimpleDataTableView = (props) => {
       <div className={`table-title ${data.underline ? 'title-border' : ''}`}>
         {description ? serializeNodes(description) : ''}
       </div>
-
       <TableView
         {...props}
         has_pagination={has_pagination}
         placeholder={placeholder}
         provider_data={provider_data}
+        provider_data_length={provider_data_length}
         row_size={row_size}
         selectedColumns={selectedColumns}
         show_header={show_header}
@@ -115,6 +113,8 @@ const SimpleDataTableView = (props) => {
     </div>
   );
 };
+
+export { SimpleDataTableView };
 
 export default compose(connectToDataParameters, (SimpleDataTableView) => {
   return connectBlockToProviderData(SimpleDataTableView, {
