@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import downloadSVG from '@plone/volto/icons/download.svg';
 import { Icon as VoltoIcon } from '@plone/volto/components';
+import { isEmpty } from 'lodash';
 // import { Grid } from 'semantic-ui-react';
 import config from '@plone/volto/registry';
 
@@ -97,7 +98,8 @@ const SourceView = (props) => {
             const connectorData =
               data_providers?.data?.[`${providerUrl}/@connector-data`];
 
-            if (connectorData) {
+            if (connectorData && !providerUrl?.includes('.csv')) {
+              // no need to re-construct csv if already there
               let array = [];
               connectorData &&
                 Object.entries(connectorData).forEach(([key, items]) => {
@@ -109,9 +111,11 @@ const SourceView = (props) => {
               exportCSVFile(array, providerUrl);
               return;
             }
-
-            const ExternalCSVPath = Object.keys(connectorsData)[0];
-            if (connectorsData && !ExternalCSVPath?.includes('.csv')) {
+            const ExternalCSVPath = Object.keys(connectorsData)?.[0];
+            if (
+              !isEmpty(connectorsData) &&
+              !ExternalCSVPath?.includes('.csv')
+            ) {
               let title = '';
               let array = [];
               Object.entries(connectorsData).forEach(
