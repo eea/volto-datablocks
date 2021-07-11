@@ -52,8 +52,6 @@ const View = (props) => {
   const items =
     results.length || (!loading && value.length) ? results : filteredTableData;
 
-  console.log('HERE', props.search);
-
   const handleSearchChange = React.useCallback(
     (e, data) => {
       clearTimeout(timeoutRef.current);
@@ -78,7 +76,9 @@ const View = (props) => {
         });
       }, 300);
       /* eslint-disable-next-line */
-  }, [filteredTableData, selectedColumns]);
+    },
+    [filteredTableData, selectedColumns],
+  );
 
   React.useEffect(() => {
     return () => {
@@ -117,7 +117,7 @@ const View = (props) => {
   React.useEffect(() => {
     handleSearchChange({}, { value });
     /* eslint-disable-next-line */
-  }, [filteredTableData])
+  }, [filteredTableData]);
 
   return (
     <div className="smart-table">
