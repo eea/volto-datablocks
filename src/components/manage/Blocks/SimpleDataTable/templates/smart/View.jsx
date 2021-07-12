@@ -74,7 +74,7 @@ const View = (props) => {
           type: 'TABLE_FINISH_SEARCH',
           results: _.filter(filteredTableData, isMatch),
         });
-      }, 300);
+      }, 1000);
     },
     /* eslint-disable-next-line */
     [filteredTableData, selectedColumns],
