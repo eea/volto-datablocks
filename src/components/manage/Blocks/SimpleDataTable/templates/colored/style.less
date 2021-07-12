@@ -23,7 +23,6 @@
 
       th,
       td {
-        // padding-left: 0 !important;
         border-bottom: 1px solid #e8e8e8 !important;
       }
 
@@ -47,6 +46,22 @@
           width: 4px;
           height: 100%;
           background-color: transparent;
+        }
+      }
+    }
+
+    &.with-pagination {
+      table {
+        tbody {
+          &:after {
+            display: none;
+          }
+        }
+
+        tfoot {
+          th {
+            border-color: #e8e8e8;
+          }
         }
       }
     }

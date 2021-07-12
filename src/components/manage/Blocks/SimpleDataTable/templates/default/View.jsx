@@ -101,9 +101,7 @@ const View = (props) => {
                       icon
                       disabled={
                         props.isPending ||
-                        row_size < pagination.itemsPerPage ||
-                        pagination.activePage * pagination.itemsPerPage >=
-                          pagination.maxItems
+                        pagination.activePage === pagination.lastPage
                       }
                       onClick={() => {
                         if (row_size === pagination.itemsPerPage) {

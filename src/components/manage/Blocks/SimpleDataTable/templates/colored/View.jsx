@@ -2,6 +2,7 @@ import React from 'react';
 import { Icon } from '@plone/volto/components';
 import { Table, Menu, Loader } from 'semantic-ui-react';
 import RenderComponent from '../../components';
+import cx from 'classnames';
 
 import leftSVG from '@plone/volto/icons/left-key.svg';
 import rightSVG from '@plone/volto/icons/right-key.svg';
@@ -40,7 +41,11 @@ const View = (props) => {
   };
 
   return (
-    <div className="colored-table">
+    <div
+      className={cx('colored-table', {
+        'with-pagination': data.has_pagination,
+      })}
+    >
       {row_size ? (
         <Table
           textAlign="left"
@@ -130,9 +135,7 @@ const View = (props) => {
                       icon
                       disabled={
                         props.isPending ||
-                        row_size < pagination.itemsPerPage ||
-                        pagination.activePage * pagination.itemsPerPage >=
-                          pagination.maxItems
+                        pagination.activePage === pagination.lastPage
                       }
                       onClick={() => {
                         if (row_size === pagination.itemsPerPage) {

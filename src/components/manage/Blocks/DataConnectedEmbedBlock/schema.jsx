@@ -5,19 +5,12 @@ const IframeSchema = {
     {
       id: 'default',
       title: 'Default',
-      fields: [
-        'baseUrl',
-        'align',
-        'height',
-        'privacy_statement',
-        'privacy_cookie_key',
-        'enabled',
-      ],
+      fields: ['url', 'align', 'height'],
     },
   ],
 
   properties: {
-    baseUrl: {
+    url: {
       title: 'Embed URL',
     },
     align: {
@@ -30,23 +23,9 @@ const IframeSchema = {
       description: 'Map height',
       type: 'integer',
     },
-    privacy_statement: {
-      title: 'Privacy statement',
-      description: 'Short notification text',
-      widget: 'cktext',
-    },
-    privacy_cookie_key: {
-      title: 'Privacy cookie key',
-      description: 'Identifies similar external content',
-    },
-    enabled: {
-      title: 'Use privacy screen?',
-      description: 'Enable/disable the privacy protection',
-      type: 'boolean',
-    },
   },
 
-  required: ['baseUrl'],
+  required: ['url'],
 };
 
 export default IframeSchema;

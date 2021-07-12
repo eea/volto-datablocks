@@ -34,12 +34,14 @@ const selectedColumnValidator = (allColDefs) => (colDef) => {
     : allColDefs.includes(colDef?.column);
 };
 
+const getProviderDataLength = (provider_data) => {
+  return provider_data
+    ? provider_data[Object.keys(provider_data)[0]]?.length || 0
+    : 0;
+};
+
 const getProviderData = (provider_data) => {
-  return provider_data &&
-    Object.keys(provider_data).length &&
-    provider_data[Object.keys(provider_data)[0]].length
-    ? provider_data
-    : null;
+  return getProviderDataLength(provider_data) ? provider_data : null;
 };
 
 const SimpleDataTableView = (props) => {
@@ -54,10 +56,14 @@ const SimpleDataTableView = (props) => {
     template,
   } = data;
 
-  const provider_data = has_pagination
-    ? getProviderData(props.provider_data) ||
-      getProviderData(props.prev_provider_data)
-    : getProviderData(props.provider_data);
+  const prev_provider_data =
+    has_pagination && pagination.activePage !== pagination.prevPage
+      ? getProviderData(pagination.providerData[pagination.prevPage])
+      : null;
+  const prev_provider_data_length = getProviderDataLength(prev_provider_data);
+  const provider_data =
+    getProviderData(props.provider_data) || prev_provider_data;
+  const provider_data_length = getProviderDataLength(provider_data);
 
   const tableTemplate = template || 'default';
   const TableView =
@@ -66,10 +72,14 @@ const SimpleDataTableView = (props) => {
     ]?.view || DefaultView;
 
   // TODO: sorting
-  const row_size =
-    has_pagination || max_count > 0
-      ? Math.min(pagination.itemsPerPage, pagination.totalItems) || 0
-      : pagination.totalItems;
+  const row_size = has_pagination
+    ? !pagination.renderedPages.includes(pagination.activePage)
+      ? prev_provider_data_length
+      : Math.min(pagination.itemsPerPage, provider_data_length) || 0
+    : max_count > 0
+    ? Math.min(max_count, provider_data_length)
+    : provider_data_length;
+
   const providerColumns = Object.keys(provider_data || {});
   const sureToShowAllColumns = !Array.isArray(columns) || columns.length === 0;
   const validator = selectedColumnValidator(providerColumns);
@@ -86,12 +96,12 @@ const SimpleDataTableView = (props) => {
       <div className={`table-title ${data.underline ? 'title-border' : ''}`}>
         {description ? serializeNodes(description) : ''}
       </div>
-
       <TableView
         {...props}
         has_pagination={has_pagination}
         placeholder={placeholder}
         provider_data={provider_data}
+        provider_data_length={provider_data_length}
         row_size={row_size}
         selectedColumns={selectedColumns}
         show_header={show_header}
@@ -104,17 +114,15 @@ const SimpleDataTableView = (props) => {
   );
 };
 
+export { SimpleDataTableView };
+
 export default compose(connectToDataParameters, (SimpleDataTableView) => {
   return connectBlockToProviderData(SimpleDataTableView, {
     pagination: {
       getEnabled: (props) => props.data.has_pagination,
       getItemsPerPage: (props) => {
         const { max_count = 5 } = props.data;
-        return max_count
-          ? typeof max_count !== 'number'
-            ? parseInt(max_count) || 5
-            : max_count
-          : max_count || 5;
+        return typeof max_count !== 'number' ? parseInt(max_count) : max_count;
       },
     },
   });
