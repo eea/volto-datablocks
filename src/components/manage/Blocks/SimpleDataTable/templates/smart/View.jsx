@@ -73,6 +73,7 @@ const View = (props) => {
         props.dispatch({
           type: 'TABLE_FINISH_SEARCH',
           results: _.filter(filteredTableData, isMatch),
+          payload: { activePage: data.activePage, row_size },
         });
       }, 1000);
     },
@@ -115,7 +116,7 @@ const View = (props) => {
   }, [tableData, sortBy]);
 
   React.useEffect(() => {
-    handleSearchChange({}, { value });
+    handleSearchChange({}, { value, activePage });
     /* eslint-disable-next-line */
   }, [filteredTableData]);
 
@@ -126,7 +127,7 @@ const View = (props) => {
         onResultSelect={() => {}}
         showNoResults={false}
         onSearchChange={(e, data) => {
-          handleSearchChange(e, data);
+          handleSearchChange(e, { ...data, activePage: 1 });
           if (activePage > 1) {
             setActivePage(1);
           }
@@ -231,7 +232,10 @@ const View = (props) => {
                   totalPages={Math.ceil(items.length / row_size)}
                   onPageChange={(_, data) => {
                     setActivePage(data.activePage);
-                    handleSearchChange({}, { value });
+                    handleSearchChange(
+                      {},
+                      { value, activePage: data.activePage },
+                    );
                   }}
                 />
               </Table.HeaderCell>
