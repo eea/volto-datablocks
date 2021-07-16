@@ -2,6 +2,7 @@ const initialState = {
   loading: false,
   results: [],
   value: '',
+  payload: {},
 };
 
 export default function table_search(state = initialState, action) {
@@ -11,7 +12,12 @@ export default function table_search(state = initialState, action) {
     case 'TABLE_START_SEARCH':
       return { ...state, loading: true, value: action.query };
     case 'TABLE_FINISH_SEARCH':
-      return { ...state, loading: false, results: action.results };
+      return {
+        ...state,
+        loading: false,
+        results: [...action.results],
+        payload: { ...(action.payload || {}) },
+      };
     case 'TABLE_UPDATE_SELECTION':
       return { ...state, value: action.selection };
 
