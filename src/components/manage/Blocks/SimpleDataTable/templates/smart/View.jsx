@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import qs from 'querystring';
 import { Icon } from '@plone/volto/components';
 import { Table, Pagination, Search } from 'semantic-ui-react';
 import RenderComponent from '../../components';
@@ -43,6 +44,7 @@ const View = (props) => {
   } = props;
   const selectedColumns = data.columns;
   const timeoutRef = React.useRef();
+  const search = React.useRef();
   const [tableData, setTableData] = React.useState([]);
   const [filteredTableData, setFilteredTableData] = React.useState([]);
   const [sortBy, setSortBy] = React.useState([]);
@@ -82,14 +84,6 @@ const View = (props) => {
   );
 
   React.useEffect(() => {
-    return () => {
-      clearTimeout(timeoutRef.current);
-      props.dispatch({ type: 'TABLE_CLEAN_QUERY' });
-    };
-    /* eslint-disable-next-line */
-  }, []);
-
-  React.useEffect(() => {
     const newTableData = [];
     if (provider_data_length) {
       const keys = Object.keys(provider_data);
@@ -118,11 +112,26 @@ const View = (props) => {
   React.useEffect(() => {
     handleSearchChange({}, { value, activePage });
     /* eslint-disable-next-line */
-  }, [filteredTableData]);
+  }, [JSON.stringify(filteredTableData)]);
+
+  React.useEffect(() => {
+    const { searchTerm = '' } =
+      qs.parse(props.location?.search?.replace('?', '')) || {};
+
+    if (searchTerm && !value) {
+      handleSearchChange(_, { value: searchTerm, activePage: 1 });
+    }
+    return () => {
+      clearTimeout(timeoutRef.current);
+      props.dispatch({ type: 'TABLE_CLEAN_QUERY' });
+    };
+    /* eslint-disable-next-line */
+  }, []);
 
   return (
     <div className="smart-table">
       <Search
+        ref={search}
         loading={isPending || loading}
         onResultSelect={() => {}}
         showNoResults={false}
