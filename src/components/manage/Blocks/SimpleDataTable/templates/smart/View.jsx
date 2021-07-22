@@ -45,6 +45,7 @@ const View = (props) => {
   const selectedColumns = data.columns;
   const timeoutRef = React.useRef();
   const search = React.useRef();
+  const [mounted, setMounted] = React.useState(false);
   const [tableData, setTableData] = React.useState([]);
   const [filteredTableData, setFilteredTableData] = React.useState([]);
   const [sortBy, setSortBy] = React.useState([]);
@@ -110,17 +111,20 @@ const View = (props) => {
   }, [tableData, sortBy]);
 
   React.useEffect(() => {
-    handleSearchChange({}, { value, activePage });
+    if (mounted) {
+      handleSearchChange({}, { value, activePage });
+    }
     /* eslint-disable-next-line */
   }, [JSON.stringify(filteredTableData)]);
 
   React.useEffect(() => {
     const { searchTerm = '' } =
       qs.parse(props.location?.search?.replace('?', '')) || {};
-
     if (searchTerm && !value) {
       handleSearchChange(_, { value: searchTerm, activePage: 1 });
     }
+    setMounted(true);
+
     return () => {
       clearTimeout(timeoutRef.current);
       props.dispatch({ type: 'TABLE_CLEAN_QUERY' });
