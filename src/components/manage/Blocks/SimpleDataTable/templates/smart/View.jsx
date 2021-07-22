@@ -50,13 +50,14 @@ const View = (props) => {
   const [filteredTableData, setFilteredTableData] = React.useState([]);
   const [sortBy, setSortBy] = React.useState([]);
   const [activePage, setActivePage] = React.useState(1);
-  const { loading, results, value } = props.search;
+  const [value, setValue] = React.useState(props.query.searchTerm || '');
+  const { loading, results } = props.search;
 
   const items =
     results.length || (!loading && value.length) ? results : filteredTableData;
 
   const handleSearchChange = React.useCallback(
-    (e, data) => {
+    (e, data, time = 1000) => {
       clearTimeout(timeoutRef.current);
       props.dispatch({ type: 'TABLE_START_SEARCH', query: data.value });
       timeoutRef.current = setTimeout(() => {
@@ -78,7 +79,15 @@ const View = (props) => {
           results: _.filter(filteredTableData, isMatch),
           payload: { activePage: data.activePage, row_size },
         });
-      }, 1000);
+        props.history.push({
+          search:
+            '?' +
+            qs.stringify({
+              ...props.query,
+              searchTerm: data.value,
+            }),
+        });
+      }, time);
     },
     /* eslint-disable-next-line */
     [filteredTableData, selectedColumns],
@@ -113,18 +122,13 @@ const View = (props) => {
   React.useEffect(() => {
     if (mounted) {
       handleSearchChange({}, { value, activePage });
+    } else {
+      setMounted(true);
     }
     /* eslint-disable-next-line */
   }, [JSON.stringify(filteredTableData)]);
 
   React.useEffect(() => {
-    const { searchTerm = '' } =
-      qs.parse(props.location?.search?.replace('?', '')) || {};
-    if (searchTerm && !value) {
-      handleSearchChange(_, { value: searchTerm, activePage: 1 });
-    }
-    setMounted(true);
-
     return () => {
       clearTimeout(timeoutRef.current);
       props.dispatch({ type: 'TABLE_CLEAN_QUERY' });
@@ -141,6 +145,7 @@ const View = (props) => {
         showNoResults={false}
         onSearchChange={(e, data) => {
           handleSearchChange(e, { ...data, activePage: 1 });
+          setValue(data.value);
           if (activePage > 1) {
             setActivePage(1);
           }
@@ -240,7 +245,6 @@ const View = (props) => {
                 style={{ textAlign: 'center' }}
               >
                 <Pagination
-                  defaultActivePage={activePage}
                   activePage={activePage}
                   totalPages={Math.ceil(items.length / row_size)}
                   onPageChange={(_, data) => {
@@ -264,4 +268,5 @@ const View = (props) => {
 
 export default connect((state) => ({
   search: state.table_search || {},
+  query: qs.parse(state.router.location?.search?.replace('?', '')) || {},
 }))(View);
