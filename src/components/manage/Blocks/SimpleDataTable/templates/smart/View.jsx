@@ -61,6 +61,14 @@ const View = (props) => {
       clearTimeout(timeoutRef.current);
       props.dispatch({ type: 'TABLE_START_SEARCH', query: data.value });
       timeoutRef.current = setTimeout(() => {
+        props.history.push({
+          search:
+            '?' +
+            qs.stringify({
+              ...props.query,
+              searchTerm: data.value,
+            }),
+        });
         if (data.value.length === 0) {
           props.dispatch({ type: 'TABLE_CLEAN_QUERY' });
           return;
@@ -78,14 +86,6 @@ const View = (props) => {
           type: 'TABLE_FINISH_SEARCH',
           results: _.filter(filteredTableData, isMatch),
           payload: { activePage: data.activePage, row_size },
-        });
-        props.history.push({
-          search:
-            '?' +
-            qs.stringify({
-              ...props.query,
-              searchTerm: data.value,
-            }),
         });
       }, time);
     },
