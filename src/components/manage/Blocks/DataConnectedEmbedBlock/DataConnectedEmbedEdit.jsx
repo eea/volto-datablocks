@@ -149,7 +149,7 @@ class Edit extends Component {
         )}
       >
         {this.props.data.url ? (
-          <PrivacyProtection data={this.props.data} isEditMode>
+          <PrivacyProtection data={this.props.data} isEditMode {...this.props}>
             <div
               className={cx('maps-inner', {
                 'full-width': this.props.data.align === 'full',

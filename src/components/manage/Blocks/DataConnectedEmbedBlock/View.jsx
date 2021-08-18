@@ -42,7 +42,7 @@ const ViewEmbedBlock = (props) => {
   };
   // console.log('param in view', param, url);
   return url ? (
-    <PrivacyProtection data={data}>
+    <PrivacyProtection data={data} {...props}>
       <p
         className={cx(
           'block maps align',
