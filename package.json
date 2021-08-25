@@ -33,7 +33,7 @@
     "webpack-cli": "^3.3.10"
   },
   "peerDependencies": {
-    "@plone/volto": "^12.0.0"
+    "@plone/volto": "^13.4.0"
   },
   "repository": {
     "type": "git",
