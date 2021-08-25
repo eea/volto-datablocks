@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import QuerystringWidget from '@plone/volto/components/manage/Widgets/QuerystringWidget';
+import QueryWidget from '@plone/volto/components/manage/Widgets/QueryWidget';
 import { getQuerystring } from '@plone/volto/actions';
 import { DATACONNECTOR_PARAMS_GROUP } from '../../../constants';
 
@@ -17,4 +17,4 @@ export default connect(
     indexes: filterIndexes(state.querystring.indexes),
   }),
   { getQuerystring },
-)(QuerystringWidget);
+)(QueryWidget);
