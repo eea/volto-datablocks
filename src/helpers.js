@@ -73,10 +73,12 @@ export const getConnector = (
   routeParmeters = {},
   allowedParams = {},
   pagination = {},
+  extraQuery = {},
 ) => {
   const params = {
     ...routeParmeters,
     ...qs.parse(location.search.replace('?', '')),
+    ...extraQuery,
   };
   let allowedParamsObj = null;
   if (Object.keys(allowedParams || {}).length) {
@@ -87,6 +89,10 @@ export const getConnector = (
       }
     });
   }
+
+  const filters = qs.stringify({
+    ...(allowedParamsObj || params),
+  });
 
   let paramsStr =
     '?' +
@@ -100,6 +106,7 @@ export const getConnector = (
   paramsStr = paramsStr.length === 1 ? '' : paramsStr;
 
   return {
+    filters,
     url: provider_url ? `${provider_url}${paramsStr}` : null,
     urlConnector: provider_url
       ? `${provider_url}/@connector-data${paramsStr}`
