@@ -26,12 +26,15 @@ const dataParameters = (props) => {
 
 const providerView = (dataProviderKey, dataProvider, defaultDataParameters) => {
   let hasDefaultQueryParams = false;
-  if (
-    (!dataProvider.queryParameterColumn || !dataProvider.queryParameterValue) &&
-    defaultDataParameters?.[0]?.i &&
-    defaultDataParameters?.[0]?.v
-  ) {
-    hasDefaultQueryParams = true;
+  if (!dataProvider.queryParameterColumn || !dataProvider.queryParameterValue) {
+    if (
+      defaultDataParameters?.[0]?.query?.[0]?.i || //support for querystring widget, we may remove the workaround part?
+      (defaultDataParameters?.[0]?.i &&
+        defaultDataParameters?.[0]?.query?.[0]?.v) ||
+      defaultDataParameters?.[0]?.v
+    ) {
+      hasDefaultQueryParams = true;
+    }
   }
   return (
     <div
