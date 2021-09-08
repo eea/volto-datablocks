@@ -47,7 +47,7 @@ const getValue = (
     return 'No context parameters';
   }
 
-  let filter = filters?.[0].query
+  let filter = filters?.[0]?.query
     ? filters?.[0].query.find((f) => {
         let { i: index } = f;
         index = index.toLowerCase().replace('taxonomy_', '');
