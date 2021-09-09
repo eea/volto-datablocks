@@ -138,7 +138,7 @@ export const SimpleDataTableSchema = (config, templateSchema = {}) => {
       {
         id: 'source',
         title: 'Data source',
-        fields: ['provider_url', 'max_count', 'columns'],
+        fields: ['provider_url', 'allowedParams', 'max_count', 'columns'],
       },
       {
         id: 'styling',
@@ -178,6 +178,13 @@ export const SimpleDataTableSchema = (config, templateSchema = {}) => {
       provider_url: {
         widget: 'object_by_path',
         title: 'Data provider',
+      },
+      allowedParams: {
+        title: 'Allowed params',
+        type: 'array',
+        items: {
+          choices: [],
+        },
       },
       max_count: {
         title: 'Max results',

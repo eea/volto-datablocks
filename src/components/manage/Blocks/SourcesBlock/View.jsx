@@ -68,6 +68,7 @@ const SourceView = (props) => {
     initialSourceLink,
     multipleSources,
     providerUrl,
+    className,
     data_providers,
     connectorsDataProviders,
     download_button,
@@ -159,7 +160,7 @@ const SourceView = (props) => {
               item.chart_source_link ? (
                 <a
                   key={item.chart_source_link}
-                  className="discreet block_source"
+                  className={`discreet block_source ${className || ''}`}
                   href={item.chart_source_link}
                   target="_blank"
                   rel="noopener noreferrer"

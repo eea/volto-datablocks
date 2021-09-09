@@ -1,14 +1,11 @@
 import { connect } from 'react-redux';
-import config from '@plone/volto/registry';
-import { getBaseUrl } from '@plone/volto/helpers';
+import { getBaseUrl, flattenToAppURL } from '@plone/volto/helpers';
 import qs from 'querystring';
 
 export * from './components/manage/Blocks/RouteParameter';
 
 export function getBasePath(url) {
-  return getBaseUrl(url)
-    .replace(config.settings.apiPath, '')
-    .replace(config.settings.internalApiPath, '');
+  return flattenToAppURL(getBaseUrl(url));
 }
 
 export function getConnectedDataParametersForRoute(route_parameters) {
@@ -73,10 +70,12 @@ export const getConnector = (
   routeParmeters = {},
   allowedParams = {},
   pagination = {},
+  extraQuery = {},
 ) => {
   const params = {
     ...routeParmeters,
     ...qs.parse(location.search.replace('?', '')),
+    ...extraQuery,
   };
   let allowedParamsObj = null;
   if (Object.keys(allowedParams || {}).length) {
@@ -87,6 +86,10 @@ export const getConnector = (
       }
     });
   }
+
+  const filters = qs.stringify({
+    ...(allowedParamsObj || params),
+  });
 
   let paramsStr =
     '?' +
@@ -100,6 +103,7 @@ export const getConnector = (
   paramsStr = paramsStr.length === 1 ? '' : paramsStr;
 
   return {
+    filters,
     url: provider_url ? `${provider_url}${paramsStr}` : null,
     urlConnector: provider_url
       ? `${provider_url}/@connector-data${paramsStr}`

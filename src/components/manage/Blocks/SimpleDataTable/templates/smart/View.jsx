@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import qs from 'querystring';
 import { Icon } from '@plone/volto/components';
 import { Table, Pagination, Search } from 'semantic-ui-react';
 import RenderComponent from '../../components';
@@ -43,20 +44,31 @@ const View = (props) => {
   } = props;
   const selectedColumns = data.columns;
   const timeoutRef = React.useRef();
+  const search = React.useRef();
+  const [mounted, setMounted] = React.useState(false);
   const [tableData, setTableData] = React.useState([]);
   const [filteredTableData, setFilteredTableData] = React.useState([]);
   const [sortBy, setSortBy] = React.useState([]);
   const [activePage, setActivePage] = React.useState(1);
-  const { loading, results, value } = props.search;
+  const [value, setValue] = React.useState(props.query.searchTerm || '');
+  const { loading, results } = props.search;
 
   const items =
     results.length || (!loading && value.length) ? results : filteredTableData;
 
   const handleSearchChange = React.useCallback(
-    (e, data) => {
+    (e, data, time = 1000) => {
       clearTimeout(timeoutRef.current);
       props.dispatch({ type: 'TABLE_START_SEARCH', query: data.value });
       timeoutRef.current = setTimeout(() => {
+        props.history.push({
+          search:
+            '?' +
+            qs.stringify({
+              ...props.query,
+              searchTerm: data.value,
+            }),
+        });
         if (data.value.length === 0) {
           props.dispatch({ type: 'TABLE_CLEAN_QUERY' });
           return;
@@ -75,19 +87,11 @@ const View = (props) => {
           results: _.filter(filteredTableData, isMatch),
           payload: { activePage: data.activePage, row_size },
         });
-      }, 1000);
+      }, time);
     },
     /* eslint-disable-next-line */
     [filteredTableData, selectedColumns],
   );
-
-  React.useEffect(() => {
-    return () => {
-      clearTimeout(timeoutRef.current);
-      props.dispatch({ type: 'TABLE_CLEAN_QUERY' });
-    };
-    /* eslint-disable-next-line */
-  }, []);
 
   React.useEffect(() => {
     const newTableData = [];
@@ -116,18 +120,32 @@ const View = (props) => {
   }, [tableData, sortBy]);
 
   React.useEffect(() => {
-    handleSearchChange({}, { value, activePage });
+    if (mounted) {
+      handleSearchChange({}, { value, activePage });
+    } else {
+      setMounted(true);
+    }
     /* eslint-disable-next-line */
-  }, [filteredTableData]);
+  }, [JSON.stringify(filteredTableData)]);
+
+  React.useEffect(() => {
+    return () => {
+      clearTimeout(timeoutRef.current);
+      props.dispatch({ type: 'TABLE_CLEAN_QUERY' });
+    };
+    /* eslint-disable-next-line */
+  }, []);
 
   return (
     <div className="smart-table">
       <Search
+        ref={search}
         loading={isPending || loading}
         onResultSelect={() => {}}
         showNoResults={false}
         onSearchChange={(e, data) => {
           handleSearchChange(e, { ...data, activePage: 1 });
+          setValue(data.value);
           if (activePage > 1) {
             setActivePage(1);
           }
@@ -227,7 +245,6 @@ const View = (props) => {
                 style={{ textAlign: 'center' }}
               >
                 <Pagination
-                  defaultActivePage={activePage}
                   activePage={activePage}
                   totalPages={Math.ceil(items.length / row_size)}
                   onPageChange={(_, data) => {
@@ -251,4 +268,5 @@ const View = (props) => {
 
 export default connect((state) => ({
   search: state.table_search || {},
+  query: qs.parse(state.router.location?.search?.replace('?', '')) || {},
 }))(View);
