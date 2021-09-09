@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 
+import { flattenToAppURL } from '@plone/volto/helpers';
 import { DataConnectedValue } from '../../../../Utils';
 import { SourcesBlockView } from '../../../../components';
 import { setConnectedDataParameters } from '../../../../actions';
 import {
   getConnectedDataParametersForProvider,
   getConnectedDataParametersForContext,
-  getBasePath,
 } from '../../../../helpers';
 
 const dataParameters = (props) => {
@@ -82,7 +82,7 @@ const View = (props) => {
   const bulletList =
     props.data?.bullet_list?.value &&
     JSON.parse(props.data?.bullet_list?.value).properties;
-  const path = getBasePath(props.content['@id']);
+  const path = flattenToAppURL(props.content['@id']);
 
   const updateDataProviders = () => {
     let newDataProviders = { ...dataProviders };

@@ -1,14 +1,11 @@
 import { connect } from 'react-redux';
-import config from '@plone/volto/registry';
-import { getBaseUrl } from '@plone/volto/helpers';
+import { getBaseUrl, flattenToAppURL } from '@plone/volto/helpers';
 import qs from 'querystring';
 
 export * from './components/manage/Blocks/RouteParameter';
 
 export function getBasePath(url) {
-  return getBaseUrl(url)
-    .replace(config.settings.apiPath, '')
-    .replace(config.settings.internalApiPath, '');
+  return flattenToAppURL(getBaseUrl(url));
 }
 
 export function getConnectedDataParametersForRoute(route_parameters) {

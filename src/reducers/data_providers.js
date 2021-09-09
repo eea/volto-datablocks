@@ -3,8 +3,8 @@
  * @module reducers/data_providers
  */
 
-import config from '@plone/volto/registry';
 import { GET_DATA_FROM_PROVIDER, SET_PROVIDER_CONTENT } from '../constants';
+import { getBasePath } from '../helpers';
 import { without } from 'lodash';
 
 const initialState = {
@@ -44,12 +44,12 @@ export default function data_providers(state = initialState, action = {}) {
           action.result['@components']['connector-data']['@id'] &&
           true) ||
         false;
-      const id = (isExpand
-        ? action.result['@components']['connector-data']['@id']
-        : action.result['@id']
-      )
-        .replace(config.settings.apiPath, '')
-        .replace(config.settings.internalApiPath, '');
+      const id = getBasePath(
+        isExpand
+          ? action.result['@components']['connector-data']['@id']
+          : action.result['@id'],
+      );
+
       delete pendingConnectors[action.path + action.queryString];
       return {
         ...state,
