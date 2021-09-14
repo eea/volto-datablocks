@@ -47,23 +47,16 @@ const getValue = (
     return 'No context parameters';
   }
 
-  let filter = filters?.[0]?.query
-    ? filters?.[0].query.find((f) => {
+  let filter =
+    (filters?.find &&
+      filters?.find((f) => {
         let { i: index } = f;
         index = index.toLowerCase().replace('taxonomy_', '');
         return Object.keys(data)
           .map((k) => k.toLowerCase())
           .includes(index);
-      })
-    : Array.isArray(filters)
-    ? filters.find((f) => {
-        let { i: index } = f;
-        index = index.toLowerCase().replace('taxonomy_', '');
-        return Object.keys(data)
-          .map((k) => k.toLowerCase())
-          .includes(index);
-      })
-    : {};
+      })) ||
+    {};
 
   if (
     !Array.isArray(filters) &&
