@@ -14,7 +14,7 @@
 // limitations under the License.
 //------------------------------------------------------------------------------
 
-import d3 from 'd3';
+import * as d3 from 'd3';
 import { fitText } from '../fitText/fittext';
 
 // https://stackoverflow.com/a/20773846/258462
