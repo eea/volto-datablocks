@@ -2,7 +2,6 @@ export DataConnectorView from './theme/DataConnector/View';
 export DataProvidersView from './theme/DataProviders/View';
 export Placeholder from './theme/Placeholder/View';
 
-// export BubbleChartEdit from './manage/Blocks/BubbleChart/Edit';
 export CountryFlagEdit from './manage/Blocks/CountryFlag/Edit';
 export DataConnectedEmbedBlockEdit from './manage/Blocks/DataConnectedEmbedBlock/Edit';
 export DataQueryFilterEdit from './manage/Blocks/DataQueryFilter/Edit';
@@ -14,7 +13,6 @@ export SourcesBlockEdit from './manage/Blocks/SourcesBlock/Edit';
 export TreemapEdit from './manage/Blocks/Treemap/Edit';
 export RouteParameterEdit from './manage/Blocks/RouteParameter/Edit';
 
-// export BubbleChartView from './manage/Blocks/BubbleChart/View';
 export CountryFlagView from './manage/Blocks/CountryFlag/View';
 export DataConnectedEmbedBlockView from './manage/Blocks/DataConnectedEmbedBlock/View';
 export DataQueryFilterView from './manage/Blocks/DataQueryFilter/View';
