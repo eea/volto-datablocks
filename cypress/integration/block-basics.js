@@ -13,7 +13,6 @@ const groups = {
 };
 
 const data_blocks_ids = [
-  'bubbleChart',
   'dataqueryfilter',
   'dottedTableChart',
   'routeParameter',

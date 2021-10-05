@@ -2,7 +2,6 @@ import installDataQueryFilter from './components/manage/Blocks/DataQueryFilter';
 import installDataConnectedEmbedBlock from './components/manage/Blocks/DataConnectedEmbedBlock';
 import installDiscodataConnectorBlock from './components/manage/Blocks/DiscodataConnectorBlock';
 import installDataTable from './components/manage/Blocks/SimpleDataTable';
-import installBubbleChart from './components/manage/Blocks/BubbleChart';
 import installDottedTableChart from './components/manage/Blocks/DottedTableChart';
 import installCountryFlag from './components/manage/Blocks/CountryFlag';
 import installTreemap from './components/manage/Blocks/Treemap';
@@ -59,7 +58,6 @@ export default (config) => {
     installDataConnectedEmbedBlock,
     installDiscodataConnectorBlock,
     installDataTable,
-    installBubbleChart,
     installDottedTableChart,
     installCountryFlag,
     installTreemap,

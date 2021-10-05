@@ -3,7 +3,7 @@ import { getValue, getCellValue } from '../../helpers';
 import { Link } from 'react-router-dom';
 
 const LinkView = (props) => {
-  const { tableData = {}, colDef = {}, row = 0 } = props;
+  const { tableData = {}, colDef = {}, row = 0, placeholder } = props;
   const Tag = colDef.render_as ? colDef.render_as.toLowerCase() : 'p';
   return (
     <>
@@ -18,7 +18,7 @@ const LinkView = (props) => {
             )}
             target={colDef.target}
           >
-            {getCellValue(tableData, colDef, row)}
+            {getCellValue(tableData, colDef, row, placeholder)}
           </a>
         ) : (
           <Link
@@ -30,7 +30,7 @@ const LinkView = (props) => {
             )}
             target={colDef.target}
           >
-            {getCellValue(tableData, colDef, row)}
+            {getCellValue(tableData, colDef, row, placeholder)}
           </Link>
         )}
       </Tag>
