@@ -14,7 +14,7 @@ const dataParameters = (props) => {
     ) ||
     getConnectedDataParametersForContext(
       props.connected_data_parameters,
-      props.content['@id'],
+      props.content?.['@id'],
     )
   );
 };
