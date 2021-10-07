@@ -19,6 +19,7 @@
   ],
   "dependencies": {
     "@eeacms/volto-embed": "^2.0.4",
+    "@eeacms/volto-matomo":"^2.0.2",
     "d3": "7.1.1",
     "humanize-plus": "^1.8.2",
     "performant-array-to-tree": "^1.7.1",
