@@ -5,6 +5,7 @@ import { Icon as VoltoIcon } from '@plone/volto/components';
 import { isEmpty } from 'lodash';
 // import { Grid } from 'semantic-ui-react';
 import config from '@plone/volto/registry';
+import { trackLink } from '@eeacms/volto-matomo/utils';
 
 function convertToCSV(objArray) {
   let array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
@@ -39,6 +40,10 @@ function exportCSVFile(items, fileTitle) {
   let csv = convertToCSV(jsonObject);
 
   let exportedFilenmae = fileTitle + '.csv' || 'export.csv';
+  trackLink({
+    href: window.location.href + exportedFilenmae,
+    linkType: 'download',
+  });
 
   let blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   if (navigator.msSaveBlob) {
@@ -143,6 +148,7 @@ const SourceView = (props) => {
                 providerUrl || ExternalCSVPath
               }/@@download`,
             );
+            dlAnchorElem.className = 'piwik_download';
             dlAnchorElem.click();
           }}
           name={downloadSVG}
