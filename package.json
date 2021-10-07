@@ -15,7 +15,8 @@
     "react"
   ],
   "addons": [
-    "@eeacms/volto-embed"
+    "@eeacms/volto-embed",
+    "@eeacms/volto-matomo"
   ],
   "dependencies": {
     "@eeacms/volto-embed": "^2.0.4",
