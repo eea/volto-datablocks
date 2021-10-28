@@ -1,6 +1,6 @@
 {
   "name": "@eeacms/volto-datablocks",
-  "version": "2.0.13",
+  "version": "2.0.14",
   "description": "(EEA) Provides primitives for data connectivity to volto-plotlycharts and other blocks",
   "main": "src/index.js",
   "author": "European Environment Agency: IDM2 A-Team",
@@ -20,7 +20,7 @@
   ],
   "dependencies": {
     "@eeacms/volto-embed": "^2.0.4",
-    "@eeacms/volto-matomo":"^2.0.2",
+    "@eeacms/volto-matomo": "^2.0.2",
     "d3": "7.1.1",
     "humanize-plus": "^1.8.2",
     "performant-array-to-tree": "^1.7.1",
