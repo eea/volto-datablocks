@@ -22,6 +22,7 @@ const IframeSchema = {
       title: 'Height',
       description: 'Map height',
       type: 'integer',
+      default: 200,
     },
   },
 
