@@ -68,6 +68,7 @@ export function connectBlockToMultipleProviders(WrappedComponent, config = {}) {
         });
       }, [
         dispatch,
+        allowedParams,
         props.location,
         props.route_parameters,
         props.data_providers,
