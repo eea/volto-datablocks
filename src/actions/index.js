@@ -3,8 +3,6 @@ import { GET_SPARQL_DATA, CHANGE_SIDEBAR_STATE } from '../constants';
 export * from './blockData';
 export * from './routeParameters';
 export * from './dataProvider';
-export * from './discodataResource';
-export * from './queryParameters';
 
 export function changeSidebarState(open) {
   return {
