@@ -16,7 +16,6 @@ import {
 } from './components';
 import { dataProvider } from './middlewares';
 import * as addonReducers from './reducers';
-export * from './config';
 
 export default (config) => {
   config.blocks.groupBlocksOrder = [
@@ -38,8 +37,6 @@ export default (config) => {
   config.widgets.widget.data_provider = PickProviderWidget;
   config.widgets.widget.pick_provider = PickProviderWidget;
 
-  // config.settings.dbVersion = 'latest';
-
   config.settings.storeExtenders = [
     ...(config.settings.storeExtenders || []),
     dataProvider,
@@ -49,9 +46,6 @@ export default (config) => {
     ...config.addonReducers,
     ...addonReducers,
   };
-
-  delete config.addonReducers.discodata_query;
-  delete config.addonReducers.discodata_resources;
 
   return [
     installDataQueryFilter,
