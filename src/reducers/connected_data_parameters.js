@@ -2,14 +2,13 @@
  * Data Providers reducer
  * @module reducers/data_providers
  */
-
+import { flattenToAppURL } from '@plone/volto/helpers';
 import {
   SET_CONNECTED_DATA_PARAMETERS,
   DELETE_CONNECTED_DATA_PARAMETERS,
   SET_ROUTE_PARAMETER,
   DELETE_ROUTE_PARAMETER,
 } from '../constants';
-import { getBasePath } from '../helpers';
 
 const initialState = {
   byProviderPath: {},
@@ -78,7 +77,7 @@ export default function connected_data_parameters(
 
       if (!(content && content.data_query)) return state;
 
-      path = getBasePath(content['@id']);
+      path = flattenToAppURL(content['@id']);
 
       return {
         ...state,

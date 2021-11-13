@@ -19,7 +19,7 @@ const dataParameters = (props) => {
     ) ||
     getConnectedDataParametersForContext(
       props.connected_data_parameters,
-      props.content['@id'],
+      props.content?.['@id'],
     )
   );
 };
@@ -79,7 +79,7 @@ const View = (props) => {
   const bulletList =
     props.data?.bullet_list?.value &&
     JSON.parse(props.data?.bullet_list?.value).properties;
-  const path = getBasePath(props.content['@id']);
+  const path = getBasePath(props.content?.['@id']);
 
   const updateDataProviders = () => {
     let newDataProviders = { ...dataProviders };

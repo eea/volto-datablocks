@@ -12,6 +12,7 @@ const columnSchema = {
         'component',
         'render_as',
         'textTemplate',
+        'placeholder',
         'specifier',
         'textAlign',
       ],
@@ -65,6 +66,9 @@ const columnSchema = {
     textTemplate: {
       title: 'Text template',
       description: 'Add suffix/prefix to text. Use {} for value placeholder',
+    },
+    placeholder: {
+      title: 'Placeholder',
     },
     textAlign: {
       title: 'Align',

@@ -40,10 +40,6 @@ const getProviderDataLength = (provider_data) => {
     : 0;
 };
 
-const getProviderData = (provider_data) => {
-  return getProviderDataLength(provider_data) ? provider_data : null;
-};
-
 const SimpleDataTableView = (props) => {
   const { data = {}, pagination = {}, connected_data_parameters = {} } = props;
   const {
@@ -57,12 +53,13 @@ const SimpleDataTableView = (props) => {
   } = data;
 
   const prev_provider_data =
-    has_pagination && pagination.activePage !== pagination.prevPage
-      ? getProviderData(pagination.providerData[pagination.prevPage])
+    has_pagination && pagination.providerData[pagination.activePage]
+      ? pagination.providerData[pagination.activePage]
+      : has_pagination && pagination.activePage !== pagination.prevPage
+      ? pagination.providerData[pagination.prevPage]
       : null;
   const prev_provider_data_length = getProviderDataLength(prev_provider_data);
-  const provider_data =
-    getProviderData(props.provider_data) || prev_provider_data;
+  const provider_data = props.provider_data || prev_provider_data;
   const provider_data_length = getProviderDataLength(provider_data);
 
   const tableTemplate = template || 'default';

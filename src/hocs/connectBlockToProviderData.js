@@ -3,6 +3,7 @@ import { withRouter } from 'react-router';
 import { connect, useDispatch } from 'react-redux';
 import { getDataFromProvider } from '../actions';
 import { getConnector } from '../helpers';
+import { ConnectorContext } from './';
 
 /**
  * connectBlockToProviderData.
@@ -17,6 +18,7 @@ export function connectBlockToProviderData(WrappedComponent, config = {}) {
     withRouter((props) => {
       const dispatch = useDispatch();
       const [mounted, setMounted] = useState(false);
+      const [state, setState] = useState({});
       const [pagination, setPagination] = useState({
         activePage: 1,
         enabled: config.pagination?.getEnabled?.(props) || false,
@@ -25,6 +27,7 @@ export function connectBlockToProviderData(WrappedComponent, config = {}) {
         lastPage: Infinity,
         renderedPages: [],
         providerData: {},
+        prevFilters: null,
       });
       const { provider_url = null } = props.data;
 
@@ -38,6 +41,7 @@ export function connectBlockToProviderData(WrappedComponent, config = {}) {
         props.route_parameters,
         allowedParams,
         pagination,
+        state.extraQuery,
       );
 
       const isPending = provider_url
@@ -72,15 +76,46 @@ export function connectBlockToProviderData(WrappedComponent, config = {}) {
           providerData: { ...pagination.providerData },
         };
 
+        const refreshTable =
+          connector.filters &&
+          newPagination.prevFilters !== null &&
+          newPagination.prevFilters !== connector.filters;
+
         if (!mounted) {
           setMounted(true);
         }
 
-        if (readyToDispatch) {
+        if (readyToDispatch && !refreshTable) {
           dispatch(getDataFromProvider(provider_url, null, connector.params));
         }
 
-        if (provider_data && pagination.enabled && !isPending) {
+        if (refreshTable) {
+          newPagination.prevFilters = connector.filters;
+          newPagination.renderedPages = [1];
+          newPagination.providerData[1] = {
+            ...newPagination.providerData[newPagination.activePage],
+          };
+
+          Object.keys(newPagination.providerData).forEach((page) => {
+            if (page !== '1') {
+              delete newPagination.providerData[page];
+            }
+          });
+          newPagination.activePage = 1;
+          newPagination.prevPage = null;
+          newPagination.lastPage = Infinity;
+
+          return setPagination({
+            ...newPagination,
+          });
+        }
+
+        if (
+          provider_data &&
+          pagination.enabled &&
+          !isPending &&
+          !refreshTable
+        ) {
           const dataLength =
             provider_data[Object.keys(provider_data)[0]]?.length || 0;
           if (!pagination.renderedPages.includes(pagination.activePage)) {
@@ -96,6 +131,8 @@ export function connectBlockToProviderData(WrappedComponent, config = {}) {
           newPagination.providerData[pagination.activePage] = {
             ...(provider_data || {}),
           };
+
+          newPagination.prevFilters = connector.filters;
 
           if (
             JSON.stringify(
@@ -117,11 +154,13 @@ export function connectBlockToProviderData(WrappedComponent, config = {}) {
             });
           }
         }
+        /* eslint-disable-next-line */
       }, [
         mounted,
         readyToDispatch,
         isPending,
         connector.params,
+        connector.filters,
         dispatch,
         pagination,
         provider_data,
@@ -129,13 +168,15 @@ export function connectBlockToProviderData(WrappedComponent, config = {}) {
       ]);
 
       return (
-        <WrappedComponent
-          {...props}
-          provider_data={provider_data}
-          isPending={isPending}
-          updatePagination={updatePagination}
-          pagination={pagination}
-        />
+        <ConnectorContext.Provider value={{ state, setState }}>
+          <WrappedComponent
+            {...props}
+            provider_data={provider_data}
+            isPending={isPending}
+            updatePagination={updatePagination}
+            pagination={pagination}
+          />
+        </ConnectorContext.Provider>
       );
     }),
   );

@@ -12,7 +12,7 @@ export const getValue = (tableData, column, rowIndex, textTemplate) => {
   return value;
 };
 
-export const getCellValue = (tableData, colDef, rowIndex) => {
+export const getCellValue = (tableData, colDef, rowIndex, placeholder = '') => {
   let value;
 
   if (colDef === 'string') {
@@ -26,11 +26,11 @@ export const getCellValue = (tableData, colDef, rowIndex) => {
   }
 
   return typeof colDef === 'string' ? (
-    <span>{value}</span>
+    <span>{value || placeholder}</span>
   ) : (
     <FormattedValue
       textTemplate={colDef.textTemplate}
-      value={value}
+      value={value || placeholder}
       specifier={colDef.specifier}
     />
   );

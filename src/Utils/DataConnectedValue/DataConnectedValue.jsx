@@ -147,7 +147,7 @@ const DataConnectedValue = (props) => {
     getConnectedDataParametersForRoute(route_parameters) ||
     getConnectedDataParametersForPath(
       connected_data_parameters,
-      content['@id'],
+      content?.['@id'],
       filterIndex,
     ) ||
     getConnectedDataParametersForProvider(
@@ -156,7 +156,7 @@ const DataConnectedValue = (props) => {
     ) ||
     getConnectedDataParametersForContext(
       connected_data_parameters,
-      content['@id'],
+      content?.['@id'],
     );
 
   const value = getValue(
