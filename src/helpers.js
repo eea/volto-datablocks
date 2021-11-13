@@ -64,6 +64,11 @@ export function getConnectedDataParametersForProvider(
   return res;
 }
 
+/**
+ * Builds information about a "connector", based on provider url, route params,
+ * pagination, extra query, etc.
+ *
+ */
 export const getConnector = (
   provider_url,
   location,
@@ -104,9 +109,9 @@ export const getConnector = (
 
   return {
     filters,
-    url: provider_url ? `${provider_url}${paramsStr}` : null,
+    url: provider_url ? `${getBasePath(provider_url)}${paramsStr}` : null,
     urlConnector: provider_url
-      ? `${provider_url}/@connector-data${paramsStr}`
+      ? `${getBasePath(provider_url)}/@connector-data${paramsStr}`
       : null,
     params: paramsStr,
   };
@@ -199,7 +204,12 @@ export function filterDataByParameters(providerData, parameters) {
  * @param {} providerData
  * @param {} parameters
  */
-export function mixProviderData(chartData, providerData, parameters, connectedDataTemplateString) {
+export function mixProviderData(
+  chartData,
+  providerData,
+  parameters,
+  connectedDataTemplateString,
+) {
   const providerDataColumns = Object.keys(providerData);
   // console.log('mix', parameters);
   // console.log('providerData: ', providerData);
@@ -250,17 +260,23 @@ export function mixProviderData(chartData, providerData, parameters, connectedDa
             if (!connectedDataTemplateString) {
               transform.value = filterValue;
               transform.target = providerData[transform.targetsrc];
-            }
-            else {
+            } else {
               let transformValue = transform.value;
               const tValueIsArray = Array.isArray(transformValue);
-              transformValue = tValueIsArray ? transformValue.join() : transformValue;
-              
-              connectedDataTemplateString.split(',').forEach((templString) => {
-                transformValue = transformValue.replace(templString, filterValue);
-              })
+              transformValue = tValueIsArray
+                ? transformValue.join()
+                : transformValue;
 
-              transform.value = tValueIsArray ? transformValue.split(',') : transformValue;
+              connectedDataTemplateString.split(',').forEach((templString) => {
+                transformValue = transformValue.replace(
+                  templString,
+                  filterValue,
+                );
+              });
+
+              transform.value = tValueIsArray
+                ? transformValue.split(',')
+                : transformValue;
               transform.target = providerData[transform.targetsrc];
             }
           }
@@ -274,6 +290,14 @@ export function mixProviderData(chartData, providerData, parameters, connectedDa
   return res;
 }
 
+/**
+ * A generic provider of data parameters (contextual filtering criteria).
+ *
+ * It tries to get them from:
+ * - specific paramters for a URL path
+ * - specific parameters for a provider URL
+ * - specific parameters for the current context (Plone object)
+ */
 export const connectToDataParameters = connect((state, props) => {
   const providerUrl = props?.data?.provider_url || props?.data?.url || null;
 

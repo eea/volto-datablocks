@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import { getBaseUrl, flattenToAppURL } from '@plone/volto/helpers';
 
 import { getDataFromProvider } from '../../actions';
 import {
@@ -159,6 +160,16 @@ const DataConnectedValue = (props) => {
       content?.['@id'],
     );
 
+  console.log('dataP', {
+    dataParameters,
+    provider_data,
+    provider_url,
+    data_providers,
+    base: getBaseUrl(provider_url),
+    flat: flattenToAppURL(provider_url),
+    connector,
+  });
+
   const value = getValue(
     provider_data,
     column,
@@ -199,12 +210,16 @@ const DataConnectedValue = (props) => {
 };
 
 export default connect(
-  (state, props) => ({
-    content: state.content.data,
-    connected_data_parameters: state.connected_data_parameters,
-    route_parameters: state.route_parameters,
-    data_providers: state.data_providers,
-  }),
+  (state, props) => {
+    // console.log('cdp', state.connected_data_parameters);
+    // console.log('datapr', state.data_providers);
+    return {
+      content: state.content.data,
+      connected_data_parameters: state.connected_data_parameters,
+      route_parameters: state.route_parameters,
+      data_providers: state.data_providers,
+    };
+  },
   {
     getDataFromProvider,
   },
