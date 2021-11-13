@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { getBaseUrl, flattenToAppURL } from '@plone/volto/helpers';
+// import { getBaseUrl, flattenToAppURL } from '@plone/volto/helpers';
 
 import { getDataFromProvider } from '../../actions';
 import {
