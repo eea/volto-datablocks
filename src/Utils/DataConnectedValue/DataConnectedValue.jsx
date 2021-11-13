@@ -160,15 +160,15 @@ const DataConnectedValue = (props) => {
       content?.['@id'],
     );
 
-  console.log('dataP', {
-    dataParameters,
-    provider_data,
-    provider_url,
-    data_providers,
-    base: getBaseUrl(provider_url),
-    flat: flattenToAppURL(provider_url),
-    connector,
-  });
+  // console.log('dataP', {
+  //   dataParameters,
+  //   provider_data,
+  //   provider_url,
+  //   data_providers,
+  //   base: getBaseUrl(provider_url),
+  //   flat: flattenToAppURL(provider_url),
+  //   connector,
+  // });
 
   const value = getValue(
     provider_data,
