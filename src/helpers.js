@@ -314,7 +314,7 @@ export const connectToDataParameters = connect((state, props) => {
         ) ||
         getConnectedDataParametersForContext(
           state.connected_data_parameters,
-          state.router.location.pathname,
+          flattenToAppURL(state.content['@id']),
         )
       : null;
 
