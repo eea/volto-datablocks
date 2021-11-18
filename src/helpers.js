@@ -302,7 +302,6 @@ export const connectToDataParameters = connect((state, props) => {
   const providerUrl = props?.data?.provider_url || props?.data?.url || null;
 
   const stateId = flattenToAppURL(state.content?.data?.['@id']);
-  console.log('stateId', stateId);
 
   const connected_data_parameters =
     providerUrl !== null
