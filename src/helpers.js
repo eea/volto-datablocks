@@ -64,6 +64,11 @@ export function getConnectedDataParametersForProvider(
   return res;
 }
 
+/**
+ * Builds information about a "connector", based on provider url, route params,
+ * pagination, extra query, etc.
+ *
+ */
 export const getConnector = (
   provider_url,
   location,
@@ -104,9 +109,9 @@ export const getConnector = (
 
   return {
     filters,
-    url: provider_url ? `${provider_url}${paramsStr}` : null,
+    url: provider_url ? `${getBasePath(provider_url)}${paramsStr}` : null,
     urlConnector: provider_url
-      ? `${provider_url}/@connector-data${paramsStr}`
+      ? `${getBasePath(provider_url)}/@connector-data${paramsStr}`
       : null,
     params: paramsStr,
   };
@@ -199,10 +204,16 @@ export function filterDataByParameters(providerData, parameters) {
  * @param {} providerData
  * @param {} parameters
  */
-export function mixProviderData(chartData, providerData, parameters) {
+export function mixProviderData(
+  chartData,
+  providerData,
+  parameters,
+  connectedDataTemplateString,
+) {
   const providerDataColumns = Object.keys(providerData);
-
   // console.log('mix', parameters);
+  // console.log('providerData: ', providerData);
+  // console.log('chartData: ', chartData);
   const res = (chartData || []).map((trace) => {
     Object.keys(trace).forEach((tk) => {
       const originalColumn = tk.replace(/src$/, '');
@@ -244,8 +255,30 @@ export function mixProviderData(chartData, providerData, parameters) {
         // tweak transformation filters using data parameters
         (trace.transforms || []).forEach((transform) => {
           if (transform.targetsrc === real_index && filterValue) {
-            transform.value = filterValue;
-            transform.target = providerData[transform.targetsrc];
+            // console.log('connectedDataTemplateString', connectedDataTemplateString);
+
+            if (!connectedDataTemplateString) {
+              transform.value = filterValue;
+              transform.target = providerData[transform.targetsrc];
+            } else {
+              let transformValue = transform.value;
+              const tValueIsArray = Array.isArray(transformValue);
+              transformValue = tValueIsArray
+                ? transformValue.join()
+                : transformValue;
+
+              connectedDataTemplateString.split(',').forEach((templString) => {
+                transformValue = transformValue.replace(
+                  templString,
+                  filterValue,
+                );
+              });
+
+              transform.value = tValueIsArray
+                ? transformValue.split(',')
+                : transformValue;
+              transform.target = providerData[transform.targetsrc];
+            }
           }
         });
       }
@@ -257,8 +290,19 @@ export function mixProviderData(chartData, providerData, parameters) {
   return res;
 }
 
+/**
+ * A generic provider of data parameters (contextual filtering criteria).
+ *
+ * It tries to get them from:
+ * - specific paramters for a URL path
+ * - specific parameters for a provider URL
+ * - specific parameters for the current context (Plone object)
+ */
 export const connectToDataParameters = connect((state, props) => {
   const providerUrl = props?.data?.provider_url || props?.data?.url || null;
+
+  const stateId = flattenToAppURL(state.content?.data?.['@id']);
+  console.log('stateId', stateId);
 
   const connected_data_parameters =
     providerUrl !== null
@@ -273,7 +317,7 @@ export const connectToDataParameters = connect((state, props) => {
         ) ||
         getConnectedDataParametersForContext(
           state.connected_data_parameters,
-          state.router.location.pathname,
+          stateId,
         )
       : null;
 
