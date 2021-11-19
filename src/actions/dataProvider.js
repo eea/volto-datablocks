@@ -17,7 +17,7 @@ export function getDataFromProvider(path, filters = null, queryString = '') {
       : path;
   path = path && flattenToAppURL(path).replace(/\/$/, '');
   const db_version =
-    process.env.RAZZLE_DB_VERSION || config.settings.db_version || 'latest';
+    window.env.RAZZLE_DB_VERSION || config.settings.db_version || 'latest';
   const query = {
     ...qs.parse(queryString.replace('?', '')),
     db_version,
