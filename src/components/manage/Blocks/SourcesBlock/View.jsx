@@ -7,9 +7,9 @@ import { isEmpty } from 'lodash';
 import config from '@plone/volto/registry';
 import { trackLink } from '@eeacms/volto-matomo/utils';
 
-function convertToCSV(objArray) {
+function convertToCSV(objArray, readme) {
   let array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
-  let str = '';
+  let str = 'Readme';
 
   // Add headers
   for (let key in array[0]) {
@@ -27,17 +27,20 @@ function convertToCSV(objArray) {
       line += array[i][key];
     }
 
-    str += line + '\r\n';
+    str += ',' + line + '\r\n';
   }
 
+  for (let key in readme) {
+    str += key + ': ' + readme[key] + '\r\n';
+  }
   return str;
 }
 
-function exportCSVFile(items, fileTitle) {
+function exportCSVFile(items, fileTitle, readme) {
   // Convert Object to JSON
   let jsonObject = JSON.stringify(items);
 
-  let csv = convertToCSV(jsonObject);
+  let csv = convertToCSV(jsonObject, readme);
 
   let exportedFilenmae = fileTitle + '.csv' || 'export.csv';
   trackLink({
@@ -75,10 +78,10 @@ const SourceView = (props) => {
     providerUrl,
     className,
     data_providers,
+    metadata_providers,
     connectorsDataProviders,
     download_button,
   } = props;
-
   return (
     <React.Fragment>
       {(providerUrl || connectorsDataProviders) && download_button === true && (
@@ -103,18 +106,21 @@ const SourceView = (props) => {
               });
             const connectorData =
               data_providers?.data?.[`${providerUrl}/@connector-data`];
-
             if (connectorData && !providerUrl?.includes('.csv')) {
               // no need to re-construct csv if already there
               let array = [];
+              let readme = {};
               connectorData &&
                 Object.entries(connectorData).forEach(([key, items]) => {
+                  readme[key] = metadata_providers?.data?.[key]?.Readme;
+
                   items.forEach((item, index) => {
                     if (!array[index]) array[index] = {};
                     array[index][key] = item;
                   });
                 });
-              exportCSVFile(array, providerUrl);
+
+              exportCSVFile(array, providerUrl, readme);
               return;
             }
             const ExternalCSVPath = Object.keys(connectorsData)?.[0];
@@ -124,18 +130,25 @@ const SourceView = (props) => {
             ) {
               let title = '';
               let array = [];
+              let readme = {};
+
               Object.entries(connectorsData).forEach(
                 ([connectorKey, connector]) => {
                   title += connectorKey + ' & ';
+                  readme[connectorKey] =
+                    metadata_providers?.data?.[connectorKey]?.Readme;
                   Object.entries(connector).forEach(([key, items]) => {
                     items.forEach((item, index) => {
-                      if (!array[index]) array[index] = {};
+                      if (!array[index]) {
+                        array[index] = {};
+                      }
                       array[index][key] = item;
                     });
                   });
                 },
               );
-              exportCSVFile(array, title.slice(0, -3));
+
+              exportCSVFile(array, title.slice(0, -3), readme);
               return;
             }
 
@@ -199,4 +212,5 @@ const SourceView = (props) => {
 
 export default connect((state, props) => ({
   data_providers: state.data_providers,
+  metadata_providers: state.metadata_providers,
 }))(SourceView);
