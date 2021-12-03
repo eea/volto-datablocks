@@ -9,7 +9,7 @@ import { trackLink } from '@eeacms/volto-matomo/utils';
 
 function convertToCSV(objArray, readme) {
   let array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
-  let str = 'Readme';
+  let str = '';
 
   // Add headers
   for (let key in array[0]) {
@@ -27,7 +27,11 @@ function convertToCSV(objArray, readme) {
       line += array[i][key];
     }
 
-    str += ',' + line + '\r\n';
+    str += line + '\r\n';
+  }
+
+  for (let i = 0; i < 5; i++) {
+    str += '\r\n';
   }
 
   for (let key in readme) {
