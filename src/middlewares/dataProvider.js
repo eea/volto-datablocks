@@ -1,3 +1,4 @@
+import { getProviderMetadata } from '../actions';
 import { GET_DATA_FROM_PROVIDER } from '../constants';
 
 export const dataProvider = (middlewares) => [
@@ -6,6 +7,7 @@ export const dataProvider = (middlewares) => [
     if (action.type === GET_DATA_FROM_PROVIDER) {
       const url = `${action.path}${action.queryString}`;
       const isPending = state.data_providers.pendingConnectors[url];
+
       if (isPending) {
         return;
       }
@@ -14,6 +16,8 @@ export const dataProvider = (middlewares) => [
         path: action.path,
         queryString: action.queryString,
       });
+
+      store.dispatch(getProviderMetadata(action.path));
     }
     return next(action);
   },

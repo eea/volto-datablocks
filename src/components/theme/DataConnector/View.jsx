@@ -74,6 +74,7 @@ const DataConnectorView = (props) => {
     <Container className="data-connector-view">
       <h2>{content.title}</h2>
       <pre>{content.sql_query}</pre>
+      <pre>{content.Readme}</pre>
       <div style={{ overflow: 'auto', width: '100%' }}>
         {provider_data && (
           <Table compact striped>
