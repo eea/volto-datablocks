@@ -35,7 +35,7 @@ function convertToCSV(objArray, readme) {
   }
 
   for (let key in readme) {
-    if(readme[key]) {
+    if (readme[key]) {
       str += key + ': ' + readme[key] + '\r\n';
     }
   }
