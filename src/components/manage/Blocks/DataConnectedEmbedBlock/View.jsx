@@ -9,6 +9,7 @@ import cx from 'classnames';
 import { connect } from 'react-redux';
 import PrivacyProtection from '@eeacms/volto-embed/PrivacyProtection/PrivacyProtection';
 import { getConnectedDataParametersForContext } from '../../../../helpers';
+import './styles.less';
 
 const messages = defineMessages({
   EmbededGoogleMaps: {
@@ -45,7 +46,7 @@ const ViewEmbedBlock = (props) => {
     <PrivacyProtection data={data} {...props}>
       <p
         className={cx(
-          'block maps align',
+          'map-container block maps',
           {
             center: !Boolean(data.align),
           },
