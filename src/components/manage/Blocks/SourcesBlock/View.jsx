@@ -36,7 +36,9 @@ function convertToCSV(objArray, readme) {
 
   for (let key in readme) {
     if (readme[key]) {
-      str += key + ': ' + readme[key] + '\r\n';
+      const path = key.split('/');
+      const title = path[path.length - 1];
+      str += title + ': ' + readme[key] + '\r\n';
     }
   }
   return str;
