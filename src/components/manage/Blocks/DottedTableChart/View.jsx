@@ -1,22 +1,15 @@
 import React from 'react';
-import { Popup, Table } from 'semantic-ui-react';
-import { connectBlockToProviderData } from '../../../../hocs';
-import { DEFAULT_MAX_DOT_COUNT } from './constants';
-import {
-  filterDataByParameters,
-  connectToDataParameters,
-} from '../../../../helpers';
 import { compose } from 'redux';
-import { serializeNodes } from '../../../../serialize';
-import { FormattedValue } from '../../../../Utils';
+import { Popup, Table } from 'semantic-ui-react';
+import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
+import { DEFAULT_MAX_DOT_COUNT } from './constants';
+import { serializeNodes } from '@eeacms/volto-datablocks/serialize';
+import { FormattedValue } from '@eeacms/volto-datablocks/Utils';
 
 import './styles.less';
 
 const DottedTableChartView = (props) => {
-  const { data, provider_data, connected_data_parameters } = props;
-
-  const filteredData =
-    filterDataByParameters(provider_data, connected_data_parameters) || {};
+  const { data, provider_data = {} } = props;
 
   const {
     description,
@@ -30,22 +23,22 @@ const DottedTableChartView = (props) => {
   } = data;
 
   const possible_columns = Array.from(
-    new Set(filteredData?.[column_data]),
+    new Set(provider_data?.[column_data]),
   ).sort();
-  const possible_rows = Array.from(new Set(filteredData?.[row_data])).sort();
+  const possible_rows = Array.from(new Set(provider_data?.[row_data])).sort();
 
   const data_tree = React.useMemo(() => {
     const res = {};
-    (filteredData?.[column_data] || []).forEach((cv, i) => {
+    (provider_data?.[column_data] || []).forEach((cv, i) => {
       res[cv] = {
         ...res[cv],
-        [filteredData?.[row_data]?.[i]]: filteredData?.[size_data]?.[i],
+        [provider_data?.[row_data]?.[i]]: provider_data?.[size_data]?.[i],
       };
     });
     return res;
-  }, [column_data, filteredData, row_data, size_data]);
+  }, [column_data, provider_data, row_data, size_data]);
 
-  const size_column_data = filteredData?.[size_data] || [];
+  const size_column_data = provider_data?.[size_data] || [];
   // TODO: use sums to find the biggest value for a column?
   const maxValue = React.useMemo(() => {
     const numbers = size_column_data.map((s) =>
@@ -77,7 +70,7 @@ const DottedTableChartView = (props) => {
         {description ? serializeNodes(description) : ''}
       </div>
       <div className="inner">
-        {!!filteredData && column_data && row_data && size_data ? (
+        {!!provider_data && column_data && row_data && size_data ? (
           <Table
             textAlign="left"
             striped={data.striped}
@@ -152,6 +145,7 @@ const DottedTableChartView = (props) => {
 };
 
 export default compose(
-  connectBlockToProviderData,
-  connectToDataParameters,
-)(React.memo(DottedTableChartView));
+  connectToProviderData((props) => ({
+    provider_url: props.data.url || props.data.provider_url,
+  })),
+)(DottedTableChartView);

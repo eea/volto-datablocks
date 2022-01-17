@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useMemo, useState } from 'react';
 import { withRouter } from 'react-router';
 import { connect, useDispatch } from 'react-redux';
 import { getDataFromProvider } from '../actions';
-import { getConnector } from '../helpers';
+import { getConnectorPath, getForm, getDataQuery } from '../helpers';
 import { ConnectorContext } from './';
 
 /**
@@ -10,176 +10,137 @@ import { ConnectorContext } from './';
  *
  * @param {} WrappedComponent
  */
-export function connectBlockToProviderData(WrappedComponent, config = {}) {
-  return connect((state) => ({
-    route_parameters: state.route_parameters,
-    data_providers: state.data_providers,
-  }))(
-    withRouter((props) => {
-      const dispatch = useDispatch();
-      const [mounted, setMounted] = useState(false);
-      const [state, setState] = useState({});
-      const [pagination, setPagination] = useState({
-        activePage: 1,
-        enabled: config.pagination?.getEnabled?.(props) || false,
-        itemsPerPage: config.pagination?.getItemsPerPage?.(props) || 5,
-        prevPage: null,
-        lastPage: Infinity,
-        renderedPages: [],
-        providerData: {},
-        prevFilters: null,
-      });
-      const { provider_url = null } = props.data;
+export function connectBlockToProviderData(getConfig = () => ({})) {
+  return (WrappedComponent) => {
+    return connect((state) => ({
+      route_parameters: state.route_parameters,
+      data_providers: state.data_providers,
+      content: state.content,
+    }))(
+      withRouter((props) => {
+        const dispatch = useDispatch();
+        const config = useMemo(() => getConfig(props), [props]);
+        const [mounted, setMounted] = useState(false);
+        const [state, setState] = useState({});
+        const [pagination, setPagination] = useState({
+          activePage: 1,
+          enabled: config.pagination?.enabled || false,
+          itemsPerPage: config.pagination?.itemsPerPage || 5,
+          prevPage: null,
+          totalItems: null,
+          lastPage: Infinity,
+          data: {},
+        });
+        const provider_url = useMemo(() => config.provider_url, [config]);
+        // console.log('HERE', getConnectedDataParametersForProvider());
+        const connectorPath = useMemo(
+          () => getConnectorPath(provider_url, pagination),
+          [provider_url, pagination],
+        );
 
-      const allowedParams = props.data?.allowedParams?.length
-        ? props.data.allowedParams
-        : null;
+        const form = useMemo(() => getForm({ ...props, pagination }), [
+          props,
+          pagination,
+        ]);
+        const data_query = useMemo(
+          () => getDataQuery({ ...props, pagination }),
+          [props, pagination],
+        );
 
-      const connector = getConnector(
-        provider_url,
-        props.location,
-        props.route_parameters,
-        allowedParams,
-        pagination,
-        state.extraQuery,
-      );
+        const provider_data = provider_url
+          ? props.data_providers?.data?.[connectorPath]
+          : null;
 
-      const isPending = provider_url
-        ? props.data_providers?.pendingConnectors?.[connector.url]
-        : false;
+        const isPending = provider_url
+          ? props.data_providers?.pendingConnectors?.[connectorPath]
+          : false;
 
-      const isFailed = provider_url
-        ? props.data_providers?.failedConnectors?.[connector.url]
-        : false;
+        const isFailed = provider_url
+          ? props.data_providers?.failedConnectors?.[connectorPath]
+          : false;
 
-      const provider_data = provider_url
-        ? props.data_providers?.data?.[connector.urlConnector]
-        : null;
+        const readyToDispatch =
+          mounted && provider_url && !provider_data && !isPending && !isFailed;
 
-      const readyToDispatch =
-        mounted && provider_url && !provider_data && !isPending && !isFailed;
-
-      const updatePagination = useCallback(
-        (data) => {
-          const newPagination = { ...pagination, ...data };
-          if (data.activePage && data.activePage !== pagination.activePage) {
-            newPagination.prevPage = pagination.activePage;
-          }
-          setPagination({ ...newPagination });
-        },
-        [pagination],
-      );
-
-      useEffect(() => {
-        const newPagination = {
-          ...pagination,
-          providerData: { ...pagination.providerData },
-        };
-
-        const refreshTable =
-          connector.filters &&
-          newPagination.prevFilters !== null &&
-          newPagination.prevFilters !== connector.filters;
-
-        if (!mounted) {
-          setMounted(true);
-        }
-
-        if (readyToDispatch && !refreshTable) {
-          dispatch(getDataFromProvider(provider_url, null, connector.params));
-        }
-
-        if (refreshTable) {
-          newPagination.prevFilters = connector.filters;
-          newPagination.renderedPages = [1];
-          newPagination.providerData[1] = {
-            ...newPagination.providerData[newPagination.activePage],
-          };
-
-          Object.keys(newPagination.providerData).forEach((page) => {
-            if (page !== '1') {
-              delete newPagination.providerData[page];
+        const updatePagination = useCallback(
+          (data) => {
+            const newPagination = { ...pagination, ...data };
+            if (data.activePage && data.activePage !== pagination.activePage) {
+              newPagination.prevPage = pagination.activePage;
             }
-          });
-          newPagination.activePage = 1;
-          newPagination.prevPage = null;
-          newPagination.lastPage = Infinity;
+            setPagination({ ...newPagination });
+          },
+          [pagination],
+        );
 
-          return setPagination({
-            ...newPagination,
-          });
-        }
+        useEffect(() => {
+          if (!mounted) {
+            setMounted(true);
+          }
 
-        if (
-          provider_data &&
-          pagination.enabled &&
-          !isPending &&
-          !refreshTable
-        ) {
-          const dataLength =
-            provider_data[Object.keys(provider_data)[0]]?.length || 0;
-          if (!pagination.renderedPages.includes(pagination.activePage)) {
-            if (!dataLength && pagination.activePage > 1) {
-              newPagination.activePage = pagination.prevPage;
+          if (readyToDispatch) {
+            dispatch(getDataFromProvider(provider_url, form, data_query));
+          }
+
+          if (provider_data && !isPending && pagination.enabled) {
+            // Request for active page finalized
+            let newPagination = { ...pagination };
+            const dataLength =
+              provider_data[Object.keys(provider_data)[0]]?.length || 0;
+            newPagination.totalItems =
+              (pagination.totalItems || 0) + dataLength;
+            if (!pagination.data[pagination.activePage]) {
+              newPagination = {
+                ...newPagination,
+                activePage:
+                  !dataLength && pagination.activePage > 1
+                    ? pagination.prevPage
+                    : pagination.activePage,
+                prevPage:
+                  !dataLength && pagination.activePage > 1
+                    ? null
+                    : pagination.prevPage,
+                data: {
+                  ...pagination.data,
+                  ...(dataLength
+                    ? { [pagination.activePage]: provider_data }
+                    : {}),
+                },
+              };
+              if (!dataLength && pagination.activePage > 1) {
+                newPagination.lastPage = pagination.prevPage;
+              } else if (dataLength < pagination.itemsPerPage) {
+                newPagination.lastPage = pagination.activePage;
+              }
+              setPagination({ ...newPagination });
             }
-            newPagination.renderedPages = [
-              ...pagination.renderedPages,
-              pagination.activePage,
-            ];
           }
+        }, [
+          mounted,
+          readyToDispatch,
+          isPending,
+          dispatch,
+          pagination,
+          provider_data,
+          provider_url,
+          data_query,
+          form,
+        ]);
 
-          newPagination.providerData[pagination.activePage] = {
-            ...(provider_data || {}),
-          };
-
-          newPagination.prevFilters = connector.filters;
-
-          if (
-            JSON.stringify(
-              newPagination.providerData[pagination.activePage],
-            ) !== JSON.stringify(pagination.providerData[pagination.activePage])
-          ) {
-            newPagination.lastPage = Infinity;
-          }
-
-          if (!dataLength && pagination.activePage > 1) {
-            newPagination.lastPage = pagination.prevPage;
-          } else if (dataLength < pagination.itemsPerPage) {
-            newPagination.lastPage = pagination.activePage;
-          }
-
-          if (JSON.stringify(newPagination) !== JSON.stringify(pagination)) {
-            setPagination({
-              ...newPagination,
-            });
-          }
-        }
-        /* eslint-disable-next-line */
-      }, [
-        mounted,
-        readyToDispatch,
-        isPending,
-        connector.params,
-        connector.filters,
-        dispatch,
-        pagination,
-        provider_data,
-        provider_url,
-      ]);
-
-      return (
-        <ConnectorContext.Provider value={{ state, setState }}>
-          <WrappedComponent
-            {...props}
-            provider_data={provider_data}
-            isPending={isPending}
-            updatePagination={updatePagination}
-            pagination={pagination}
-          />
-        </ConnectorContext.Provider>
-      );
-    }),
-  );
+        return (
+          <ConnectorContext.Provider value={{ state, setState }}>
+            <WrappedComponent
+              {...props}
+              provider_data={provider_data}
+              isPending={isPending}
+              updatePagination={updatePagination}
+              pagination={pagination}
+            />
+          </ConnectorContext.Provider>
+        );
+      }),
+    );
+  };
 }
 
 export default connectBlockToProviderData;

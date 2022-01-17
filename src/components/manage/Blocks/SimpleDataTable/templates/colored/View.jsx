@@ -89,12 +89,16 @@ const View = (props) => {
                       key={`${i}-${getNameOfColumn(colDef)}`}
                       textAlign={getAlignmentOfColumn(colDef, j)}
                     >
-                      <RenderComponent
-                        tableData={tableData}
-                        colDef={colDef}
-                        row={i}
-                        {...props}
-                      />
+                      {typeof colDef !== 'string' ? (
+                        <RenderComponent
+                          tableData={tableData}
+                          colDef={colDef}
+                          row={i}
+                          {...props}
+                        />
+                      ) : (
+                        tableData[colDef][i]
+                      )}
                     </Table.Cell>
                   ))}
                 </Table.Row>

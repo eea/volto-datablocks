@@ -4,8 +4,9 @@
  */
 
 import { GET_DATA_FROM_PROVIDER, SET_PROVIDER_CONTENT } from '../constants';
-import { getBasePath } from '../helpers';
 import { without } from 'lodash';
+
+const MAX_DATA_PER_PROVIDER = 10;
 
 const initialState = {
   error: null,
@@ -16,16 +17,22 @@ const initialState = {
   pendingConnectors: {},
   failedConnectors: {},
   requested: [],
+  tree: {},
 };
 
 export default function data_providers(state = initialState, action = {}) {
   const pendingConnectors = { ...state.pendingConnectors };
   const failedConnectors = { ...state.failedConnectors };
+  const tree = { ...state.tree };
+  const providerPath = action.path;
+  const hashValue = action.hashValue;
+
+  const path = `${providerPath}${hashValue ? `#${hashValue}` : ''}`;
 
   switch (action.type) {
     case `${GET_DATA_FROM_PROVIDER}_PENDING`:
-      pendingConnectors[action.path + action.queryString] = true;
-      delete failedConnectors[action.path + action.queryString];
+      pendingConnectors[path] = true;
+      delete failedConnectors[path];
 
       return {
         ...state,
@@ -38,38 +45,36 @@ export default function data_providers(state = initialState, action = {}) {
       };
 
     case `${GET_DATA_FROM_PROVIDER}_SUCCESS`:
-      const isExpand =
-        (action.result['@components'] &&
-          action.result['@components']['connector-data'] &&
-          action.result['@components']['connector-data']['@id'] &&
-          true) ||
-        false;
-      const id = getBasePath(
-        isExpand
-          ? action.result['@components']['connector-data']['@id']
-          : action.result['@id'],
-      );
-
-      delete pendingConnectors[action.path + action.queryString];
+      delete pendingConnectors[path];
+      if (!tree[providerPath]) {
+        tree[providerPath] = [];
+      }
+      tree[providerPath].push(hashValue);
+      const providerData = state.data[providerPath] || {};
+      if (tree[providerPath].length > MAX_DATA_PER_PROVIDER) {
+        delete providerData[tree[providerPath].shift()];
+      }
       return {
         ...state,
         error: null,
         data: {
           ...state.data,
-          [id + action.queryString]: isExpand
-            ? action.result['@components']['connector-data'].data
-            : action.result.data,
+          [providerPath]: {
+            ...providerData,
+            [hashValue]: action.result.data,
+          },
         },
         loaded: true,
         loading: false,
-        requested: [...without(state.requested, action.path)],
+        requested: [...without(state.requested, path)],
         pendingConnectors,
         failedConnectors,
+        tree,
       };
 
     case `${GET_DATA_FROM_PROVIDER}_FAIL`:
-      delete pendingConnectors[action.path + action.queryString];
-      failedConnectors[action.path + action.queryString] = true;
+      delete pendingConnectors[path];
+      failedConnectors[path] = true;
 
       return {
         ...state,
@@ -78,7 +83,7 @@ export default function data_providers(state = initialState, action = {}) {
         loaded: false,
         loading: false,
         // TODO: retry get?
-        requested: [...without(state.requested, action.path)],
+        requested: [...without(state.requested, path)],
         pendingConnectors,
         failedConnectors,
       };
@@ -86,7 +91,7 @@ export default function data_providers(state = initialState, action = {}) {
     case SET_PROVIDER_CONTENT:
       return {
         ...state,
-        content: { ...state.content, [action.path]: action.content },
+        content: { ...state.content, [path]: action.content },
       };
 
     default:

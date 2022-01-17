@@ -5,8 +5,7 @@ import InlineForm from '@plone/volto/components/manage/Form/InlineForm';
 
 import config from '@plone/volto/registry';
 
-import { connectBlockToProviderData } from '../../../../hocs';
-import { connectToDataParameters } from '../../../../helpers';
+import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 
 import { SimpleDataTableSchema } from './schema';
 import { SimpleDataTableView } from './View';
@@ -61,14 +60,19 @@ class Edit extends Component {
   }
 }
 
-export default compose(connectToDataParameters, (Edit) => {
-  return connectBlockToProviderData(Edit, {
-    pagination: {
-      getEnabled: (props) => props.data.has_pagination,
-      getItemsPerPage: (props) => {
-        const { max_count = 5 } = props.data;
-        return typeof max_count !== 'number' ? parseInt(max_count) : max_count;
+export default compose(
+  connectToProviderData((props) => {
+    const { max_count = 5 } = props.data;
+    return {
+      provider_url:
+        props.visualization_data?.provider_url ||
+        props.data?.provider_url ||
+        props.data?.url,
+      pagination: {
+        enabled: props.data.has_pagination,
+        itemsPerPage:
+          typeof max_count !== 'number' ? parseInt(max_count) : max_count,
       },
-    },
-  });
-})(Edit);
+    };
+  }),
+)(Edit);

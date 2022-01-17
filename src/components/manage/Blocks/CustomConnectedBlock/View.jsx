@@ -1,6 +1,7 @@
 import React from 'react';
+import { compose } from 'redux';
 import config from '@plone/volto/registry';
-import { connectBlockToProviderData } from '../../../../hocs';
+import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 import './style.less';
 
 const View = (props) => {
@@ -31,4 +32,9 @@ const View = (props) => {
     />
   );
 };
-export default connectBlockToProviderData(View);
+
+export default compose(
+  connectToProviderData((props) => ({
+    provider_url: props.data?.provider_url,
+  })),
+)(View);

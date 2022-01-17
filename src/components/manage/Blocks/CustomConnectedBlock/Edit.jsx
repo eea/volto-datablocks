@@ -3,7 +3,6 @@ import { SidebarPortal } from '@plone/volto/components';
 import InlineForm from '@plone/volto/components/manage/Form/InlineForm';
 import config from '@plone/volto/registry';
 import getSchema from './schema';
-import { connectBlockToProviderData } from '../../../../hocs';
 import CustomView from './View';
 import './style.less';
 
@@ -38,4 +37,4 @@ const Edit = (props) => {
   );
 };
 
-export default connectBlockToProviderData(Edit);
+export default Edit;

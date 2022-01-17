@@ -1,87 +1,75 @@
-/* eslint-disable */
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { withRouter } from 'react-router';
 import { connect, useDispatch } from 'react-redux';
+import hash from 'object-hash';
+import { flattenToAppURL } from '@plone/volto/helpers';
 import { getDataFromProvider } from '../actions';
-import { getConnector } from '../helpers';
+import { getConnectorPath } from '../helpers';
 
 /**
  * connectBlockToMultipleProviders.
  *
  * @param {} WrappedComponent
  */
-export function connectBlockToMultipleProviders(WrappedComponent, config = {}) {
-  return connect((state) => ({
-    route_parameters: state.route_parameters,
-    data_providers: state.data_providers,
-  }))(
-    withRouter((props) => {
-      const dispatch = useDispatch();
-      const allowedParams = props.data?.allowedParams?.length
-        ? props.data.allowedParams
-        : null;
+export function connectBlockToMultipleProviders(getConfig = () => ({})) {
+  return (WrappedComponent) => {
+    return connect((state) => ({
+      data_providers: state.data_providers,
+    }))(
+      withRouter((props) => {
+        const dispatch = useDispatch();
 
-      const providersSource = React.useMemo(() => {
-        return props.data.providers?.filter((provider) => provider.url) || [];
-      }, [props.data.providers?.filter]);
+        const providersSource = React.useMemo(() => {
+          return props.data.providers?.filter((provider) => provider.url) || [];
+        }, [props.data.providers?.filter]);
 
-      const providers_data = React.useMemo(() => {
-        const data = {};
-        providersSource.forEach((source) => {
-          const connector = getConnector(
-            source.url,
-            props.location,
-            props.route_parameters,
-            allowedParams,
-          );
-          data[source.name] =
-            props.data_providers?.data?.[connector.urlConnector];
-        });
-        return data;
-      }, [
-        allowedParams,
-        providersSource,
-        props.location,
-        props.route_parameters,
-        props.data_providers?.data,
-      ]);
+        const providers_data = React.useMemo(() => {
+          const data = {};
+          providersSource.forEach((source) => {
+            data[source.name] =
+              props.data_providers?.data?.[source.url]?._default;
+          });
+          return data;
+        }, [providersSource, props.data_providers.data]);
 
-      React.useEffect(() => {
-        providersSource.forEach((source) => {
-          const connector = getConnector(
-            source.url,
-            props.location,
-            props.route_parameters,
-            allowedParams,
-          );
-          const isPending =
-            props.data_providers?.pendingConnectors?.[connector.url];
-          const isFailed =
-            props.data_providers?.failedConnectors?.[connector.url];
-          const provider_data =
-            props.data_providers?.data?.[connector.urlConnector];
+        React.useEffect(() => {
+          providersSource.forEach((source) => {
+            const connectorPath = getConnectorPath(source.url);
 
-          const readyToDispatch = !provider_data && !isPending && !isFailed;
+            const provider_data = source.url
+              ? props.data_providers?.data?.[source.url]?._default
+              : null;
 
-          if (readyToDispatch) {
-            dispatch(getDataFromProvider(source.url, null, connector.params));
-          }
-        });
-      }, [
-        dispatch,
-        allowedParams,
-        props.location,
-        props.route_parameters,
-        props.data_providers,
-        props.data_providers?.pendingConnectors,
-        props.data_providers?.failedConnectors,
-        props.data_providers?.data,
-        providersSource,
-      ]);
+            const isPending = source.url
+              ? props.data_providers?.pendingConnectors?.[connectorPath]
+              : false;
 
-      return <WrappedComponent {...props} providers_data={providers_data} />;
-    }),
-  );
+            const isFailed = source.url
+              ? props.data_providers?.failedConnectors?.[connectorPath]
+              : false;
+
+            const readyToDispatch =
+              source.url && !provider_data && !isPending && !isFailed;
+
+            if (readyToDispatch) {
+              dispatch(getDataFromProvider(source.url));
+            }
+          });
+        }, [
+          dispatch,
+          props.location,
+          props.route_parameters,
+          props.data_providers,
+          props.data_providers?.pendingConnectors,
+          props.data_providers?.failedConnectors,
+          props.data_providers?.data,
+          providersSource,
+        ]);
+
+        return <WrappedComponent {...props} providers_data={providers_data} />;
+      }),
+    );
+  };
 }
 
 export default connectBlockToMultipleProviders;

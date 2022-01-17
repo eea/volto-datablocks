@@ -8,7 +8,7 @@ import { defineMessages, injectIntl } from 'react-intl';
 import cx from 'classnames';
 import { connect } from 'react-redux';
 import PrivacyProtection from '@eeacms/volto-embed/PrivacyProtection/PrivacyProtection';
-import { getConnectedDataParametersForContext } from '../../../../helpers';
+import { getConnectedDataParametersForContext } from '@eeacms/volto-datablocks/helpers';
 import './styles.less';
 
 const messages = defineMessages({
@@ -18,6 +18,27 @@ const messages = defineMessages({
   },
 });
 
+const getFilteredURL = (url, connected_data_parameters = []) => {
+  if (!connected_data_parameters?.length) return url;
+  let decodedURL = decodeURIComponent(url);
+  const queries = decodedURL.match(/(?<=(<<))(.*?)(?=(>>))/g);
+  if (!queries.length) return url;
+  const keys = connected_data_parameters.map((param) => param.i);
+  for (let poz in queries) {
+    const key = queries[poz];
+    const paramPoz = keys.indexOf(key);
+    if (paramPoz > -1) {
+      decodedURL = decodedURL.replace(
+        `<<${key}>>`,
+        connected_data_parameters[paramPoz].v[0],
+      );
+
+      continue;
+    }
+  }
+  return decodedURL;
+};
+
 /**
  * View Embed block class.
  * @class View
@@ -26,22 +47,9 @@ const messages = defineMessages({
 
 const ViewEmbedBlock = (props) => {
   const { data, intl } = props;
-  // console.log('data in embed', props);
-  // console.log('DataConnectedEmbed props in view', this.props);
-  const param = props.connected_data_parameters
-    ? props.connected_data_parameters[0]?.query?.[0]?.v?.[0] ||
-      props.connected_data_parameters[0]?.v?.[0]
-    : null;
 
-  // TODO: automatically discover parameters
-  const url =
-    param && data.url
-      ? decodeURIComponent(data.url).replace('<<NUTS_CODE>>', param)
-      : data.url;
-  const styles = {
-    height: `${data.height}px`,
-  };
-  // console.log('param in view', param, url);
+  const url = getFilteredURL(data.url, props.connected_data_parameters);
+
   return url ? (
     <PrivacyProtection data={data} {...props}>
       <p
@@ -57,7 +65,9 @@ const ViewEmbedBlock = (props) => {
           className={cx('video-inner', {
             'full-width': data.align === 'full',
           })}
-          style={data.height ? styles : {}}
+          style={{
+            minHeight: `${data.height || 200}px`,
+          }}
         >
           <iframe
             style={{ minHeight: '100%' }}
@@ -75,7 +85,7 @@ const ViewEmbedBlock = (props) => {
   );
 };
 
-export default connect((state, props) => {
+export default connect((state) => {
   return {
     connected_data_parameters: getConnectedDataParametersForContext(
       state?.connected_data_parameters,

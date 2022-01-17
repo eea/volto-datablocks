@@ -1,16 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useCallback, useMemo, useState } from 'react';
 import { withRouter } from 'react-router';
 import { connect, useDispatch } from 'react-redux';
-import { flattenToAppURL } from '@plone/volto/helpers';
 import { getDataFromProvider } from '../actions';
-import { getConnector } from '../helpers';
+import { getConnectorPath, getForm, getDataQuery } from '../helpers';
+
+const getInitialPagination = (config) => {
+  return {
+    activePage: 1,
+    enabled: config.pagination?.enabled || false,
+    itemsPerPage: config.pagination?.itemsPerPage || 5,
+    prevPage: null,
+    totalItems: null,
+    lastPage: Infinity,
+    data: {},
+  };
+};
 
 /**
  * connectAnythingToProviderData.
  *
  * @param {} getProviderUrl
  */
-export function connectAnythingToProviderData(getProviderUrl, config = {}) {
+export function connectAnythingToProviderData(getConfig = () => ({})) {
   return (WrappedComponent) => {
     return connect((state) => ({
       route_parameters: state.route_parameters,
@@ -18,100 +29,78 @@ export function connectAnythingToProviderData(getProviderUrl, config = {}) {
     }))(
       withRouter((props) => {
         const dispatch = useDispatch();
+        const config = useMemo(() => getConfig(props), [props]);
         const [mounted, setMounted] = useState(false);
-        const [pagination, setPagination] = useState({
-          activePage: 1,
-          enabled: config.pagination?.getEnabled?.(props) || false,
-          itemsPerPage: config.pagination?.getItemsPerPage?.(props) || 5,
-          prevPage: null,
-          totalItems: null,
-          maxItems: Infinity,
-          renderedPages: [],
-        });
-
-        const base = getProviderUrl(props);
-        const provider_url = base ? flattenToAppURL(base) : base;
-
-        const allowedParams = props.data?.allowedParams?.length
-          ? props.data.allowedParams
-          : null;
-
-        const connector = getConnector(
-          provider_url,
-          props.location,
-          props.route_parameters,
-          allowedParams,
-          pagination,
+        const [pagination, setPagination] = useState(
+          getInitialPagination(config),
         );
 
-        const prevConnector =
-          pagination.enabled && pagination.prevPage
-            ? getConnector(
-                provider_url,
-                props.location,
-                props.route_parameters,
-                allowedParams,
-                {
-                  ...pagination,
-                  activePage: pagination.prevPage,
-                },
-              )
-            : null;
+        const provider_url = useMemo(() => config.provider_url, [
+          config.provider_url,
+        ]);
+
+        const connectorPath = useMemo(
+          () => getConnectorPath(provider_url, pagination),
+          [provider_url, pagination],
+        );
+
+        const form = useMemo(() => getForm({ ...props, pagination }), [
+          props,
+          pagination,
+        ]);
+        const data_query = useMemo(
+          () => getDataQuery({ ...props, pagination }),
+          [props, pagination],
+        );
+
+        const provider_data = provider_url
+          ? props.data_providers?.data?.[connectorPath]
+          : null;
 
         const isPending = provider_url
-          ? props.data_providers?.pendingConnectors?.[connector.url]
+          ? props.data_providers?.pendingConnectors?.[connectorPath]
           : false;
 
         const isFailed = provider_url
-          ? props.data_providers?.failedConnectors?.[connector.url]
+          ? props.data_providers?.failedConnectors?.[connectorPath]
           : false;
-
-        const provider_data = provider_url
-          ? props.data_providers?.data?.[connector.urlConnector]
-          : null;
-
-        const prev_provider_data =
-          prevConnector && provider_url
-            ? props.data_providers?.data?.[prevConnector.urlConnector]
-            : null;
 
         const readyToDispatch =
           mounted && provider_url && !provider_data && !isPending && !isFailed;
 
-        const updatePagination = React.useCallback(
+        const updatePagination = useCallback(
           (data) => {
             const newPagination = { ...pagination, ...data };
             if (data.activePage && data.activePage !== pagination.activePage) {
               newPagination.prevPage = pagination.activePage;
             }
-            setPagination(newPagination);
+            setPagination({ ...newPagination });
           },
           [pagination],
         );
 
-        React.useEffect(() => {
+        useEffect(() => {
+          setPagination(getInitialPagination(config));
+          /* eslint-disable-next-line */
+        }, [config.pagination?.enabled, config.pagination?.itemsPerPage]);
+
+        useEffect(() => {
           if (!mounted) {
             setMounted(true);
           }
 
           if (readyToDispatch) {
-            dispatch(getDataFromProvider(provider_url, null, connector.params));
+            dispatch(getDataFromProvider(provider_url, form, data_query));
           }
 
-          if (provider_data && !isPending) {
+          if (provider_data && !isPending && pagination.enabled) {
+            // Request for active page finalized
             let newPagination = { ...pagination };
             const dataLength =
               provider_data[Object.keys(provider_data)[0]]?.length || 0;
-            newPagination.totalItems = pagination.totalItems + dataLength;
-
-            if (!pagination.enabled && pagination.totalItems === null) {
-              setPagination({ ...newPagination });
-            }
-
-            if (
-              pagination.enabled &&
-              !pagination.renderedPages.includes(pagination.activePage)
-            ) {
+            newPagination.totalItems =
+              (pagination.totalItems || 0) + dataLength;
+            if (!pagination.data[pagination.activePage]) {
               newPagination = {
                 ...newPagination,
                 activePage:
@@ -122,15 +111,18 @@ export function connectAnythingToProviderData(getProviderUrl, config = {}) {
                   !dataLength && pagination.activePage > 1
                     ? null
                     : pagination.prevPage,
-                maxItems:
-                  dataLength < pagination.itemsPerPage
-                    ? newPagination.totalItems
-                    : pagination.maxItems,
-                renderedPages: [
-                  ...pagination.renderedPages,
-                  pagination.activePage,
-                ],
+                data: {
+                  ...pagination.data,
+                  ...(dataLength
+                    ? { [pagination.activePage]: provider_data }
+                    : {}),
+                },
               };
+              if (!dataLength && pagination.activePage > 1) {
+                newPagination.lastPage = pagination.prevPage;
+              } else if (dataLength < pagination.itemsPerPage) {
+                newPagination.lastPage = pagination.activePage;
+              }
               setPagination({ ...newPagination });
             }
           }
@@ -138,18 +130,18 @@ export function connectAnythingToProviderData(getProviderUrl, config = {}) {
           mounted,
           readyToDispatch,
           isPending,
-          connector.params,
           dispatch,
           pagination,
           provider_data,
           provider_url,
+          data_query,
+          form,
         ]);
 
         return (
           <WrappedComponent
             {...props}
             provider_data={provider_data}
-            prev_provider_data={prev_provider_data}
             isPending={isPending}
             updatePagination={updatePagination}
             pagination={pagination}
