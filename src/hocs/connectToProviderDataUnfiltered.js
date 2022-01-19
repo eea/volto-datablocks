@@ -30,6 +30,10 @@ export function connectToProviderDataUnfiltered(getConfig = () => ({})) {
           ? props.data_providers?.data?.[provider_url]?._default
           : null;
 
+        const provider_metadata = provider_url
+          ? props.data_providers?.metadata?.[provider_url]?._default
+          : null;
+
         const isPending = provider_url
           ? props.data_providers?.pendingConnectors?.[connectorPath]
           : false;
@@ -62,6 +66,7 @@ export function connectToProviderDataUnfiltered(getConfig = () => ({})) {
           <WrappedComponent
             {...props}
             provider_data={provider_data}
+            provider_metadata={provider_metadata}
             isPending={isPending}
           />
         );

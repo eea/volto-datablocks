@@ -1,4 +1,3 @@
-import { getProviderMetadata } from '../actions';
 import { GET_DATA_FROM_PROVIDER } from '../constants';
 
 export const dataProvider = (middlewares) => [
@@ -18,8 +17,6 @@ export const dataProvider = (middlewares) => [
         path: action.path,
         hashValue: action.hashValue,
       });
-
-      store.dispatch(getProviderMetadata(action.path));
     }
     return next(action);
   },

@@ -109,10 +109,7 @@ export default compose(
   connectToProviderData((props) => {
     const { max_count = 5 } = props.data;
     return {
-      provider_url:
-        props.visualization_data?.provider_url ||
-        props.data?.provider_url ||
-        props.data?.url,
+      provider_url: props.data?.provider_url,
       pagination: {
         enabled: props.data.has_pagination,
         itemsPerPage:

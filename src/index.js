@@ -19,10 +19,6 @@ export default (config) => {
       id: 'data_blocks',
       title: 'Data blocks',
     },
-    {
-      id: 'custom_addons',
-      title: 'Custom addons',
-    },
   ];
 
   config.views.contentTypesViews.discodataconnector = DataConnectorView;

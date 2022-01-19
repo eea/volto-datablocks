@@ -74,7 +74,7 @@ export function connectToMultipleProviders(getConfig = () => ({})) {
               provider.provider_url || provider.url,
             )?.replace(/\/$/, '');
             if (!provider_url || !state.hashValues[index]) return;
-            const title = provider.name || provider.title || provider.url;
+            const title = provider.name || provider.title || provider_url;
             data[title] =
               props.data_providers?.data?.[provider_url]?.[
                 state.hashValues[index]
@@ -82,6 +82,22 @@ export function connectToMultipleProviders(getConfig = () => ({})) {
           });
           return data;
         }, [state, providers, props.data_providers.data]);
+
+        const providers_metadata = useMemo(() => {
+          const data = {};
+          providers.forEach((provider, index) => {
+            const provider_url = flattenToAppURL(
+              provider.provider_url || provider.url,
+            )?.replace(/\/$/, '');
+            if (!provider_url || !state.hashValues[index]) return;
+            const title = provider.name || provider.title || provider_url;
+            data[title] =
+              props.data_providers?.metadata?.[provider_url]?.[
+                state.hashValues[index]
+              ];
+          });
+          return data;
+        }, [state, providers, props.data_providers.metadata]);
 
         useEffect(() => {
           if (!mounted && __CLIENT__) {
@@ -135,7 +151,13 @@ export function connectToMultipleProviders(getConfig = () => ({})) {
           state,
         ]);
 
-        return <WrappedComponent {...props} providers_data={providers_data} />;
+        return (
+          <WrappedComponent
+            {...props}
+            providers_data={providers_data}
+            providers_metadata={providers_metadata}
+          />
+        );
       }),
     );
   };

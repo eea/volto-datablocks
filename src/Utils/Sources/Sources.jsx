@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { isEmpty } from 'lodash';
 import config from '@plone/volto/registry';
@@ -85,7 +84,7 @@ const SourceView = (props) => {
     className,
     provider_url,
     provider_data,
-    metadata_providers,
+    provider_metadata,
     download_button,
   } = props;
 
@@ -101,7 +100,7 @@ const SourceView = (props) => {
               let array = [];
               let readme = {};
               Object.entries(provider_data).forEach(([key, items]) => {
-                readme[key] = metadata_providers?.data?.[key]?.Readme;
+                readme[key] = provider_metadata?.readme;
 
                 items.forEach((item, index) => {
                   if (!array[index]) array[index] = {};
@@ -121,8 +120,7 @@ const SourceView = (props) => {
               Object.entries(provider_data).forEach(
                 ([connectorKey, connector]) => {
                   title += connectorKey + ' & ';
-                  readme[connectorKey] =
-                    metadata_providers?.data?.[connectorKey]?.Readme;
+                  readme[connectorKey] = provider_metadata?.readme;
                   Object.entries(connector).forEach(([key, items]) => {
                     items.forEach((item, index) => {
                       if (!array[index]) {
@@ -186,9 +184,6 @@ const SourceView = (props) => {
 };
 
 export default compose(
-  connect((state) => ({
-    metadata_providers: state.metadata_providers,
-  })),
   connectToProviderData((props) => ({
     provider_url: props.provider_url,
   })),

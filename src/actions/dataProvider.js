@@ -1,21 +1,6 @@
 import { flattenToAppURL } from '@plone/volto/helpers';
 import config from '@plone/volto/registry';
-import {
-  GET_PROVIDER_METADATA,
-  GET_DATA_FROM_PROVIDER,
-  SET_PROVIDER_CONTENT,
-} from '../constants';
-
-export function getProviderMetadata(path) {
-  return {
-    type: GET_PROVIDER_METADATA,
-    path: path,
-    request: {
-      op: 'get',
-      path: path,
-    },
-  };
-}
+import {GET_DATA_FROM_PROVIDER } from '../constants';
 
 export function getDataFromProvider(
   path,
@@ -45,13 +30,5 @@ export function getDataFromProvider(
         data_query,
       },
     },
-  };
-}
-
-export function setProviderContent(path, content) {
-  return {
-    type: SET_PROVIDER_CONTENT,
-    path,
-    content,
   };
 }

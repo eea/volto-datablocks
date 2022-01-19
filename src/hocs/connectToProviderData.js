@@ -79,6 +79,16 @@ export function connectToProviderData(getConfig = () => ({})) {
           ? props.data_providers?.data?.[provider_url]?.[prevHashValue.current]
           : null;
 
+        const provider_metadata = provider_url
+          ? props.data_providers?.metadata?.[provider_url]?.[hashValue]
+          : null;
+
+        const prev_provider_metadata = provider_url
+          ? props.data_providers?.metadata?.[provider_url]?.[
+              prevHashValue.current
+            ]
+          : null;
+
         const isPending = provider_url
           ? props.data_providers?.pendingConnectors?.[connectorPath]
           : false;
@@ -218,6 +228,8 @@ export function connectToProviderData(getConfig = () => ({})) {
                 : provider_data || prev_provider_data
             }
             prev_provider_data={prev_provider_data}
+            provider_metadata={provider_metadata}
+            prev_provider_metadata={prev_provider_metadata}
             isPending={isPending}
             updatePagination={updatePagination}
             pagination={pagination}

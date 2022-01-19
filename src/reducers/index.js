@@ -4,4 +4,3 @@ export connected_data_parameters from './connected_data_parameters';
 export route_parameters from './route_parameters';
 export blockdata from './blockdata';
 export table_search from './table_search';
-export metadata_providers from './metadata_providers';

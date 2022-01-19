@@ -3,7 +3,7 @@
  * @module reducers/data_providers
  */
 
-import { GET_DATA_FROM_PROVIDER, SET_PROVIDER_CONTENT } from '../constants';
+import { GET_DATA_FROM_PROVIDER } from '../constants';
 import { without } from 'lodash';
 
 const MAX_DATA_PER_PROVIDER = 10;
@@ -11,7 +11,7 @@ const MAX_DATA_PER_PROVIDER = 10;
 const initialState = {
   error: null,
   data: {},
-  content: {},
+  metadata: {},
   loaded: false,
   loading: false,
   pendingConnectors: {},
@@ -61,7 +61,14 @@ export default function data_providers(state = initialState, action = {}) {
           ...state.data,
           [providerPath]: {
             ...providerData,
-            [hashValue]: action.result.data,
+            [hashValue]: action.result.data.results,
+          },
+        },
+        metadata: {
+          ...state.metadata,
+          [providerPath]: {
+            ...providerData,
+            [hashValue]: action.result.data.metadata,
           },
         },
         loaded: true,
@@ -79,19 +86,12 @@ export default function data_providers(state = initialState, action = {}) {
       return {
         ...state,
         error: action.error,
-        data: { ...state.data },
         loaded: false,
         loading: false,
         // TODO: retry get?
         requested: [...without(state.requested, path)],
         pendingConnectors,
         failedConnectors,
-      };
-
-    case SET_PROVIDER_CONTENT:
-      return {
-        ...state,
-        content: { ...state.content, [path]: action.content },
       };
 
     default:
