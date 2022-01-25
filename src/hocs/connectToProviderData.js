@@ -162,9 +162,7 @@ export function connectToProviderData(getConfig = () => ({})) {
                   : pagination.prevPage,
               data: {
                 ...pagination.data,
-                ...(dataLength
-                  ? { [pagination.activePage]: provider_data }
-                  : {}),
+                [pagination.activePage]: provider_data,
               },
             };
             if (!dataLength && pagination.activePage > 1) {

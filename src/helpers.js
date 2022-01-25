@@ -11,11 +11,12 @@ export function getConnectorPath(provider_url, hashValue) {
   return `${provider_url}${hashValue ? `#${hashValue}` : '#_default'}`;
 }
 
-export function getForm({ allowedParams, data, location, pagination }) {
+export function getForm({ data, location, pagination }) {
   const params = {
     ...(qs.parse(location?.search?.replace('?', '')) || {}),
     ...(data?.form || {}),
   };
+  const allowedParams = data.allowedParams;
   let allowedParamsObj = null;
   if (Object.keys(allowedParams || {}).length) {
     allowedParamsObj = {};
