@@ -15,10 +15,15 @@ import { Placeholder } from '../../../../components';
 
 // import './fixes.css';
 
-const LoadablePlot = loadable(() =>
+const LoadableCartesianPlotly = loadable.lib(() =>
   import(
-    /* webpackChunkName: "bise-react-plotly" */
-    'react-plotly.js'
+    /* webpackChunkName: "datablocks-plotly-cartesian" */ 'plotly.js/dist/plotly-cartesian'
+  ),
+);
+
+const LoadablePlot = loadable.lib(() =>
+  import(
+    /* webpackChunkName: "datablocks-react-plotly" */ 'react-plotly.js/factory'
   ),
 );
 
@@ -74,22 +79,35 @@ function Treemap(props) {
       >
         {({ nodeRef }) => (
           <div className="connected-chart-wrapper">
-            <LoadablePlot
-              ref={nodeRef}
-              data={traces}
-              layout={layout}
-              frames={[]}
-              config={{
-                displayModeBar: false,
-                editable: false,
-                responsive: true,
-                useResizeHandler: true,
+            <LoadableCartesianPlotly>
+              {(Plotly) => {
+                return (
+                  <LoadablePlot>
+                    {({ default: createPlotlyComponent }) => {
+                      const Plot = createPlotlyComponent(Plotly);
+                      return (
+                        <Plot
+                          ref={nodeRef}
+                          data={traces}
+                          layout={layout}
+                          frames={[]}
+                          config={{
+                            displayModeBar: false,
+                            editable: false,
+                            responsive: true,
+                            useResizeHandler: true,
+                          }}
+                          style={{
+                            maxWidth: '100%',
+                            margin: 'auto',
+                          }}
+                        />
+                      );
+                    }}
+                  </LoadablePlot>
+                );
               }}
-              style={{
-                maxWidth: '100%',
-                margin: 'auto',
-              }}
-            />
+            </LoadableCartesianPlotly>
           </div>
         )}
       </Placeholder>
