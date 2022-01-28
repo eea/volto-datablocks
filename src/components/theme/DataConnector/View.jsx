@@ -73,7 +73,9 @@ const DataConnectorView = (props) => {
                     <Menu.Item
                       as="a"
                       icon
-                      disabled={props.isPending || pagination.activePage === 1}
+                      disabled={
+                        props.loadingProviderData || pagination.activePage === 1
+                      }
                       onClick={() => {
                         if (pagination.activePage > 1) {
                           updatePagination({
@@ -86,7 +88,7 @@ const DataConnectorView = (props) => {
                     </Menu.Item>
                     <Menu.Item fitted>
                       <Loader
-                        disabled={!props.isPending}
+                        disabled={!props.loadingProviderData}
                         active
                         inline
                         size="tiny"
@@ -96,7 +98,7 @@ const DataConnectorView = (props) => {
                       as="a"
                       icon
                       disabled={
-                        props.isPending ||
+                        props.loadingProviderData ||
                         pagination.activePage === pagination.lastPage
                       }
                       onClick={() => {

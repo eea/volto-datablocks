@@ -1,7 +1,7 @@
 import React from 'react';
 import VisibilitySensor from 'react-visibility-sensor';
 
-export const Placeholder = ({ children, getDOMElement, onChange, ...rest }) => {
+export const Placeholder = ({ children, onChange, ...rest }) => {
   const [active, setActive] = React.useState(true);
 
   return (

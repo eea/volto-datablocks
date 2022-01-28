@@ -67,7 +67,7 @@ export function connectToProviderDataUnfiltered(getConfig = () => ({})) {
             {...props}
             provider_data={provider_data}
             provider_metadata={provider_metadata}
-            isPending={isPending}
+            loadingProviderData={isPending}
           />
         );
       }),

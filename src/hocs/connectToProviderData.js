@@ -228,7 +228,7 @@ export function connectToProviderData(getConfig = () => ({})) {
             prev_provider_data={prev_provider_data}
             provider_metadata={provider_metadata}
             prev_provider_metadata={prev_provider_metadata}
-            isPending={isPending}
+            loadingProviderData={isPending}
             updatePagination={updatePagination}
             pagination={pagination}
           />

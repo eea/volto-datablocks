@@ -184,7 +184,11 @@ const SourceView = (props) => {
 };
 
 export default compose(
-  connectToProviderData((props) => ({
-    provider_url: props.provider_url,
-  })),
+  connectToProviderData((props) => {
+    const download_button = props.download_button ?? true;
+    if (!download_button) return {};
+    return {
+      provider_url: props.provider_url,
+    };
+  }),
 )(SourceView);

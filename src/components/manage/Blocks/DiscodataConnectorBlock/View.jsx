@@ -6,12 +6,17 @@ import { Sources } from '@eeacms/volto-datablocks/Utils';
 
 const ProviderView = ({ provider }) => {
   if (!provider) return '';
+  console.log('HERE', provider.row);
   return (
     <div className={provider.className}>
       <span>
         <DataConnectedValue
           column={provider.column}
-          data={{ data_query: provider.data_query }}
+          data={{
+            data_query: provider.data_query,
+            has_data_query_by_context: provider.has_data_query_by_context,
+            has_data_query_by_provider: provider.has_data_query_by_provider,
+          }}
           placeholder={provider.placeholder || '...'}
           row={provider.row}
           specifier={provider.specifier}

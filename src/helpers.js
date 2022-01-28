@@ -11,10 +11,10 @@ export function getConnectorPath(provider_url, hashValue) {
   return `${provider_url}${hashValue ? `#${hashValue}` : '#_default'}`;
 }
 
-export function getForm({ data, location, pagination }) {
+export function getForm({ data = {}, location, pagination }) {
   const params = {
     ...(qs.parse(location?.search?.replace('?', '')) || {}),
-    ...(data?.form || {}),
+    ...(data.form || {}),
   };
   const allowedParams = data.allowedParams;
   let allowedParamsObj = null;
@@ -37,15 +37,20 @@ export function getForm({ data, location, pagination }) {
 
 export function getDataQuery({
   connected_data_parameters,
-  data,
+  data = {},
   location,
   // pagination,
   provider_url,
 }) {
   const path = location.pathname.replace('/edit', '');
-  const byContextPath = connected_data_parameters?.byContextPath?.[path] || [];
-  const byProviderPath =
-    connected_data_parameters?.byProviderPath?.[provider_url] || {};
+  const has_data_query_by_context = data.has_data_query_by_context ?? true;
+  const has_data_query_by_provider = data.has_data_query_by_provider ?? true;
+  const byContextPath = has_data_query_by_context
+    ? connected_data_parameters?.byContextPath?.[path] || []
+    : [];
+  const byProviderPath = has_data_query_by_provider
+    ? connected_data_parameters?.byProviderPath?.[provider_url] || {}
+    : {};
   const filters =
     Object.keys(byProviderPath).map((key) => byProviderPath[key]) || [];
   // if (pagination.enabled) {

@@ -23,6 +23,18 @@ This addon has various blocks and utilities to provide "data-connected" componen
 
 A data-connected component, as we use the term here, is a component that displays information coming from outside sources. For example, a chart would get its data from an uploaded CSV file, or a block can display values that come from a REST api server (discodata.eea.europa.eu), there's even a prototype "data-connected entity" for the draftjs richtext editor.
 
+There are three ways of filtering the connectors:
+1. By connected_data_parameters
+2. By url parameters
+3. By route parameters
+
+1. By connecte_data_parameters
+
+This is split in two:
+- by context (connected_data_parameters - data_query on the page itself)
+- by provider path (connected_data_parameters on the provider)
+- by block data_query
+
 ## Getting started
 
 1. Create new volto project if you don't already have one:

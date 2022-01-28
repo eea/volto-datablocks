@@ -27,7 +27,10 @@ export function connectToMultipleProviders(getConfig = () => ({})) {
           hashValues: [],
           connectorsPath: [],
         });
-        const providers = config.providers || [];
+
+        const providers = useMemo(() => {
+          return config.providers || [];
+        }, [config]);
 
         useEffect(() => {
           const newState = {
@@ -52,6 +55,9 @@ export function connectToMultipleProviders(getConfig = () => ({})) {
                 connected_data_parameters: props.connected_data_parameters,
                 data: {
                   data_query: provider.data_query,
+                  has_data_query_by_context: provider.has_data_query_by_context,
+                  has_data_query_by_provider:
+                    provider.has_data_query_by_provider,
                 },
               }),
             );

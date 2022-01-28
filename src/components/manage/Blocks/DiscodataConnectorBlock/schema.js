@@ -47,7 +47,13 @@ const dataProviderSchema = {
     {
       id: 'advanced',
       title: 'Advanced',
-      fields: ['className', 'wrapperClassName', 'data_query'],
+      fields: [
+        'className',
+        'wrapperClassName',
+        'has_data_query_by_context',
+        'has_data_query_by_provider',
+        'data_query',
+      ],
     },
   ],
   properties: {
@@ -108,6 +114,16 @@ const dataProviderSchema = {
         ['data-wrapper blue', 'Blue wrapper'],
         ['data-wrapper purple', 'Purple wrapper'],
       ],
+    },
+    has_data_query_by_context: {
+      title: 'Has data_query by context',
+      type: 'boolean',
+      defaultValue: true,
+    },
+    has_data_query_by_provider: {
+      title: 'Has data_query by provider',
+      type: 'boolean',
+      defaultValue: true,
     },
     data_query: {
       title: 'Data query',

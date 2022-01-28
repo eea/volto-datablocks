@@ -24,7 +24,7 @@ const DataConnectedValue = (props) => {
     row = 0,
     specifier,
     textTemplate,
-    isPending,
+    loadingProviderData,
   } = props;
 
   const value = React.useMemo(
@@ -57,7 +57,7 @@ const DataConnectedValue = (props) => {
         ''
       )}
     </>
-  ) : !isPending ? (
+  ) : !loadingProviderData ? (
     placeholder
   ) : (
     ''
