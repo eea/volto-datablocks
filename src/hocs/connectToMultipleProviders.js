@@ -87,7 +87,7 @@ export function connectToMultipleProviders(getConfig = () => ({})) {
               ];
           });
           return data;
-        }, [state, providers, props.data_providers.data]);
+        }, [state, providers, props.data_providers?.data]);
 
         const providers_metadata = useMemo(() => {
           const data = {};
@@ -103,7 +103,7 @@ export function connectToMultipleProviders(getConfig = () => ({})) {
               ];
           });
           return data;
-        }, [state, providers, props.data_providers.metadata]);
+        }, [state, providers, props.data_providers?.metadata]);
 
         useEffect(() => {
           if (!mounted && __CLIENT__) {

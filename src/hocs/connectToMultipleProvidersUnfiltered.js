@@ -36,7 +36,7 @@ export function connectToMultipleProvidersUnfiltered(getConfig = () => ({})) {
             data[title] = props.data_providers?.data?.[provider_url]?._default;
           });
           return data;
-        }, [providers, props.data_providers.data]);
+        }, [providers, props.data_providers?.data]);
 
         const providers_metadata = useMemo(() => {
           const data = {};
@@ -50,7 +50,7 @@ export function connectToMultipleProvidersUnfiltered(getConfig = () => ({})) {
               props.data_providers?.metadata?.[provider_url]?._default;
           });
           return data;
-        }, [providers, props.data_providers.metadata]);
+        }, [providers, props.data_providers?.metadata]);
 
         useEffect(() => {
           if (!mounted && __CLIENT__) {

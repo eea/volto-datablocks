@@ -6,7 +6,6 @@ import { Sources } from '@eeacms/volto-datablocks/Utils';
 
 const ProviderView = ({ provider }) => {
   if (!provider) return '';
-  console.log('HERE', provider.row);
   return (
     <div className={provider.className}>
       <span>
