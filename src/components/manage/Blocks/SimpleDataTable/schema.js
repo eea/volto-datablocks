@@ -72,7 +72,8 @@ const columnSchema = {
     },
     textAlign: {
       title: 'Align',
-      widget: 'simple_text_align',
+      widget: 'align',
+      type: 'string',
     },
     column: {
       title: 'Data column',
@@ -145,6 +146,11 @@ export const SimpleDataTableSchema = (config, templateSchema = {}) => {
         fields: ['provider_url', 'allowedParams', 'max_count', 'columns'],
       },
       {
+        id: 'data_query',
+        title: 'Data query',
+        fields: ['data_query'],
+      },
+      {
         id: 'styling',
         title: 'Styling',
         fields: [
@@ -180,15 +186,19 @@ export const SimpleDataTableSchema = (config, templateSchema = {}) => {
         description: 'Allows rich text formatting',
       },
       provider_url: {
-        widget: 'object_by_path',
         title: 'Data provider',
+        widget: 'object_by_path',
       },
       allowedParams: {
-        title: 'Allowed params',
+        title: 'Allowed url params',
         type: 'array',
         items: {
           choices: [],
         },
+      },
+      data_query: {
+        title: 'Data query',
+        widget: 'data_query',
       },
       max_count: {
         title: 'Max results',

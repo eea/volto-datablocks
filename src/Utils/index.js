@@ -1,5 +1,5 @@
-export DB from './DataBase/DB';
-export DataConnectedValue from './DataConnectedValue/DataConnectedValue';
-export AddLinkForm from './AddLinkForm';
-export RenderFields from './RenderFields';
-export FormattedValue from './FormattedValue';
+import DataConnectedValue from './DataConnectedValue/DataConnectedValue';
+import FormattedValue from './FormattedValue';
+import Sources from './Sources/Sources';
+
+export { DataConnectedValue, FormattedValue, Sources };

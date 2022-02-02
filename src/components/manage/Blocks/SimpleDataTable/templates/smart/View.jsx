@@ -32,15 +32,15 @@ const getFilteredTableData = (tableData) => {
 const View = (props) => {
   const {
     data = {},
-    isPending,
+    getAlignmentOfColumn,
+    getNameOfColumn,
+    getTitleOfColumn,
+    loadingProviderData,
     placeholder,
     provider_data_length,
     provider_data,
     row_size,
     show_header,
-    getAlignmentOfColumn,
-    getNameOfColumn,
-    getTitleOfColumn,
   } = props;
   const selectedColumns = data.columns;
   const timeoutRef = React.useRef();
@@ -140,7 +140,7 @@ const View = (props) => {
     <div className="smart-table">
       <Search
         ref={search}
-        loading={isPending || loading}
+        loading={loadingProviderData || loading}
         onResultSelect={() => {}}
         showNoResults={false}
         onSearchChange={(e, data) => {

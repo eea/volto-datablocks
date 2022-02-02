@@ -5,19 +5,16 @@ const Schema = {
     {
       id: 'default',
       title: 'Default',
-      fields: ['label', 'placeholder', 'provider_url', 'align', 'select_field'],
+      fields: ['placeholder', 'provider_url', 'align', 'select_field'],
     },
   ],
 
   properties: {
-    label: {
-      title: 'Field label',
-    },
     placeholder: {
       title: 'Placeholder value',
     },
     provider_url: {
-      widget: 'pick_provider',
+      widget: 'object_by_path',
       title: 'Data provider',
     },
     align: {

@@ -1,9 +1,10 @@
 import React from 'react';
+import { compose } from 'redux';
 import { SidebarPortal } from '@plone/volto/components';
 import InlineForm from '@plone/volto/components/manage/Form/InlineForm';
 import config from '@plone/volto/registry';
+import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 import getSchema from './schema';
-import { connectBlockToProviderData } from '../../../../hocs';
 import CustomView from './View';
 import './style.less';
 
@@ -38,4 +39,8 @@ const Edit = (props) => {
   );
 };
 
-export default connectBlockToProviderData(Edit);
+export default compose(
+  connectToProviderData((props) => ({
+    provider_url: props.data?.provider_url,
+  })),
+)(Edit);

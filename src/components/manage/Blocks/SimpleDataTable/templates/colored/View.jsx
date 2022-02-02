@@ -89,12 +89,16 @@ const View = (props) => {
                       key={`${i}-${getNameOfColumn(colDef)}`}
                       textAlign={getAlignmentOfColumn(colDef, j)}
                     >
-                      <RenderComponent
-                        tableData={tableData}
-                        colDef={colDef}
-                        row={i}
-                        {...props}
-                      />
+                      {typeof colDef !== 'string' ? (
+                        <RenderComponent
+                          tableData={tableData}
+                          colDef={colDef}
+                          row={i}
+                          {...props}
+                        />
+                      ) : (
+                        tableData[colDef][i]
+                      )}
                     </Table.Cell>
                   ))}
                 </Table.Row>
@@ -111,7 +115,9 @@ const View = (props) => {
                     <Menu.Item
                       as="a"
                       icon
-                      disabled={props.isPending || pagination.activePage === 1}
+                      disabled={
+                        props.loadingProviderData || pagination.activePage === 1
+                      }
                       onClick={() => {
                         if (pagination.activePage > 1) {
                           updatePagination({
@@ -124,7 +130,7 @@ const View = (props) => {
                     </Menu.Item>
                     <Menu.Item fitted>
                       <Loader
-                        disabled={!props.isPending}
+                        disabled={!props.loadingProviderData}
                         active
                         inline
                         size="tiny"
@@ -134,7 +140,7 @@ const View = (props) => {
                       as="a"
                       icon
                       disabled={
-                        props.isPending ||
+                        props.loadingProviderData ||
                         pagination.activePage === pagination.lastPage
                       }
                       onClick={() => {

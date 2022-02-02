@@ -1,7 +1,8 @@
 import React from 'react';
-import { SidebarPortal } from '@plone/volto/components'; // EditBlock
+import { compose } from 'redux';
+import { SidebarPortal } from '@plone/volto/components';
 import InlineForm from '@plone/volto/components/manage/Form/InlineForm';
-import { connectBlockToProviderData } from '../../../../hocs';
+import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 import DottedTableChartView from './View';
 import { DottedTableChartSchema } from './schema';
 import { DEFAULT_MAX_DOT_COUNT } from './constants';
@@ -61,4 +62,8 @@ class DottedTableChartEdit extends React.Component {
   }
 }
 
-export default connectBlockToProviderData(DottedTableChartEdit);
+export default compose(
+  connectToProviderData((props) => ({
+    provider_url: props.data.url || props.data.provider_url,
+  })),
+)(DottedTableChartEdit);

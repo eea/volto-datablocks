@@ -4,16 +4,11 @@ import installDiscodataConnectorBlock from './components/manage/Blocks/Discodata
 import installDataTable from './components/manage/Blocks/SimpleDataTable';
 import installDottedTableChart from './components/manage/Blocks/DottedTableChart';
 import installCountryFlag from './components/manage/Blocks/CountryFlag';
-import installTreemap from './components/manage/Blocks/Treemap';
 import installRouteParameter from './components/manage/Blocks/RouteParameter';
 import installCustomConnectedBlock from './components/manage/Blocks/CustomConnectedBlock';
 
 import { DataConnectorView } from './components';
-import {
-  PickObjectWidget,
-  DataQueryWidget,
-  PickProviderWidget,
-} from './components';
+import { DataQueryWidget, PickObjectWidget } from './components';
 import { dataProvider } from './middlewares';
 import * as addonReducers from './reducers';
 
@@ -24,18 +19,13 @@ export default (config) => {
       id: 'data_blocks',
       title: 'Data blocks',
     },
-    {
-      id: 'custom_addons',
-      title: 'Custom addons',
-    },
   ];
 
   config.views.contentTypesViews.discodataconnector = DataConnectorView;
 
   config.widgets.id.data_query = DataQueryWidget;
+  config.widgets.widget.data_query = DataQueryWidget;
   config.widgets.widget.object_by_path = PickObjectWidget;
-  config.widgets.widget.data_provider = PickProviderWidget;
-  config.widgets.widget.pick_provider = PickProviderWidget;
 
   config.settings.storeExtenders = [
     ...(config.settings.storeExtenders || []),
@@ -54,7 +44,6 @@ export default (config) => {
     installDataTable,
     installDottedTableChart,
     installCountryFlag,
-    installTreemap,
     installRouteParameter,
     installCustomConnectedBlock,
   ].reduce((acc, apply) => apply(acc), config);

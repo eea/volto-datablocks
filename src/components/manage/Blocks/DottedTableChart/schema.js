@@ -36,7 +36,7 @@ export const DottedTableChartSchema = () => ({
       widget: 'slate_richtext',
     },
     provider_url: {
-      widget: 'pick_provider',
+      widget: 'object_by_path',
       title: 'Data provider',
     },
     max_dot_count: {

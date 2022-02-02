@@ -3,12 +3,8 @@ import { compose } from 'redux';
 import config from '@plone/volto/registry';
 import { DefaultView } from './templates/default';
 
-import { connectBlockToProviderData } from '../../../../hocs';
-import { serializeNodes } from '../../../../serialize';
-import {
-  filterDataByParameters,
-  connectToDataParameters,
-} from '../../../../helpers';
+import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
+import { serializeNodes } from '@eeacms/volto-datablocks/serialize';
 
 import './styles.less';
 
@@ -41,7 +37,7 @@ const getProviderDataLength = (provider_data) => {
 };
 
 const SimpleDataTableView = (props) => {
-  const { data = {}, pagination = {}, connected_data_parameters = {} } = props;
+  const { data = {}, pagination = {} } = props;
   const {
     columns,
     description,
@@ -52,14 +48,12 @@ const SimpleDataTableView = (props) => {
     template,
   } = data;
 
-  const prev_provider_data =
-    has_pagination && pagination.providerData[pagination.activePage]
-      ? pagination.providerData[pagination.activePage]
-      : has_pagination && pagination.activePage !== pagination.prevPage
-      ? pagination.providerData[pagination.prevPage]
-      : null;
-  const prev_provider_data_length = getProviderDataLength(prev_provider_data);
-  const provider_data = props.provider_data || prev_provider_data;
+  const provider_data =
+    (pagination.data[pagination.activePage]
+      ? pagination.data[pagination.activePage]
+      : pagination.activePage !== pagination.prevPage
+      ? pagination.data[pagination.prevPage]
+      : null) || props.provider_data;
   const provider_data_length = getProviderDataLength(provider_data);
 
   const tableTemplate = template || 'default';
@@ -70,23 +64,21 @@ const SimpleDataTableView = (props) => {
 
   // TODO: sorting
   const row_size = has_pagination
-    ? !pagination.renderedPages.includes(pagination.activePage)
-      ? prev_provider_data_length
+    ? !Object.keys(pagination.data).includes(pagination.activePage)
+      ? provider_data_length
       : Math.min(pagination.itemsPerPage, provider_data_length) || 0
     : max_count > 0
     ? Math.min(max_count, provider_data_length)
     : provider_data_length;
 
   const providerColumns = Object.keys(provider_data || {});
-  const sureToShowAllColumns = !Array.isArray(columns) || columns.length === 0;
+  const showAllColumns = !Array.isArray(columns) || columns.length === 0;
   const validator = selectedColumnValidator(providerColumns);
-  const selectedColumns = sureToShowAllColumns
+  const selectedColumns = showAllColumns
     ? providerColumns
     : columns.filter(validator);
 
-  const tableData = connected_data_parameters
-    ? filterDataByParameters(provider_data, connected_data_parameters)
-    : provider_data;
+  const tableData = provider_data;
 
   return (
     <div className="simple-data-table">
@@ -113,14 +105,16 @@ const SimpleDataTableView = (props) => {
 
 export { SimpleDataTableView };
 
-export default compose(connectToDataParameters, (SimpleDataTableView) => {
-  return connectBlockToProviderData(SimpleDataTableView, {
-    pagination: {
-      getEnabled: (props) => props.data.has_pagination,
-      getItemsPerPage: (props) => {
-        const { max_count = 5 } = props.data;
-        return typeof max_count !== 'number' ? parseInt(max_count) : max_count;
+export default compose(
+  connectToProviderData((props) => {
+    const { max_count = 5 } = props.data;
+    return {
+      provider_url: props.data?.provider_url,
+      pagination: {
+        enabled: props.data.has_pagination,
+        itemsPerPage:
+          typeof max_count !== 'number' ? parseInt(max_count) : max_count,
       },
-    },
-  });
-})(SimpleDataTableView);
+    };
+  }),
+)(SimpleDataTableView);

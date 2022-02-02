@@ -1,5 +1,5 @@
 import worldSVG from '@plone/volto/icons/world.svg';
-import DataConnectedEmbedBlockEdit from './DataConnectedEmbedEdit';
+import DataConnectedEmbedBlockEdit from './Edit';
 import DataConnectedEmbedBlockView from './View';
 
 export default (config) => {

@@ -15,8 +15,10 @@ const FormattedValue = ({
     <D3 fallback={null}>
       {({ format }) => {
         if (specifier) {
-          const formatter = format ? format(specifier) : (v) => v;
-          value = formatter(value);
+          try {
+            const formatter = format ? format(specifier) : (v) => v;
+            value = formatter(value);
+          } catch {}
         }
         if (textTemplate) {
           value = textTemplate.replace('{}', value);

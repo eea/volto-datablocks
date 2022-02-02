@@ -1,112 +1,28 @@
 import React from 'react';
-import {
-  getConnectedDataParametersForProvider,
-  getConnectedDataParametersForContext,
-} from '../../../../helpers';
 
-const makeChoices = (keys) => keys && keys.map((k) => [k, k]);
+const dataProviderSchemaExtender = (schema = {}, child = {}, props) => {
+  const title = child.title || child.url;
+  if (!title || !props.providers_data) return schema;
+  const provider_data = props.providers_data[title] || {};
+  const columns = Array.from(
+    new Set(Object.keys(provider_data || {})),
+  ).map((n) => [n, n]);
+  const rows =
+    child.column && provider_data[child.column]
+      ? provider_data[child.column].map((value, index) => [index, value])
+      : [];
 
-const dataParameters = (props) => {
-  return (
-    getConnectedDataParametersForProvider(
-      props.connected_data_parameters,
-      '',
-    ) ||
-    getConnectedDataParametersForContext(
-      props.connected_data_parameters,
-      props.content?.['@id'],
-    )
-  );
-};
-
-const getDataProvidersIds = (data_providers = [], child = {}) => {
-  const ids = data_providers
-    .map((data_provider) => data_provider.id)
-    .filter((id) => id && id !== child.id);
-  return makeChoices(ids);
-};
-
-const dataProviderSchemaExtender = (schema, child = {}, props) => {
-  const data_providers = props.data.data_providers || [];
   return {
     ...schema,
-    fieldsets: [
-      {
-        ...schema.fieldsets[0],
-      },
-      {
-        id: 'properties',
-        title: 'Properties',
-        fields: ['measurmentUnit', 'additionalText', 'className'],
-      },
-      ...(child.hasDiscodataConnector
-        ? [
-            {
-              id: 'Discodata connector',
-              title: 'Discodata connector',
-              fields: ['path', 'displayColumn', 'textTemplate', 'specifier'],
-            },
-          ]
-        : []),
-      ...(child.hasParent
-        ? [
-            {
-              id: 'parent',
-              title: 'Parent',
-              fields: ['parent'],
-            },
-          ]
-        : []),
-      ...(child.hasQueryParameters
-        ? [
-            {
-              id: 'query_parameter',
-              title: 'Query parameter',
-              fields: ['queryParameterColumn', 'queryParameterValue'],
-            },
-          ]
-        : []),
-    ],
     properties: {
       ...schema.properties,
-      displayColumn: {
-        ...schema.properties.displayColumn,
-        choices: makeChoices(
-          Object.keys(
-            props.data_providers?.data?.[`${child.path}/@connector-data`] || {},
-          ),
-        ),
+      column: {
+        title: 'Column',
+        choices: columns,
       },
-      parent: {
-        ...schema.properties.parent,
-        choices: getDataProvidersIds(data_providers, child),
-      },
-      queryParameterColumn: {
-        ...schema.properties.queryParameterColumn,
-        choices: child.path
-          ? [
-              ...(dataParameters(props)?.[0]?.i
-                ? [
-                    dataParameters(props)[0].i,
-                    `${dataParameters(props)[0].i} (default value)`,
-                  ]
-                : []),
-              ...makeChoices(
-                Object.keys(
-                  props.data_providers?.data?.[
-                    `${child.path}/@connector-data`
-                  ] || {},
-                ),
-              ),
-            ]
-          : [
-              ...(dataParameters(props)?.[0]?.i
-                ? [
-                    dataParameters(props)[0].i,
-                    `${dataParameters(props)[0].i} (default value)`,
-                  ]
-                : []),
-            ],
+      row: {
+        title: 'Row',
+        choices: rows,
       },
     },
   };
@@ -117,31 +33,26 @@ const dataProviderSchema = {
   fieldsets: [
     {
       id: 'default',
-      title: 'Default',
+      title: 'Properties',
       fields: [
         'title',
-        'id',
-        'hasDiscodataConnector',
-        'hasParent',
-        'hasQueryParameters',
-        'wrapperClassName',
+        'url',
+        'column',
+        'row',
+        'specifier',
+        'textTemplate',
+        'placeholder',
       ],
     },
     {
       id: 'advanced',
       title: 'Advanced',
       fields: [
-        'path',
-        'displayColumn',
-        'textTemplate',
-        'specifier',
-        'measurmentUnit',
-        'additionalText',
         'className',
-        'parent',
         'wrapperClassName',
-        'queryParameterColumn',
-        'queryParameterValue',
+        'has_data_query_by_context',
+        'has_data_query_by_provider',
+        'data_query',
       ],
     },
   ],
@@ -150,60 +61,42 @@ const dataProviderSchema = {
       type: 'text',
       title: 'Title',
     },
-    id: {
-      type: 'text',
-      title: 'Id',
+    url: {
+      widget: 'object_by_path',
+      title: 'Data provider',
     },
-    hasDiscodataConnector: {
-      type: 'boolean',
-      title: 'Has discodata connector',
-    },
-    hasParent: {
-      type: 'boolean',
-      title: 'Has parent',
-    },
-    hasQueryParameters: {
-      type: 'boolean',
-      title: 'Has query parameters',
-    },
-    path: {
-      widget: 'pick_provider',
-      title: 'Discodata connector',
-    },
-    displayColumn: {
-      type: 'select',
-      title: 'Display column',
+    column: {
+      title: 'Column',
       choices: [],
     },
-    textTemplate: {
-      title: 'Text template',
-      widget: 'textarea',
-      description: 'Add suffix/prefix to text. Use {} for value placeholder',
+    row: {
+      title: 'Row',
+      default: 0,
+      choices: [],
     },
     specifier: {
-      title: 'Format',
+      title: 'Format specifier',
       description: (
         <>
           See{' '}
           <a
             target="_blank"
             rel="noopener noreferrer"
-            href="https://github.com/d3/d3-format"
+            href="https://github.com/d3/d3-3.x-api-reference/blob/master/Formatting.md#d3_format"
           >
             D3 format documentation
           </a>
         </>
       ),
     },
-    measurmentUnit: {
-      type: 'text',
-      title: 'Measurment unit',
+    textTemplate: {
+      title: 'Text template',
+      widget: 'textarea',
+      description: 'Add suffix/prefix to text. Use {} for value placeholder',
     },
-    additionalText: {
-      type: 'text',
-      title: 'Additional text',
+    placeholder: {
+      title: 'Placeholder',
     },
-
     className: {
       type: 'select',
       title: 'Class name',
@@ -211,11 +104,6 @@ const dataProviderSchema = {
         ['data', 'Data'],
         ['data-content', 'Data content'],
       ],
-    },
-    parent: {
-      type: 'select',
-      title: 'Parent',
-      choices: [],
     },
     wrapperClassName: {
       type: 'select',
@@ -227,15 +115,19 @@ const dataProviderSchema = {
         ['data-wrapper purple', 'Purple wrapper'],
       ],
     },
-
-    queryParameterColumn: {
-      type: 'select',
-      title: 'Query parameter column',
-      choices: [],
+    has_data_query_by_context: {
+      title: 'Has data_query by context',
+      type: 'boolean',
+      defaultValue: true,
     },
-    queryParameterValue: {
-      type: 'array',
-      title: 'Query parameter value',
+    has_data_query_by_provider: {
+      title: 'Has data_query by provider',
+      type: 'boolean',
+      defaultValue: true,
+    },
+    data_query: {
+      title: 'Data query',
+      widget: 'data_query',
     },
   },
   required: ['title', 'id'],
@@ -266,7 +158,7 @@ const SourceSchema = {
   required: ['source'],
 };
 
-export const getSchema = (props) => ({
+export default (props) => ({
   title: 'Discodata connector block',
   fieldsets: [
     {
@@ -277,7 +169,7 @@ export const getSchema = (props) => ({
     {
       id: 'advanced',
       title: 'Advanced',
-      fields: ['data_providers'],
+      fields: ['providers'],
     },
     {
       id: 'sources',
@@ -290,29 +182,22 @@ export const getSchema = (props) => ({
       title: 'Title',
       widget: 'textarea',
     },
-    download_button: {
-      title: 'Download button',
-      type: 'boolean',
-      defaultValue: true,
-    },
     chartSources: {
       widget: 'object_list',
       title: 'Sources',
       schema: SourceSchema,
     },
-    data_providers: {
+    download_button: {
+      title: 'Download button',
+      type: 'boolean',
+      defaultValue: true,
+    },
+    providers: {
       title: 'Data providers',
       widget: 'object_list',
       schema: dataProviderSchema,
       schemaExtender: (schema, child) =>
         dataProviderSchemaExtender(schema, child, props),
-      defaultData: {
-        hasDiscodataConnector: true,
-        hasParent: false,
-        hasQueryParameters: true,
-        queryParameterColumn: dataParameters(props)?.[0]?.i,
-        queryParameterValue: dataParameters(props)?.[0]?.v,
-      },
     },
   },
   required: [],

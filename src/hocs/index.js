@@ -1,10 +1,20 @@
 import React from 'react';
 
-export connectBlockToProviderData from './connectBlockToProviderData';
-export connectAnythingToProviderData from './connectAnythingToProviderData';
-export connectBlockToMultipleProviders from './connectBlockToMultipleProviders';
-export withBlockData from './withBlockData';
-export withEditBlockData from './withEditBlockData';
-export withProviderContent from './withProviderContent';
+import connectToProviderData from './connectToProviderData';
+import connectToProviderDataUnfiltered from './connectToProviderDataUnfiltered';
+import connectToMultipleProviders from './connectToMultipleProviders';
+import connectToMultipleProvidersUnfiltered from './connectToMultipleProvidersUnfiltered';
+
+import withBlockData from './withBlockData';
+import withEditBlockData from './withEditBlockData';
+
+export {
+  connectToProviderData,
+  connectToMultipleProviders,
+  connectToProviderDataUnfiltered,
+  connectToMultipleProvidersUnfiltered,
+  withBlockData,
+  withEditBlockData,
+};
 
 export const ConnectorContext = new React.createContext();

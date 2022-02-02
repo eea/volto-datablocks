@@ -1,4 +1,3 @@
-import { connect } from 'react-redux';
 import { getBaseUrl, flattenToAppURL } from '@plone/volto/helpers';
 import qs from 'querystring';
 
@@ -8,80 +7,16 @@ export function getBasePath(url) {
   return flattenToAppURL(getBaseUrl(url));
 }
 
-export function getConnectedDataParametersForRoute(route_parameters) {
-  const keys = Object.keys(route_parameters || {});
-  if (!keys?.length) return null;
-  return keys.map((key) => ({
-    i: key,
-    o: 'plone.app.querystring.operation.selection.any',
-    v: [route_parameters[key]],
-  }));
+export function getConnectorPath(provider_url, hashValue) {
+  return `${provider_url}${hashValue ? `#${hashValue}` : '#_default'}`;
 }
 
-export function getConnectedDataParametersForPath(
-  connected_data_parameters,
-  url,
-  filter,
-) {
-  let path = getBasePath(url || '');
-  const { byPath = {} } = connected_data_parameters;
-  if (
-    (filter && byPath[path]?.override?.[filter]) ||
-    (filter && byPath[path]?.default?.[filter])
-  )
-    return byPath[path]
-      ? byPath[path]?.override || byPath[path]?.default
-      : byPath['']?.override || byPath['']?.default;
-  return null;
-}
-
-export function getConnectedDataParametersForContext(
-  connected_data_parameters,
-  url,
-) {
-  let path = getBasePath(url || '');
-
-  const { byContextPath = {} } = connected_data_parameters;
-
-  const res = byContextPath[path]
-    ? byContextPath[path]?.override || byContextPath[path]?.default
-    : byContextPath['']?.override || byContextPath['']?.default;
-
-  return res;
-}
-
-export function getConnectedDataParametersForProvider(
-  connected_data_parameters,
-  url,
-) {
-  let path = getBasePath(url || '');
-
-  const { byProviderPath = {} } = connected_data_parameters;
-  const res = byProviderPath[path]
-    ? byProviderPath[path]?.override || byProviderPath[path]?.default
-    : byProviderPath['']?.override || byProviderPath['']?.default;
-
-  return res;
-}
-
-/**
- * Builds information about a "connector", based on provider url, route params,
- * pagination, extra query, etc.
- *
- */
-export const getConnector = (
-  provider_url,
-  location,
-  routeParmeters = {},
-  allowedParams = {},
-  pagination = {},
-  extraQuery = {},
-) => {
+export function getForm({ data = {}, location, pagination }) {
   const params = {
-    ...routeParmeters,
-    ...qs.parse(location.search.replace('?', '')),
-    ...extraQuery,
+    ...(qs.parse(location?.search?.replace('?', '')) || {}),
+    ...(data.form || {}),
   };
+  const allowedParams = data.allowedParams;
   let allowedParamsObj = null;
   if (Object.keys(allowedParams || {}).length) {
     allowedParamsObj = {};
@@ -92,30 +27,38 @@ export const getConnector = (
     });
   }
 
-  const filters = qs.stringify({
-    ...(allowedParamsObj || params),
-  });
-
-  let paramsStr =
-    '?' +
-    qs.stringify({
-      ...(allowedParamsObj || params),
-      ...(pagination.enabled
-        ? { p: pagination.activePage, nrOfHits: pagination.itemsPerPage }
-        : {}),
-    });
-
-  paramsStr = paramsStr.length === 1 ? '' : paramsStr;
-
   return {
-    filters,
-    url: provider_url ? `${getBasePath(provider_url)}${paramsStr}` : null,
-    urlConnector: provider_url
-      ? `${getBasePath(provider_url)}/@connector-data${paramsStr}`
-      : null,
-    params: paramsStr,
+    ...(allowedParamsObj || params),
+    ...(pagination?.enabled
+      ? { p: pagination.activePage, nrOfHits: pagination.itemsPerPage }
+      : {}),
   };
-};
+}
+
+export function getDataQuery({
+  connected_data_parameters,
+  data = {},
+  location,
+  // pagination,
+  provider_url,
+}) {
+  const path = location.pathname.replace('/edit', '');
+  const has_data_query_by_context = data.has_data_query_by_context ?? true;
+  const has_data_query_by_provider = data.has_data_query_by_provider ?? true;
+  const byContextPath = has_data_query_by_context
+    ? connected_data_parameters?.byContextPath?.[path] || []
+    : [];
+  const byProviderPath = has_data_query_by_provider
+    ? connected_data_parameters?.byProviderPath?.[provider_url] || {}
+    : {};
+  const filters =
+    Object.keys(byProviderPath).map((key) => byProviderPath[key]) || [];
+  // if (pagination.enabled) {
+  //   return [...(data?.data_query || []), ...byContextPath, ...filters];
+  // }
+  return [...(data?.data_query || []), ...byContextPath, ...filters];
+  // return [...(data?.data_query || []), ...byContextPath];
+}
 
 /*
  * refreshes chart data using data from provider
@@ -128,6 +71,7 @@ export function updateChartDataFromProvider(chartData, providerData) {
   const providerDataColumns = Object.keys(providerData);
 
   const res = chartData.map((trace) => {
+    const newTrace = { ...(trace || {}) };
     Object.keys(trace).forEach((tk) => {
       const originalColumn = tk.replace(/src$/, '');
       if (
@@ -138,59 +82,15 @@ export function updateChartDataFromProvider(chartData, providerData) {
       ) {
         let values = providerData[trace[tk]];
 
-        trace[originalColumn] = values;
+        newTrace[originalColumn] = values;
       }
     });
-
-    return trace;
+    newTrace.transforms = (trace.transforms || []).map((transform) => ({
+      ...transform,
+      target: providerData[transform.targetsrc],
+    }));
+    return newTrace;
   });
-  return res;
-}
-
-/**
- * filterDataByParameters.
- *
- * Filters provider data by connected data parameters
- *
- * @param {} providerData
- * @param {} parameters
- */
-export function filterDataByParameters(providerData, parameters) {
-  if (!(parameters && parameters.length)) return providerData;
-
-  const filter = parameters.find((f) => {
-    // finds any available filter that matches the data
-    let { i: index } = f;
-    index = index.toLowerCase().replace('taxonomy_', '');
-    return Object.keys(providerData || {})
-      .map((k) => k.toLowerCase())
-      .includes(index);
-  });
-
-  if (!filter) return providerData;
-
-  let {
-    i: filterName,
-    v: [filterValue],
-  } = filter;
-
-  filterName = filterName.replace('taxonomy_', '');
-  const fixedFilterName = Object.keys(providerData).find(
-    (k) => k.toLowerCase() === filterName.toLowerCase(),
-  );
-  if (!fixedFilterName) {
-    // console.warn(`providerData has no such column: ${filterName}`, parameters);
-    // console.log(providerData);
-    return providerData;
-  }
-  const index = providerData[fixedFilterName]
-    .map((v, i) => (v === filterValue ? i : null))
-    .filter((n) => n !== null);
-  const res = {};
-  Object.keys(providerData).forEach((k) => {
-    res[k] = index.map((n) => providerData[k][n]);
-  });
-
   return res;
 }
 
@@ -211,9 +111,6 @@ export function mixProviderData(
   connectedDataTemplateString,
 ) {
   const providerDataColumns = Object.keys(providerData);
-  // console.log('mix', parameters);
-  // console.log('providerData: ', providerData);
-  // console.log('chartData: ', chartData);
   const res = (chartData || []).map((trace) => {
     Object.keys(trace).forEach((tk) => {
       const originalColumn = tk.replace(/src$/, '');
@@ -250,8 +147,6 @@ export function mixProviderData(
           providerDataColumns.find((n) => n.toLowerCase() === filterName) ||
           filterName;
 
-        // console.log('filter', filterName, real_index, filterValue);
-
         // tweak transformation filters using data parameters
         (trace.transforms || []).forEach((transform) => {
           if (transform.targetsrc === real_index && filterValue) {
@@ -286,41 +181,32 @@ export function mixProviderData(
 
     return trace;
   });
-  // console.log('res', res);
   return res;
 }
 
-/**
- * A generic provider of data parameters (contextual filtering criteria).
- *
- * It tries to get them from:
- * - specific paramters for a URL path
- * - specific parameters for a provider URL
- * - specific parameters for the current context (Plone object)
- */
-export const connectToDataParameters = connect((state, props) => {
-  const providerUrl = props?.data?.provider_url || props?.data?.url || null;
+/* Connected data parameters */
 
-  const stateId = flattenToAppURL(state.content?.data?.['@id']);
+export function getConnectedDataParametersForContext(
+  connected_data_parameters,
+  url,
+) {
+  let path = getBasePath(url || '');
 
-  const connected_data_parameters =
-    providerUrl !== null
-      ? getConnectedDataParametersForPath(
-          state.connected_data_parameters,
-          state.router.location.pathname,
-          false,
-        ) ||
-        getConnectedDataParametersForProvider(
-          state.connected_data_parameters,
-          providerUrl,
-        ) ||
-        getConnectedDataParametersForContext(
-          state.connected_data_parameters,
-          stateId,
-        )
-      : null;
+  const { byContextPath = {} } = connected_data_parameters;
 
-  return {
-    connected_data_parameters,
-  };
-}, null);
+  return byContextPath[path] || null;
+}
+
+export function getConnectedDataParametersForProvider(
+  connected_data_parameters,
+  provider_url,
+) {
+  let path = getBasePath(provider_url || '');
+
+  const { byProviderPath = {} } = connected_data_parameters;
+  const res = Object.keys(byProviderPath[path] || {}).map(
+    (filter) => byProviderPath[path][filter],
+  );
+
+  return res;
+}

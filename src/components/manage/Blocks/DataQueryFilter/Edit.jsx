@@ -1,16 +1,19 @@
 import React from 'react';
+import { compose } from 'redux';
 import { SidebarPortal } from '@plone/volto/components'; // EditBlock
 
 import InlineForm from '@plone/volto/components/manage/Form/InlineForm';
-import DataQueryFilterView from './View';
+import View from './View';
 
 import schema from './schema';
 import cloneDeep from 'lodash/cloneDeep';
-import { connectBlockToProviderData } from '../../../../hocs';
+import { connectToProviderDataUnfiltered } from '@eeacms/volto-datablocks/hocs';
 
 const Edit = (props) => {
   const { selected, data, block, onChangeBlock, provider_data } = props;
-  const tweakSchema = React.useCallback(
+  const { provider_url, select_field } = data;
+
+  const getSchema = React.useCallback(
     (schema) => {
       const newSchema = cloneDeep(schema);
       if (provider_data) {
@@ -23,13 +26,28 @@ const Edit = (props) => {
     [provider_data],
   );
 
+  React.useEffect(() => {
+    onChangeBlock(block, {
+      ...data,
+      options:
+        provider_url && select_field && provider_data
+          ? [...new Set(provider_data[select_field])].map((value) => ({
+              value,
+              label: value,
+            }))
+          : null,
+    });
+
+    /* eslint-disable-next-line */
+  }, [provider_data, provider_url, select_field]);
+
   return (
     <>
-      <DataQueryFilterView {...props} mode="edit" />
+      <View {...props} mode="edit" />
 
       <SidebarPortal selected={selected}>
         <InlineForm
-          schema={tweakSchema(schema)}
+          schema={getSchema(schema)}
           title={schema.title}
           onChangeField={(id, value) => {
             onChangeBlock(block, {
@@ -44,4 +62,8 @@ const Edit = (props) => {
   );
 };
 
-export default connectBlockToProviderData(Edit);
+export default compose(
+  connectToProviderDataUnfiltered((props) => ({
+    provider_url: props.data.provider_url,
+  })),
+)(Edit);
