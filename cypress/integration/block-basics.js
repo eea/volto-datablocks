@@ -6,20 +6,20 @@ const groups = {
     title: 'Data blocks',
     id: 'data_blocks',
   },
-  custom_addons: {
-    title: 'Custom addons',
-    id: 'custom_addons',
+  common: {
+    title: 'Common',
+    id: 'common',
   },
 };
 
 const data_blocks_ids = [
   'dataqueryfilter',
   'dottedTableChart',
-  'routeParameter',
+  // 'routeParameter',
   'simpleDataConnectedTable',
 ];
 
-const custom_addons_ids = ['countryFlag'];
+const common_ids = ['countryFlag'];
 
 describe('Blocks Tests', () => {
   beforeEach(setupBeforeEach);
@@ -30,8 +30,8 @@ describe('Blocks Tests', () => {
     data_blocks_ids.forEach((id) => {
       addBlock(groups.data_blocks.title, groups.data_blocks.id, id);
     });
-    custom_addons_ids.forEach((id) => {
-      addBlock(groups.custom_addons.title, groups.custom_addons.id, id);
+    common_ids.forEach((id) => {
+      addBlock(groups.common.title, groups.common.id, id);
     });
   });
 });
