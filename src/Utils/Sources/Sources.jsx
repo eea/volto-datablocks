@@ -1,26 +1,21 @@
 import React from 'react';
-import { compose } from 'redux';
-import { isEmpty } from 'lodash';
-import config from '@plone/volto/registry';
 import { Icon } from '@plone/volto/components';
 import { trackLink } from '@eeacms/volto-matomo/utils';
-import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 
 import downloadSVG from '@plone/volto/icons/download.svg';
 import './styles.css';
 
-function convertToCSV(objArray, readme) {
-  let array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+function getHeaders(headers) {
   let str = '';
-
-  // Add headers
-  for (let key in array[0]) {
+  headers.forEach((header) => {
     if (str !== '') str += ',';
-    str += key;
-  }
+    str += header;
+  });
+  return str + '\r\n';
+}
 
-  str += '\r\n';
-
+function getData(array) {
+  let str = '';
   for (let i = 0; i < array.length; i++) {
     let line = '';
     for (let key in array[i]) {
@@ -32,25 +27,50 @@ function convertToCSV(objArray, readme) {
     str += line + '\r\n';
   }
 
+  return str;
+}
+
+function convertToCSV(array, readme = []) {
+  let str = getHeaders(Object.keys(array[0]));
+
+  str += getData(array);
+
   for (let i = 0; i < 5; i++) {
     str += '\r\n';
   }
 
-  for (let key in readme) {
-    if (readme[key]) {
-      str += key + ': ' + readme[key] + '\r\n';
-    }
-  }
+  readme.forEach((text) => {
+    str += text + '\r\n';
+  });
+
   return str;
 }
 
-function exportCSVFile(items, fileTitle, readme) {
-  // Convert Object to JSON
-  let jsonObject = JSON.stringify(items);
+function convertMatrixToCSV(matrix, readme = []) {
+  let str = '';
 
-  let csv = convertToCSV(jsonObject, readme);
+  matrix.forEach((array) => {
+    str += getHeaders(Object.keys(array[0]));
+    str += getData(array);
+    for (let i = 0; i < 2; i++) {
+      str += '\r\n';
+    }
+  });
 
-  let exportedFilenmae = fileTitle + '.csv' || 'export.csv';
+  for (let i = 0; i < 3; i++) {
+    str += '\r\n';
+  }
+
+  readme.forEach((text) => {
+    str += text + '\r\n';
+  });
+
+  return str;
+}
+
+function exportCSVFile(csv, title = 'data') {
+  let fileTitle = title.toLowerCase().replace(' ', '_');
+  let exportedFilenmae = fileTitle + '.csv';
   trackLink({
     href: window.location.href + exportedFilenmae,
     linkType: 'download',
@@ -78,13 +98,25 @@ function exportCSVFile(items, fileTitle, readme) {
   }
 }
 
+// const dlAnchorElem = document.createElement('a');
+// dlAnchorElem.setAttribute(
+//   'href',
+//   `${config.settings.apiPath}${
+//     provider_url || ExternalCSVPath
+//   }/@@download`,
+// );
+// dlAnchorElem.className = 'piwik_download';
+// dlAnchorElem.click();
+
 const SourceView = (props) => {
   const {
     sources,
     className,
-    provider_url,
+    title,
     provider_data,
     provider_metadata,
+    providers_data,
+    providers_metadata,
     download_button,
   } = props;
 
@@ -95,58 +127,44 @@ const SourceView = (props) => {
           className="discreet download-button"
           title="Download data"
           onClick={() => {
-            if (provider_data && !provider_url?.includes('.csv')) {
-              // no need to re-construct csv if already there
-              let array = [];
-              let readme = {};
-              Object.entries(provider_data).forEach(([key, items]) => {
-                readme[key] = provider_metadata?.readme;
+            let array = [];
+            let readme = [provider_metadata?.readme];
+            Object.entries(provider_data).forEach(([key, items]) => {
+              items.forEach((item, index) => {
+                if (!array[index]) array[index] = {};
+                array[index][key] = item;
+              });
+            });
+            const csv = convertToCSV(array, readme);
+            exportCSVFile(csv, title);
+          }}
+          name={downloadSVG}
+          size="20px"
+        />
+      )}
 
+      {providers_data && download_button === true && (
+        <Icon
+          className="discreet download-button"
+          title="Download data"
+          onClick={() => {
+            let array = [];
+            let readme = [];
+            Object.keys(providers_data).forEach((pKey, pIndex) => {
+              if (!array[pIndex]) array[pIndex] = [];
+              Object.entries(providers_data[pKey]).forEach(([key, items]) => {
                 items.forEach((item, index) => {
-                  if (!array[index]) array[index] = {};
-                  array[index][key] = item;
+                  if (!array[pIndex][index]) array[pIndex][index] = {};
+                  array[pIndex][index][key] = item;
+                  index++;
                 });
               });
-
-              exportCSVFile(array, provider_url, readme);
-              return;
-            }
-            const ExternalCSVPath = Object.keys(provider_data)?.[0];
-            if (!isEmpty(provider_data) && !ExternalCSVPath?.includes('.csv')) {
-              let title = '';
-              let array = [];
-              let readme = {};
-
-              Object.entries(provider_data).forEach(
-                ([connectorKey, connector]) => {
-                  title += connectorKey + ' & ';
-                  readme[connectorKey] = provider_metadata?.readme;
-                  Object.entries(connector).forEach(([key, items]) => {
-                    items.forEach((item, index) => {
-                      if (!array[index]) {
-                        array[index] = {};
-                      }
-                      array[index][key] = item;
-                    });
-                  });
-                },
-              );
-
-              exportCSVFile(array, title.slice(0, -3), readme);
-              return;
-            }
-
-            if (!provider_url && !ExternalCSVPath) return;
-
-            const dlAnchorElem = document.createElement('a');
-            dlAnchorElem.setAttribute(
-              'href',
-              `${config.settings.apiPath}${
-                provider_url || ExternalCSVPath
-              }/@@download`,
-            );
-            dlAnchorElem.className = 'piwik_download';
-            dlAnchorElem.click();
+            });
+            Object.keys(providers_metadata).forEach((pKey) => {
+              readme.push(providers_metadata[pKey].readme);
+            });
+            const csv = convertMatrixToCSV(array, readme);
+            exportCSVFile(csv, title);
           }}
           name={downloadSVG}
           size="20px"
@@ -183,12 +201,4 @@ const SourceView = (props) => {
   );
 };
 
-export default compose(
-  connectToProviderData((props) => {
-    const download_button = props.download_button ?? true;
-    if (!download_button) return {};
-    return {
-      provider_url: props.provider_url,
-    };
-  }),
-)(SourceView);
+export default SourceView;
