@@ -70,7 +70,9 @@ function convertMatrixToCSV(matrix, readme = []) {
 
 function exportCSVFile(csv, title = 'data') {
   let fileTitle = title.toLowerCase().replace(' ', '_');
-  let exportedFilenmae = fileTitle + '.csv';
+  let exportedFilenmae = fileTitle.includes('.csv')
+    ? fileTitle
+    : fileTitle + '.csv';
   trackLink({
     href: window.location.href + exportedFilenmae,
     linkType: 'download',
@@ -128,7 +130,9 @@ const SourceView = (props) => {
           title="Download data"
           onClick={() => {
             let array = [];
-            let readme = [provider_metadata?.readme];
+            let readme = provider_metadata?.readme
+              ? [provider_metadata?.readme]
+              : [];
             Object.entries(provider_data).forEach(([key, items]) => {
               items.forEach((item, index) => {
                 if (!array[index]) array[index] = {};
