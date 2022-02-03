@@ -40,7 +40,9 @@ export default function connected_data_parameters(
       byProviderPath = {
         ...state.byProviderPath,
       };
-      delete byProviderPath?.[providerPath]?.[index];
+      if (byProviderPath?.[providerPath]?.[index]) {
+        delete byProviderPath[providerPath][index];
+      }
       return {
         ...state,
         byProviderPath,
