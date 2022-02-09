@@ -7,11 +7,18 @@ import './styles.css';
 
 const EMPTY = '-';
 
-const getValue = (provider_data, column, placeholder = EMPTY, row = 0) => {
+const getRow = (row = 0) => {
+  if (typeof row === 'string' && row.includes('row-')) {
+    return (row.split('row-')[1] || 1) - 1;
+  }
+  return row;
+};
+
+const getValue = (provider_data, column, placeholder = EMPTY, row) => {
   if (!column) return 'Select a column';
   if (!provider_data) return placeholder;
   if (!provider_data[column]) return placeholder;
-  return provider_data[column][row] || placeholder;
+  return provider_data[column][getRow(row)] || placeholder;
 };
 
 const DataConnectedValue = (props) => {
