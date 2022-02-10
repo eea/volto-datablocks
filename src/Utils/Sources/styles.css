@@ -1,3 +1,11 @@
 #page-edit .download-button {
   display: none;
 }
+
+.download-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 20px !important;
+  cursor: pointer;
+}

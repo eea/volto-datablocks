@@ -119,8 +119,9 @@ const SourceView = (props) => {
     provider_metadata,
     providers_data,
     providers_metadata,
-    download_button,
   } = props;
+
+  const download_button = props.download_button ?? true;
 
   return (
     <React.Fragment>
