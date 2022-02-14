@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { getBaseUrl, flattenToAppURL } from '@plone/volto/helpers';
 import qs from 'querystring';
 
@@ -209,4 +210,29 @@ export function getConnectedDataParametersForProvider(
   );
 
   return res;
+}
+
+// hook when component is in visible viewport, rootMargin is how much of the element should be visible before loading up
+// Example"-300px" for In this case it would only be considered onScreen if more ... 300px is visible
+export function useOnScreen(ref, rootMargin = '0px') {
+  // State and setter for storing whether element is visible
+  const [isIntersecting, setIntersecting] = useState(false);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Update our state when observer callback fires
+        setIntersecting(entry.isIntersecting);
+      },
+      {
+        rootMargin,
+      },
+    );
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+    return () => {
+      observer.unobserve(ref.current);
+    };
+  }, []); // Empty array ensures that effect is only run on mount and unmount
+  return isIntersecting;
 }
