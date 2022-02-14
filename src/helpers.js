@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 import { getBaseUrl, flattenToAppURL } from '@plone/volto/helpers';
 import qs from 'querystring';
@@ -230,7 +231,7 @@ export function useOnScreen(ref, rootMargin = '0px') {
     if (ref.current) {
       observer.observe(ref.current);
     }
-    const curRef = ref.current;
+    var curRef = ref.current;
     return () => {
       observer.unobserve(ref.current ? ref.current : curRef);
     };
