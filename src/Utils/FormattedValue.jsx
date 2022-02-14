@@ -9,7 +9,7 @@ import { useOnScreen } from '../helpers';
 
 const D3 = loadable.lib(() => import('d3'));
 
-const AnimatedCounter = ({ originalValue }) => {
+const AnimatedCounterPortal = ({ originalValue }) => {
   const portalNode = document.getElementById(
     `animated-counter-${originalValue}`,
   );
@@ -23,7 +23,7 @@ const AnimatedCounter = ({ originalValue }) => {
           <CountUp
             start={0}
             formattingFn={(num) => num.toLocaleString()}
-            duration={4}
+            duration={2}
             end={originalValue}
           />
         ) : (
@@ -89,7 +89,7 @@ const FormattedValue = ({
           );
         }}
       </D3>
-      {animateValue && <AnimatedCounter originalValue={originalValue} />}
+      {animateValue && <AnimatedCounterPortal originalValue={originalValue} />}
     </React.Fragment>
   );
 };

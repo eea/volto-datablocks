@@ -230,8 +230,9 @@ export function useOnScreen(ref, rootMargin = '0px') {
     if (ref.current) {
       observer.observe(ref.current);
     }
+    const curRef = ref.current;
     return () => {
-      observer.unobserve(ref.current);
+      observer.unobserve(ref.current ? ref.current : curRef);
     };
   }, []); // Empty array ensures that effect is only run on mount and unmount
   return isIntersecting;
