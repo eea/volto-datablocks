@@ -1,8 +1,38 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import loadable from '@loadable/component';
 import cx from 'classnames';
 import sanitizeHtml from 'sanitize-html';
+import { Portal } from 'react-portal';
+import CountUp from 'react-countup';
+
+import { useOnScreen } from '../helpers';
+
 const D3 = loadable.lib(() => import('d3'));
+
+const AnimatedCounterPortal = ({ originalValue }) => {
+  const portalNode = document.getElementById(
+    `animated-counter-${originalValue}`,
+  );
+  const ref = useRef();
+  const onScreen = useOnScreen(ref);
+
+  return (
+    <span ref={ref}>
+      <Portal node={portalNode}>
+        {onScreen ? (
+          <CountUp
+            start={0}
+            formattingFn={(num) => num.toLocaleString()}
+            duration={2}
+            end={originalValue}
+          />
+        ) : (
+          ''
+        )}
+      </Portal>
+    </span>
+  );
+};
 
 const FormattedValue = ({
   textTemplate,
@@ -10,32 +40,57 @@ const FormattedValue = ({
   value,
   collapsed,
   wrapped = true,
+  animatedCounter,
 }) => {
-  return (
-    <D3 fallback={null}>
-      {({ format }) => {
-        if (specifier) {
-          try {
-            const formatter = format ? format(specifier) : (v) => v;
-            value = formatter(value);
-          } catch {}
-        }
-        if (textTemplate) {
-          value = textTemplate.replace('{}', value);
-        }
+  const originalValue = value;
+  const animateValue = typeof value === 'number' && animatedCounter;
+  const uid = animateValue ? `animated-counter-${originalValue}` : '';
 
-        return wrapped ? (
-          <span
-            className={cx('formatted-value', collapsed ? 'collapsed' : null)}
-            dangerouslySetInnerHTML={{
-              __html: sanitizeHtml(value) || '',
-            }}
-          />
-        ) : (
-          sanitizeHtml(value) || ''
-        );
-      }}
-    </D3>
+  return (
+    <React.Fragment>
+      <D3 fallback={null}>
+        {({ format }) => {
+          if (specifier) {
+            try {
+              const formatter = format ? format(specifier) : (v) => v;
+              value = formatter(value);
+            } catch {}
+          }
+          if (textTemplate) {
+            value = textTemplate.replaceAll('{}', value);
+          }
+          if (textTemplate && animateValue) {
+            value = textTemplate.replaceAll(
+              '{}',
+              animateValue ? `<span id="${uid}"></span>` : value,
+            );
+          }
+          if (animateValue && !textTemplate) {
+            value = `<span id="${uid}"></span>`;
+          }
+          return wrapped ? (
+            <span
+              className={cx('formatted-value', collapsed ? 'collapsed' : null)}
+              dangerouslySetInnerHTML={{
+                __html:
+                  sanitizeHtml(value, {
+                    allowedAttributes: {
+                      span: ['id'],
+                    },
+                  }) || '',
+              }}
+            />
+          ) : (
+            sanitizeHtml(value, {
+              allowedAttributes: {
+                span: ['id'],
+              },
+            }) || ''
+          );
+        }}
+      </D3>
+      {animateValue && <AnimatedCounterPortal originalValue={originalValue} />}
+    </React.Fragment>
   );
 };
 
