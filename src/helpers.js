@@ -218,6 +218,7 @@ export function getConnectedDataParametersForProvider(
 export function useOnScreen(ref, rootMargin = '0px') {
   // State and setter for storing whether element is visible
   const [isIntersecting, setIntersecting] = useState(false);
+  const [entryCount, setEntryCount] = useState(0);
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -236,5 +237,10 @@ export function useOnScreen(ref, rootMargin = '0px') {
       observer.unobserve(ref.current ? ref.current : curRef);
     };
   }, []); // Empty array ensures that effect is only run on mount and unmount
-  return isIntersecting;
+  useEffect(() => {
+    if (isIntersecting) {
+      setEntryCount(entryCount + 1);
+    }
+  }, [isIntersecting]);
+  return { entryCount, isIntersecting };
 }
