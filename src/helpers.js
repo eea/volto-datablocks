@@ -17,7 +17,7 @@ export function getForm({ data = {}, location, pagination, extraQuery = {} }) {
   const params = {
     ...(qs.parse(location?.search?.replace('?', '')) || {}),
     ...(data.form || {}),
-    ...extraQuery
+    ...extraQuery,
   };
   const allowedParams = data.allowedParams;
   let allowedParamsObj = null;
