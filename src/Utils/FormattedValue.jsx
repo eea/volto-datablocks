@@ -14,20 +14,25 @@ const AnimatedCounterPortal = ({ originalValue }) => {
     `animated-counter-${originalValue}`,
   );
   const ref = useRef();
-  const onScreen = useOnScreen(ref);
+  const { entryCount, isIntersecting } = useOnScreen(ref);
 
   return (
     <span ref={ref}>
       <Portal node={portalNode}>
-        {onScreen ? (
+        {isIntersecting && entryCount === 1 && (
           <CountUp
             start={0}
             formattingFn={(num) => num.toLocaleString()}
-            duration={2}
+            duration={3}
             end={originalValue}
           />
-        ) : (
-          ''
+        )}
+        {isIntersecting && entryCount > 1 && (
+          <span>
+            {originalValue.toLocaleString(undefined, {
+              maximumFractionDigits: 0,
+            })}
+          </span>
         )}
       </Portal>
     </span>

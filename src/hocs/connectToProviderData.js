@@ -12,6 +12,7 @@ import hash from 'object-hash';
 import { flattenToAppURL } from '@plone/volto/helpers';
 import { getDataFromProvider } from '../actions';
 import { getConnectorPath, getForm, getDataQuery } from '../helpers';
+import { ConnectorContext } from './';
 
 const getInitialPagination = (config = {}) => {
   return {
@@ -41,6 +42,7 @@ export function connectToProviderData(getConfig = () => ({})) {
         const dispatch = useDispatch();
         const config = useMemo(() => getConfig(props), [props]);
         const [mounted, setMounted] = useState(false);
+        const [state, setState] = useState({});
         const [pagination, setPagination] = useState(
           getInitialPagination(config),
         );
@@ -51,7 +53,11 @@ export function connectToProviderData(getConfig = () => ({})) {
           [config.provider_url],
         );
 
-        const form = useMemo(() => getForm({ ...props, pagination }), [
+        const form = useMemo(() => getForm({ 
+            ...props,
+            pagination,
+            extraQuery: state.extraQuery
+          }), [
           props,
           pagination,
         ]);
@@ -218,20 +224,22 @@ export function connectToProviderData(getConfig = () => ({})) {
         ]);
 
         return (
-          <WrappedComponent
-            {...props}
-            provider_data={
-              pagination.enabled
-                ? provider_data
-                : provider_data || prev_provider_data
-            }
-            prev_provider_data={prev_provider_data}
-            provider_metadata={provider_metadata}
-            prev_provider_metadata={prev_provider_metadata}
-            loadingProviderData={isPending}
-            updatePagination={updatePagination}
-            pagination={pagination}
-          />
+          <ConnectorContext.Provider value={{ state, setState }}>
+            <WrappedComponent
+              {...props}
+              provider_data={
+                pagination.enabled
+                  ? provider_data
+                  : provider_data || prev_provider_data
+              }
+              prev_provider_data={prev_provider_data}
+              provider_metadata={provider_metadata}
+              prev_provider_metadata={prev_provider_metadata}
+              loadingProviderData={isPending}
+              updatePagination={updatePagination}
+              pagination={pagination}
+            />
+          </ConnectorContext.Provider>
         );
       }),
     );

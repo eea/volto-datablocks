@@ -13,10 +13,11 @@ export function getConnectorPath(provider_url, hashValue) {
   return `${provider_url}${hashValue ? `#${hashValue}` : '#_default'}`;
 }
 
-export function getForm({ data = {}, location, pagination }) {
+export function getForm({ data = {}, location, pagination, extraQuery = {} }) {
   const params = {
     ...(qs.parse(location?.search?.replace('?', '')) || {}),
     ...(data.form || {}),
+    ...extraQuery,
   };
   const allowedParams = data.allowedParams;
   let allowedParamsObj = null;
@@ -218,6 +219,7 @@ export function getConnectedDataParametersForProvider(
 export function useOnScreen(ref, rootMargin = '0px') {
   // State and setter for storing whether element is visible
   const [isIntersecting, setIntersecting] = useState(false);
+  const [entryCount, setEntryCount] = useState(0);
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -236,5 +238,10 @@ export function useOnScreen(ref, rootMargin = '0px') {
       observer.unobserve(ref.current ? ref.current : curRef);
     };
   }, []); // Empty array ensures that effect is only run on mount and unmount
-  return isIntersecting;
+  useEffect(() => {
+    if (isIntersecting) {
+      setEntryCount(entryCount + 1);
+    }
+  }, [isIntersecting]);
+  return { entryCount, isIntersecting };
 }
