@@ -62,10 +62,10 @@ const FormattedValue = ({
             } catch {}
           }
           if (textTemplate) {
-            value = textTemplate.replaceAll('{}', value);
+            value = textTemplate.replace('{}', value);
           }
           if (textTemplate && animateValue) {
-            value = textTemplate.replaceAll(
+            value = textTemplate.replace(
               '{}',
               animateValue ? `<span id="${uid}"></span>` : value,
             );
