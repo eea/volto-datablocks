@@ -166,7 +166,9 @@ const SourceView = (props) => {
               });
             });
             Object.keys(providers_metadata).forEach((pKey) => {
-              readme.push(providers_metadata[pKey].readme);
+              if (providers_metadata[pKey].readme) {
+                readme.push(providers_metadata[pKey].readme);
+              }
             });
             const csv = convertMatrixToCSV(array, readme);
             exportCSVFile(csv, title);
