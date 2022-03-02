@@ -5,7 +5,7 @@ import InlineForm from '@plone/volto/components/manage/Form/InlineForm';
 import config from '@plone/volto/registry';
 import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 import getSchema from './schema';
-import CustomView from './View';
+import { View } from './View';
 import './style.less';
 
 const Edit = (props) => {
@@ -20,7 +20,7 @@ const Edit = (props) => {
 
   return (
     <>
-      <CustomView {...props} mode="edit" blockTitle={blockTitle} />
+      <View {...props} mode="edit" blockTitle={blockTitle} />
 
       <SidebarPortal selected={props.selected}>
         <InlineForm
