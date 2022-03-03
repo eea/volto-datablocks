@@ -1,11 +1,22 @@
 import React from 'react';
 import { compose } from 'redux';
+import { isUndefined } from 'lodash';
 import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 
 import { FormattedValue } from '../';
 import './styles.css';
 
 const EMPTY = '-';
+
+const Placeholder = (props) => {
+  const isComponent = React.useMemo(
+    () => typeof props.placeholder === 'function',
+    [props.placeholder],
+  );
+  const PlaceholderElement = props.placeholder || EMPTY;
+
+  return isComponent ? <PlaceholderElement {...props} /> : PlaceholderElement;
+};
 
 const getRow = (row = 0) => {
   if (typeof row === 'string' && row.includes('row-')) {
@@ -14,11 +25,9 @@ const getRow = (row = 0) => {
   return row;
 };
 
-const getValue = (provider_data, column, placeholder = EMPTY, row) => {
+const getValue = (provider_data, column, row) => {
   if (!column) return 'Select a column';
-  if (!provider_data) return placeholder;
-  if (!provider_data[column]) return placeholder;
-  return provider_data[column][getRow(row)] || placeholder;
+  return provider_data?.[column]?.[getRow(row)];
 };
 
 const DataConnectedValue = (props) => {
@@ -26,23 +35,22 @@ const DataConnectedValue = (props) => {
   const {
     collapseLimit = null,
     column,
-    placeholder = EMPTY,
     provider_data = {},
     row = 0,
     specifier,
     textTemplate,
-    loadingProviderData,
     animatedCounter,
   } = props;
 
-  const value = React.useMemo(
-    () => getValue(provider_data, column, placeholder, row),
-    [provider_data, column, placeholder, row],
-  );
+  const value = React.useMemo(() => getValue(provider_data, column, row), [
+    provider_data,
+    column,
+    row,
+  ]);
 
   const collapsable = props.collapsable && value.length > collapseLimit;
 
-  return value ? (
+  return !isUndefined(value) ? (
     <>
       <FormattedValue
         textTemplate={textTemplate}
@@ -51,7 +59,7 @@ const DataConnectedValue = (props) => {
         specifier={specifier}
         collapsed={collapsable && collapsed}
       />
-      {collapsable ? (
+      {collapsable && (
         <div>
           <button
             className="readmore-button"
@@ -62,14 +70,10 @@ const DataConnectedValue = (props) => {
             {collapsed ? 'READ MORE' : 'COLLAPSE'}
           </button>
         </div>
-      ) : (
-        ''
       )}
     </>
-  ) : !loadingProviderData ? (
-    placeholder
   ) : (
-    ''
+    <Placeholder {...props} />
   );
 };
 
