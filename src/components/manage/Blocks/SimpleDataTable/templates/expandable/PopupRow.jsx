@@ -2,9 +2,9 @@ import React from 'react';
 import { Icon } from '@plone/volto/components';
 import expandSVG from '@plone/volto/icons/vertical.svg';
 import { Button, Image, Modal } from 'semantic-ui-react';
-import logoDummy from './dummyData/logoDummy.png';
-import LinesEllipsis from 'react-lines-ellipsis';
+import logoDummy from './static/logoDummy.png';
 import ReadMore from './ReadMore';
+import PopupMap from './PopupMap';
 
 const modalSchema = {
   title: 'Modal title',
@@ -43,6 +43,23 @@ const PopupRow = ({ data }) => {
         <Modal.Description>
           <ReadMore maxChars={200} text={modalSchema.description} />
         </Modal.Description>
+        <div style={{ display: 'flex' }}>
+          <div style={{ width: '50%' }}>
+            <div
+              style={{
+                width: '200px',
+                height: '200px',
+                background: 'lightBlue',
+              }}
+            >
+              <p>Table zone</p>
+            </div>
+            <p>{modalSchema.url}</p>
+          </div>
+          <div style={{ width: '50%' }}>
+            <PopupMap />
+          </div>
+        </div>
       </Modal.Content>
 
       <Modal.Actions>

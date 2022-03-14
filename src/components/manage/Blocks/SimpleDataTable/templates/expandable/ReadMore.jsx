@@ -16,7 +16,7 @@ const ReadMore = ({ text, maxChars }) => {
 
   return (
     <span className="readmore-container">
-      <p>{more ? text : displayText}</p>
+      <p className="readmore-text">{more ? text : displayText}</p>
       {showAction && (
         <button className="readmore-action" onClick={() => setMore(!more)}>
           {more ? 'Read less..' : 'Read more..'}
