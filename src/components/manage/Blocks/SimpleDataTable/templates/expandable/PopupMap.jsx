@@ -28,8 +28,8 @@ const PopupMap = ({ data }) => {
   const { long, lat, countryCode, pledgeName } = data;
   return (
     <div>
-      <ComposableMap projection="geoMercator">
-        <ZoomableGroup center={[long, lat]} zoom={13} minZoom={0} maxZoom={8}>
+      <ComposableMap height={350} projection="geoMercator">
+        <ZoomableGroup center={[long, lat]} zoom={13} minZoom={0} maxZoom={20}>
           <Sphere fill="#b1b1b1" />
           <Geographies geography={geoUrl}>
             {({ geographies }) => {

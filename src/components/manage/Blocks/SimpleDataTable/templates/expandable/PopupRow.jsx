@@ -5,6 +5,7 @@ import { Button, Image, Modal } from 'semantic-ui-react';
 import logoDummy from './static/logoDummy.png';
 import ReadMore from './ReadMore';
 import PopupMap from './PopupMap';
+import PopupTable from './PopupTable';
 
 const modalSchema = {
   title: 'Modal title',
@@ -43,21 +44,20 @@ const PopupRow = ({ data }) => {
         <Modal.Description>
           <ReadMore maxChars={200} text={modalSchema.description} />
         </Modal.Description>
-        <div style={{ display: 'flex' }}>
-          <div style={{ width: '50%' }}>
-            <div
-              style={{
-                width: '200px',
-                height: '200px',
-                background: 'lightBlue',
-              }}
+        <div style={{ display: 'flex', margin: '10px 0' }}>
+          <div style={{ width: '49%', marginRight: '5px' }}>
+            {data && <PopupTable data={data} />}
+            <a
+              href={modalSchema.url}
+              target="_blank"
+              rel="noreferrer"
+              className="popup-url"
             >
-              <p>Table zone</p>
-            </div>
-            <p>{modalSchema.url}</p>
+              {modalSchema.url}
+            </a>
           </div>
-          <div style={{ width: '50%' }}>
-            <PopupMap data={data} />
+          <div style={{ width: '49%', marginLeft: '5px' }}>
+            {data && <PopupMap data={data} />}
           </div>
         </div>
       </Modal.Content>
