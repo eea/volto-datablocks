@@ -32,6 +32,15 @@ class Edit extends Component {
     schema.properties.columns.schema.properties.column.choices = choices;
     schema.properties.columns.schema.properties.column_link.choices = choices;
 
+    if (this.props.data.template === 'expandable') {
+      //schema.properties.
+      schema.properties.popupTitle.choices = choices;
+      schema.properties.popupDescription.choices = choices;
+      schema.properties.popupUrl.choices = choices;
+      schema.properties.popupTableData.choices = choices;
+      schema.properties.popupMapData.choices = choices;
+    }
+
     return schema;
   };
 
