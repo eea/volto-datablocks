@@ -57,7 +57,7 @@ const PopupRow = ({ data }) => {
             <p>{modalSchema.url}</p>
           </div>
           <div style={{ width: '50%' }}>
-            <PopupMap />
+            <PopupMap data={data} />
           </div>
         </div>
       </Modal.Content>
