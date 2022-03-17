@@ -34,8 +34,9 @@ class Edit extends Component {
     schema.properties.columns.schema.properties.column_link.choices = choices;
 
     if (this.props.data.template === 'expandable') {
-      console.log('them props data', this.props);
+      // console.log('them props data', this.props);
 
+      schema.properties.popup_data_query.choices = choices;
       schema.properties.popupTitle.choices = choices;
       schema.properties.popupDescription.choices = choices;
       schema.properties.popupUrl.choices = choices;
@@ -70,13 +71,13 @@ class Edit extends Component {
     );
   }
 }
-// connectToPopupProviderData((props) => {
-//   return {
-//     popup_provider_url: props.data?.popup_provider_url,
-//   };
-// }),
 
 export default compose(
+  connectToPopupProviderData((props) => {
+    return {
+      popup_provider_url: props.data?.popup_provider_url,
+    };
+  }),
   connectToProviderData((props) => {
     const { max_count = 5 } = props.data;
     return {

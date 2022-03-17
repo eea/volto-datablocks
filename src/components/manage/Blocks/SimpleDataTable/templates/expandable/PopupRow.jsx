@@ -17,12 +17,17 @@ const modalSchema = {
   url: 'https://google.com',
 };
 
-const PopupRow = ({ data }) => {
+const PopupRow = ({ rowData, allData }) => {
   const [expand, setExpand] = React.useState(false);
 
   const handleExpand = () => {
     setExpand(true);
-    console.log('rowdata', data);
+    // console.log('rowdata', rowData);
+    // console.log('alldata', allData);
+    // console.log(
+    //   'filter connector data by this param',
+    //   rowData[allData.popup_data_query],
+    // );
   };
 
   const handleClose = () => {
@@ -46,7 +51,7 @@ const PopupRow = ({ data }) => {
         </Modal.Description>
         <div style={{ display: 'flex', margin: '10px 0' }}>
           <div style={{ width: '49%', marginRight: '5px' }}>
-            {data && <PopupTable data={data} />}
+            {rowData && <PopupTable data={rowData} />}
             <a
               href={modalSchema.url}
               target="_blank"
@@ -57,7 +62,7 @@ const PopupRow = ({ data }) => {
             </a>
           </div>
           <div style={{ width: '49%', marginLeft: '5px' }}>
-            {data && <PopupMap data={data} />}
+            {rowData && <PopupMap data={rowData} />}
           </div>
         </div>
       </Modal.Content>

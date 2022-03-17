@@ -7,6 +7,7 @@ export default () => ({
       fields: [
         'searchDescription',
         'popup_provider_url',
+        'popup_data_query',
         // 'popupTitle',
         // 'popupDescription',
         // 'popupUrl',
@@ -23,6 +24,11 @@ export default () => ({
     popup_provider_url: {
       title: 'Popup Data provider',
       widget: 'object_by_path',
+    },
+    popup_data_query: {
+      title: 'Popup Data Query',
+      description: 'Selected attribute by which to query popup data',
+      choices: [],
     },
     popupTitle: {
       title: 'Popup Title',

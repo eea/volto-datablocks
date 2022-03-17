@@ -215,7 +215,7 @@ const View = (props) => {
               return (
                 <Table.Row key={row_index}>
                   <Table.Cell>
-                    <PopupRow data={row_data} />
+                    <PopupRow rowData={row_data} allData={data} />
                   </Table.Cell>
                   {selectedColumns.map((colDef, j) => (
                     <Table.Cell
