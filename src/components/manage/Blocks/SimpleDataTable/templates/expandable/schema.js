@@ -6,11 +6,12 @@ export default () => ({
       title: 'Default',
       fields: [
         'searchDescription',
-        'popupTitle',
-        'popupDescription',
-        'popupUrl',
-        'popupTableData',
-        'popupMapData',
+        'popup_provider_url',
+        // 'popupTitle',
+        // 'popupDescription',
+        // 'popupUrl',
+        // 'popupTableData',
+        // 'popupMapData',
       ],
     },
   ],
@@ -18,6 +19,10 @@ export default () => ({
     searchDescription: {
       title: 'Search description',
       widget: 'textarea',
+    },
+    popup_provider_url: {
+      title: 'Popup Data provider',
+      widget: 'object_by_path',
     },
     popupTitle: {
       title: 'Popup Title',

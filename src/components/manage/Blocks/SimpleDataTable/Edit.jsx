@@ -9,6 +9,7 @@ import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 
 import { SimpleDataTableSchema } from './schema';
 import { SimpleDataTableView } from './View';
+import connectToPopupProviderData from '../../../../hocs/connectToPopupProviderData';
 
 class Edit extends Component {
   getSchema = () => {
@@ -33,7 +34,8 @@ class Edit extends Component {
     schema.properties.columns.schema.properties.column_link.choices = choices;
 
     if (this.props.data.template === 'expandable') {
-      //schema.properties.
+      console.log('them props data', this.props);
+
       schema.properties.popupTitle.choices = choices;
       schema.properties.popupDescription.choices = choices;
       schema.properties.popupUrl.choices = choices;
@@ -68,6 +70,11 @@ class Edit extends Component {
     );
   }
 }
+// connectToPopupProviderData((props) => {
+//   return {
+//     popup_provider_url: props.data?.popup_provider_url,
+//   };
+// }),
 
 export default compose(
   connectToProviderData((props) => {
