@@ -81,9 +81,9 @@ export function connectToPopupProviderData(getConfig = () => ({})) {
           ? props.data_providers?.data?.[popup_provider_url]?.[hashValue]
           : null;
 
-        console.log('hashval', hashValue);
-        console.log('connectorPath', connectorPath);
-        console.log('popup_provider_data', popup_provider_data);
+        // console.log('hashval', hashValue);
+        // console.log('connectorPath', connectorPath);
+        // console.log('popup_provider_data', popup_provider_data);
 
         const prev_popup_provider_data = popup_provider_url
           ? props.data_providers?.data?.[popup_provider_url]?.[
