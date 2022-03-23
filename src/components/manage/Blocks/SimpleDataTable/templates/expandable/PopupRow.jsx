@@ -4,7 +4,11 @@ import { compose } from 'redux';
 
 import { Icon } from '@plone/volto/components';
 import expandSVG from '@plone/volto/icons/vertical.svg';
+
+import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
+
 import { Button, Image, Modal } from 'semantic-ui-react';
+
 import logoDummy from './static/logoDummy.png';
 
 import ReadMore from './ReadMore';
@@ -15,8 +19,7 @@ import {
   setConnectedDataParameters,
   deleteConnectedDataParameters,
 } from '@eeacms/volto-datablocks/actions';
-import connectToPopupProviderData from '../../../../../../hocs/connectToPopupProviderData';
-import { connectToProviderData } from '../../../../../../hocs';
+import schema from './schema';
 
 const modalSchema = {
   title: 'Modal title',
@@ -37,10 +40,75 @@ const PopupRow = ({
   deleteConnectedDataParameters,
 }) => {
   const [expand, setExpand] = React.useState(false);
+  const [popupSchema, setPopupSchema] = React.useState({
+    title: '', // this could/shoud come from parent row (since we would not have ind org/descriptions)
+    description: '', //same ^^
+    tableColumns: [],
+    mapData: [],
+    url: '',
+    logo: '',
+  });
 
   React.useEffect(() => {
-    console.log('looks like popup data changed', provider_data);
-  }, [provider_data]);
+    //console.log('looks like popup data changed', provider_data);
+    //do stuff with new data, maybe loader etc
+    if (provider_data) {
+      const {
+        popupTitle,
+        popupLogo,
+        popupDescription,
+        popupUrl,
+        popupTableData,
+        popupMapData,
+      } = tableData;
+
+      setPopupSchema({
+        ...schema,
+        title: rowData[popupTitle],
+        logo: popupLogo,
+        description: popupDescription,
+        url: rowData[popupUrl],
+        tableColumns: popupTableData,
+        mapData: popupMapData,
+      });
+    }
+  }, [provider_data, tableData, rowData]);
+
+  const handleSetFilterProvider = (provider_data, tableData) => {
+    // console.log('popup provider', tableData.popup_provider_url);
+    // console.log('query table by', tableData.popup_data_query);
+    // console.log(
+    //   'in this table that param is',
+    //   rowData[tableData.popup_data_query],
+    // );
+
+    const { popup_provider_url, popup_data_query } = tableData;
+    const type = tableData['@type'];
+
+    if (provider_data && popup_provider_url && popup_data_query) {
+      setConnectedDataParameters(
+        tableData.popup_provider_url,
+        {
+          i: tableData.popup_data_query,
+          o: 'plone.app.querystring.operation.selection.any',
+          v: [rowData[tableData.popup_data_query]],
+        },
+        `${type}_${tableData.popup_data_query}`,
+      );
+    }
+  };
+
+  const handleRemoveFilterProvider = (provider_data, tableData) => {
+    const { popup_provider_url, popup_data_query } = tableData;
+    const type = tableData['@type'];
+
+    if (provider_data && popup_provider_url && popup_data_query) {
+      deleteConnectedDataParameters(
+        tableData.popup_provider_url,
+        `${type}_${tableData.popup_data_query}`,
+      );
+    }
+  };
 
   const handleExpand = () => {
     setExpand(true);
@@ -50,36 +118,21 @@ const PopupRow = ({
       tableData.popup_provider_url &&
       tableData.popup_data_query
     ) {
-      console.log('popup provider', tableData.popup_provider_url);
-      console.log('query table by', tableData.popup_data_query);
-      console.log(
-        'in this table that param is',
-        rowData[tableData.popup_data_query],
-      );
-
-      setConnectedDataParameters(
-        tableData.popup_provider_url,
-        {
-          i: tableData.popup_data_query,
-          o: 'plone.app.querystring.operation.selection.any',
-          v: [rowData[tableData.popup_data_query]],
-        },
-        `dataqueryfilter_${tableData.popup_data_query}`,
-      );
-    } else {
-      deleteConnectedDataParameters(
-        tableData.popup_provider_url,
-        `dataqueryfilter_${tableData.popup_data_query}`,
-      );
+      handleSetFilterProvider(provider_data, tableData);
     }
-    //console.log('connected_data_parameters', connected_data_parameters);
-    // console.log('popupprov url', tableData.popup_provider_url);
-    // console.log('selected field', tableData.popup_data_query);
-    // console.log('selectfield value', rowData[tableData.popup_data_query]);
   };
 
   const handleClose = () => {
     setExpand(false);
+
+    //just to be sure unfilter data on popup close
+    if (
+      provider_data &&
+      tableData.popup_provider_url &&
+      tableData.popup_data_query
+    ) {
+      handleRemoveFilterProvider(provider_data, tableData);
+    }
   };
 
   return (
@@ -90,7 +143,7 @@ const PopupRow = ({
       trigger={<Icon name={expandSVG} size="2rem" className="expand-row" />}
     >
       <Modal.Header>
-        {modalSchema.title}
+        {popupSchema.title}
         <Image size="tiny" src={modalSchema.logo} wrapped floated="right" />
       </Modal.Header>
       <Modal.Content scrolling>
@@ -101,12 +154,12 @@ const PopupRow = ({
           <div style={{ width: '49%', marginRight: '5px' }}>
             {rowData && <PopupTable data={rowData} />}
             <a
-              href={modalSchema.url}
+              href={popupSchema.url}
               target="_blank"
               rel="noreferrer"
               className="popup-url"
             >
-              {modalSchema.url}
+              {popupSchema.url}
             </a>
           </div>
           <div style={{ width: '49%', marginLeft: '5px' }}>

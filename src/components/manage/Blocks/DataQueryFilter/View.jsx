@@ -58,9 +58,6 @@ const View = (props) => {
       defaultValue={value}
       onChange={({ value }) => {
         if (value) {
-          console.log('popup provider', provider_url);
-          console.log('query table by', select_field);
-          console.log('in this table that param is', value);
           props.setConnectedDataParameters(
             provider_url,
             {

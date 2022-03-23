@@ -14,7 +14,6 @@ import upDownSVG from '@eeacms/volto-datablocks/icons/up-down-arrow.svg';
 
 import './style.less';
 import PopupRow from './PopupRow';
-import connectToPopupProviderData from '../../../../../../hocs/connectToPopupProviderData';
 
 const getSortedTableData = (tableData, sortBy) => {
   const property = sortBy[0];
@@ -36,7 +35,6 @@ const getFilteredTableData = (tableData) => {
 const View = (props) => {
   const {
     data = {},
-    popup_provider_data = {},
     getAlignmentOfColumn,
     getNameOfColumn,
     getTitleOfColumn,
@@ -276,11 +274,7 @@ const View = (props) => {
 };
 
 export default compose(
-  // connectToPopupProviderData((props) => {
-  //   return {
-  //     popup_provider_url: props.data?.popup_provider_url,
-  //   };
-  // }), <= might not needed. See all providers in data
+  // extra connectors
   connect((state) => ({
     search: state.table_search || {},
     query: qs.parse(state.router.location?.search?.replace('?', '')) || {},

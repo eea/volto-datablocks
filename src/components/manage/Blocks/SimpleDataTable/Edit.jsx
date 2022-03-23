@@ -9,7 +9,6 @@ import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 
 import { SimpleDataTableSchema } from './schema';
 import { SimpleDataTableView } from './View';
-import connectToPopupProviderData from '../../../../hocs/connectToPopupProviderData';
 
 class Edit extends Component {
   getSchema = () => {
@@ -73,11 +72,6 @@ class Edit extends Component {
 }
 
 export default compose(
-  connectToPopupProviderData((props) => {
-    return {
-      popup_provider_url: props.data?.popup_provider_url,
-    };
-  }),
   connectToProviderData((props) => {
     const { max_count = 5 } = props.data;
     return {
