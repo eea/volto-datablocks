@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
 
 import { Icon } from '@plone/volto/components';
 import expandSVG from '@plone/volto/icons/vertical.svg';
@@ -14,6 +15,8 @@ import {
   setConnectedDataParameters,
   deleteConnectedDataParameters,
 } from '@eeacms/volto-datablocks/actions';
+import connectToPopupProviderData from '../../../../../../hocs/connectToPopupProviderData';
+import { connectToProviderData } from '../../../../../../hocs';
 
 const modalSchema = {
   title: 'Modal title',
@@ -28,21 +31,32 @@ const modalSchema = {
 const PopupRow = ({
   rowData,
   tableData,
-  popupProviderData,
+  provider_data,
   connected_data_parameters,
   setConnectedDataParameters,
   deleteConnectedDataParameters,
 }) => {
   const [expand, setExpand] = React.useState(false);
-  // console.log('popupProviderData', popupProviderData);
+
+  React.useEffect(() => {
+    console.log('looks like popup data changed', provider_data);
+  }, [provider_data]);
+
   const handleExpand = () => {
     setExpand(true);
     //this will filter the popup data directly from provider
     if (
-      popupProviderData &&
+      provider_data &&
       tableData.popup_provider_url &&
       tableData.popup_data_query
     ) {
+      console.log('popup provider', tableData.popup_provider_url);
+      console.log('query table by', tableData.popup_data_query);
+      console.log(
+        'in this table that param is',
+        rowData[tableData.popup_data_query],
+      );
+
       setConnectedDataParameters(
         tableData.popup_provider_url,
         {
@@ -58,7 +72,7 @@ const PopupRow = ({
         `dataqueryfilter_${tableData.popup_data_query}`,
       );
     }
-    console.log('connected_data_parameters', connected_data_parameters);
+    //console.log('connected_data_parameters', connected_data_parameters);
     // console.log('popupprov url', tableData.popup_provider_url);
     // console.log('selected field', tableData.popup_data_query);
     // console.log('selectfield value', rowData[tableData.popup_data_query]);
@@ -108,11 +122,18 @@ const PopupRow = ({
   );
 };
 
-export default connect(
-  (state) => {
+export default compose(
+  connectToProviderData((props) => {
     return {
-      connected_data_parameters: state.connected_data_parameters,
+      provider_url: props.tableData?.popup_provider_url,
     };
-  },
-  { setConnectedDataParameters, deleteConnectedDataParameters },
+  }),
+  connect(
+    (state) => {
+      return {
+        connected_data_parameters: state.connected_data_parameters,
+      };
+    },
+    { setConnectedDataParameters, deleteConnectedDataParameters },
+  ),
 )(PopupRow);

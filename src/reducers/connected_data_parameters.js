@@ -25,7 +25,6 @@ export default function connected_data_parameters(
   const { providerPath, data_query, index } = action;
   switch (action.type) {
     case SET_CONNECTED_DATA_PARAMETERS:
-      console.log('state', state);
       return {
         ...state,
         byProviderPath: {
