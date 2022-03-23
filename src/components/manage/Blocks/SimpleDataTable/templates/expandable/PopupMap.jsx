@@ -1,10 +1,4 @@
 import React from 'react';
-import Map from '@eeacms/volto-openlayers-map/Map';
-
-import { Interactions } from '@eeacms/volto-openlayers-map/Interactions';
-import { Controls } from '@eeacms/volto-openlayers-map/Controls';
-import { Layers, Layer } from '@eeacms/volto-openlayers-map/Layers';
-import { Overlays } from '@eeacms/volto-openlayers-map/Overlays';
 
 import {
   ComposableMap,

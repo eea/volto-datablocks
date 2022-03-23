@@ -1,11 +1,19 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
 import { Icon } from '@plone/volto/components';
 import expandSVG from '@plone/volto/icons/vertical.svg';
 import { Button, Image, Modal } from 'semantic-ui-react';
 import logoDummy from './static/logoDummy.png';
+
 import ReadMore from './ReadMore';
 import PopupMap from './PopupMap';
 import PopupTable from './PopupTable';
+
+import {
+  setConnectedDataParameters,
+  deleteConnectedDataParameters,
+} from '@eeacms/volto-datablocks/actions';
 
 const modalSchema = {
   title: 'Modal title',
@@ -17,17 +25,43 @@ const modalSchema = {
   url: 'https://google.com',
 };
 
-const PopupRow = ({ rowData, allData }) => {
+const PopupRow = ({
+  rowData,
+  tableData,
+  popupProviderData,
+  connected_data_parameters,
+  setConnectedDataParameters,
+  deleteConnectedDataParameters,
+}) => {
   const [expand, setExpand] = React.useState(false);
-
+  // console.log('popupProviderData', popupProviderData);
   const handleExpand = () => {
     setExpand(true);
-    // console.log('rowdata', rowData);
-    // console.log('alldata', allData);
-    // console.log(
-    //   'filter connector data by this param',
-    //   rowData[allData.popup_data_query],
-    // );
+    //this will filter the popup data directly from provider
+    if (
+      popupProviderData &&
+      tableData.popup_provider_url &&
+      tableData.popup_data_query
+    ) {
+      setConnectedDataParameters(
+        tableData.popup_provider_url,
+        {
+          i: tableData.popup_data_query,
+          o: 'plone.app.querystring.operation.selection.any',
+          v: [rowData[tableData.popup_data_query]],
+        },
+        `dataqueryfilter_${tableData.popup_data_query}`,
+      );
+    } else {
+      deleteConnectedDataParameters(
+        tableData.popup_provider_url,
+        `dataqueryfilter_${tableData.popup_data_query}`,
+      );
+    }
+    console.log('connected_data_parameters', connected_data_parameters);
+    // console.log('popupprov url', tableData.popup_provider_url);
+    // console.log('selected field', tableData.popup_data_query);
+    // console.log('selectfield value', rowData[tableData.popup_data_query]);
   };
 
   const handleClose = () => {
@@ -74,4 +108,11 @@ const PopupRow = ({ rowData, allData }) => {
   );
 };
 
-export default PopupRow;
+export default connect(
+  (state) => {
+    return {
+      connected_data_parameters: state.connected_data_parameters,
+    };
+  },
+  { setConnectedDataParameters, deleteConnectedDataParameters },
+)(PopupRow);

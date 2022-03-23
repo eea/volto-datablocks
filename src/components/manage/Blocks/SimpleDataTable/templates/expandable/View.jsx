@@ -1,5 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
+
 import _ from 'lodash';
 import qs from 'querystring';
 import { Icon } from '@plone/volto/components';
@@ -12,6 +14,7 @@ import upDownSVG from '@eeacms/volto-datablocks/icons/up-down-arrow.svg';
 
 import './style.less';
 import PopupRow from './PopupRow';
+import connectToPopupProviderData from '../../../../../../hocs/connectToPopupProviderData';
 
 const getSortedTableData = (tableData, sortBy) => {
   const property = sortBy[0];
@@ -33,6 +36,7 @@ const getFilteredTableData = (tableData) => {
 const View = (props) => {
   const {
     data = {},
+    popup_provider_data = {},
     getAlignmentOfColumn,
     getNameOfColumn,
     getTitleOfColumn,
@@ -136,7 +140,6 @@ const View = (props) => {
     };
     /* eslint-disable-next-line */
   }, []);
-
   return (
     <div className="smart-table">
       <Search
@@ -215,7 +218,11 @@ const View = (props) => {
               return (
                 <Table.Row key={row_index}>
                   <Table.Cell>
-                    <PopupRow rowData={row_data} allData={data} />
+                    <PopupRow
+                      rowData={row_data}
+                      tableData={data}
+                      popupProviderData={popup_provider_data}
+                    />
                   </Table.Cell>
                   {selectedColumns.map((colDef, j) => (
                     <Table.Cell
@@ -272,7 +279,14 @@ const View = (props) => {
   );
 };
 
-export default connect((state) => ({
-  search: state.table_search || {},
-  query: qs.parse(state.router.location?.search?.replace('?', '')) || {},
-}))(View);
+export default compose(
+  // connectToPopupProviderData((props) => {
+  //   return {
+  //     popup_provider_url: props.data?.popup_provider_url,
+  //   };
+  // }), <= might not needed. See all providers in data
+  connect((state) => ({
+    search: state.table_search || {},
+    query: qs.parse(state.router.location?.search?.replace('?', '')) || {},
+  })),
+)(View);
