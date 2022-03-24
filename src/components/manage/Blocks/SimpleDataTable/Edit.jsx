@@ -47,8 +47,6 @@ class Edit extends Component {
         })
         .map((n) => [n, n]);
 
-      // console.log('tpro', this.props.data);
-
       schema.properties.popup_data_query.choices = choices;
       schema.properties.popupTitle.choices = choices;
 

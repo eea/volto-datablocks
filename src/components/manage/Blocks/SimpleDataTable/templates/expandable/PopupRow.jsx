@@ -50,7 +50,6 @@ const PopupRow = ({
   });
 
   React.useEffect(() => {
-    //console.log('looks like popup data changed', provider_data);
     //do stuff with new data, maybe loader etc
     if (provider_data) {
       const {
@@ -75,13 +74,6 @@ const PopupRow = ({
   }, [provider_data, tableData, rowData]);
 
   const handleSetFilterProvider = (provider_data, tableData) => {
-    // console.log('popup provider', tableData.popup_provider_url);
-    // console.log('query table by', tableData.popup_data_query);
-    // console.log(
-    //   'in this table that param is',
-    //   rowData[tableData.popup_data_query],
-    // );
-
     const { popup_provider_url, popup_data_query } = tableData;
     const type = tableData['@type'];
 
