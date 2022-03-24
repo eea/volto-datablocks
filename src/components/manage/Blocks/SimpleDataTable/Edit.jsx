@@ -33,11 +33,28 @@ class Edit extends Component {
     schema.properties.columns.schema.properties.column_link.choices = choices;
 
     if (this.props.data.template === 'expandable') {
-      // console.log('them props data', this.props);
+      const tableProvider = this.props.data.provider_url
+        ? this.props.data.provider_url
+        : '';
+      const popupProvider = this.props.data.popup_provider_url
+        ? this.props.data.popup_provider_url
+        : '';
+
+      const initialProviderChoices = [tableProvider, popupProvider];
+      const providerChoices = initialProviderChoices
+        .filter((item) => {
+          return item !== '';
+        })
+        .map((n) => [n, n]);
+
+      // console.log('tpro', this.props.data);
 
       schema.properties.popup_data_query.choices = choices;
       schema.properties.popupTitle.choices = choices;
+
       schema.properties.popupDescription.choices = choices;
+      schema.properties.popupDescription.providerChoices = providerChoices;
+
       schema.properties.popupUrl.choices = choices;
       schema.properties.popupTableData.choices = choices;
       schema.properties.popupMapData.choices = choices;

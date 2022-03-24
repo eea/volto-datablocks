@@ -7,7 +7,11 @@ import installRouteParameter from './components/manage/Blocks/RouteParameter';
 import installCustomConnectedBlock from './components/manage/Blocks/CustomConnectedBlock';
 
 import { DataConnectorView } from './components';
-import { DataQueryWidget, PickObjectWidget } from './components';
+import {
+  DataQueryWidget,
+  PickObjectWidget,
+  SelectProviderPickWidget,
+} from './components';
 import { dataProvider } from './middlewares';
 import * as addonReducers from './reducers';
 
@@ -25,6 +29,7 @@ export default (config) => {
   config.widgets.id.data_query = DataQueryWidget;
   config.widgets.widget.data_query = DataQueryWidget;
   config.widgets.widget.object_by_path = PickObjectWidget;
+  config.widgets.widget.select_provider_pick = SelectProviderPickWidget;
 
   config.settings.storeExtenders = [
     ...(config.settings.storeExtenders || []),
