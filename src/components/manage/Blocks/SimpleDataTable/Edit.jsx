@@ -5,10 +5,29 @@ import InlineForm from '@plone/volto/components/manage/Form/InlineForm';
 
 import config from '@plone/volto/registry';
 
-import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
+import {
+  connectToProviderData,
+  connectToPopupProviderData,
+} from '@eeacms/volto-datablocks/hocs';
 
 import { SimpleDataTableSchema } from './schema';
 import { SimpleDataTableView } from './View';
+
+const selectSchemaChoices = (choices, popUpChoices, param, data) => {
+  const selectedProvider =
+    data && param && data[param] && data[param].provider
+      ? data[param].provider
+      : '';
+  const isPopupProvider =
+    selectedProvider &&
+    data &&
+    data.popup_provider_url &&
+    data.popup_provider_url === selectedProvider;
+
+  const selectedChoices = isPopupProvider ? popUpChoices : choices;
+
+  return selectedChoices;
+};
 
 class Edit extends Component {
   getSchema = () => {
@@ -40,6 +59,12 @@ class Edit extends Component {
         ? this.props.data.popup_provider_url
         : '';
 
+      const popUpChoices = this.props.popup_provider_data
+        ? Array.from(
+            Object.keys(this.props.popup_provider_data).sort(),
+          ).map((n) => [n, n])
+        : [];
+
       const initialProviderChoices = [tableProvider, popupProvider];
       const providerChoices = initialProviderChoices
         .filter((item) => {
@@ -50,7 +75,13 @@ class Edit extends Component {
       schema.properties.popup_data_query.choices = choices;
       schema.properties.popupTitle.choices = choices;
 
-      schema.properties.popupDescription.choices = choices;
+      //replicate this example for each popupschema attr
+      schema.properties.popupDescription.choices = selectSchemaChoices(
+        choices,
+        popUpChoices,
+        'popupDescription',
+        this.props.data,
+      );
       schema.properties.popupDescription.providerChoices = providerChoices;
 
       schema.properties.popupUrl.choices = choices;
@@ -87,6 +118,11 @@ class Edit extends Component {
 }
 
 export default compose(
+  connectToPopupProviderData((props) => {
+    return {
+      popup_provider_url: props.data?.popup_provider_url,
+    };
+  }),
   connectToProviderData((props) => {
     const { max_count = 5 } = props.data;
     return {
