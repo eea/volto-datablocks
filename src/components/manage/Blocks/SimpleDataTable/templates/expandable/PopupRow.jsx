@@ -57,7 +57,7 @@ const PopupRow = ({
         popupLogo,
         popupDescription,
         popupUrl,
-        popupTableData,
+        popupTableColumns,
         popupMapData,
       } = tableData;
 
@@ -67,7 +67,7 @@ const PopupRow = ({
         logo: popupLogo,
         description: popupDescription,
         url: rowData[popupUrl],
-        tableColumns: popupTableData,
+        tableColumns: popupTableColumns,
         mapData: popupMapData,
       });
     }
