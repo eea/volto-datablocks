@@ -85,11 +85,15 @@ class Edit extends Component {
       schema.properties.popupDescription.providerChoices = providerChoices;
 
       schema.properties.popupUrl.choices = choices;
-      schema.properties.popupMapData.choices = choices;
 
       //set choices for the popup table columns
       schema.properties.popupTableColumns.schema.properties.column.choices = popUpChoices;
       schema.properties.popupTableColumns.schema.properties.column_link.choices = popUpChoices;
+
+      schema.properties.popupLong.choices = popUpChoices;
+      schema.properties.popupLat.choices = popUpChoices;
+      schema.properties.popupCountryCode.choices = popUpChoices;
+      schema.properties.popupMapLabel.choices = popUpChoices;
     }
 
     return schema;

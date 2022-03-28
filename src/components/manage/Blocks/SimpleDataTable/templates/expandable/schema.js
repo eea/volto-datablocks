@@ -125,7 +125,10 @@ export default () => ({
         'popupDescription',
         'popupUrl',
         'popupTableColumns',
-        'popupMapData',
+        'popupLong',
+        'popupLat',
+        'popupCountryCode',
+        'popupMapLabel',
       ],
     },
   ],
@@ -168,9 +171,23 @@ export default () => ({
       schemaExtender: (schema, child) => getColumnSchema(schema, child),
       widget: 'object_list',
     },
-    popupMapData: {
-      title: 'Popup Map Data',
-      description: 'Define map parameters in the form [long, lat]',
+    popupLong: {
+      title: 'Popup Map Long',
+      description: 'Define popup map Long',
+      choices: [],
+    },
+    popupLat: {
+      title: 'Popup Map Lat',
+      description: 'Define popup map Lat',
+      choices: [],
+    },
+    popupCountryCode: {
+      title: 'Popup Country',
+      description: 'Define popup country code',
+      choices: [],
+    },
+    popupMapLabel: {
+      title: 'Popup Map Label',
       choices: [],
     },
   },
