@@ -76,19 +76,19 @@ class Edit extends Component {
       schema.properties.popupTitle.choices = choices;
 
       //replicate this example for each popupschema attr
-      schema.properties.popupDescription.choices = selectSchemaChoices(
-        choices,
-        popUpChoices,
-        'popupDescription',
-        this.props.data,
-      );
-      schema.properties.popupDescription.providerChoices = providerChoices;
+      // schema.properties.popupDescription.choices = selectSchemaChoices(
+      //   choices,
+      //   popUpChoices,
+      //   'popupDescription',
+      //   this.props.data,
+      // );
+      // schema.properties.popupDescription.providerChoices = providerChoices;
 
       schema.properties.popupUrl.choices = choices;
 
       //set choices for the popup table columns
-      schema.properties.popupTableColumns.schema.properties.column.choices = popUpChoices;
-      schema.properties.popupTableColumns.schema.properties.column_link.choices = popUpChoices;
+      // schema.properties.popupTableColumns.schema.properties.column.choices = popUpChoices;
+      //schema.properties.popupTableColumns.schema.properties.column_link.choices = popUpChoices;
 
       schema.properties.popupLong.choices = popUpChoices;
       schema.properties.popupLat.choices = popUpChoices;

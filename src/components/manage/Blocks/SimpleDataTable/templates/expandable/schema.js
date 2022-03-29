@@ -119,12 +119,13 @@ export default () => ({
       title: 'Default',
       fields: [
         'searchDescription',
-        'popup_provider_url',
         'popup_data_query',
         'popupTitle',
         'popupDescription',
         'popupUrl',
+        'popup_table_provider_url',
         'popupTableColumns',
+        'popup_map_provider_url',
         'popupLong',
         'popupLat',
         'popupCountryCode',
@@ -137,8 +138,12 @@ export default () => ({
       title: 'Search description',
       widget: 'textarea',
     },
-    popup_provider_url: {
-      title: 'Popup Data provider',
+    popup_table_provider_url: {
+      title: 'Popup Table provider',
+      widget: 'object_by_path',
+    },
+    popup_map_provider_url: {
+      title: 'Popup Map provider',
       widget: 'object_by_path',
     },
     popup_data_query: {

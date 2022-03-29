@@ -1,5 +1,6 @@
 import React from 'react';
-
+import { compose } from 'redux';
+import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 import {
   ComposableMap,
   Geographies,
@@ -8,7 +9,6 @@ import {
   ZoomableGroup,
   Sphere,
 } from 'react-simple-maps';
-
 import geoUrl from './static/world-50m-simplified.json';
 
 const markers = [
@@ -18,8 +18,13 @@ const markers = [
   },
 ];
 
-const PopupMap = ({ data }) => {
-  const { long, lat, countryCode, pledgeName } = data;
+const PopupMap = ({ rowData, provider_data }) => {
+  const { long, lat, countryCode, pledgeName } = rowData;
+
+  if (!provider_data) {
+    return 'Loading..';
+  }
+
   return (
     <div>
       <ComposableMap height={350} projection="geoMercator">
@@ -64,4 +69,10 @@ const PopupMap = ({ data }) => {
   );
 };
 
-export default PopupMap;
+export default compose(
+  connectToProviderData((props) => {
+    return {
+      provider_url: props.providerUrl,
+    };
+  }),
+)(PopupMap);

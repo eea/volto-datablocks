@@ -48,82 +48,109 @@ const PopupRow = ({
     url: '',
     logo: '',
   });
+  const type = tableData['@type'];
 
-  React.useEffect(() => {
-    //do stuff with new data, maybe loader etc
-    if (provider_data) {
-      const {
-        popupTitle,
-        popupLogo,
-        popupDescription,
-        popupUrl,
-        popupTableColumns,
-        popupMapData,
-      } = tableData;
+  const {
+    popup_table_provider_url,
+    popup_map_provider_url,
+    popup_data_query,
+  } = tableData;
 
-      setPopupSchema({
-        ...schema,
-        title: rowData[popupTitle],
-        logo: popupLogo,
-        description: popupDescription,
-        url: rowData[popupUrl],
-        tableColumns: popupTableColumns,
-        mapData: popupMapData,
-      });
-    }
-  }, [provider_data, tableData, rowData]);
+  const queryVal = rowData[popup_data_query];
 
-  const handleSetFilterProvider = (provider_data, tableData) => {
-    const { popup_provider_url, popup_data_query } = tableData;
-    const type = tableData['@type'];
+  // React.useEffect(() => {
+  //   //do stuff with new data, maybe loader etc
+  //   if (provider_data) {
+  //     const {
+  //       popupTitle,
+  //       popupLogo,
+  //       popupDescription,
+  //       popupUrl,
+  //       popupTableColumns,
+  //       popupMapData,
+  //     } = tableData;
 
-    if (provider_data && popup_provider_url && popup_data_query) {
+  //     setPopupSchema({
+  //       ...schema,
+  //       title: rowData[popupTitle],
+  //       logo: popupLogo,
+  //       description: popupDescription,
+  //       url: rowData[popupUrl],
+  //       tableColumns: popupTableColumns,
+  //       mapData: popupMapData,
+  //     });
+  //   }
+  // }, [provider_data, tableData, rowData]);
+
+  const handleSetFilterProvider = (provider_url, query, value, type) => {
+    if (provider_url && popup_data_query) {
       setConnectedDataParameters(
-        tableData.popup_provider_url,
+        provider_url,
         {
-          i: tableData.popup_data_query,
+          i: query,
           o: 'plone.app.querystring.operation.selection.any',
-          v: [rowData[tableData.popup_data_query]],
+          v: [value],
         },
-        `${type}_${tableData.popup_data_query}`,
+        `${type}_${query}`,
       );
     }
   };
 
-  const handleRemoveFilterProvider = (provider_data, tableData) => {
-    const { popup_provider_url, popup_data_query } = tableData;
-    const type = tableData['@type'];
-
-    if (provider_data && popup_provider_url && popup_data_query) {
+  const handleRemoveFilterProvider = (provider_url, query, type) => {
+    if (
+      popup_map_provider_url &&
+      popup_table_provider_url &&
+      popup_data_query
+    ) {
       deleteConnectedDataParameters(
-        tableData.popup_provider_url,
-        `${type}_${tableData.popup_data_query}`,
+        provider_url,
+        `${type}_${popup_data_query}`,
       );
     }
   };
 
   const handleExpand = () => {
     setExpand(true);
-    //this will filter the popup data directly from provider
+    //this will filter the popup map & table data
     if (
-      provider_data &&
-      tableData.popup_provider_url &&
-      tableData.popup_data_query
+      popup_map_provider_url &&
+      popup_table_provider_url &&
+      popup_data_query
     ) {
-      handleSetFilterProvider(provider_data, tableData);
+      handleSetFilterProvider(
+        popup_map_provider_url,
+        popup_data_query,
+        queryVal,
+        type,
+      );
+      handleSetFilterProvider(
+        popup_table_provider_url,
+        popup_data_query,
+        queryVal,
+        type,
+      );
     }
   };
 
   const handleClose = () => {
     setExpand(false);
 
-    //just to be sure unfilter data on popup close
+    //unfilter data on popup close
     if (
-      provider_data &&
-      tableData.popup_provider_url &&
-      tableData.popup_data_query
+      popup_map_provider_url &&
+      popup_table_provider_url &&
+      popup_data_query
     ) {
-      handleRemoveFilterProvider(provider_data, tableData);
+      handleRemoveFilterProvider(
+        popup_map_provider_url,
+        popup_data_query,
+        type,
+      );
+      handleRemoveFilterProvider(
+        popup_table_provider_url,
+        popup_data_query,
+        type,
+      );
     }
   };
 
@@ -144,7 +171,15 @@ const PopupRow = ({
         </Modal.Description>
         <div style={{ display: 'flex', margin: '10px 0' }}>
           <div style={{ width: '49%', marginRight: '5px' }}>
-            {rowData && <PopupTable data={rowData} />}
+            {rowData && (
+              <PopupTable
+                rowData={rowData}
+                providerUrl={popup_table_provider_url}
+                type={type}
+                query={popup_data_query}
+                queryVal={queryVal}
+              />
+            )}
             <a
               href={popupSchema.url}
               target="_blank"
@@ -155,7 +190,15 @@ const PopupRow = ({
             </a>
           </div>
           <div style={{ width: '49%', marginLeft: '5px' }}>
-            {rowData && <PopupMap data={rowData} />}
+            {rowData && (
+              <PopupMap
+                rowData={rowData}
+                providerUrl={popup_map_provider_url}
+                type={type}
+                query={popup_data_query}
+                queryVal={queryVal}
+              />
+            )}
           </div>
         </div>
       </Modal.Content>
@@ -168,11 +211,11 @@ const PopupRow = ({
 };
 
 export default compose(
-  connectToProviderData((props) => {
-    return {
-      provider_url: props.tableData?.popup_provider_url,
-    };
-  }),
+  // connectToProviderData((props) => {
+  //   return {
+  //     provider_url: props.tableData?.popup_table_provider_url,
+  //   };
+  // }),
   connect(
     (state) => {
       return {
