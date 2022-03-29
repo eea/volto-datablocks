@@ -26,6 +26,7 @@ const PopupTable = ({
   // React.useEffect(() => {
   //   applyFilterToProvider();
   // }, []);
+  // console.log('prvTable', provider_data);
 
   if (!provider_data) {
     return 'Loading..';

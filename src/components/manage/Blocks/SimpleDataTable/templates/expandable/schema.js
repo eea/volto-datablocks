@@ -162,7 +162,6 @@ export default () => ({
     },
     popupDescription: {
       title: 'Popup description',
-      widget: 'select_provider_pick',
       choices: [],
     },
     popupUrl: {

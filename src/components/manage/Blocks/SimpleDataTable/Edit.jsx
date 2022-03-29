@@ -7,6 +7,7 @@ import config from '@plone/volto/registry';
 
 import {
   connectToProviderData,
+  connectToMultipleProviders,
   connectToPopupProviderData,
 } from '@eeacms/volto-datablocks/hocs';
 
@@ -65,16 +66,17 @@ class Edit extends Component {
           ).map((n) => [n, n])
         : [];
 
-      const initialProviderChoices = [tableProvider, popupProvider];
-      const providerChoices = initialProviderChoices
-        .filter((item) => {
-          return item !== '';
-        })
-        .map((n) => [n, n]);
+      // const initialProviderChoices = [tableProvider, popupProvider];
+      // const providerChoices = initialProviderChoices
+      //   .filter((item) => {
+      //     return item !== '';
+      //   })
+      //   .map((n) => [n, n]);
 
       schema.properties.popup_data_query.choices = choices;
       schema.properties.popupTitle.choices = choices;
 
+      schema.properties.popupDescription.choices = choices;
       //replicate this example for each popupschema attr
       // schema.properties.popupDescription.choices = selectSchemaChoices(
       //   choices,
@@ -125,11 +127,19 @@ class Edit extends Component {
 }
 
 export default compose(
-  connectToPopupProviderData((props) => {
-    return {
-      popup_provider_url: props.data?.popup_provider_url,
-    };
-  }),
+  // connectToMultipleProviders((props) => {
+  //   const {
+  //     provider_url,
+  //     popup_map_provider_url,
+  //     popup_table_provider_url,
+  //   } = props.data;
+  //   const providers = [
+  //     { provider_url: provider_url },
+  //     { provider_url: popup_map_provider_url },
+  //     { provider_url: popup_table_provider_url },
+  //   ];
+  //   return providers;
+  // }),
   connectToProviderData((props) => {
     const { max_count = 5 } = props.data;
     return {

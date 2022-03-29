@@ -21,6 +21,8 @@ const markers = [
 const PopupMap = ({ rowData, provider_data }) => {
   const { long, lat, countryCode, pledgeName } = rowData;
 
+  // console.log('prvMap', provider_data);
+
   if (!provider_data) {
     return 'Loading..';
   }
