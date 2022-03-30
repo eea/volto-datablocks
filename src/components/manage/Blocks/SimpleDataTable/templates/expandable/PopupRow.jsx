@@ -22,9 +22,9 @@ const defaultSchema = {
   title: '', // this could/shoud come from parent row (since we would not have ind org/descriptions)
   description: '', //same ^^
   tableColumns: [],
-  mapData: [],
   url: '',
   logo: '',
+  mapData: {},
 };
 
 const PopupRow = ({
@@ -59,7 +59,10 @@ const PopupRow = ({
         popupDescription,
         popupUrl,
         popupTableColumns,
-        popupMapData,
+        popupLong,
+        popupLat,
+        popupMapLabel,
+        popupCountryCode,
       } = tableData;
 
       setPopupSchema({
@@ -69,7 +72,12 @@ const PopupRow = ({
         description: rowData[popupDescription],
         url: rowData[popupUrl],
         tableColumns: popupTableColumns,
-        mapData: popupMapData,
+        mapData: {
+          long: popupLong,
+          lat: popupLat,
+          label: popupMapLabel,
+          country: popupCountryCode,
+        },
       });
     } else {
       setPopupSchema(defaultSchema);
@@ -188,6 +196,7 @@ const PopupRow = ({
               <PopupMap
                 rowData={rowData}
                 providerUrl={popup_map_provider_url}
+                mapData={popupSchema.mapData}
               />
             )}
           </div>

@@ -11,35 +11,58 @@ import {
 } from 'react-simple-maps';
 import geoUrl from './static/world-50m-simplified.json';
 
-const markers = [
-  {
-    name: 'Marker Portugalia',
-    coordinates: [-8.543869257, 41.871456647],
-  },
-];
+const getProviderDataLength = (provider_data) => {
+  return provider_data
+    ? provider_data[Object.keys(provider_data)[0]]?.length || 0
+    : 0;
+};
 
-const PopupMap = ({ rowData, provider_data }) => {
-  const { long, lat, countryCode, pledgeName } = rowData;
+const PopupMap = ({ rowData, provider_data, mapData }) => {
+  const [selectedData, setSelectedData] = React.useState([]);
 
-  // console.log('prvMap', provider_data);
+  React.useEffect(() => {
+    const provider_data_length = getProviderDataLength(provider_data);
+    const newMapData = [];
+    if (provider_data_length) {
+      const keys = Object.keys(provider_data);
+      Array(provider_data_length)
+        .fill()
+        .forEach((_, i) => {
+          const obj = {};
+          keys.forEach((key) => {
+            obj[key] = provider_data[key][i];
+          });
+          newMapData.push(obj);
+        });
+    }
+    setSelectedData(newMapData);
+    /* eslint-disable-next-line */
+  }, [provider_data]);
+
+  const countries =
+    provider_data && provider_data[mapData.country]
+      ? provider_data[mapData.country]
+      : '';
+
+  const uniqueCountries = [...new Set(countries)];
 
   if (!provider_data) {
     return 'Loading..';
   }
-
+  console.log('selected', selectedData);
   return (
     <div>
       <ComposableMap height={350} projection="geoMercator">
-        <ZoomableGroup center={[long, lat]} zoom={13} minZoom={0} maxZoom={20}>
+        <ZoomableGroup zoom={13} maxZoom={20}>
           <Sphere fill="#b1b1b1" />
           <Geographies geography={geoUrl}>
             {({ geographies }) => {
               return geographies
                 .filter((d) => d.properties.REGION_UN === 'Europe')
                 .map((geo) => {
-                  const country = countryCode
-                    ? geo.properties.ISO_A2 === countryCode
-                    : '';
+                  const country = uniqueCountries.includes(
+                    geo.properties.ISO_A2,
+                  );
                   return (
                     <Geography
                       key={geo.rsmKey}
@@ -52,19 +75,24 @@ const PopupMap = ({ rowData, provider_data }) => {
                 });
             }}
           </Geographies>
-          {markers.map(({ name, coordinates }) => (
-            <Marker key={name} coordinates={[long, lat]}>
-              <circle r={0.6} fill="#F00" stroke="#616060" strokeWidth={0} />
-              <text
-                textAnchor="middle"
-                fill="black"
-                y={-1}
-                style={{ fontSize: '1.5pt', fontWeight: 'bold' }}
-              >
-                {pledgeName}
-              </text>
-            </Marker>
-          ))}
+          {selectedData.map((item, i) => {
+            const long = item[mapData.long] ? item[mapData.long] : '';
+            const lat = item[mapData.lat] ? item[mapData.lat] : '';
+            const label = item[mapData.label] ? item[mapData.label] : '';
+            return (
+              <Marker key={i} coordinates={[long, lat]}>
+                <circle r={0.6} fill="#F00" stroke="#616060" strokeWidth={0} />
+                <text
+                  textAnchor="middle"
+                  fill="black"
+                  y={-1}
+                  style={{ fontSize: '1.5pt', fontWeight: 'bold' }}
+                >
+                  {label}
+                </text>
+              </Marker>
+            );
+          })}
         </ZoomableGroup>
       </ComposableMap>
     </div>
