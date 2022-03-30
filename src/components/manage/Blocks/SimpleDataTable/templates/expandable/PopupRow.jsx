@@ -5,8 +5,6 @@ import { compose } from 'redux';
 import { Icon } from '@plone/volto/components';
 import expandSVG from '@plone/volto/icons/vertical.svg';
 
-import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
-
 import { Button, Image, Modal } from 'semantic-ui-react';
 
 import logoDummy from './static/logoDummy.png';
@@ -19,16 +17,14 @@ import {
   setConnectedDataParameters,
   deleteConnectedDataParameters,
 } from '@eeacms/volto-datablocks/actions';
-import schema from './schema';
 
-const modalSchema = {
-  title: 'Modal title',
-  logo: logoDummy,
-  description:
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+const defaultSchema = {
+  title: '', // this could/shoud come from parent row (since we would not have ind org/descriptions)
+  description: '', //same ^^
+  tableColumns: [],
   mapData: [],
-  tableData: {},
-  url: 'https://google.com',
+  url: '',
+  logo: '',
 };
 
 const PopupRow = ({
@@ -40,14 +36,7 @@ const PopupRow = ({
   deleteConnectedDataParameters,
 }) => {
   const [expand, setExpand] = React.useState(false);
-  const [popupSchema, setPopupSchema] = React.useState({
-    title: '', // this could/shoud come from parent row (since we would not have ind org/descriptions)
-    description: '', //same ^^
-    tableColumns: [],
-    mapData: [],
-    url: '',
-    logo: '',
-  });
+  const [popupSchema, setPopupSchema] = React.useState(defaultSchema);
   const type = tableData['@type'];
 
   const {
@@ -58,29 +47,34 @@ const PopupRow = ({
 
   const queryVal = rowData[popup_data_query];
 
-  // React.useEffect(() => {
-  //   //do stuff with new data, maybe loader etc
-  //   if (provider_data) {
-  //     const {
-  //       popupTitle,
-  //       popupLogo,
-  //       popupDescription,
-  //       popupUrl,
-  //       popupTableColumns,
-  //       popupMapData,
-  //     } = tableData;
+  // console.log('tableData', tableData);
+  // console.log('rowData', rowData);
+  // console.log('tablecols', tableData.popupTableColumns);
 
-  //     setPopupSchema({
-  //       ...schema,
-  //       title: rowData[popupTitle],
-  //       logo: popupLogo,
-  //       description: popupDescription,
-  //       url: rowData[popupUrl],
-  //       tableColumns: popupTableColumns,
-  //       mapData: popupMapData,
-  //     });
-  //   }
-  // }, [provider_data, tableData, rowData]);
+  React.useEffect(() => {
+    if (expand) {
+      const {
+        popupTitle,
+        popupLogo,
+        popupDescription,
+        popupUrl,
+        popupTableColumns,
+        popupMapData,
+      } = tableData;
+
+      setPopupSchema({
+        ...popupSchema,
+        title: rowData[popupTitle],
+        logo: popupLogo,
+        description: rowData[popupDescription],
+        url: rowData[popupUrl],
+        tableColumns: popupTableColumns,
+        mapData: popupMapData,
+      });
+    } else {
+      setPopupSchema(defaultSchema);
+    }
+  }, [expand, tableData, rowData]);
 
   const handleSetFilterProvider = (provider_url, query, value, type) => {
     if (provider_url && popup_data_query) {
@@ -163,11 +157,13 @@ const PopupRow = ({
     >
       <Modal.Header>
         {popupSchema.title}
-        <Image size="tiny" src={modalSchema.logo} wrapped floated="right" />
+        {/* <Image size="tiny" src={modalSchema.logo} wrapped floated="right" /> */}
       </Modal.Header>
       <Modal.Content scrolling>
         <Modal.Description>
-          <ReadMore maxChars={200} text={modalSchema.description} />
+          {popupSchema.description && (
+            <ReadMore maxChars={200} text={popupSchema.description} />
+          )}
         </Modal.Description>
         <div style={{ display: 'flex', margin: '10px 0' }}>
           <div style={{ width: '49%', marginRight: '5px' }}>
@@ -175,9 +171,7 @@ const PopupRow = ({
               <PopupTable
                 rowData={rowData}
                 providerUrl={popup_table_provider_url}
-                type={type}
-                query={popup_data_query}
-                queryVal={queryVal}
+                tableColumns={popupSchema.tableColumns}
               />
             )}
             <a
@@ -194,9 +188,6 @@ const PopupRow = ({
               <PopupMap
                 rowData={rowData}
                 providerUrl={popup_map_provider_url}
-                type={type}
-                query={popup_data_query}
-                queryVal={queryVal}
               />
             )}
           </div>
@@ -211,11 +202,6 @@ const PopupRow = ({
 };
 
 export default compose(
-  // connectToProviderData((props) => {
-  //   return {
-  //     provider_url: props.tableData?.popup_table_provider_url,
-  //   };
-  // }),
   connect(
     (state) => {
       return {
