@@ -16,6 +16,27 @@ const PopupMap = ({ rowData, provider_data, mapData }) => {
   const [selectedData, setSelectedData] = React.useState([]);
 
   React.useEffect(() => {
+    console.log('selectedData', selectedData);
+    const allLong =
+      selectedData.length > 0 ? selectedData.map((i) => i[mapData.long]) : '';
+    const allLat =
+      selectedData.length > 0 ? selectedData.map((i) => i[mapData.lat]) : '';
+    const minLong = allLong && allLong.length > 0 ? Math.min(...allLong) : '';
+    const maxLong = allLong && allLong.length > 0 ? Math.max(...allLong) : '';
+    const minLat = allLong && allLong.length > 0 ? Math.min(...allLat) : '';
+    const maxLat = allLong && allLong.length > 0 ? Math.max(...allLat) : '';
+
+    const centerLat = minLat && maxLat ? (minLat + maxLat) / 2 : '';
+    const centerLong = minLong && maxLong ? (minLong + maxLong) / 2 : '';
+
+    console.log('center', centerLat, centerLong);
+
+    if (centerLat && centerLong) {
+      setMapCenter([centerLat, centerLong]);
+    }
+  }, [selectedData]);
+
+  React.useEffect(() => {
     const provider_data_length = getProviderDataLength(provider_data);
     const newMapData = [];
     if (provider_data_length) {
@@ -44,10 +65,9 @@ const PopupMap = ({ rowData, provider_data, mapData }) => {
   if (!provider_data) {
     return 'Loading..';
   }
-  console.log('selected', selectedData);
   return (
     <div>
-      <Map height={500} center={mapCenter} defaultZoom={11}>
+      <Map height={500} center={mapCenter} defaultZoom={5}>
         {selectedData.map((item, i) => {
           const long = item[mapData.long] ? item[mapData.long] : '';
           const lat = item[mapData.lat] ? item[mapData.lat] : '';
