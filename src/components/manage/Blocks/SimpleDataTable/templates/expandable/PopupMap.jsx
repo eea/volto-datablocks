@@ -1,15 +1,8 @@
 import React from 'react';
 import { compose } from 'redux';
 import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
-import {
-  ComposableMap,
-  Geographies,
-  Geography,
-  Marker,
-  ZoomableGroup,
-  Sphere,
-} from 'react-simple-maps';
-import geoUrl from './static/world-50m-simplified.json';
+
+import { Map, Marker } from 'pigeon-maps';
 
 const getProviderDataLength = (provider_data) => {
   return provider_data
@@ -18,6 +11,8 @@ const getProviderDataLength = (provider_data) => {
 };
 
 const PopupMap = ({ rowData, provider_data, mapData }) => {
+  const [mapCenter, setMapCenter] = React.useState([45, 9]);
+
   const [selectedData, setSelectedData] = React.useState([]);
 
   React.useEffect(() => {
@@ -52,49 +47,14 @@ const PopupMap = ({ rowData, provider_data, mapData }) => {
   console.log('selected', selectedData);
   return (
     <div>
-      <ComposableMap height={350} projection="geoMercator">
-        <ZoomableGroup zoom={13} maxZoom={20}>
-          <Sphere fill="#b1b1b1" />
-          <Geographies geography={geoUrl}>
-            {({ geographies }) => {
-              return geographies
-                .filter((d) => d.properties.REGION_UN === 'Europe')
-                .map((geo) => {
-                  const country = uniqueCountries.includes(
-                    geo.properties.ISO_A2,
-                  );
-                  return (
-                    <Geography
-                      key={geo.rsmKey}
-                      geography={geo}
-                      fill={country ? '#6bb16b' : '#ebebeb'}
-                      stroke="#525252"
-                      strokeWidth={0.3}
-                    />
-                  );
-                });
-            }}
-          </Geographies>
-          {selectedData.map((item, i) => {
-            const long = item[mapData.long] ? item[mapData.long] : '';
-            const lat = item[mapData.lat] ? item[mapData.lat] : '';
-            const label = item[mapData.label] ? item[mapData.label] : '';
-            return (
-              <Marker key={i} coordinates={[long, lat]}>
-                <circle r={0.6} fill="#F00" stroke="#616060" strokeWidth={0} />
-                <text
-                  textAnchor="middle"
-                  fill="black"
-                  y={-1}
-                  style={{ fontSize: '1.5pt', fontWeight: 'bold' }}
-                >
-                  {label}
-                </text>
-              </Marker>
-            );
-          })}
-        </ZoomableGroup>
-      </ComposableMap>
+      <Map height={500} center={mapCenter} defaultZoom={11}>
+        {selectedData.map((item, i) => {
+          const long = item[mapData.long] ? item[mapData.long] : '';
+          const lat = item[mapData.lat] ? item[mapData.lat] : '';
+          const label = item[mapData.label] ? item[mapData.label] : '';
+          return <Marker width={30} color={'#00519d'} anchor={[lat, long]} />;
+        })}
+      </Map>
     </div>
   );
 };
