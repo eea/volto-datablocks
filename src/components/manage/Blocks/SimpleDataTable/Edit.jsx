@@ -8,7 +8,6 @@ import config from '@plone/volto/registry';
 import {
   connectToProviderData,
   connectToMultipleProviders,
-  connectToPopupProviderData,
 } from '@eeacms/volto-datablocks/hocs';
 
 import { SimpleDataTableSchema } from './schema';
@@ -79,9 +78,9 @@ class Edit extends Component {
         ? Array.from(Object.keys(table_provider_data).sort()).map((n) => [n, n])
         : [];
       schema.properties.popup_data_query.choices = choices;
+      schema.properties.image_url.choices = choices;
       schema.properties.popupTitle.choices = choices;
       schema.properties.popupDescription.choices = choices;
-
       schema.properties.popupUrl.choices = choices;
 
       //set choices for the popup table columns

@@ -19,12 +19,22 @@ import {
 } from '@eeacms/volto-datablocks/actions';
 
 const defaultSchema = {
-  title: '', // this could/shoud come from parent row (since we would not have ind org/descriptions)
-  description: '', //same ^^
+  title: '',
+  description: '', //
   tableColumns: [],
   url: '',
   logo: '',
   mapData: {},
+};
+
+const ValidImage = ({ imageUrl }) => {
+  const [isValidImg, setIsValidImg] = React.useState(true);
+
+  return imageUrl && isValidImg ? (
+    <img src={imageUrl} alt={imageUrl} onError={() => setIsValidImg(false)} />
+  ) : (
+    <Icon name={expandSVG} size="2rem" className="expand-row" />
+  );
 };
 
 const PopupRow = ({
@@ -47,15 +57,11 @@ const PopupRow = ({
 
   const queryVal = rowData[popup_data_query];
 
-  // console.log('tableData', tableData);
-  // console.log('rowData', rowData);
-  // console.log('tablecols', tableData.popupTableColumns);
-
   React.useEffect(() => {
     if (expand) {
       const {
         popupTitle,
-        popupLogo,
+        image_url,
         popupDescription,
         popupUrl,
         popupTableColumns,
@@ -68,7 +74,7 @@ const PopupRow = ({
       setPopupSchema({
         ...popupSchema,
         title: rowData[popupTitle],
-        logo: popupLogo,
+        logo: rowData[image_url],
         description: rowData[popupDescription],
         url: rowData[popupUrl],
         tableColumns: popupTableColumns,
@@ -161,20 +167,37 @@ const PopupRow = ({
       onClose={() => handleClose()}
       onOpen={() => handleExpand()}
       open={expand}
-      trigger={<Icon name={expandSVG} size="2rem" className="expand-row" />}
+      trigger={
+        <span>
+          <ValidImage imageUrl={rowData[tableData.image_url]} />
+        </span>
+      }
     >
-      <Modal.Header>
-        {popupSchema.title}
-        {/* <Image size="tiny" src={modalSchema.logo} wrapped floated="right" /> */}
-      </Modal.Header>
+      <Modal.Header>{popupSchema.title}</Modal.Header>
       <Modal.Content scrolling>
-        <Modal.Description>
+        <Modal.Description style={{ display: 'flex' }}>
           {popupSchema.description && (
-            <ReadMore maxChars={200} text={popupSchema.description} />
+            <div className="description-container">
+              <ReadMore maxChars={200} text={popupSchema.description} />
+            </div>
+          )}
+          {popupSchema.logo && (
+            <img
+              src={popupSchema.logo}
+              alt={popupSchema.logo}
+              className="popup-logo"
+              onError={() => setPopupSchema({ ...popupSchema, logo: '' })} // don't show it if it's not available
+            />
           )}
         </Modal.Description>
-        <div style={{ display: 'flex', margin: '10px 0' }}>
-          <div style={{ width: '49%', marginRight: '5px' }}>
+        <div
+          style={{
+            display: 'flex',
+            margin: '10px 0',
+            justifyContent: 'space-between',
+          }}
+        >
+          <div style={{ width: '49%' }}>
             {rowData && (
               <PopupTable
                 rowData={rowData}
@@ -191,7 +214,7 @@ const PopupRow = ({
               {popupSchema.url}
             </a>
           </div>
-          <div style={{ width: '49%', marginLeft: '5px' }}>
+          <div style={{ width: '49%' }}>
             {rowData && (
               <PopupMap
                 rowData={rowData}

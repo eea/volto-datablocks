@@ -52,8 +52,7 @@ const PopupTable = ({ rowData, providerUrl, provider_data, tableColumns }) => {
         </Table.Header>
 
         <Table.Body>
-          {tableData &&
-            tableData.length > 0 &&
+          {tableData && tableData.length > 0 ? (
             Array(tableData.length)
               .fill()
               .map((_, i) => {
@@ -70,7 +69,10 @@ const PopupTable = ({ rowData, providerUrl, provider_data, tableColumns }) => {
                     ))}
                   </Table.Row>
                 );
-              })}
+              })
+          ) : (
+            <p>No data found for table.</p>
+          )}
         </Table.Body>
       </Table>
     </div>

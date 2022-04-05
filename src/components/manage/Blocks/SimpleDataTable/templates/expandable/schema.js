@@ -120,6 +120,7 @@ export default () => ({
       fields: [
         'searchDescription',
         'popup_data_query',
+        'image_url',
         'popupTitle',
         'popupDescription',
         'popupUrl',
@@ -148,16 +149,16 @@ export default () => ({
     },
     popup_data_query: {
       title: 'Popup Data Query',
-      description: 'Selected attribute by which to query popup data',
+      description: 'Select attribute by which to query popup data',
+      choices: [],
+    },
+    image_url: {
+      title: 'Image Url',
+      description: 'Select Image URL param for the main table and popup',
       choices: [],
     },
     popupTitle: {
       title: 'Popup Title',
-      choices: [],
-    },
-    popupLogo: {
-      title: 'Popup Logo',
-      description: 'Param pointing to Image url ',
       choices: [],
     },
     popupDescription: {
@@ -170,7 +171,7 @@ export default () => ({
     },
     popupTableColumns: {
       title: 'Popup Table Columns',
-      description: 'Leave empty to show all columns',
+      description: 'Define popup table columns',
       schema: columnSchema,
       schemaExtender: (schema, child) => getColumnSchema(schema, child),
       widget: 'object_list',

@@ -16,7 +16,6 @@ const PopupMap = ({ rowData, provider_data, mapData }) => {
   const [selectedData, setSelectedData] = React.useState([]);
 
   React.useEffect(() => {
-    console.log('selectedData', selectedData);
     const allLong =
       selectedData.length > 0 ? selectedData.map((i) => i[mapData.long]) : '';
     const allLat =
@@ -28,8 +27,6 @@ const PopupMap = ({ rowData, provider_data, mapData }) => {
 
     const centerLat = minLat && maxLat ? (minLat + maxLat) / 2 : '';
     const centerLong = minLong && maxLong ? (minLong + maxLong) / 2 : '';
-
-    console.log('center', centerLat, centerLong);
 
     if (centerLat && centerLong) {
       setMapCenter([centerLat, centerLong]);
@@ -67,14 +64,18 @@ const PopupMap = ({ rowData, provider_data, mapData }) => {
   }
   return (
     <div>
-      <Map height={500} center={mapCenter} defaultZoom={5}>
-        {selectedData.map((item, i) => {
-          const long = item[mapData.long] ? item[mapData.long] : '';
-          const lat = item[mapData.lat] ? item[mapData.lat] : '';
-          const label = item[mapData.label] ? item[mapData.label] : '';
-          return <Marker width={30} color={'#00519d'} anchor={[lat, long]} />;
-        })}
-      </Map>
+      {selectedData.length > 0 ? (
+        <Map height={500} center={mapCenter} defaultZoom={5}>
+          {selectedData.map((item, i) => {
+            const long = item[mapData.long] ? item[mapData.long] : '';
+            const lat = item[mapData.lat] ? item[mapData.lat] : '';
+            const label = item[mapData.label] ? item[mapData.label] : '';
+            return <Marker width={30} color={'#00519d'} anchor={[lat, long]} />;
+          })}
+        </Map>
+      ) : (
+        <p>No data available for map.</p>
+      )}
     </div>
   );
 };
