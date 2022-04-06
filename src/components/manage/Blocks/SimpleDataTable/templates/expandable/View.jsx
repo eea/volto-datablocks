@@ -215,7 +215,7 @@ const View = (props) => {
               const row_data = items[row_index];
               return (
                 <Table.Row key={row_index}>
-                  <Table.Cell textAlign="center">
+                  <Table.Cell key={`${row_index}-popuprow`} textAlign="center">
                     <PopupRow rowData={row_data} tableData={data} />
                   </Table.Cell>
                   {selectedColumns.map((colDef, j) => (
@@ -248,7 +248,7 @@ const View = (props) => {
           <Table.Footer>
             <Table.Row>
               <Table.HeaderCell
-                colSpan={selectedColumns.length}
+                colSpan={selectedColumns.length + 1}
                 style={{ textAlign: 'center' }}
               >
                 <Pagination

@@ -5,9 +5,7 @@ import { compose } from 'redux';
 import { Icon } from '@plone/volto/components';
 import expandSVG from '@plone/volto/icons/vertical.svg';
 
-import { Button, Image, Modal } from 'semantic-ui-react';
-
-import logoDummy from './static/logoDummy.png';
+import { Button, Modal } from 'semantic-ui-react';
 
 import ReadMore from './ReadMore';
 import PopupMap from './PopupMap';
@@ -30,10 +28,14 @@ const defaultSchema = {
 const ValidImage = ({ imageUrl }) => {
   const [isValidImg, setIsValidImg] = React.useState(true);
 
+  React.useEffect(() => {
+    setIsValidImg(true);
+  }, [imageUrl]);
+
   return imageUrl && isValidImg ? (
     <img src={imageUrl} alt={imageUrl} onError={() => setIsValidImg(false)} />
   ) : (
-    <Icon name={expandSVG} size="2rem" className="expand-row" />
+    <Icon name={expandSVG} size="3rem" className="expand-row" />
   );
 };
 
@@ -88,6 +90,7 @@ const PopupRow = ({
     } else {
       setPopupSchema(defaultSchema);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expand, tableData, rowData]);
 
   const handleSetFilterProvider = (provider_url, query, value, type) => {
@@ -173,7 +176,7 @@ const PopupRow = ({
         </span>
       }
     >
-      <Modal.Header>{popupSchema.title}</Modal.Header>
+      <Modal.Header className="popup-header">{popupSchema.title}</Modal.Header>
       <Modal.Content scrolling>
         <Modal.Description style={{ display: 'flex' }}>
           {popupSchema.description && (

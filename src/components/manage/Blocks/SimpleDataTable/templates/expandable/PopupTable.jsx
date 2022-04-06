@@ -1,5 +1,5 @@
 import React from 'react';
-import { Label, Table } from 'semantic-ui-react';
+import { Table } from 'semantic-ui-react';
 import { compose } from 'redux';
 import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 import RenderComponent from '../../components';

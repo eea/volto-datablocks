@@ -16,10 +16,11 @@ const PopupMap = ({ rowData, provider_data, mapData }) => {
   const [selectedData, setSelectedData] = React.useState([]);
 
   React.useEffect(() => {
+    const { long, lat } = mapData;
     const allLong =
-      selectedData.length > 0 ? selectedData.map((i) => i[mapData.long]) : '';
+      selectedData.length > 0 ? selectedData.map((i) => i[long]) : '';
     const allLat =
-      selectedData.length > 0 ? selectedData.map((i) => i[mapData.lat]) : '';
+      selectedData.length > 0 ? selectedData.map((i) => i[lat]) : '';
     const minLong = allLong && allLong.length > 0 ? Math.min(...allLong) : '';
     const maxLong = allLong && allLong.length > 0 ? Math.max(...allLong) : '';
     const minLat = allLong && allLong.length > 0 ? Math.min(...allLat) : '';
@@ -31,7 +32,7 @@ const PopupMap = ({ rowData, provider_data, mapData }) => {
     if (centerLat && centerLong) {
       setMapCenter([centerLat, centerLong]);
     }
-  }, [selectedData]);
+  }, [selectedData, mapData]);
 
   React.useEffect(() => {
     const provider_data_length = getProviderDataLength(provider_data);
@@ -52,12 +53,12 @@ const PopupMap = ({ rowData, provider_data, mapData }) => {
     /* eslint-disable-next-line */
   }, [provider_data]);
 
-  const countries =
-    provider_data && provider_data[mapData.country]
-      ? provider_data[mapData.country]
-      : '';
+  // const countries =
+  //   provider_data && provider_data[mapData.country]
+  //     ? provider_data[mapData.country]
+  //     : '';
 
-  const uniqueCountries = [...new Set(countries)];
+  //const uniqueCountries = [...new Set(countries)];
 
   if (!provider_data) {
     return 'Loading..';
@@ -69,7 +70,7 @@ const PopupMap = ({ rowData, provider_data, mapData }) => {
           {selectedData.map((item, i) => {
             const long = item[mapData.long] ? item[mapData.long] : '';
             const lat = item[mapData.lat] ? item[mapData.lat] : '';
-            const label = item[mapData.label] ? item[mapData.label] : '';
+            /* const label = item[mapData.label] ? item[mapData.label] : ''; */
             return <Marker width={30} color={'#00519d'} anchor={[lat, long]} />;
           })}
         </Map>
