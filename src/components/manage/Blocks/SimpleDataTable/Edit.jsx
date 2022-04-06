@@ -13,22 +13,6 @@ import {
 import { SimpleDataTableSchema } from './schema';
 import { SimpleDataTableView } from './View';
 
-const selectSchemaChoices = (choices, popUpChoices, param, data) => {
-  const selectedProvider =
-    data && param && data[param] && data[param].provider
-      ? data[param].provider
-      : '';
-  const isPopupProvider =
-    selectedProvider &&
-    data &&
-    data.popup_provider_url &&
-    data.popup_provider_url === selectedProvider;
-
-  const selectedChoices = isPopupProvider ? popUpChoices : choices;
-
-  return selectedChoices;
-};
-
 class Edit extends Component {
   getSchema = () => {
     const template = this.props.data.template || 'default';
@@ -87,6 +71,7 @@ class Edit extends Component {
       schema.properties.popupTableColumns.schema.properties.column.choices = tableChoices;
       schema.properties.popupTableColumns.schema.properties.column_link.choices = tableChoices;
 
+      //set choices for the popup map
       schema.properties.popupLong.choices = mapChoices;
       schema.properties.popupLat.choices = mapChoices;
       schema.properties.popupCountryCode.choices = mapChoices;

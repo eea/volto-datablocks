@@ -216,7 +216,7 @@ class SelectProviderPickWidget extends Component {
    * @returns {string} Markup for the component.
    */
   render() {
-    const { id, choices, providerChoices, value, intl, onChange } = this.props;
+    const { id, choices, providerChoices } = this.props;
 
     // Make sure that both disabled and isDisabled (from the DX layout feat work)
     const disabled = this.props.disabled || this.props.isDisabled;
