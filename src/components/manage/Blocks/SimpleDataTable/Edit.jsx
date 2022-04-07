@@ -5,7 +5,10 @@ import InlineForm from '@plone/volto/components/manage/Form/InlineForm';
 
 import config from '@plone/volto/registry';
 
-import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
+import {
+  connectToProviderData,
+  connectToMultipleProviders,
+} from '@eeacms/volto-datablocks/hocs';
 
 import { SimpleDataTableSchema } from './schema';
 import { SimpleDataTableView } from './View';
@@ -31,6 +34,49 @@ class Edit extends Component {
 
     schema.properties.columns.schema.properties.column.choices = choices;
     schema.properties.columns.schema.properties.column_link.choices = choices;
+
+    if (this.props.data.template === 'expandable') {
+      const map_provider_url = this.props.data.popup_map_provider_url
+        ? this.props.data.popup_map_provider_url
+        : '';
+      const table_provider_url = this.props.data.popup_table_provider_url
+        ? this.props.data.popup_table_provider_url
+        : '';
+
+      const map_provider_data =
+        this.props.providers_data && this.props.providers_data[map_provider_url]
+          ? this.props.providers_data[map_provider_url]
+          : '';
+
+      const table_provider_data =
+        this.props.providers_data &&
+        this.props.providers_data[table_provider_url]
+          ? this.props.providers_data[table_provider_url]
+          : '';
+
+      const mapChoices = map_provider_data
+        ? Array.from(Object.keys(map_provider_data).sort()).map((n) => [n, n])
+        : [];
+
+      const tableChoices = table_provider_data
+        ? Array.from(Object.keys(table_provider_data).sort()).map((n) => [n, n])
+        : [];
+      schema.properties.popup_data_query.choices = choices;
+      schema.properties.image_url.choices = choices;
+      schema.properties.popupTitle.choices = choices;
+      schema.properties.popupDescription.choices = choices;
+      schema.properties.popupUrl.choices = choices;
+
+      //set choices for the popup table columns
+      schema.properties.popupTableColumns.schema.properties.column.choices = tableChoices;
+      schema.properties.popupTableColumns.schema.properties.column_link.choices = tableChoices;
+
+      //set choices for the popup map
+      schema.properties.popupLong.choices = mapChoices;
+      schema.properties.popupLat.choices = mapChoices;
+      schema.properties.popupCountryCode.choices = mapChoices;
+      schema.properties.popupMapLabel.choices = mapChoices;
+    }
 
     return schema;
   };
@@ -61,6 +107,19 @@ class Edit extends Component {
 }
 
 export default compose(
+  connectToMultipleProviders((props) => {
+    const {
+      provider_url,
+      popup_map_provider_url,
+      popup_table_provider_url,
+    } = props.data;
+    const providers = [
+      { provider_url: provider_url },
+      { provider_url: popup_map_provider_url },
+      { provider_url: popup_table_provider_url },
+    ];
+    return { providers };
+  }),
   connectToProviderData((props) => {
     const { max_count = 5 } = props.data;
     return {

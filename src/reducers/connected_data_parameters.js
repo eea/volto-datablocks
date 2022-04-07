@@ -23,7 +23,6 @@ export default function connected_data_parameters(
   // let byRouteParameters;
   let path, byProviderPath;
   const { providerPath, data_query, index } = action;
-
   switch (action.type) {
     case SET_CONNECTED_DATA_PARAMETERS:
       return {

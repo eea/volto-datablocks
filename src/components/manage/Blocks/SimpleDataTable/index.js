@@ -5,6 +5,7 @@ import SimpleDataTableView from './View';
 import { DefaultView, defaultSchema } from './templates/default';
 import { SmartView, smartSchema } from './templates/smart';
 import { ColoredTableView, coloredTableSchema } from './templates/colored';
+import { expandableSchema, ExpandableView } from './templates/expandable';
 
 export default (config) => {
   config.blocks.blocksConfig.simpleDataConnectedTable = {
@@ -36,6 +37,11 @@ export default (config) => {
         title: 'Colored table',
         view: ColoredTableView,
         schema: coloredTableSchema,
+      },
+      expandable: {
+        title: 'Expandable',
+        view: ExpandableView,
+        schema: expandableSchema,
       },
       ...(config.blocks.blocksConfig.simpleDataConnectedTable?.templates || {}),
     },

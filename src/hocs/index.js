@@ -4,7 +4,6 @@ import connectToProviderData from './connectToProviderData';
 import connectToProviderDataUnfiltered from './connectToProviderDataUnfiltered';
 import connectToMultipleProviders from './connectToMultipleProviders';
 import connectToMultipleProvidersUnfiltered from './connectToMultipleProvidersUnfiltered';
-
 import withBlockData from './withBlockData';
 import withEditBlockData from './withEditBlockData';
 
