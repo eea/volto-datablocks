@@ -66,7 +66,7 @@ const PopupMap = ({ rowData, provider_data, mapData }) => {
   return (
     <div>
       {selectedData.length > 0 ? (
-        <Map height={500} center={mapCenter} defaultZoom={5}>
+        <Map height={400} center={mapCenter} defaultZoom={5}>
           {selectedData.map((item, i) => {
             const long = item[mapData.long] ? item[mapData.long] : '';
             const lat = item[mapData.lat] ? item[mapData.lat] : '';

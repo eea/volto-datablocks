@@ -38,7 +38,7 @@ const PopupTable = ({ rowData, providerUrl, provider_data, tableColumns }) => {
 
   return (
     <div className="popup-table-container">
-      <Table celled>
+      <Table striped celled className="popup-table">
         <Table.Header>
           <Table.Row>
             {tableColumns &&
@@ -71,7 +71,7 @@ const PopupTable = ({ rowData, providerUrl, provider_data, tableColumns }) => {
                 );
               })
           ) : (
-            <p>No data found for table.</p>
+            <p>No data available for table.</p>
           )}
         </Table.Body>
       </Table>
