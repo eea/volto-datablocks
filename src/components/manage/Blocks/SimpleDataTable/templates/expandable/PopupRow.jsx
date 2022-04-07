@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 
 import { Icon } from '@plone/volto/components';
-import expandSVG from '@plone/volto/icons/vertical.svg';
+import expandSVG from '@plone/volto/icons/fullscreen.svg';
 
 import { Button, Modal } from 'semantic-ui-react';
 
@@ -33,9 +33,14 @@ const ValidImage = ({ imageUrl }) => {
   }, [imageUrl]);
 
   return imageUrl && isValidImg ? (
-    <img src={imageUrl} alt={imageUrl} onError={() => setIsValidImg(false)} />
+    <img
+      className="expand-row-img"
+      src={imageUrl}
+      alt={imageUrl}
+      onError={() => setIsValidImg(false)}
+    />
   ) : (
-    <Icon name={expandSVG} size="3rem" className="expand-row" />
+    <Icon name={expandSVG} size="3rem" className="expand-row-icon" />
   );
 };
 
