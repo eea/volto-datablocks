@@ -5,6 +5,7 @@ import installDottedTableChart from './components/manage/Blocks/DottedTableChart
 import installCountryFlag from './components/manage/Blocks/CountryFlag';
 import installRouteParameter from './components/manage/Blocks/RouteParameter';
 import installCustomConnectedBlock from './components/manage/Blocks/CustomConnectedBlock';
+import installConditionalDataBlock from './components/manage/Blocks/ConditionalDataBlock';
 
 import { DataConnectorView } from './components';
 import {
@@ -49,5 +50,6 @@ export default (config) => {
     installCountryFlag,
     installRouteParameter,
     installCustomConnectedBlock,
+    installConditionalDataBlock,
   ].reduce((acc, apply) => apply(acc), config);
 };
