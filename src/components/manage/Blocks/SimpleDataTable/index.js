@@ -25,7 +25,6 @@ export default (config) => {
       default: {
         title: 'Default',
         view: DefaultView,
-        // edit: () => 'Im edit',
         schema: defaultSchema,
       },
       smart: {

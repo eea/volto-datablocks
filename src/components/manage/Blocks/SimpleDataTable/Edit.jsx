@@ -91,4 +91,19 @@ class Edit extends Component {
   }
 }
 
-export default Edit;
+export default compose(
+  connectToProviderData((props) => {
+    const { max_count = 5 } = props.data;
+    return {
+      provider_url:
+        props.visualization_data?.provider_url ||
+        props.data?.provider_url ||
+        props.data?.url,
+      pagination: {
+        enabled: props.data.has_pagination,
+        itemsPerPage:
+          typeof max_count !== 'number' ? parseInt(max_count) : max_count,
+      },
+    };
+  }),
+)(Edit);
