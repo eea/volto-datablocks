@@ -153,8 +153,6 @@ export function mixProviderData(
         // tweak transformation filters using data parameters
         (trace.transforms || []).forEach((transform) => {
           if (transform.targetsrc === real_index && filterValue) {
-            // console.log('connectedDataTemplateString', connectedDataTemplateString);
-
             if (!connectedDataTemplateString) {
               transform.value = filterValue;
               transform.target = providerData[transform.targetsrc];

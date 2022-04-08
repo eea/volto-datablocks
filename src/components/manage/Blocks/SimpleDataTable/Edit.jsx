@@ -30,18 +30,18 @@ const DefaultEdit = compose(
 
   return (
     <>
-      <SimpleDataTableView {...this.props} />
-      <SidebarPortal selected={this.props.selected}>
+      <SimpleDataTableView {...props} />
+      <SidebarPortal selected={props.selected}>
         <InlineForm
-          schema={this.getSchema()}
+          schema={schema}
           title={schema.title}
           onChangeField={(id, value) => {
-            this.props.onChangeBlock(this.props.block, {
-              ...this.props.data,
+            props.onChangeBlock(props.block, {
+              ...props.data,
               [id]: value,
             });
           }}
-          formData={this.props.data}
+          formData={props.data}
         />
       </SidebarPortal>
     </>
@@ -51,11 +51,17 @@ const DefaultEdit = compose(
 class Edit extends Component {
   getSchema = () => {
     const template = this.props.data.template || 'default';
+
     const templateSchema =
       config.blocks.blocksConfig.simpleDataConnectedTable?.templates?.[template]
         ?.schema || {};
 
-    const schema = SimpleDataTableSchema(config, templateSchema(config));
+    const schema = SimpleDataTableSchema(
+      config,
+      typeof templateSchema === 'function'
+        ? templateSchema(config)
+        : templateSchema,
+    );
 
     // TODO: create picker for columns to include
     const { provider_data } = this.props;
@@ -74,7 +80,7 @@ class Edit extends Component {
   };
 
   render() {
-    const { template = 'default' } = this.props;
+    const { template = 'default' } = this.props.data;
     const schema = this.getSchema();
 
     const TableEdit =

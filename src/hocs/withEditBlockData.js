@@ -23,7 +23,6 @@ const withEditBlockData = (WrappedComponent) => (props) => {
     /* eslint-disable-next-line */
   }, [blockData?.chartData?.data, dispatch, id, pathname]);
 
-  // console.log('data', blockData.data, props.data);
   return <WrappedComponent {...props} data={blockData?.data || props.data} />;
 };
 
