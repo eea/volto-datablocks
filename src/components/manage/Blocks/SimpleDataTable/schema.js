@@ -121,7 +121,6 @@ export const SimpleDataTableSchema = (config, templateSchema = {}) => {
     template,
     templatesConfig[template].title || template,
   ]);
-
   const defaultFieldset = templateSchema.fieldsets.filter((fieldset) => {
     return fieldset.id === 'default';
   })[0];

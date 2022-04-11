@@ -45,7 +45,7 @@ const SimpleDataTableView = (props) => {
     max_count = 5,
     placeholder = 'No results',
     show_header = false,
-    template,
+    template = 'default',
   } = data;
 
   const provider_data =
@@ -56,11 +56,9 @@ const SimpleDataTableView = (props) => {
       : null) || props.provider_data;
   const provider_data_length = getProviderDataLength(provider_data);
 
-  const tableTemplate = template || 'default';
   const TableView =
-    config.blocks.blocksConfig.simpleDataConnectedTable?.templates?.[
-      tableTemplate
-    ]?.view || DefaultView;
+    config.blocks.blocksConfig.simpleDataConnectedTable?.templates?.[template]
+      ?.view || DefaultView;
 
   // TODO: sorting
   const row_size = has_pagination

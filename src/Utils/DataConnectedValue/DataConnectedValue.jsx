@@ -1,6 +1,6 @@
 import React from 'react';
 import { compose } from 'redux';
-import { isUndefined } from 'lodash';
+import { isNil } from 'lodash';
 import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 
 import { FormattedValue } from '../';
@@ -9,11 +9,13 @@ import './styles.css';
 const EMPTY = '-';
 
 const Placeholder = (props) => {
+  const placeholder = props.placeholder.trim();
   const isComponent = React.useMemo(
     () => typeof props.placeholder === 'function',
     [props.placeholder],
   );
-  const PlaceholderElement = props.placeholder || EMPTY;
+
+  const PlaceholderElement = placeholder || EMPTY;
 
   return isComponent ? <PlaceholderElement {...props} /> : PlaceholderElement;
 };
@@ -50,7 +52,7 @@ const DataConnectedValue = (props) => {
 
   const collapsable = props.collapsable && value.length > collapseLimit;
 
-  return !isUndefined(value) ? (
+  return !isNil(value) ? (
     <>
       <FormattedValue
         textTemplate={textTemplate}

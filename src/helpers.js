@@ -153,8 +153,6 @@ export function mixProviderData(
         // tweak transformation filters using data parameters
         (trace.transforms || []).forEach((transform) => {
           if (transform.targetsrc === real_index && filterValue) {
-            // console.log('connectedDataTemplateString', connectedDataTemplateString);
-
             if (!connectedDataTemplateString) {
               transform.value = filterValue;
               transform.target = providerData[transform.targetsrc];
@@ -245,3 +243,46 @@ export function useOnScreen(ref, rootMargin = '0px') {
   }, [isIntersecting]);
   return { entryCount, isIntersecting };
 }
+
+// export function mergeSchema(schema, schemaExtend, ...args) {
+//   const fieldsets = {};
+//   const fieldsetsOrder = [];
+//   const _schema =
+//     (typeof schema === 'function' ? schema(...args) : schema) || null;
+//   const _schemaExtend =
+//     (typeof schemaExtend === 'function'
+//       ? schemaExtend(...args)
+//       : schemaExtend) || null;
+//   if (!_schema || (_schema && !_schemaExtend)) return null;
+
+//   [...(_schema.fieldsets || []), ...(_schemaExtend.fieldsets || [])].forEach(
+//     (fieldset) => {
+//       if (!fieldsetsOrder.includes(fieldset.id)) {
+//         fieldsetsOrder.push(fieldset.id);
+//       }
+//       if (!fieldsets[fieldset.id]) {
+//         fieldsets[fieldset.id] = {};
+//       }
+//       fieldsets[fieldset.id] = {
+//         id: fieldset.id,
+//         title: fieldset.title,
+//         fields: [
+//           ...new Set([
+//             ...(fieldsets[fieldset.id].fields || []),
+//             ...(fieldset.fields || []),
+//           ]),
+//         ],
+//       };
+//     },
+//   );
+
+//   return {
+//     title: _schemaExtend.title || _schema.title,
+//     fieldsets,
+//     properties: {
+//       ...(_schema.properties || {}),
+//       ...(_schemaExtend.properties || {}),
+//     },
+//     required: [...(_schema.required || []), ...(_schemaExtend.required || [])],
+//   };
+// }

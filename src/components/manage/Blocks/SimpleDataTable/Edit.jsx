@@ -10,14 +10,58 @@ import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 import { SimpleDataTableSchema } from './schema';
 import { SimpleDataTableView } from './View';
 
+const DefaultEdit = compose(
+  connectToProviderData((props) => {
+    const { max_count = 5 } = props.data;
+    return {
+      provider_url:
+        props.visualization_data?.provider_url ||
+        props.data?.provider_url ||
+        props.data?.url,
+      pagination: {
+        enabled: props.data.has_pagination,
+        itemsPerPage:
+          typeof max_count !== 'number' ? parseInt(max_count) : max_count,
+      },
+    };
+  }),
+)((props) => {
+  const { schema = {} } = props;
+
+  return (
+    <>
+      <SimpleDataTableView {...props} />
+      <SidebarPortal selected={props.selected}>
+        <InlineForm
+          schema={schema}
+          title={schema.title}
+          onChangeField={(id, value) => {
+            props.onChangeBlock(props.block, {
+              ...props.data,
+              [id]: value,
+            });
+          }}
+          formData={props.data}
+        />
+      </SidebarPortal>
+    </>
+  );
+});
+
 class Edit extends Component {
   getSchema = () => {
     const template = this.props.data.template || 'default';
+
     const templateSchema =
       config.blocks.blocksConfig.simpleDataConnectedTable?.templates?.[template]
         ?.schema || {};
 
-    const schema = SimpleDataTableSchema(config, templateSchema(config));
+    const schema = SimpleDataTableSchema(
+      config,
+      typeof templateSchema === 'function'
+        ? templateSchema(config)
+        : templateSchema,
+    );
 
     // TODO: create picker for columns to include
     const { provider_data } = this.props;
@@ -36,27 +80,14 @@ class Edit extends Component {
   };
 
   render() {
+    const { template = 'default' } = this.props.data;
     const schema = this.getSchema();
 
-    return (
-      <>
-        <SimpleDataTableView {...this.props} />
+    const TableEdit =
+      config.blocks.blocksConfig.simpleDataConnectedTable?.templates?.[template]
+        ?.edit || DefaultEdit;
 
-        <SidebarPortal selected={this.props.selected}>
-          <InlineForm
-            schema={this.getSchema()}
-            title={schema.title}
-            onChangeField={(id, value) => {
-              this.props.onChangeBlock(this.props.block, {
-                ...this.props.data,
-                [id]: value,
-              });
-            }}
-            formData={this.props.data}
-          />
-        </SidebarPortal>
-      </>
-    );
+    return <TableEdit {...this.props} schema={schema} />;
   }
 }
 
