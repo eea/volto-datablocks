@@ -8,7 +8,10 @@ import { defineMessages, injectIntl } from 'react-intl';
 import cx from 'classnames';
 import { connect } from 'react-redux';
 import PrivacyProtection from '@eeacms/volto-embed/PrivacyProtection/PrivacyProtection';
-import { getConnectedDataParametersForContext } from '@eeacms/volto-datablocks/helpers';
+import {
+  getConnectedDataParametersForContext,
+  getFilteredURL,
+} from '@eeacms/volto-datablocks/helpers';
 import './styles.less';
 
 const messages = defineMessages({
@@ -17,32 +20,6 @@ const messages = defineMessages({
     defaultMessage: 'Embeded Google Maps',
   },
 });
-
-const getFilteredURL = (url, connected_data_parameters = []) => {
-  if (!connected_data_parameters?.length) return url;
-  let decodedURL = decodeURIComponent(url);
-  const queries = decodedURL.match(/(<<)(.*?)*>>/g); //safari: don't use lookbehind
-  if (!queries?.length) return url;
-
-  const filteredQueries = queries.map((query) =>
-    query.replace('<<', '').replace('>>', ''),
-  );
-
-  const keys = connected_data_parameters.map((param) => param.i);
-  for (let poz in filteredQueries) {
-    const key = filteredQueries[poz];
-    const paramPoz = keys.indexOf(key);
-    if (paramPoz > -1) {
-      decodedURL = decodedURL.replace(
-        `<<${key}>>`,
-        connected_data_parameters[paramPoz].v[0],
-      );
-
-      continue;
-    }
-  }
-  return decodedURL;
-};
 
 /**
  * View Embed block class.
