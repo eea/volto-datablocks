@@ -22,11 +22,12 @@ const getFilteredURL = (url, connected_data_parameters = []) => {
   if (!connected_data_parameters?.length) return url;
   let decodedURL = decodeURIComponent(url);
   const queries = decodedURL.match(/(<<)(.*?)*>>$/g); //safari: don't use lookbehind
+  if (!queries?.length) return url;
+
   const filteredQueries = queries.map((query) =>
     query.replace('<<', '').replace('>>', ''),
   );
 
-  if (!filteredQueries?.length) return url;
   const keys = connected_data_parameters.map((param) => param.i);
   for (let poz in filteredQueries) {
     const key = filteredQueries[poz];
