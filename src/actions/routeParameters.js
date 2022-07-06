@@ -1,16 +1,15 @@
 import { SET_ROUTE_PARAMETER, DELETE_ROUTE_PARAMETER } from '../constants';
 
-export const setRouteParameter = (parameter, value) => {
+export const setRouteParameter = (data_query) => {
   return {
     type: SET_ROUTE_PARAMETER,
-    parameter,
-    value,
+    data_query,
   };
 };
 
-export const deleteRouteParameter = (parameter) => {
+export const deleteRouteParameter = (parameterKey) => {
   return {
     type: DELETE_ROUTE_PARAMETER,
-    parameter,
+    parameterKey,
   };
 };

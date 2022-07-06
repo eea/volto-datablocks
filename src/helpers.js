@@ -48,18 +48,28 @@ export function getDataQuery({
   const path = location.pathname.replace('/edit', '');
   const has_data_query_by_context = data.has_data_query_by_context ?? true;
   const has_data_query_by_provider = data.has_data_query_by_provider ?? true;
+  const has_data_query_by_route_parameter =
+    data.has_data_query_by_route_parameter ?? true;
   const byContextPath = has_data_query_by_context
     ? connected_data_parameters?.byContextPath?.[path] || []
     : [];
   const byProviderPath = has_data_query_by_provider
     ? connected_data_parameters?.byProviderPath?.[provider_url] || {}
     : {};
+  const byRouteParameters = has_data_query_by_route_parameter
+    ? connected_data_parameters?.byRouteParameters || []
+    : [];
   const filters =
     Object.keys(byProviderPath).map((key) => byProviderPath[key]) || [];
   // if (pagination.enabled) {
   //   return [...(data?.data_query || []), ...byContextPath, ...filters];
   // }
-  return [...(data?.data_query || []), ...byContextPath, ...filters];
+  return [
+    ...(data?.data_query || []),
+    ...byContextPath,
+    ...byRouteParameters,
+    ...filters,
+  ];
   // return [...(data?.data_query || []), ...byContextPath];
 }
 
