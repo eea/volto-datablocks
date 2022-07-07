@@ -1,12 +1,17 @@
 {
   "baseUrl": "http://localhost:3000",
   "viewportWidth": 1280,
-  "defaultCommandTimeout": 15000,
+  "defaultCommandTimeout": 8888,
   "reporter": "junit",
   "video": true,
   "reporterOptions": {
     "mochaFile": "cypress/reports/cypress-[hash].xml",
     "jenkinsMode": true,
     "toConsole": true
+  },
+  "chromeWebSecurity": false,
+  "retries": {
+    "runMode": 8,
+    "OpenMode": 0
   }
 }
