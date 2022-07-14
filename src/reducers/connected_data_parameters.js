@@ -6,21 +6,17 @@ import { flattenToAppURL } from '@plone/volto/helpers';
 import {
   SET_CONNECTED_DATA_PARAMETERS,
   DELETE_CONNECTED_DATA_PARAMETERS,
-  SET_ROUTE_PARAMETER,
-  DELETE_ROUTE_PARAMETER,
 } from '../constants';
 
 const initialState = {
   byProviderPath: {},
   byContextPath: {},
-  byRouteParameters: [],
 };
 
 export default function connected_data_parameters(
   state = initialState,
   action = {},
 ) {
-  let byRouteParameters;
   let path, byProviderPath;
   const { providerPath, data_query, index } = action;
   switch (action.type) {
@@ -45,20 +41,6 @@ export default function connected_data_parameters(
       return {
         ...state,
         byProviderPath,
-      };
-    case SET_ROUTE_PARAMETER:
-      byRouteParameters = [...state.byRouteParameters, action.data_query];
-      return {
-        ...state,
-        byRouteParameters,
-      };
-    case DELETE_ROUTE_PARAMETER:
-      byRouteParameters = [...state.byRouteParameters].filter(
-        (routeParam) => routeParam.i !== action.parameterKey,
-      );
-      return {
-        ...state,
-        byRouteParameters,
       };
     case 'GET_CONTENT_SUCCESS':
       const content = action.result;

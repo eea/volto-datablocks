@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import { compose } from 'redux';
 import { SidebarPortal } from '@plone/volto/components'; // EditBlock
 import InlineForm from '@plone/volto/components/manage/Form/InlineForm';
-
 import config from '@plone/volto/registry';
-
+import { VisibilitySensor } from '@eeacms/volto-datablocks/components';
 import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 
 import { SimpleDataTableSchema } from './schema';
@@ -91,7 +90,7 @@ class Edit extends Component {
   }
 }
 
-export default compose(
+const EditWrapper = compose(
   connectToProviderData((props) => {
     const { max_count = 5 } = props.data;
     return {
@@ -107,3 +106,11 @@ export default compose(
     };
   }),
 )(Edit);
+
+export default (props) => {
+  return (
+    <VisibilitySensor offset={{ top: -150, bottom: -150 }}>
+      <EditWrapper {...props} />
+    </VisibilitySensor>
+  );
+};

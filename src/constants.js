@@ -12,5 +12,3 @@ export const DATA_PROVIDER_TYPES = [
 ];
 
 export const DATACONNECTOR_PARAMS_GROUP = 'DataConnector Parameter';
-export const SET_ROUTE_PARAMETER = 'SET_ROUTE_PARAMETER';
-export const DELETE_ROUTE_PARAMETER = 'DELETE_ROUTE_PARAMETER';

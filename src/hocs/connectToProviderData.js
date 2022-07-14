@@ -5,6 +5,7 @@ import React, {
   useState,
   useRef,
 } from 'react';
+import { useParams } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import { connect, useDispatch } from 'react-redux';
 import { isEqual } from 'lodash';
@@ -34,12 +35,13 @@ const getInitialPagination = (config = {}) => {
 export function connectToProviderData(getConfig = () => ({})) {
   return (WrappedComponent) => {
     return connect((state) => ({
-      route_parameters: state.route_parameters,
+      content: state.content.data,
       connected_data_parameters: state.connected_data_parameters,
       data_providers: state.data_providers,
     }))(
       withRouter((props) => {
         const dispatch = useDispatch();
+        const params = useParams();
         const config = useMemo(() => getConfig(props), [props]);
         const [mounted, setMounted] = useState(false);
         const [state, setState] = useState({});
@@ -63,8 +65,8 @@ export function connectToProviderData(getConfig = () => ({})) {
           [props, pagination, state.extraQuery],
         );
         const data_query = useMemo(
-          () => getDataQuery({ ...props, pagination, provider_url }),
-          [props, pagination, provider_url],
+          () => getDataQuery({ ...props, params, pagination, provider_url }),
+          [props, params, pagination, provider_url],
         );
 
         const hashValue = useMemo(() => {

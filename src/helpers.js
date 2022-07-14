@@ -3,8 +3,6 @@ import { useEffect, useState } from 'react';
 import { getBaseUrl, flattenToAppURL } from '@plone/volto/helpers';
 import qs from 'querystring';
 
-export * from './components/manage/Blocks/RouteParameter';
-
 export function getBasePath(url) {
   return flattenToAppURL(getBaseUrl(url));
 }
@@ -40,25 +38,31 @@ export function getForm({ data = {}, location, pagination, extraQuery = {} }) {
 
 export function getDataQuery({
   connected_data_parameters,
+  content = {},
   data = {},
   location,
-  // pagination,
+  params,
   provider_url,
 }) {
-  const path = location.pathname.replace('/edit', '');
-  const has_data_query_by_context = data.has_data_query_by_context ?? true;
+  let byContextPath = [];
+  let byRouteParameters = [];
+  const path =
+    flattenToAppURL(content?.['@id']) || location.pathname.replace('/edit', '');
   const has_data_query_by_provider = data.has_data_query_by_provider ?? true;
-  const has_data_query_by_route_parameter =
-    data.has_data_query_by_route_parameter ?? true;
-  const byContextPath = has_data_query_by_context
-    ? connected_data_parameters?.byContextPath?.[path] || []
-    : [];
   const byProviderPath = has_data_query_by_provider
     ? connected_data_parameters?.byProviderPath?.[provider_url] || {}
     : {};
-  const byRouteParameters = has_data_query_by_route_parameter
-    ? connected_data_parameters?.byRouteParameters || []
-    : [];
+
+  (connected_data_parameters?.byContextPath?.[path] || []).forEach(
+    (data_query) => {
+      if (!params[data_query.i]) {
+        byContextPath.push(data_query);
+      } else {
+        byRouteParameters.push({ ...data_query, v: [params[data_query.i]] });
+      }
+    },
+  );
+
   const filters =
     Object.keys(byProviderPath).map((key) => byProviderPath[key]) || [];
   // if (pagination.enabled) {
@@ -70,7 +74,6 @@ export function getDataQuery({
     ...byRouteParameters,
     ...filters,
   ];
-  // return [...(data?.data_query || []), ...byContextPath];
 }
 
 /*

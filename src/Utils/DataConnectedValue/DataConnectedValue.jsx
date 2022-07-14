@@ -50,7 +50,7 @@ const DataConnectedValue = (props) => {
     row,
   ]);
 
-  const collapsable = props.collapsable && value.length > collapseLimit;
+  const collapsable = props.collapsable && value?.length > collapseLimit;
 
   return !isNil(value) ? (
     <>

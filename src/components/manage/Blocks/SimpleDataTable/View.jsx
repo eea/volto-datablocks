@@ -2,7 +2,7 @@ import React from 'react';
 import { compose } from 'redux';
 import config from '@plone/volto/registry';
 import { DefaultView } from './templates/default';
-
+import { VisibilitySensor } from '@eeacms/volto-datablocks/components';
 import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 import { serializeNodes } from '@eeacms/volto-datablocks/serialize';
 
@@ -103,7 +103,7 @@ const SimpleDataTableView = (props) => {
 
 export { SimpleDataTableView };
 
-export default compose(
+const SimpleDataTableViewWrapper = compose(
   connectToProviderData((props) => {
     const { max_count = 5 } = props.data;
     return {
@@ -116,3 +116,11 @@ export default compose(
     };
   }),
 )(SimpleDataTableView);
+
+export default (props) => {
+  return (
+    <VisibilitySensor offset={{ top: -150, bottom: -150 }}>
+      <SimpleDataTableViewWrapper {...props} />
+    </VisibilitySensor>
+  );
+};
