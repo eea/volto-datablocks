@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import { connect, useDispatch } from 'react-redux';
 import hash from 'object-hash';
@@ -14,11 +15,13 @@ import { getConnectorPath, getForm, getDataQuery } from '../helpers';
 export function connectToMultipleProviders(getConfig = () => ({})) {
   return (WrappedComponent) => {
     return connect((state) => ({
+      content: state.content.data,
       connected_data_parameters: state.connected_data_parameters,
       data_providers: state.data_providers,
     }))(
       withRouter((props) => {
         const dispatch = useDispatch();
+        const params = useParams();
         const config = useMemo(() => getConfig(props), [props]);
         const [mounted, setMounted] = useState(false);
         const [state, setState] = useState({
@@ -50,6 +53,7 @@ export function connectToMultipleProviders(getConfig = () => ({})) {
             // Get data query
             newState.data_query.push(
               getDataQuery({
+                params,
                 provider_url,
                 location: props.location,
                 connected_data_parameters: props.connected_data_parameters,
@@ -71,7 +75,12 @@ export function connectToMultipleProviders(getConfig = () => ({})) {
             );
           });
           setState({ ...newState });
-        }, [providers, props.location, props.connected_data_parameters]);
+        }, [
+          providers,
+          params,
+          props.location,
+          props.connected_data_parameters,
+        ]);
 
         const providers_data = useMemo(() => {
           const data = {};

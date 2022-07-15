@@ -3,7 +3,6 @@ import installDataConnectedEmbedBlock from './components/manage/Blocks/DataConne
 import installDataTable from './components/manage/Blocks/SimpleDataTable';
 import installDottedTableChart from './components/manage/Blocks/DottedTableChart';
 import installCountryFlag from './components/manage/Blocks/CountryFlag';
-import installRouteParameter from './components/manage/Blocks/RouteParameter';
 import installCustomConnectedBlock from './components/manage/Blocks/CustomConnectedBlock';
 import installConditionalDataBlock from './components/manage/Blocks/ConditionalDataBlock';
 
@@ -48,7 +47,6 @@ export default (config) => {
     installDataTable,
     installDottedTableChart,
     installCountryFlag,
-    installRouteParameter,
     installCustomConnectedBlock,
     installConditionalDataBlock,
   ].reduce((acc, apply) => apply(acc), config);
