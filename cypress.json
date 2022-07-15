@@ -12,6 +12,6 @@
   "chromeWebSecurity": false,
   "retries": {
     "runMode": 8,
-    "OpenMode": 0
+    "openMode": 0
   }
 }
