@@ -183,6 +183,18 @@ class QuerystringWidget extends Component {
     switch (indexes[row.i].operators[row.o].widget) {
       case null:
         return <span />;
+      case 'TextWidget':
+        return (
+          <Form.Field style={{ flex: '1 0 auto' }}>
+            <Input
+              {...props}
+              onChange={(data) =>
+                this.onChangeValue(index, [data.target.value])
+              }
+              value={row.v?.[0]}
+            />
+          </Form.Field>
+        );
       case 'DateWidget':
         return (
           <Form.Field style={{ flex: '1 0 auto' }}>
