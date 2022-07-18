@@ -9,7 +9,11 @@ function getHeaders(headers) {
   let str = '';
   headers.forEach((header) => {
     if (str !== '') str += ',';
-    str += header;
+    if (header.includes(',')) {
+      str += `"${header}"`;
+    } else {
+      str += header;
+    }
   });
   return str + '\r\n';
 }
@@ -31,7 +35,8 @@ function getData(array) {
 }
 
 function convertToCSV(array, readme = []) {
-  let str = getHeaders(Object.keys(array[0]));
+  const headers = Object.keys(array[0]);
+  let str = getHeaders(headers);
 
   str += getData(array);
 
