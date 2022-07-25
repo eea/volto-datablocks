@@ -11,6 +11,13 @@ export function getConnectorPath(provider_url, hashValue) {
   return `${provider_url}${hashValue ? `#${hashValue}` : '#_default'}`;
 }
 
+export function getProviderUrl(url) {
+  if (!url) return '';
+  return flattenToAppURL(url)
+    .replace('@@download/file', '')
+    .replace(/\/*$/, '');
+}
+
 export function getForm({ data = {}, location, pagination, extraQuery = {} }) {
   const params = {
     ...(qs.parse(location?.search?.replace('?', '')) || {}),

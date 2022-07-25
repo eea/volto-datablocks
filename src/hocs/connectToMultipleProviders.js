@@ -3,9 +3,13 @@ import { useParams } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import { connect, useDispatch } from 'react-redux';
 import hash from 'object-hash';
-import { flattenToAppURL } from '@plone/volto/helpers';
 import { getDataFromProvider } from '../actions';
-import { getConnectorPath, getForm, getDataQuery } from '../helpers';
+import {
+  getProviderUrl,
+  getConnectorPath,
+  getForm,
+  getDataQuery,
+} from '../helpers';
 
 /**
  * connectToMultipleProviders.
@@ -43,9 +47,9 @@ export function connectToMultipleProviders(getConfig = () => ({})) {
             connectorsPath: [],
           };
           providers.forEach((provider, index) => {
-            const provider_url = flattenToAppURL(
+            const provider_url = getProviderUrl(
               provider.provider_url || provider.url,
-            )?.replace(/\/$/, '');
+            );
             // Get form
             newState.form.push(
               getForm({ ...provider, location: props.location }),
@@ -85,9 +89,9 @@ export function connectToMultipleProviders(getConfig = () => ({})) {
         const providers_data = useMemo(() => {
           const data = {};
           providers.forEach((provider, index) => {
-            const provider_url = flattenToAppURL(
+            const provider_url = getProviderUrl(
               provider.provider_url || provider.url,
-            )?.replace(/\/$/, '');
+            );
             if (!provider_url || !state.hashValues[index]) return;
             const title = provider.name || provider.title || provider_url;
             data[title] =
@@ -101,9 +105,9 @@ export function connectToMultipleProviders(getConfig = () => ({})) {
         const providers_metadata = useMemo(() => {
           const data = {};
           providers.forEach((provider, index) => {
-            const provider_url = flattenToAppURL(
+            const provider_url = getProviderUrl(
               provider.provider_url || provider.url,
-            )?.replace(/\/$/, '');
+            );
             if (!provider_url || !state.hashValues[index]) return;
             const title = provider.name || provider.title || provider_url;
             data[title] =
@@ -120,9 +124,9 @@ export function connectToMultipleProviders(getConfig = () => ({})) {
             return;
           }
           providers.forEach((provider, index) => {
-            const provider_url = flattenToAppURL(
+            const provider_url = getProviderUrl(
               provider.provider_url || provider.url,
-            )?.replace(/\/$/, '');
+            );
             const form = state.form[index];
             const data_query = state.data_query[index];
             const hashValue = state.hashValues[index];
