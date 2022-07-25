@@ -1,9 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { withRouter } from 'react-router';
 import { connect, useDispatch } from 'react-redux';
-import { flattenToAppURL } from '@plone/volto/helpers';
 import { getDataFromProvider } from '../actions';
-import { getConnectorPath } from '../helpers';
+import { getProviderUrl, getConnectorPath } from '../helpers';
 
 /**
  * connectToMultipleProvidersUnfiltered.
@@ -28,9 +27,9 @@ export function connectToMultipleProvidersUnfiltered(getConfig = () => ({})) {
         const providers_data = useMemo(() => {
           const data = {};
           providers.forEach((provider) => {
-            const provider_url = flattenToAppURL(
+            const provider_url = getProviderUrl(
               provider.provider_url || provider.url,
-            )?.replace(/\/$/, '');
+            );
             if (!provider_url) return;
             const title = provider.name || provider.title || provider_url;
             data[title] = props.data_providers?.data?.[provider_url]?._default;
@@ -41,9 +40,9 @@ export function connectToMultipleProvidersUnfiltered(getConfig = () => ({})) {
         const providers_metadata = useMemo(() => {
           const data = {};
           providers.forEach((provider) => {
-            const provider_url = flattenToAppURL(
+            const provider_url = getProviderUrl(
               provider.provider_url || provider.url,
-            )?.replace(/\/$/, '');
+            );
             if (!provider_url) return;
             const title = provider.name || provider.title || provider_url;
             data[title] =
@@ -58,9 +57,9 @@ export function connectToMultipleProvidersUnfiltered(getConfig = () => ({})) {
             return;
           }
           providers.forEach((provider, index) => {
-            const provider_url = flattenToAppURL(
+            const provider_url = getProviderUrl(
               provider.provider_url || provider.url,
-            )?.replace(/\/$/, '');
+            );
             const connectorPath = getConnectorPath(provider_url);
 
             const provider_data = provider_url

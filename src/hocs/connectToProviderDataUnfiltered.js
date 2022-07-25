@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { withRouter } from 'react-router';
 import { connect, useDispatch } from 'react-redux';
 import { getDataFromProvider } from '../actions';
-import { getConnectorPath } from '../helpers';
+import { getProviderUrl, getConnectorPath } from '../helpers';
 /**
  * connectToProviderData.
  *
@@ -18,9 +18,10 @@ export function connectToProviderDataUnfiltered(getConfig = () => ({})) {
         const config = useMemo(() => getConfig(props), [props]);
         const [mounted, setMounted] = useState(false);
 
-        const provider_url = useMemo(() => config.provider_url, [
-          config.provider_url,
-        ]);
+        const provider_url = useMemo(
+          () => getProviderUrl(config.provider_url),
+          [config.provider_url],
+        );
 
         const connectorPath = useMemo(() => getConnectorPath(provider_url), [
           provider_url,

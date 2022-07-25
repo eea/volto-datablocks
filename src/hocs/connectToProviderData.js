@@ -10,9 +10,13 @@ import { withRouter } from 'react-router';
 import { connect, useDispatch } from 'react-redux';
 import { isEqual } from 'lodash';
 import hash from 'object-hash';
-import { flattenToAppURL } from '@plone/volto/helpers';
 import { getDataFromProvider } from '../actions';
-import { getConnectorPath, getForm, getDataQuery } from '../helpers';
+import {
+  getProviderUrl,
+  getConnectorPath,
+  getForm,
+  getDataQuery,
+} from '../helpers';
 import { ConnectorContext } from './';
 
 const getInitialPagination = (config = {}) => {
@@ -51,7 +55,7 @@ export function connectToProviderData(getConfig = () => ({})) {
         const prevHashValue = useRef(null);
 
         const provider_url = useMemo(
-          () => flattenToAppURL(config.provider_url)?.replace(/\/$/, ''),
+          () => getProviderUrl(config.provider_url),
           [config.provider_url],
         );
 
