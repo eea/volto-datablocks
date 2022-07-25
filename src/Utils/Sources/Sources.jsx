@@ -21,14 +21,18 @@ function getHeaders(headers) {
 function getData(array) {
   let str = '';
   for (let i = 0; i < array.length; i++) {
-    let line = '';
+    let row = '';
     for (let key in array[i]) {
-      if (line !== '') line += ',';
-
-      line += array[i][key];
+      const column = array[i][key];
+      if (row !== '') row += ',';
+      if (column.includes(',')) {
+        row += `"${column}"`;
+      } else {
+        row += column;
+      }
     }
 
-    str += line + '\r\n';
+    str += row + '\r\n';
   }
 
   return str;
