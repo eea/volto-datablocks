@@ -18,7 +18,13 @@ export function getProviderUrl(url) {
     .replace(/\/*$/, '');
 }
 
-export function getForm({ data = {}, location, pagination, extraQuery = {} }) {
+export function getForm({
+  data = {},
+  location,
+  pagination,
+  extraQuery = {},
+  extraConditions,
+}) {
   const params = {
     ...(qs.parse(location?.search?.replace('?', '')) || {}),
     ...(data.form || {}),
@@ -37,6 +43,7 @@ export function getForm({ data = {}, location, pagination, extraQuery = {} }) {
 
   return {
     ...(allowedParamsObj || params),
+    ...(extraConditions ? { extra_conditions: extraConditions } : {}),
     ...(pagination?.enabled
       ? { p: pagination.activePage, nrOfHits: pagination.itemsPerPage }
       : {}),
