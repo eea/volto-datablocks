@@ -65,8 +65,9 @@ export function connectToProviderData(getConfig = () => ({})) {
               ...props,
               pagination,
               extraQuery: state.extraQuery,
+              extraConditions: state.extraConditions,
             }),
-          [props, pagination, state.extraQuery],
+          [props, pagination, state.extraQuery, state.extraConditions],
         );
         const data_query = useMemo(
           () => getDataQuery({ ...props, params, pagination, provider_url }),
