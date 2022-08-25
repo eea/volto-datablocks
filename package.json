@@ -29,8 +29,7 @@
     "object-hash": "2.2.0",
     "react-countup": "6.1.1",
     "react-visibility-sensor": "5.1.1",
-    "sanitize-html": "^2.3.3",
-    "slate": "^0.62.0"
+    "sanitize-html": "^2.3.3"
   },
   "devDependencies": {
     "@cypress/code-coverage": "^3.9.5",
