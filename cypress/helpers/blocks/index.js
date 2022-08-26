@@ -1,11 +1,16 @@
 import { openSidebar, closeSidebar } from '../index';
 
 export const changePageTitle = (title) => {
-  cy.get('.documentFirstHeading > .public-DraftStyleDefault-block')
-    .clear()
-    .type(title)
-    .get('.documentFirstHeading span[data-text]')
-    .contains(title);
+  cy.wait(500);
+
+  // Change page title
+  cy.get('[contenteditable=true]').first().clear();
+
+  cy.get('[contenteditable=true]').first().type(title);
+
+  cy.get('.documentFirstHeading').contains(title);
+
+  cy.get('[contenteditable=true]').first().type('{enter}');
 };
 
 export const addBlock = (groupTitle, groupId, blockId) => {
