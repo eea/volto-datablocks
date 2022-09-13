@@ -9,3 +9,9 @@
   width: 20px !important;
   cursor: pointer;
 }
+
+@media print {
+  .download-button {
+    display: none;
+  }
+}
