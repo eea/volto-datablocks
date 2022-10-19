@@ -25,7 +25,10 @@ function getData(array) {
     for (let key in array[i]) {
       const column = array[i][key];
       if (row !== '') row += ',';
-      if (column.includes(',')) {
+      if (
+        (typeof column === 'number' && column.toString().includes(',')) ||
+        (typeof column === 'string' && column.includes(','))
+      ) {
         row += `"${column}"`;
       } else {
         row += column;
