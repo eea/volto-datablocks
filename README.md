@@ -336,7 +336,7 @@ export default compose(
 
 ## Release
 
-See [RELEASE.md](https://github.com/eea/volto-addon-template/blob/master/RELEASE.md).
+See [RELEASE.md](https://github.com/eea/volto-datablocks/blob/master/RELEASE.md).
 
 ## How to contribute
 
