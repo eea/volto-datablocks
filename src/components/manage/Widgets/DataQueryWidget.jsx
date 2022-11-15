@@ -340,7 +340,9 @@ class QuerystringWidget extends Component {
           <Grid.Row stretched>
             <Grid.Column width="12">
               <div className="simple-field-name">
-                {intl.formatMessage(messages.Criteria)}
+                {this.props.title
+                  ? this.props.title
+                  : intl.formatMessage(messages.Criteria)}
               </div>
             </Grid.Column>
           </Grid.Row>
