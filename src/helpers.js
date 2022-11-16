@@ -79,15 +79,15 @@ export function getDataQuery({
 
   const filters =
     Object.keys(byProviderPath).map((key) => byProviderPath[key]) || [];
-  // if (pagination.enabled) {
-  //   return [...(data?.data_query || []), ...byContextPath, ...filters];
-  // }
-  return [
+
+  const query = [
     ...(data?.data_query || []),
-    ...byContextPath,
+    ...(data?.has_data_query_by_context ? byContextPath : []),
     ...byRouteParameters,
     ...filters,
   ];
+
+  return query;
 }
 
 /*

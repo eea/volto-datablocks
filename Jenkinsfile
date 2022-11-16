@@ -41,18 +41,21 @@ pipeline {
 
           "ES lint": {
             node(label: 'docker') {
+              sh '''docker pull plone/volto-addon-ci:alpha'''
               sh '''docker run -i --rm --name="$BUILD_TAG-eslint" -e NAMESPACE="$NAMESPACE" -e GIT_NAME=$GIT_NAME -e GIT_BRANCH="$BRANCH_NAME" -e GIT_CHANGE_ID="$CHANGE_ID" -e VOLTO=$VOLTO plone/volto-addon-ci:alpha eslint'''
             }
           },
 
           "Style lint": {
             node(label: 'docker') {
+              sh '''docker pull plone/volto-addon-ci:alpha'''
               sh '''docker run -i --rm --name="$BUILD_TAG-stylelint" -e NAMESPACE="$NAMESPACE" -e GIT_NAME=$GIT_NAME -e GIT_BRANCH="$BRANCH_NAME" -e GIT_CHANGE_ID="$CHANGE_ID" -e VOLTO=$VOLTO plone/volto-addon-ci:alpha stylelint'''
             }
           },
 
           "Prettier": {
             node(label: 'docker') {
+              sh '''docker pull plone/volto-addon-ci:alpha'''
               sh '''docker run -i --rm --name="$BUILD_TAG-prettier" -e NAMESPACE="$NAMESPACE" -e GIT_NAME=$GIT_NAME -e GIT_BRANCH="$BRANCH_NAME" -e GIT_CHANGE_ID="$CHANGE_ID" -e VOLTO=$VOLTO plone/volto-addon-ci:alpha prettier'''
             }
           }
