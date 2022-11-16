@@ -35,8 +35,7 @@
     "@cypress/code-coverage": "^3.10.0",
     "@plone/scripts": "*",
     "babel-plugin-transform-class-properties": "^6.24.1",
-    "md5": "^2.3.0",
-    "razzle": "4.2.17"
+    "md5": "^2.3.0"
   },
   "repository": {
     "type": "git",
@@ -52,7 +51,6 @@
     "bootstrap": "npm install -g ejs; npm link ejs; node bootstrap",
     "test": "make test",
     "test:fix": "make test-update",
-    "postinstall": "make omelette && make patches",
     "pre-commit": "yarn stylelint:fix && yarn prettier:fix && yarn lint:fix",
     "stylelint": "if [ -d ./project ]; then ./project/node_modules/stylelint/bin/stylelint.js --allow-empty-input 'src/**/*.{css,less}'; else ../../../node_modules/stylelint/bin/stylelint.js --allow-empty-input 'src/**/*.{css,less}'; fi",
     "stylelint:overrides": "if [ -d ./project ]; then ./project/node_modules/.bin/stylelint --syntax less --allow-empty-input 'theme/**/*.overrides' 'src/**/*.overrides'; else ../../../node_modules/.bin/stylelint --syntax less --allow-empty-input 'theme/**/*.overrides' 'src/**/*.overrides'; fi",
