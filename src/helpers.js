@@ -1,21 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from "react";
-import { getBaseUrl, flattenToAppURL } from "@plone/volto/helpers";
-import qs from "querystring";
+import { useEffect, useState } from 'react';
+import { getBaseUrl, flattenToAppURL } from '@plone/volto/helpers';
+import qs from 'querystring';
 
 export function getBasePath(url) {
   return flattenToAppURL(getBaseUrl(url));
 }
 
 export function getConnectorPath(provider_url, hashValue) {
-  return `${provider_url}${hashValue ? `#${hashValue}` : "#_default"}`;
+  return `${provider_url}${hashValue ? `#${hashValue}` : '#_default'}`;
 }
 
 export function getProviderUrl(url) {
-  if (!url) return "";
+  if (!url) return '';
   return flattenToAppURL(url)
-    .replace("@@download/file", "")
-    .replace(/\/*$/, "");
+    .replace('@@download/file', '')
+    .replace(/\/*$/, '');
 }
 
 export function getForm({
@@ -26,7 +26,7 @@ export function getForm({
   extraConditions,
 }) {
   const params = {
-    ...(qs.parse(location?.search?.replace("?", "")) || {}),
+    ...(qs.parse(location?.search?.replace('?', '')) || {}),
     ...(data.form || {}),
     ...extraQuery,
   };
@@ -61,7 +61,7 @@ export function getDataQuery({
   let byContextPath = [];
   let byRouteParameters = [];
   const path =
-    flattenToAppURL(content?.["@id"]) || location.pathname.replace("/edit", "");
+    flattenToAppURL(content?.['@id']) || location.pathname.replace('/edit', '');
   const has_data_query_by_provider = data.has_data_query_by_provider ?? true;
   const byProviderPath = has_data_query_by_provider
     ? connected_data_parameters?.byProviderPath?.[provider_url] || {}
@@ -74,7 +74,7 @@ export function getDataQuery({
       } else {
         byRouteParameters.push({ ...data_query, v: [params[data_query.i]] });
       }
-    }
+    },
   );
 
   const filters =
@@ -105,11 +105,11 @@ export function updateChartDataFromProvider(chartData, providerData) {
   const res = chartData.map((trace) => {
     const newTrace = { ...(trace || {}) };
     Object.keys(trace).forEach((tk) => {
-      const originalColumn = tk.replace(/src$/, "");
+      const originalColumn = tk.replace(/src$/, '');
       if (
-        tk.endsWith("src") &&
+        tk.endsWith('src') &&
         Object.keys(trace).includes(originalColumn) &&
-        typeof trace[tk] === "string" &&
+        typeof trace[tk] === 'string' &&
         providerDataColumns.includes(trace[tk])
       ) {
         let values = providerData[trace[tk]];
@@ -140,16 +140,16 @@ export function mixProviderData(
   chartData,
   providerData,
   parameters,
-  connectedDataTemplateString
+  connectedDataTemplateString,
 ) {
   const providerDataColumns = Object.keys(providerData);
   const res = (chartData || []).map((trace) => {
     Object.keys(trace).forEach((tk) => {
-      const originalColumn = tk.replace(/src$/, "");
+      const originalColumn = tk.replace(/src$/, '');
       if (
-        tk.endsWith("src") &&
+        tk.endsWith('src') &&
         Object.keys(trace).includes(originalColumn) &&
-        typeof trace[tk] === "string" &&
+        typeof trace[tk] === 'string' &&
         providerDataColumns.includes(trace[tk])
       ) {
         let values = providerData[trace[tk]];
@@ -161,7 +161,7 @@ export function mixProviderData(
         const filter = parameters.find((f) => {
           // finds any available filter that matches the data
           let { i: index } = f;
-          index = index.toLowerCase().replace("taxonomy_", "");
+          index = index.toLowerCase().replace('taxonomy_', '');
           return Object.keys(providerData || {})
             .map((k) => k.toLowerCase())
             .includes(index);
@@ -173,7 +173,7 @@ export function mixProviderData(
           v: [filterValue],
         } = filter;
 
-        filterName = filterName.replace("taxonomy_", "");
+        filterName = filterName.replace('taxonomy_', '');
 
         const real_index =
           providerDataColumns.find((n) => n.toLowerCase() === filterName) ||
@@ -192,15 +192,15 @@ export function mixProviderData(
                 ? transformValue.join()
                 : transformValue;
 
-              connectedDataTemplateString.split(",").forEach((templString) => {
+              connectedDataTemplateString.split(',').forEach((templString) => {
                 transformValue = transformValue.replace(
                   templString,
-                  filterValue
+                  filterValue,
                 );
               });
 
               transform.value = tValueIsArray
-                ? transformValue.split(",")
+                ? transformValue.split(',')
                 : transformValue;
               transform.target = providerData[transform.targetsrc];
             }
@@ -218,9 +218,9 @@ export function mixProviderData(
 
 export function getConnectedDataParametersForContext(
   connected_data_parameters,
-  url
+  url,
 ) {
-  let path = getBasePath(url || "");
+  let path = getBasePath(url || '');
 
   const { byContextPath = {} } = connected_data_parameters;
 
@@ -229,13 +229,13 @@ export function getConnectedDataParametersForContext(
 
 export function getConnectedDataParametersForProvider(
   connected_data_parameters,
-  provider_url
+  provider_url,
 ) {
-  let path = getBasePath(provider_url || "");
+  let path = getBasePath(provider_url || '');
 
   const { byProviderPath = {} } = connected_data_parameters;
   const res = Object.keys(byProviderPath[path] || {}).map(
-    (filter) => byProviderPath[path][filter]
+    (filter) => byProviderPath[path][filter],
   );
 
   return res;
@@ -243,7 +243,7 @@ export function getConnectedDataParametersForProvider(
 
 // hook when component is in visible viewport, rootMargin is how much of the element should be visible before loading up
 // Example"-300px" for In this case it would only be considered onScreen if more ... 300px is visible
-export function useOnScreen(ref, rootMargin = "0px") {
+export function useOnScreen(ref, rootMargin = '0px') {
   // State and setter for storing whether element is visible
   const [isIntersecting, setIntersecting] = useState(false);
   const [entryCount, setEntryCount] = useState(0);
@@ -255,7 +255,7 @@ export function useOnScreen(ref, rootMargin = "0px") {
       },
       {
         rootMargin,
-      }
+      },
     );
     if (ref.current) {
       observer.observe(ref.current);
@@ -323,7 +323,7 @@ export const getFilteredURL = (url, connected_data_parameters = []) => {
   if (!queries?.length) return url;
 
   const filteredQueries = queries.map((query) =>
-    query.replace("<<", "").replace(">>", "")
+    query.replace('<<', '').replace('>>', ''),
   );
 
   const keys = connected_data_parameters.map((param) => param.i);
@@ -333,7 +333,7 @@ export const getFilteredURL = (url, connected_data_parameters = []) => {
     if (paramPoz > -1) {
       decodedURL = decodedURL.replace(
         `<<${key}>>`,
-        connected_data_parameters[paramPoz].v[0]
+        connected_data_parameters[paramPoz].v[0],
       );
 
       continue;
