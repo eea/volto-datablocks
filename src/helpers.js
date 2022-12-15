@@ -80,9 +80,11 @@ export function getDataQuery({
   const filters =
     Object.keys(byProviderPath).map((key) => byProviderPath[key]) || [];
 
+  const has_data_query_by_context = data?.has_data_query_by_context ?? true;
+
   const query = [
     ...(data?.data_query || []),
-    ...(data?.has_data_query_by_context ? byContextPath : []),
+    ...(has_data_query_by_context ? byContextPath : []),
     ...byRouteParameters,
     ...filters,
   ];
