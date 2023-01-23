@@ -112,16 +112,6 @@ function exportCSVFile(csv, title = 'data') {
   }
 }
 
-// const dlAnchorElem = document.createElement('a');
-// dlAnchorElem.setAttribute(
-//   'href',
-//   `${config.settings.apiPath}${
-//     provider_url || ExternalCSVPath
-//   }/@@download`,
-// );
-// dlAnchorElem.className = 'piwik_download';
-// dlAnchorElem.click();
-
 const SourceView = (props) => {
   const {
     sources,
@@ -190,7 +180,7 @@ const SourceView = (props) => {
         />
       )}
 
-      {sources?.length ? (
+      {sources?.length && (
         <div className="sources">
           <span className="discreet">
             {sources.length > 1 ? 'Sources: ' : 'Source: '}
@@ -213,8 +203,6 @@ const SourceView = (props) => {
             ),
           )}
         </div>
-      ) : (
-        ''
       )}
     </React.Fragment>
   );

@@ -52,7 +52,9 @@ const DataConnectedValue = (props) => {
 
   const collapsable = props.collapsable && value?.length > collapseLimit;
 
-  return !isNil(value) ? (
+  if (isNil(value)) return <Placeholder {...props} />;
+
+  return (
     <>
       <FormattedValue
         textTemplate={textTemplate}
@@ -74,8 +76,6 @@ const DataConnectedValue = (props) => {
         </div>
       )}
     </>
-  ) : (
-    <Placeholder {...props} />
   );
 };
 

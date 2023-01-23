@@ -6,17 +6,18 @@ import { VisibilitySensor } from '@eeacms/volto-datablocks/components';
 import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 import './style.less';
 
-const DefaultView = (props) => (
-  <>
-    {props.mode === 'edit' && !props.data.type ? (
-      <p>Please select a block type from sidebar</p>
-    ) : props.mode === 'edit' && props.data.type ? (
-      <p>Block type selected: {props.data.type}</p>
-    ) : (
-      ''
-    )}
-  </>
-);
+const DefaultView = (props) => {
+  return (
+    <>
+      {props.mode === 'edit' && !props.data.type && (
+        <p>Please select a block type from sidebar</p>
+      )}
+      {props.mode === 'edit' && props.data.type && (
+        <p>Block type selected: {props.data.type}</p>
+      )}
+    </>
+  );
+};
 
 const View = (props) => {
   const type = props.data.type;

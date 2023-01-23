@@ -97,7 +97,7 @@ class Edit extends Component {
     });
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     const { data } = this.props;
     if (data.url !== prevProps.data.url) {
       this.onSubmitUrl();
@@ -155,7 +155,7 @@ class Edit extends Component {
                 'full-width': this.props.data.align === 'full',
               })}
             >
-              {this.props.selected ? null : (
+              {!this.props.selected && (
                 <div
                   style={{
                     position: 'absolute',

@@ -21,16 +21,15 @@ const CountryFlagView = ({ data = {} }) => {
       });
     }
   });
+
+  if (!country_name) {
+    return 'no country';
+  }
+
   return (
     <div className="country-flag">
-      {!country_name ? (
-        'no country'
-      ) : show_flag && flag ? (
-        <img alt={countryNames[country_name]} src={flag} />
-      ) : (
-        ''
-      )}
-      {country_name && show_name ? <Tag>{countryNames[country_name]}</Tag> : ''}
+      {show_flag && flag && <img alt={countryNames[country_name]} src={flag} />}
+      {country_name && show_name && <Tag>{countryNames[country_name]}</Tag>}
     </div>
   );
 };

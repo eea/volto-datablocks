@@ -23,7 +23,7 @@ const SourceSchema = {
   required: ['source'],
 };
 
-const getSchema = (props, config, templateSchema = {}) => {
+const getSchema = (config, templateSchema = {}) => {
   const blocksConfig =
     config.blocks.blocksConfig.custom_connected_block?.blocks || {};
   const blocks = Object.keys(blocksConfig).map((block) => [

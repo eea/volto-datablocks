@@ -43,6 +43,11 @@ const FormattedValue = ({
 }) => {
   const originalValue = value;
   const animateValue = typeof value === 'number' && animatedCounter;
+  const sanitizeHtmlResult = sanitizeHtml(value, {
+    allowedAttributes: {
+      span: ['id'],
+    },
+  });
   return (
     <React.Fragment>
       <D3 fallback={null}>
@@ -57,46 +62,34 @@ const FormattedValue = ({
             value = textTemplate.replace('{}', value);
           }
 
-          return wrapped ? (
-            <>
-              {animateValue ? (
-                <span
-                  className={cx(
-                    'formatted-value',
-                    collapsed ? 'collapsed' : null,
-                  )}
-                >
-                  {textTemplate && textTemplate.split('{}').length > 0
-                    ? textTemplate.split('{}')[0]
-                    : ''}
-                  <AnimatedCounter originalValue={originalValue} />
-                  {textTemplate && textTemplate.split('{}').length > 0
-                    ? textTemplate.split('{}')[1]
-                    : ''}
-                </span>
-              ) : (
-                <span
-                  className={cx(
-                    'formatted-value',
-                    collapsed ? 'collapsed' : null,
-                  )}
-                  dangerouslySetInnerHTML={{
-                    __html:
-                      sanitizeHtml(value, {
-                        allowedAttributes: {
-                          span: ['id'],
-                        },
-                      }) || '',
-                  }}
-                />
-              )}
-            </>
+          if (!wrapped) {
+            return sanitizeHtmlResult || '';
+          }
+
+          return animateValue ? (
+            <span
+              className={cx('formatted-value', collapsed ? 'collapsed' : null)}
+            >
+              {textTemplate && textTemplate.split('{}').length > 0
+                ? textTemplate.split('{}')[0]
+                : ''}
+              <AnimatedCounter originalValue={originalValue} />
+              {textTemplate && textTemplate.split('{}').length > 0
+                ? textTemplate.split('{}')[1]
+                : ''}
+            </span>
           ) : (
-            sanitizeHtml(value, {
-              allowedAttributes: {
-                span: ['id'],
-              },
-            }) || ''
+            <span
+              className={cx('formatted-value', collapsed ? 'collapsed' : null)}
+              dangerouslySetInnerHTML={{
+                __html:
+                  sanitizeHtml(value, {
+                    allowedAttributes: {
+                      span: ['id'],
+                    },
+                  }) || '',
+              }}
+            />
           );
         }}
       </D3>
