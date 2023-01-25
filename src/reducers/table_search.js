@@ -5,7 +5,7 @@ const initialState = {
   payload: {},
 };
 
-export default function table_search(state = initialState, action) {
+function table_search(state = initialState, action) {
   switch (action.type) {
     case 'TABLE_CLEAN_QUERY':
       return initialState;
@@ -25,3 +25,5 @@ export default function table_search(state = initialState, action) {
       return state;
   }
 }
+
+export default table_search;

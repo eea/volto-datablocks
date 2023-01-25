@@ -1,9 +1,8 @@
 import React from 'react';
 import { compose } from 'redux';
-import { Container } from 'semantic-ui-react';
 import { Icon } from '@plone/volto/components';
 import { flattenToAppURL } from '@plone/volto/helpers';
-import { Table, Menu, Loader } from 'semantic-ui-react';
+import { Table, Menu, Loader, Container } from 'semantic-ui-react';
 import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 
 import leftSVG from '@plone/volto/icons/left-key.svg';

@@ -260,7 +260,7 @@ export function useOnScreen(ref, rootMargin = '0px') {
     if (ref.current) {
       observer.observe(ref.current);
     }
-    var curRef = ref.current;
+    const curRef = ref.current;
     return () => {
       observer.unobserve(ref.current ? ref.current : curRef);
     };
@@ -272,49 +272,6 @@ export function useOnScreen(ref, rootMargin = '0px') {
   }, [isIntersecting]);
   return { entryCount, isIntersecting };
 }
-
-// export function mergeSchema(schema, schemaExtend, ...args) {
-//   const fieldsets = {};
-//   const fieldsetsOrder = [];
-//   const _schema =
-//     (typeof schema === 'function' ? schema(...args) : schema) || null;
-//   const _schemaExtend =
-//     (typeof schemaExtend === 'function'
-//       ? schemaExtend(...args)
-//       : schemaExtend) || null;
-//   if (!_schema || (_schema && !_schemaExtend)) return null;
-
-//   [...(_schema.fieldsets || []), ...(_schemaExtend.fieldsets || [])].forEach(
-//     (fieldset) => {
-//       if (!fieldsetsOrder.includes(fieldset.id)) {
-//         fieldsetsOrder.push(fieldset.id);
-//       }
-//       if (!fieldsets[fieldset.id]) {
-//         fieldsets[fieldset.id] = {};
-//       }
-//       fieldsets[fieldset.id] = {
-//         id: fieldset.id,
-//         title: fieldset.title,
-//         fields: [
-//           ...new Set([
-//             ...(fieldsets[fieldset.id].fields || []),
-//             ...(fieldset.fields || []),
-//           ]),
-//         ],
-//       };
-//     },
-//   );
-
-//   return {
-//     title: _schemaExtend.title || _schema.title,
-//     fieldsets,
-//     properties: {
-//       ...(_schema.properties || {}),
-//       ...(_schemaExtend.properties || {}),
-//     },
-//     required: [...(_schema.required || []), ...(_schemaExtend.required || [])],
-//   };
-// }
 
 export const getFilteredURL = (url, connected_data_parameters = []) => {
   if (!connected_data_parameters?.length) return url;

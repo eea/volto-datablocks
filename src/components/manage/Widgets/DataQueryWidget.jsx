@@ -271,9 +271,6 @@ class QuerystringWidget extends Component {
         );
       case 'ReferenceWidget':
       default:
-        // if (row.o === 'plone.app.querystring.operation.string.relativePath') {
-        //   props.onChange = data => this.onChangeValue(index, data.target.value);
-        // }
         return (
           <Form.Field style={{ flex: '1 0 auto' }}>
             <Input {...props} />

@@ -183,7 +183,7 @@ class SelectProviderPickWidget extends Component {
       : this.props.id === 'roles' || this.props.id === 'groups';
 
     const changeValObjByType = (selectedOption, val, type) => {
-      var joinedVal = {};
+      let joinedVal = {};
       if (type === 'value') {
         joinedVal = val
           ? { ...val, value: selectedOption.value }

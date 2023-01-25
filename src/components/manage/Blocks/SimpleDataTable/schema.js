@@ -87,7 +87,7 @@ const columnSchema = {
   required: ['column'],
 };
 
-const getColumnSchema = (schema, child) => {
+const getColumnSchema = (child) => {
   return {
     ...columnSchema,
     fieldsets: [

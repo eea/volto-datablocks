@@ -47,33 +47,35 @@ export const Leaf = ({ children, ...rest }) => {
 
   const klass = cx(obj);
 
-  return mode === 'view' ? (
-    typeof children === 'string' ? (
-      children.split('\n').map((t, i) => {
-        // Softbreak support. Should do a plugin?
-        return (
-          <React.Fragment key={`${i}`}>
-            {children.indexOf('\n') > -1 &&
-            children.split('\n').length - 1 > i ? (
-              <>
-                {klass ? <span className={klass}>{t}</span> : t}
-                <br />
-              </>
-            ) : klass ? (
-              <span className={klass}>{t}</span>
-            ) : (
-              t
-            )}
-          </React.Fragment>
-        );
-      })
-    ) : (
-      <span className={klass}>{children}</span>
-    )
+  if (mode !== 'view') {
+    return (
+      <span {...attributes} className={klass}>
+        {children}
+      </span>
+    );
+  }
+
+  return typeof children === 'string' ? (
+    children.split('\n').map((t, i) => {
+      // Softbreak support. Should do a plugin?
+      return (
+        <React.Fragment key={`${i}`}>
+          {children.indexOf('\n') > -1 &&
+          children.split('\n').length - 1 > i ? (
+            <>
+              {klass ? <span className={klass}>{t}</span> : t}
+              <br />
+            </>
+          ) : klass ? (
+            <span className={klass}>{t}</span>
+          ) : (
+            t
+          )}
+        </React.Fragment>
+      );
+    })
   ) : (
-    <span {...attributes} className={klass}>
-      {children}
-    </span>
+    <span className={klass}>{children}</span>
   );
 };
 

@@ -40,6 +40,5 @@ export const isValidUrl = (url) => {
   if (!url) return '';
 
   let containsProtocol = url.includes('http://') || url.includes('https://');
-  let checkedUrl = containsProtocol ? url : `https://${url}`;
-  return checkedUrl;
+  return containsProtocol ? url : `https://${url}`;
 };

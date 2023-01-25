@@ -1,6 +1,6 @@
 import config from '@plone/volto/registry';
 
-const colorSchema = (props) => {
+const colorSchema = () => {
   return {
     title: 'Color',
 

@@ -31,7 +31,7 @@ const View = (props) => {
           className={`unstackable ${data.bordered ? 'no-borders' : ''}
           ${data.compact_table ? 'compact-table' : ''}`}
         >
-          {show_header ? (
+          {show_header && (
             <Table.Header>
               <Table.Row>
                 {selectedColumns.map((colDef, j) => (
@@ -44,7 +44,7 @@ const View = (props) => {
                 ))}
               </Table.Row>
             </Table.Header>
-          ) : null}
+          )}
           <Table.Body>
             {Array(Math.max(0, row_size))
               .fill()
@@ -70,7 +70,7 @@ const View = (props) => {
                 </Table.Row>
               ))}
           </Table.Body>
-          {has_pagination ? (
+          {has_pagination && (
             <Table.Footer>
               <Table.Row>
                 <Table.HeaderCell
@@ -123,7 +123,7 @@ const View = (props) => {
                 </Table.HeaderCell>
               </Table.Row>
             </Table.Footer>
-          ) : null}
+          )}
         </Table>
       ) : (
         <p>{placeholder}</p>

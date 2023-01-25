@@ -70,7 +70,7 @@ const DottedTableChartView = (props) => {
         {description ? serializeNodes(description) : ''}
       </div>
       <div className="inner">
-        {!!provider_data && column_data && row_data && size_data ? (
+        {!!provider_data && column_data && row_data && size_data && (
           <Table
             textAlign="left"
             striped={data.striped}
@@ -136,8 +136,6 @@ const DottedTableChartView = (props) => {
               ))}
             </Table.Body>
           </Table>
-        ) : (
-          ''
         )}
       </div>
     </div>
