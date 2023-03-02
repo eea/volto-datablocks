@@ -42,6 +42,7 @@ const DataConnectedValue = (props) => {
     specifier,
     textTemplate,
     animatedCounter,
+    link,
   } = props;
 
   const value = React.useMemo(() => getValue(provider_data, column, row), [
@@ -60,6 +61,7 @@ const DataConnectedValue = (props) => {
         animatedCounter={animatedCounter}
         specifier={specifier}
         collapsed={collapsable && collapsed}
+        link={link}
       />
       {collapsable && (
         <div>
