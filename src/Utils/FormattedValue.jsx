@@ -1,8 +1,11 @@
 import React, { useRef } from 'react';
+import isObject from 'lodash/isObject';
 import loadable from '@loadable/component';
 import cx from 'classnames';
 import sanitizeHtml from 'sanitize-html';
 import CountUp from 'react-countup';
+import { UniversalLink } from '@plone/volto/components';
+import { isUrl } from '@plone/volto/helpers';
 
 import { useOnScreen } from '../helpers';
 
@@ -40,9 +43,11 @@ const FormattedValue = ({
   collapsed,
   wrapped = true,
   animatedCounter,
+  link = null,
 }) => {
   const originalValue = value;
   const animateValue = typeof value === 'number' && animatedCounter;
+
   return (
     <React.Fragment>
       <D3 fallback={null}>
@@ -57,8 +62,26 @@ const FormattedValue = ({
             value = textTemplate.replace('{}', value);
           }
 
+          const isLink = link && isUrl(value);
+
+          const Link = isLink ? UniversalLink : React.Fragment;
+          const linkProps = isLink
+            ? {
+                href: value,
+              }
+            : {};
+
+          const html =
+            isLink && isObject(link) && link.title
+              ? link.title
+              : sanitizeHtml(value, {
+                  allowedAttributes: {
+                    span: ['id'],
+                  },
+                }) || '';
+
           return wrapped ? (
-            <>
+            <Link {...linkProps}>
               {animateValue ? (
                 <span
                   className={cx(
@@ -81,22 +104,13 @@ const FormattedValue = ({
                     collapsed ? 'collapsed' : null,
                   )}
                   dangerouslySetInnerHTML={{
-                    __html:
-                      sanitizeHtml(value, {
-                        allowedAttributes: {
-                          span: ['id'],
-                        },
-                      }) || '',
+                    __html: html,
                   }}
                 />
               )}
-            </>
+            </Link>
           ) : (
-            sanitizeHtml(value, {
-              allowedAttributes: {
-                span: ['id'],
-              },
-            }) || ''
+            <Link {...linkProps}>{html}</Link>
           );
         }}
       </D3>
