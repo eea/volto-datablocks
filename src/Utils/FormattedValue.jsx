@@ -37,9 +37,11 @@ const AnimatedCounter = ({ originalValue }) => {
 };
 
 const FormattedValue = ({
+  linkTemplate,
   textTemplate,
   specifier,
   value,
+  linkValue,
   collapsed,
   wrapped = true,
   animatedCounter,
@@ -58,16 +60,22 @@ const FormattedValue = ({
               value = formatter(value);
             } catch {}
           }
+          if (linkTemplate) {
+            linkValue = linkTemplate.replace('{}', linkValue || value);
+          }
           if (textTemplate && !animateValue) {
             value = textTemplate.replace('{}', value);
           }
+          if (textTemplate && !linkTemplate && !linkValue) {
+            linkValue = value;
+          }
 
-          const isLink = link && isUrl(value);
+          const isLink = link && isUrl(linkValue);
 
           const Link = isLink ? UniversalLink : React.Fragment;
           const linkProps = isLink
             ? {
-                href: value,
+                href: linkValue,
               }
             : {};
 
