@@ -4,7 +4,7 @@ pipeline {
   environment {
         GIT_NAME = "volto-datablocks"
         NAMESPACE = "@eeacms"
-        SONARQUBE_TAGS = "volto.eea.europa.eu,climate-energy.eea.europa.eu,forest.eea.europa.eu,biodiversity.europa.eu,water.europa.eu-freshwater,water.europa.eu-marine"
+        SONARQUBE_TAGS = "volto.eea.europa.eu,climate-energy.eea.europa.eu,forest.eea.europa.eu,biodiversity.europa.eu,water.europa.eu-freshwater,water.europa.eu-marine,industry.eea.europa.eu"
         DEPENDENCIES = "@eeacms/volto-embed"
         VOLTO = "16.14.0"
     }
