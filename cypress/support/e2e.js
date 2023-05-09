@@ -18,6 +18,9 @@ import './commands';
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
+// Fail Fast
+import 'cypress-fail-fast';
+
 //Generate code-coverage
 import '@cypress/code-coverage/support';
 
