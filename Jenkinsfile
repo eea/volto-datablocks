@@ -174,6 +174,7 @@ pipeline {
           environment name: 'CHANGE_ID', value: ''
           anyOf {
             branch 'master'
+            branch 'code-quality'
             allOf {
               branch 'develop'
               not { changelog '.*^Automated release [0-9\\.]+$' }
