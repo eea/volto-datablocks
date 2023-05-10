@@ -19,6 +19,9 @@
     "@eeacms/volto-matomo",
     "@eeacms/volto-group-block"
   ],
+  "resolutions": {
+    "react-countup/countup.js": "2.5.0"
+  },
   "dependencies": {
     "@eeacms/volto-embed": "*",
     "@eeacms/volto-group-block": "*",
