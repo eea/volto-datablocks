@@ -181,7 +181,6 @@ export const SimpleDataTableSchema = (config, templateSchema = {}) => {
 
       description: {
         title: 'Description',
-        widget: 'slate_richtext',
         description: 'Allows rich text formatting',
       },
       provider_url: {
@@ -212,7 +211,6 @@ export const SimpleDataTableSchema = (config, templateSchema = {}) => {
       },
       template: {
         title: 'Template',
-        type: 'array',
         choices: [...templates],
         default: 'default',
       },

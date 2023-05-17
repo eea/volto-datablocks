@@ -4,7 +4,6 @@ import config from '@plone/volto/registry';
 import { DefaultView } from './templates/default';
 import { VisibilitySensor } from '@eeacms/volto-datablocks/components';
 import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
-import { serializeNodes } from '@eeacms/volto-datablocks/serialize';
 
 import './styles.less';
 
@@ -81,7 +80,7 @@ const SimpleDataTableView = (props) => {
   return (
     <div className="simple-data-table">
       <div className={`table-title ${data.underline ? 'title-border' : ''}`}>
-        {description ? serializeNodes(description) : ''}
+        {description ? <p>{description}</p> : ''}
       </div>
       <TableView
         {...props}
