@@ -40,7 +40,13 @@ const DefaultEdit = compose(
               [id]: value,
             });
           }}
-          formData={props.data}
+          formData={{
+            ...props.data,
+            tableDescription:
+              props.data.description && !props.data.tableDescription
+                ? props.data.description
+                : props.data.tableDescription,
+          }}
         />
       </SidebarPortal>
     </>

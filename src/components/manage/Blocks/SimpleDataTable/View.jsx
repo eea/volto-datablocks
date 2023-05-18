@@ -44,7 +44,9 @@ const SimpleDataTableView = (props) => {
   const { data = {}, pagination = {} } = props;
   const {
     columns,
-    tableDescription,
+    tableDescription = data.description && !data.tableDescription
+      ? data.description
+      : data.tableDescription,
     has_pagination = false,
     max_count = 5,
     placeholder = 'No results',
