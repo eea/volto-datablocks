@@ -133,7 +133,7 @@ export const SimpleDataTableSchema = (config, templateSchema = {}) => {
         id: 'default',
         title: 'Default',
         fields: [
-          'description',
+          'tableDescription',
           'placeholder',
           'template',
           ...(defaultFieldset?.fields || {}),
@@ -178,7 +178,7 @@ export const SimpleDataTableSchema = (config, templateSchema = {}) => {
         schemaExtender: (schema, child) => getColumnSchema(schema, child),
         widget: 'object_list',
       },
-      description: {
+      tableDescription: {
         title: 'Description',
         widget: 'slate_richtext',
         description: 'Allows rich text formatting',
