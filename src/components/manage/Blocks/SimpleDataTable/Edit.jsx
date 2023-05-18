@@ -71,7 +71,6 @@ class Edit extends Component {
       n,
       n,
     ]);
-
     schema.properties.columns.schema.properties.column.choices = choices;
     schema.properties.columns.schema.properties.column_link.choices = choices;
 

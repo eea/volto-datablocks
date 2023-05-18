@@ -178,9 +178,10 @@ export const SimpleDataTableSchema = (config, templateSchema = {}) => {
         schemaExtender: (schema, child) => getColumnSchema(schema, child),
         widget: 'object_list',
       },
-
       description: {
         title: 'Description',
+        widget: 'slate_richtext',
+        description: 'Allows rich text formatting',
       },
       provider_url: {
         title: 'Data provider',

@@ -5,6 +5,12 @@ import { DefaultView } from './templates/default';
 import { VisibilitySensor } from '@eeacms/volto-datablocks/components';
 import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 import './styles.less';
+import { serializeNodes } from '@plone/volto-slate/editor/render';
+import { isArray } from 'lodash';
+
+export const serializeText = (text) => {
+  return isArray(text) ? serializeNodes(text) : text;
+};
 
 const getAlignmentOfColumn = (col, idx) => {
   return typeof col !== 'string' && col.textAlign
@@ -79,7 +85,7 @@ const SimpleDataTableView = (props) => {
   return (
     <div className="simple-data-table">
       <div className={`table-title ${data.underline ? 'title-border' : ''}`}>
-        {description ? <p>{description}</p> : ''}
+        {description ? serializeText(description) : ''}
       </div>
       <TableView
         {...props}
