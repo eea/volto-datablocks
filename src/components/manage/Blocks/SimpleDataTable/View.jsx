@@ -4,7 +4,6 @@ import config from '@plone/volto/registry';
 import { DefaultView } from './templates/default';
 import { VisibilitySensor } from '@eeacms/volto-datablocks/components';
 import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
-
 import './styles.less';
 
 const getAlignmentOfColumn = (col, idx) => {
