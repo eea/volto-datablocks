@@ -44,9 +44,7 @@ const SimpleDataTableView = (props) => {
   const { data = {}, pagination = {} } = props;
   const {
     columns,
-    tableDescription = data.description && !data.tableDescription
-      ? data.description
-      : data.tableDescription,
+    description,
     has_pagination = false,
     max_count = 5,
     placeholder = 'No results',
@@ -87,7 +85,7 @@ const SimpleDataTableView = (props) => {
   return (
     <div className="simple-data-table">
       <div className={`table-title ${data.underline ? 'title-border' : ''}`}>
-        {tableDescription ? serializeText(tableDescription) : ''}
+        {description ? serializeText(description) : ''}
       </div>
       <TableView
         {...props}
