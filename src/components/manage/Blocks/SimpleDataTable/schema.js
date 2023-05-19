@@ -155,7 +155,7 @@ export const SimpleDataTableSchema = (config, templateSchema = {}) => {
         fields: [
           'has_pagination',
           'show_header',
-          'underline',
+          'celled',
           'striped',
           'bordered',
           'compact_table',
@@ -178,7 +178,6 @@ export const SimpleDataTableSchema = (config, templateSchema = {}) => {
         schemaExtender: (schema, child) => getColumnSchema(schema, child),
         widget: 'object_list',
       },
-
       description: {
         title: 'Description',
         widget: 'slate_richtext',
@@ -212,7 +211,6 @@ export const SimpleDataTableSchema = (config, templateSchema = {}) => {
       },
       template: {
         title: 'Template',
-        type: 'array',
         choices: [...templates],
         default: 'default',
       },
@@ -222,11 +220,11 @@ export const SimpleDataTableSchema = (config, templateSchema = {}) => {
         default: false,
       },
       show_header: {
-        title: 'Show header?',
+        title: 'Show header',
         type: 'boolean',
       },
       striped: {
-        title: 'Color alternate rows',
+        title: 'Stripe alternate rows with color',
         type: 'boolean',
       },
       bordered: {
@@ -234,11 +232,11 @@ export const SimpleDataTableSchema = (config, templateSchema = {}) => {
         type: 'boolean',
       },
       compact_table: {
-        title: 'Compact table',
+        title: 'Make the table compact',
         type: 'boolean',
       },
-      underline: {
-        title: 'Title underline',
+      celled: {
+        title: 'Divide each row into separate cells',
         type: 'boolean',
       },
       ...(templateSchema.properties || {}),

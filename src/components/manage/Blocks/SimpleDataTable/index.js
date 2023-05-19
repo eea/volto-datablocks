@@ -3,8 +3,6 @@ import SimpleDataTableEdit from './Edit';
 import SimpleDataTableView from './View';
 
 import { DefaultView, defaultSchema } from './templates/default';
-import { SmartView, smartSchema } from './templates/smart';
-import { ColoredTableView, coloredTableSchema } from './templates/colored';
 
 export default (config) => {
   config.blocks.blocksConfig.simpleDataConnectedTable = {
@@ -26,16 +24,6 @@ export default (config) => {
         title: 'Default',
         view: DefaultView,
         schema: defaultSchema,
-      },
-      smart: {
-        title: 'Smart',
-        view: SmartView,
-        schema: smartSchema,
-      },
-      colored_table: {
-        title: 'Colored table',
-        view: ColoredTableView,
-        schema: coloredTableSchema,
       },
       ...(config.blocks.blocksConfig.simpleDataConnectedTable?.templates || {}),
     },

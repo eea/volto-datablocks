@@ -27,9 +27,11 @@ const View = (props) => {
       {row_size ? (
         <Table
           textAlign="left"
-          striped={data.striped}
-          className={`unstackable ${data.bordered ? 'no-borders' : ''}
-          ${data.compact_table ? 'compact-table' : ''}`}
+          striped={data?.striped}
+          className={`unstackable ${data?.bordered ? 'no-borders' : ''}
+          ${data?.compact_table ? 'compact-table' : ''} ${
+            data?.celled ? 'celled' : ''
+          }`}
         >
           {show_header ? (
             <Table.Header>
