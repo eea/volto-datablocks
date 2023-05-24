@@ -8,7 +8,8 @@ import React, {
 import { useParams } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import { connect, useDispatch } from 'react-redux';
-import { isEqual } from 'lodash';
+import isEqual from 'lodash/isEqual';
+import isUndefined from 'lodash/isUndefined';
 import hash from 'object-hash';
 import { getDataFromProvider } from '../actions';
 import {
@@ -104,11 +105,11 @@ export function connectToProviderData(getConfig = () => ({})) {
           : null;
 
         const isPending = provider_url
-          ? props.data_providers?.pendingConnectors?.[connectorPath]
+          ? props.data_providers?.pendingConnectors?.[connectorPath] ?? false
           : false;
 
         const isFailed = provider_url
-          ? props.data_providers?.failedConnectors?.[connectorPath]
+          ? props.data_providers?.failedConnectors?.[connectorPath] ?? false
           : false;
 
         const activePageHasData = pagination.enabled
@@ -243,7 +244,8 @@ export function connectToProviderData(getConfig = () => ({})) {
               prev_provider_data={prev_provider_data}
               provider_metadata={provider_metadata}
               prev_provider_metadata={prev_provider_metadata}
-              loadingProviderData={isPending}
+              loadingProviderData={isPending || isUndefined(provider_data)}
+              hasProviderUrl={!!provider_url}
               updatePagination={updatePagination}
               pagination={pagination}
             />

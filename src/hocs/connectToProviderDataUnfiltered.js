@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { withRouter } from 'react-router';
 import { connect, useDispatch } from 'react-redux';
+import isUndefined from 'lodash/isUndefined';
 import { getDataFromProvider } from '../actions';
 import { getProviderUrl, getConnectorPath } from '../helpers';
 /**
@@ -36,11 +37,11 @@ export function connectToProviderDataUnfiltered(getConfig = () => ({})) {
           : null;
 
         const isPending = provider_url
-          ? props.data_providers?.pendingConnectors?.[connectorPath]
+          ? props.data_providers?.pendingConnectors?.[connectorPath] ?? false
           : false;
 
         const isFailed = provider_url
-          ? props.data_providers?.failedConnectors?.[connectorPath]
+          ? props.data_providers?.failedConnectors?.[connectorPath] ?? false
           : false;
 
         const readyToDispatch =
@@ -68,7 +69,8 @@ export function connectToProviderDataUnfiltered(getConfig = () => ({})) {
             {...props}
             provider_data={provider_data}
             provider_metadata={provider_metadata}
-            loadingProviderData={isPending}
+            loadingProviderData={isPending || isUndefined(provider_data)}
+            hasProviderUrl={!!provider_url}
           />
         );
       }),

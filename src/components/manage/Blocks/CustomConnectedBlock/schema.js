@@ -67,6 +67,7 @@ const getSchema = (config, templateSchema = {}) => {
       allowedParams: {
         title: 'Allowed params',
         type: 'array',
+        creatable: true,
         items: {
           choices: [],
         },

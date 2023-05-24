@@ -191,6 +191,7 @@ export const SimpleDataTableSchema = (config, templateSchema = {}) => {
       allowedParams: {
         title: 'Allowed url params',
         type: 'array',
+        creatable: true,
         items: {
           choices: [],
         },
