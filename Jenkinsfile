@@ -70,6 +70,7 @@ pipeline {
           anyOf {
            not { changelog '.*^Automated release [0-9\\.]+$' }
            branch 'master'
+           branch 'code-quality' 
           }
         }
       }
@@ -118,6 +119,7 @@ pipeline {
           anyOf {
            not { changelog '.*^Automated release [0-9\\.]+$' }
            branch 'master'
+           branch 'code-quality'
           }
         }
       }
