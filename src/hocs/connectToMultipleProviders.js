@@ -58,10 +58,9 @@ export function connectToMultipleProviders(getConfig = () => ({})) {
             // Get data query
             newState.data_query.push(
               getDataQuery({
+                ...props,
                 params,
                 provider_url,
-                location: props.location,
-                connected_data_parameters: props.connected_data_parameters,
                 data: {
                   data_query: provider.data_query,
                   has_data_query_by_context: provider.has_data_query_by_context,
