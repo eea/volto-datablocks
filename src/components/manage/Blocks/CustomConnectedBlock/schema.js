@@ -78,7 +78,6 @@ const getSchema = (props, config, templateSchema = {}) => {
       },
       type: {
         title: 'Select block type',
-        type: 'array',
         choices: [...blocks],
       },
       sources: {

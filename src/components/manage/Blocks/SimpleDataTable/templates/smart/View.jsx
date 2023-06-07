@@ -42,7 +42,7 @@ const View = (props) => {
     row_size,
     show_header,
   } = props;
-  const selectedColumns = data.columns;
+  const selectedColumns = data.columns || [];
   const timeoutRef = React.useRef();
   const search = React.useRef();
   const [mounted, setMounted] = React.useState(false);

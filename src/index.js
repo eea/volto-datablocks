@@ -11,6 +11,7 @@ import {
   DataQueryWidget,
   PickObjectWidget,
   SelectProviderPickWidget,
+  SimpleColorPicker,
 } from './components';
 import { dataProvider } from './middlewares';
 import * as addonReducers from './reducers';
@@ -30,6 +31,7 @@ export default (config) => {
   config.widgets.widget.data_query = DataQueryWidget;
   config.widgets.widget.object_by_path = PickObjectWidget;
   config.widgets.widget.select_provider_pick = SelectProviderPickWidget;
+  config.widgets.widget.simple_color = SimpleColorPicker;
 
   config.settings.storeExtenders = [
     ...(config.settings.storeExtenders || []),
