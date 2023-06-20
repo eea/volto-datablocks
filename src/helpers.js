@@ -320,11 +320,11 @@ export const getFilteredURL = (url, connected_data_parameters = []) => {
   if (!connected_data_parameters?.length) return url;
   let decodedURL = decodeURIComponent(url);
   //lookahead assertion to ensure that at least one character exists between '<<' and '>>';
-  const queries = decodedURL.match(/^<<(?!\s*>>)[^<>]*>>$/g); //safari: don't use lookbehind
+  const queries = decodedURL.match(/^<<(?!\s*>>)[^<>]*>>/g); //safari: don't use lookbehind
   if (!queries?.length) return url;
 
   const filteredQueries = queries.map((query) =>
-    query.replace('<<', '').replace('>>', ''),
+    query.trim().replace('<<', '').replace('>>', ''),
   );
 
   const keys = connected_data_parameters.map((param) => param.i);
