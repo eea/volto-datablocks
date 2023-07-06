@@ -12,7 +12,13 @@ const D3 = loadable.lib(() => import('d3'));
 const AnimatedCounter = ({ originalValue }) => {
   return (
     <span>
-      <CountUp isCounting start={0} duration={3} end={originalValue} />
+      <CountUp
+        isCounting
+        start={0}
+        duration={3}
+        end={originalValue}
+        formatter={(num) => parseInt(num).toLocaleString()}
+      />
     </span>
   );
 };
