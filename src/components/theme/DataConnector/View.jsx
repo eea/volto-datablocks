@@ -1,3 +1,5 @@
+import { hasBlocksData } from '@plone/volto/helpers';
+import RenderBlocks from '@plone/volto/components/theme/View/RenderBlocks';
 import React from 'react';
 import { compose } from 'redux';
 import { Container } from 'semantic-ui-react';
@@ -16,10 +18,8 @@ const getProviderDataLength = (provider_data) => {
     ? provider_data[Object.keys(provider_data)[0]]?.length || 0
     : 0;
 };
-
-const DataConnectorView = (props) => {
+export function DataConnectorTable(props) {
   const { content, pagination = {}, updatePagination } = props;
-
   const prev_provider_data = pagination.data[pagination.activePage]
     ? pagination.data[pagination.activePage]
     : pagination.activePage !== pagination.prevPage
@@ -36,8 +36,7 @@ const DataConnectorView = (props) => {
   const columns = Object.keys(provider_data || {});
 
   return (
-    <Container className="data-connector-view">
-      <h2>{content.title}</h2>
+    <>
       <pre>{content.sql_query}</pre>
       <pre>{content.Readme}</pre>
       <div style={{ overflow: 'auto', width: '100%' }}>
@@ -120,11 +119,11 @@ const DataConnectorView = (props) => {
           <p>No data</p>
         )}
       </div>
-    </Container>
+    </>
   );
-};
+}
 
-export default compose(
+const ConnectedDataConnectorTable = compose(
   connectToProviderData((props) => {
     return {
       provider_url: flattenToAppURL(props.location.pathname || '').replace(
@@ -137,4 +136,23 @@ export default compose(
       },
     };
   }),
-)(DataConnectorView);
+)(DataConnectorTable);
+
+const DataConnectorView = (props) => {
+  const { content } = props;
+
+  return (
+    <Container id="page-document" className="data-connector-view">
+      {hasBlocksData(content) ? (
+        <RenderBlocks {...props} />
+      ) : (
+        <>
+          <h2>{content.title}</h2>
+          <ConnectedDataConnectorTable {...props} />
+        </>
+      )}
+    </Container>
+  );
+};
+
+export default DataConnectorView;
