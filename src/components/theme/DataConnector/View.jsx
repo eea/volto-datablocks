@@ -18,6 +18,7 @@ const getProviderDataLength = (provider_data) => {
     ? provider_data[Object.keys(provider_data)[0]]?.length || 0
     : 0;
 };
+
 export function DataConnectorTable(props) {
   const { content, pagination = {}, updatePagination } = props;
   const prev_provider_data = pagination.data[pagination.activePage]
@@ -123,7 +124,7 @@ export function DataConnectorTable(props) {
   );
 }
 
-const ConnectedDataConnectorTable = compose(
+export const ConnectedDataConnectorTable = compose(
   connectToProviderData((props) => {
     return {
       provider_url: flattenToAppURL(props.location.pathname || '').replace(

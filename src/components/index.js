@@ -18,3 +18,4 @@ export SourcesBlockView from './manage/Blocks/SourcesBlock/View';
 export PickObjectWidget from './manage/Widgets/PickObjectWidget';
 export DataQueryWidget from './manage/Widgets/DataQueryWidget';
 export SelectProviderPickWidget from './manage/Widgets/SelectProviderPickWidget';
+export DataConnectorTableViewWidget from './theme/DataConnector/DataConnectorTableViewWidget';

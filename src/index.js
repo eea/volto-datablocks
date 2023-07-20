@@ -6,7 +6,7 @@ import installCountryFlag from './components/manage/Blocks/CountryFlag';
 import installCustomConnectedBlock from './components/manage/Blocks/CustomConnectedBlock';
 import installConditionalDataBlock from './components/manage/Blocks/ConditionalDataBlock';
 
-import { DataConnectorView } from './components';
+import { DataConnectorView, DataConnectorTableViewWidget } from './components';
 import {
   DataQueryWidget,
   PickObjectWidget,
@@ -30,6 +30,7 @@ export default (config) => {
   config.widgets.widget.data_query = DataQueryWidget;
   config.widgets.widget.object_by_path = PickObjectWidget;
   config.widgets.widget.select_provider_pick = SelectProviderPickWidget;
+  config.widgets.views.id.sql_query = DataConnectorTableViewWidget;
 
   config.settings.storeExtenders = [
     ...(config.settings.storeExtenders || []),
