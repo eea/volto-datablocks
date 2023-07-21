@@ -20,7 +20,7 @@
     "@eeacms/volto-group-block"
   ],
   "dependencies": {
-    "@eeacms/countup": "2.0.4",
+    "@eeacms/countup": "*",
     "@eeacms/volto-embed": "*",
     "@eeacms/volto-group-block": "*",
     "@eeacms/volto-matomo": "*",
