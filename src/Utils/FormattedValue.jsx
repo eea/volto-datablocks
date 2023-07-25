@@ -1,37 +1,24 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import isObject from 'lodash/isObject';
 import loadable from '@loadable/component';
 import cx from 'classnames';
 import sanitizeHtml from 'sanitize-html';
-import CountUp from 'react-countup';
+import { CountUp } from '@eeacms/countup';
 import { UniversalLink } from '@plone/volto/components';
 import { isUrl } from '@plone/volto/helpers';
-
-import { useOnScreen } from '../helpers';
 
 const D3 = loadable.lib(() => import('d3'));
 
 const AnimatedCounter = ({ originalValue }) => {
-  const ref = useRef();
-  const { entryCount, isIntersecting } = useOnScreen(ref);
-
   return (
-    <span ref={ref}>
-      {isIntersecting && entryCount === 1 && (
-        <CountUp
-          start={0}
-          formattingFn={(num) => num.toLocaleString()}
-          duration={3}
-          end={originalValue}
-        />
-      )}
-      {isIntersecting && entryCount > 1 && (
-        <span>
-          {originalValue.toLocaleString(undefined, {
-            maximumFractionDigits: 0,
-          })}
-        </span>
-      )}
+    <span>
+      <CountUp
+        isCounting
+        start={0}
+        duration={3}
+        end={originalValue}
+        formatter={(num) => parseInt(num).toLocaleString()}
+      />
     </span>
   );
 };
