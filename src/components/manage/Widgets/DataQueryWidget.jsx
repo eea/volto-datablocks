@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { Button, Form, Grid, Input, Label } from 'semantic-ui-react';
-import { filter, remove, toPairs, groupBy, isEmpty, map } from 'lodash';
+import { filter, toPairs, groupBy, isEmpty, map } from 'lodash';
 import { defineMessages, injectIntl } from 'react-intl';
 import { getQuerystring } from '@plone/volto/actions';
 import { Icon } from '@plone/volto/components';
@@ -134,6 +134,7 @@ class QuerystringWidget extends Component {
     if (this.props.indexesLoaded && !this.state.indexes) {
       this.initializeIndexes();
     }
+    // console.log(this.props.value, 'value on up');
   }
 
   /**
@@ -476,7 +477,7 @@ class QuerystringWidget extends Component {
                           onClick={(event) => {
                             onChange(
                               id,
-                              remove(value, (v, i) => i !== index),
+                              filter(value, (v, i) => i !== index),
                             );
                             event.preventDefault();
                           }}
@@ -497,7 +498,7 @@ class QuerystringWidget extends Component {
                         onClick={(event) => {
                           onChange(
                             id,
-                            remove(value, (v, i) => i !== index),
+                            filter(value, (v, i) => i !== index),
                           );
                           event.preventDefault();
                         }}
