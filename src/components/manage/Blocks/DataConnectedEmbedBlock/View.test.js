@@ -33,7 +33,7 @@ describe('ViewEmbedBlock', () => {
       align: 'center',
     };
 
-    const { getByTitle } = render(
+    const { container } = render(
       <Provider store={store}>
         <IntlProvider locale="en">
           <div
@@ -41,7 +41,6 @@ describe('ViewEmbedBlock', () => {
             style={{
               minHeight: `${data.height || 200}px`,
             }}
-            title={'Embeded Google Maps'}
           >
             Data Embed
           </div>
@@ -49,6 +48,6 @@ describe('ViewEmbedBlock', () => {
       </Provider>,
     );
 
-    expect(getByTitle('Embeded Google Maps')).toBeInTheDocument();
+    expect(container.querySelector('.video-inner')).toBeInTheDocument();
   });
 });
