@@ -5,6 +5,15 @@ import configureStore from 'redux-mock-store';
 import ViewEmbedBlock from './View.jsx';
 import { IntlProvider } from 'react-intl';
 
+jest.mock('@eeacms/volto-embed/PrivacyProtection/PrivacyProtection', () => {
+  return jest.fn(({ children }) => <div>{children}</div>);
+});
+
+jest.mock('@plone/volto/helpers', () => ({
+  getBaseUrl: jest.fn(),
+  flattenToAppURL: jest.fn(),
+}));
+
 const mockStore = configureStore();
 
 describe('ViewEmbedBlock', () => {
