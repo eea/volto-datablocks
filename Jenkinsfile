@@ -65,11 +65,17 @@ pipeline {
 
     stage('Tests') {
       when {
-        allOf {
-          environment name: 'CHANGE_ID', value: ''
-          anyOf {
-           not { changelog '.*^Automated release [0-9\\.]+$' }
-           branch 'master'
+        anyOf {
+          allOf {
+            not { environment name: 'CHANGE_ID', value: '' }
+            environment name: 'CHANGE_TARGET', value: 'develop'
+          }
+          allOf {
+            environment name: 'CHANGE_ID', value: ''
+            anyOf {
+              not { changelog '.*^Automated release [0-9\\.]+$' }
+              branch 'master'
+            }
           }
         }
       }
@@ -113,11 +119,17 @@ pipeline {
 
     stage('Integration tests') {
       when {
-        allOf {
-          environment name: 'CHANGE_ID', value: ''
-          anyOf {
-           not { changelog '.*^Automated release [0-9\\.]+$' }
-           branch 'master'
+        anyOf {
+          allOf {
+            not { environment name: 'CHANGE_ID', value: '' }
+            environment name: 'CHANGE_TARGET', value: 'develop'
+          }
+          allOf {
+            environment name: 'CHANGE_ID', value: ''
+            anyOf {
+              not { changelog '.*^Automated release [0-9\\.]+$' }
+              branch 'master'
+            }
           }
         }
       }
@@ -170,13 +182,19 @@ pipeline {
 
     stage('Report to SonarQube') {
       when {
-        allOf {
-          environment name: 'CHANGE_ID', value: ''
-          anyOf {
-            branch 'master'
-            allOf {
-              branch 'develop'
-              not { changelog '.*^Automated release [0-9\\.]+$' }
+        anyOf {
+          allOf {
+            not { environment name: 'CHANGE_ID', value: '' }
+            environment name: 'CHANGE_TARGET', value: 'develop'
+          }
+          allOf {
+            environment name: 'CHANGE_ID', value: ''
+            anyOf {
+              allOf {
+                branch 'develop'
+                not { changelog '.*^Automated release [0-9\\.]+$' }
+              }
+              branch 'master'
             }
           }
         }
@@ -202,10 +220,16 @@ pipeline {
 
     stage('SonarQube compare to master') {
       when {
-        allOf {
-          environment name: 'CHANGE_ID', value: ''
-          branch 'develop'
-          not { changelog '.*^Automated release [0-9\\.]+$' }
+        anyOf {
+          allOf {
+            not { environment name: 'CHANGE_ID', value: '' }
+            environment name: 'CHANGE_TARGET', value: 'develop'
+          }
+          allOf {
+            environment name: 'CHANGE_ID', value: ''
+            branch 'develop'
+            not { changelog '.*^Automated release [0-9\\.]+$' }
+          }
         }
       }
       steps {
