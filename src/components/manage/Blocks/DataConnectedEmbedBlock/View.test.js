@@ -4,6 +4,11 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import ViewEmbedBlock from './View.jsx';
 
+// Mock the PrivacyProtection component
+jest.mock('@eeacms/volto-embed/PrivacyProtection/PrivacyProtection', () => {
+  return jest.fn(() => <div>Mocked PrivacyProtection</div>);
+});
+
 const mockStore = configureStore();
 
 describe('ViewEmbedBlock', () => {
@@ -26,7 +31,7 @@ describe('ViewEmbedBlock', () => {
     const { getByTitle } = render(
       <Provider store={store}>
         <ViewEmbedBlock data={data} />
-      </Provider>,
+      </Provider>
     );
 
     expect(getByTitle('Embeded Google Maps')).toBeInTheDocument();
