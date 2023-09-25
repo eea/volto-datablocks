@@ -318,9 +318,11 @@ export function useOnScreen(ref, rootMargin = '0px') {
 
 export const getFilteredURL = (url, connected_data_parameters = []) => {
   if (!connected_data_parameters?.length) return url;
+
   let decodedURL = decodeURIComponent(url);
-  //lookahead assertion to ensure that at least one character exists between '<<' and '>>';
-  const queries = decodedURL.match(/^<<(?!\s*>>)[^<>]*>>/g); //safari: don't use lookbehind
+
+  // Use a non-greedy match to capture everything between '<<' and '>>'
+  const queries = decodedURL.match(/<<.*?>>/g);
   if (!queries?.length) return url;
 
   const filteredQueries = queries.map((query) =>
@@ -328,16 +330,13 @@ export const getFilteredURL = (url, connected_data_parameters = []) => {
   );
 
   const keys = connected_data_parameters.map((param) => param.i);
-  for (let poz in filteredQueries) {
-    const key = filteredQueries[poz];
+  for (let key of filteredQueries) {
     const paramPoz = keys.indexOf(key);
     if (paramPoz > -1) {
       decodedURL = decodedURL.replace(
         `<<${key}>>`,
         connected_data_parameters[paramPoz].v[0],
       );
-
-      continue;
     }
   }
   return decodedURL;
