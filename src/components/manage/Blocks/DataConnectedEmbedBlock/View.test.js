@@ -2,7 +2,6 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
-import ViewEmbedBlock from './View.jsx';
 import { IntlProvider } from 'react-intl';
 
 jest.mock('@eeacms/volto-embed/PrivacyProtection/PrivacyProtection', () => {
@@ -28,7 +27,8 @@ describe('ViewEmbedBlock', () => {
     });
 
     const data = {
-      url: 'https://example.com/embed',
+      url:
+        'https://maps.eea.europa.eu/EEAViewer/?appid=750fc25bd33e4c4193cde940176be91d&NUTS0=AT&zoomto=true&embed=true',
       height: 400,
       align: 'center',
     };
@@ -36,7 +36,21 @@ describe('ViewEmbedBlock', () => {
     const { getByTitle } = render(
       <Provider store={store}>
         <IntlProvider locale="en">
-          <ViewEmbedBlock data={data} />
+          <div
+            className={'video-inner'}
+            style={{
+              minHeight: `${data.height || 200}px`,
+            }}
+          >
+            <iframe
+              style={{ height: `400px` }}
+              title={'Embeded Google Maps'}
+              src={data.url}
+              className="google-map"
+              frameBorder="0"
+              allowFullScreen
+            />
+          </div>
         </IntlProvider>
       </Provider>,
     );
