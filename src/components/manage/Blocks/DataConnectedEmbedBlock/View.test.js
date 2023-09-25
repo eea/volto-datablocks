@@ -3,6 +3,7 @@ import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import ViewEmbedBlock from './View.jsx';
+import { IntlProvider } from 'react-intl';
 
 // Mock the PrivacyProtection component
 jest.mock('@eeacms/volto-embed/PrivacyProtection/PrivacyProtection', () => {
@@ -35,7 +36,9 @@ describe('ViewEmbedBlock', () => {
 
     const { getByTitle } = render(
       <Provider store={store}>
-        <ViewEmbedBlock data={data} />
+        <IntlProvider locale="en">
+          <ViewEmbedBlock data={data} />
+        </IntlProvider>
       </Provider>,
     );
 
