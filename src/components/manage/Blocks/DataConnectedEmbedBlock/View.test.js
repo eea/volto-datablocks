@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
+import ViewEmbedBlock from './View.jsx';
 import { IntlProvider } from 'react-intl';
 import '@testing-library/jest-dom/extend-expect';
 
@@ -28,27 +29,19 @@ describe('ViewEmbedBlock', () => {
     });
 
     const data = {
-      url:
-        'https://maps.eea.europa.eu/EEAViewer/?appid=750fc25bd33e4c4193cde940176be91d&NUTS0=AT&zoomto=true&embed=true',
+      url: 'https://example.com/embed',
       height: 400,
       align: 'center',
     };
 
-    const { container } = render(
+    const { getByTitle } = render(
       <Provider store={store}>
         <IntlProvider locale="en">
-          <div
-            className={'video-inner'}
-            style={{
-              minHeight: `${data.height || 200}px`,
-            }}
-          >
-            Data Embed
-          </div>
+          <ViewEmbedBlock data={data} />
         </IntlProvider>
       </Provider>,
     );
 
-    expect(container.querySelector('.video-inner')).toBeInTheDocument();
+    expect(getByTitle('Embeded Google Maps')).toBeInTheDocument();
   });
 });
