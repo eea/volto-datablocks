@@ -41,15 +41,9 @@ describe('ViewEmbedBlock', () => {
             style={{
               minHeight: `${data.height || 200}px`,
             }}
+            title={'Embeded Google Maps'}
           >
-            <iframe
-              style={{ height: `400px` }}
-              title={'Embeded Google Maps'}
-              src={data.url}
-              className="google-map"
-              frameBorder="0"
-              allowFullScreen
-            />
+            Data Embed
           </div>
         </IntlProvider>
       </Provider>,
