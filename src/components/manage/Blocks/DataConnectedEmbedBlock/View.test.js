@@ -9,6 +9,11 @@ jest.mock('@eeacms/volto-embed/PrivacyProtection/PrivacyProtection', () => {
   return jest.fn(() => <div>Mocked PrivacyProtection</div>);
 });
 
+jest.mock('@plone/volto/helpers', () => ({
+  getBaseUrl: jest.fn(),
+  flattenToAppURL: jest.fn(),
+}));
+
 const mockStore = configureStore();
 
 describe('ViewEmbedBlock', () => {
@@ -31,7 +36,7 @@ describe('ViewEmbedBlock', () => {
     const { getByTitle } = render(
       <Provider store={store}>
         <ViewEmbedBlock data={data} />
-      </Provider>
+      </Provider>,
     );
 
     expect(getByTitle('Embeded Google Maps')).toBeInTheDocument();
