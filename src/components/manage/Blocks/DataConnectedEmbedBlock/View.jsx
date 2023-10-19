@@ -53,7 +53,7 @@ const ViewEmbedBlock = (props) => {
             'full-width': data.align === 'full',
           })}
           style={{
-            minHeight: `${data.height || 200}px`,
+            height: `${data.height || 200}px`,
           }}
         >
           <iframe
