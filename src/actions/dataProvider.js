@@ -18,6 +18,18 @@ export function getDataFromProvider(
     ...query,
   };
 
+  //Could be nice but it meses up the inputs. Also, using multiple queries does not stack but return the original viz without querys.
+  // // Remove duplicates and combine values.
+  // const reducedQuery = data_query.reduce((acc, curr) => {
+  //   const found = acc.find((item) => item.i === curr.i);
+  //   if (found) {
+  //     found.v = [...new Set([...found.v, ...curr.v])];
+  //   } else {
+  //     acc.push(curr);
+  //   }
+  //   return acc;
+  // }, []);
+
   return {
     type: GET_DATA_FROM_PROVIDER,
     path: path,

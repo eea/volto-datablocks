@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { withRouter } from 'react-router';
 import { connect, useDispatch } from 'react-redux';
+import isUndefined from 'lodash/isUndefined';
 import { getDataFromProvider } from '../actions';
-import { getConnectorPath } from '../helpers';
+import { getProviderUrl, getConnectorPath } from '../helpers';
 /**
  * connectToProviderData.
  *
@@ -18,9 +19,10 @@ export function connectToProviderDataUnfiltered(getConfig = () => ({})) {
         const config = useMemo(() => getConfig(props), [props]);
         const [mounted, setMounted] = useState(false);
 
-        const provider_url = useMemo(() => config.provider_url, [
-          config.provider_url,
-        ]);
+        const provider_url = useMemo(
+          () => getProviderUrl(config.provider_url),
+          [config.provider_url],
+        );
 
         const connectorPath = useMemo(() => getConnectorPath(provider_url), [
           provider_url,
@@ -35,11 +37,11 @@ export function connectToProviderDataUnfiltered(getConfig = () => ({})) {
           : null;
 
         const isPending = provider_url
-          ? props.data_providers?.pendingConnectors?.[connectorPath]
+          ? props.data_providers?.pendingConnectors?.[connectorPath] ?? false
           : false;
 
         const isFailed = provider_url
-          ? props.data_providers?.failedConnectors?.[connectorPath]
+          ? props.data_providers?.failedConnectors?.[connectorPath] ?? false
           : false;
 
         const readyToDispatch =
@@ -67,7 +69,8 @@ export function connectToProviderDataUnfiltered(getConfig = () => ({})) {
             {...props}
             provider_data={provider_data}
             provider_metadata={provider_metadata}
-            loadingProviderData={isPending}
+            loadingProviderData={isPending || isUndefined(provider_data)}
+            hasProviderUrl={!!provider_url}
           />
         );
       }),

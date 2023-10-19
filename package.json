@@ -1,6 +1,6 @@
 {
   "name": "@eeacms/volto-datablocks",
-  "version": "3.0.11",
+  "version": "6.1.3",
   "description": "(EEA) Provides primitives for data connectivity to volto-plotlycharts and other blocks",
   "main": "src/index.js",
   "author": "European Environment Agency: IDM2 A-Team",
@@ -20,21 +20,25 @@
     "@eeacms/volto-group-block"
   ],
   "dependencies": {
+    "@eeacms/countup": "*",
     "@eeacms/volto-embed": "*",
-    "@eeacms/volto-matomo": "*",
     "@eeacms/volto-group-block": "*",
+    "@eeacms/volto-matomo": "*",
     "d3": "7.1.1",
+    "date-fns": "2.28.0",
     "humanize-plus": "^1.8.2",
     "object-hash": "2.2.0",
-    "react-countup": "6.1.1",
-    "sanitize-html": "^2.3.3",
-    "slate": "^0.62.0"
+    "react-visibility-sensor": "5.1.1",
+    "sanitize-html": "2.7.3"
   },
   "devDependencies": {
-    "@cypress/code-coverage": "^3.9.5",
+    "@cypress/code-coverage": "^3.10.0",
+    "@plone/scripts": "*",
     "babel-plugin-transform-class-properties": "^6.24.1",
-    "postcss-overrides": "3.1.4",
-    "webpack-cli": "^3.3.10"
+    "cypress-fail-fast": "^5.0.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^14.0.1",
+    "md5": "^2.3.0"
   },
   "repository": {
     "type": "git",
@@ -42,6 +46,27 @@
   },
   "bugs": {
     "url": "https://github.com/eea/volto-datablocks/issues"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json}": [
+      "make lint-fix",
+      "make prettier-fix"
+    ],
+    "src/**/*.{jsx}": [
+      "make i18n"
+    ],
+    "theme/**/*.{css,less}": [
+      "make stylelint-fix"
+    ],
+    "src/**/*.{css,less}": [
+      "make stylelint-fix"
+    ],
+    "theme/**/*.overrides": [
+      "make stylelint-fix"
+    ],
+    "src/**/*.overrides": [
+      "make stylelint-fix"
+    ]
   },
   "scripts": {
     "release": "release-it",
@@ -51,15 +76,16 @@
     "test": "make test",
     "test:fix": "make test-update",
     "pre-commit": "yarn stylelint:fix && yarn prettier:fix && yarn lint:fix",
-    "stylelint": "if [ -d ./project ]; then ./project/node_modules/stylelint/bin/stylelint.js --allow-empty-input 'src/**/*.{css,less}'; else ../../../node_modules/stylelint/bin/stylelint.js --allow-empty-input 'src/**/*.{css,less}'; fi",
-    "stylelint:overrides": "if [ -d ./project ]; then ./project/node_modules/.bin/stylelint --syntax less --allow-empty-input 'theme/**/*.overrides' 'src/**/*.overrides'; else ../../../node_modules/.bin/stylelint --syntax less --allow-empty-input 'theme/**/*.overrides' 'src/**/*.overrides'; fi",
-    "stylelint:fix": "yarn stylelint --fix && yarn stylelint:overrides --fix",
-    "prettier": "if [ -d ./project ]; then ./project/node_modules/.bin/prettier --single-quote --check 'src/**/*.{js,jsx,json,css,less,md}'; else ../../../node_modules/.bin/prettier --single-quote --check 'src/**/*.{js,jsx,json,css,less,md}'; fi",
-    "prettier:fix": "if [ -d ./project ]; then ./project/node_modules/.bin/prettier --single-quote --write 'src/**/*.{js,jsx,json,css,less,md}'; else ../../../node_modules/.bin/prettier --single-quote --write 'src/**/*.{js,jsx,json,css,less,md}'; fi",
-    "lint": "if [ -d ./project ]; then ./project/node_modules/eslint/bin/eslint.js --max-warnings=0 'src/**/*.{js,jsx}'; else ../../../node_modules/eslint/bin/eslint.js --max-warnings=0 'src/**/*.{js,jsx}'; fi",
-    "lint:fix": "if [ -d ./project ]; then ./project/node_modules/eslint/bin/eslint.js --fix 'src/**/*.{js,jsx}'; else ../../../node_modules/eslint/bin/eslint.js --fix 'src/**/*.{js,jsx}'; fi",
-    "i18n": "rm -rf build/messages && NODE_ENV=production i18n --addon",
-    "cypress:run": "if [ -d ./project ]; then NODE_ENV=development ./project/node_modules/cypress/bin/cypress run; else NODE_ENV=development ../../../node_modules/cypress/bin/cypress run; fi",
-    "cypress:open": "if [ -d ./project ]; then NODE_ENV=development ./project/node_modules/cypress/bin/cypress open; else NODE_ENV=development ../../../node_modules/cypress/bin/cypress open; fi"
+    "stylelint": "make stylelint",
+    "stylelint:overrides": "make stylelint-overrides",
+    "stylelint:fix": "make stylelint-fix",
+    "prettier": "make prettier",
+    "prettier:fix": "make prettier-fix",
+    "lint": "make lint",
+    "lint:fix": "make lint-fix",
+    "i18n": "make i18n",
+    "cypress:run": "make cypress-run",
+    "cypress:open": "make cypress-open",
+    "prepare": "husky install"
   }
 }

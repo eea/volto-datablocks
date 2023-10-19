@@ -35,3 +35,11 @@ export const getCellValue = (tableData, colDef, rowIndex, placeholder = '') => {
     />
   );
 };
+
+export const isValidUrl = (url) => {
+  if (!url) return '';
+
+  let containsProtocol = url.includes('http://') || url.includes('https://');
+  let checkedUrl = containsProtocol ? url : `https://${url}`;
+  return checkedUrl;
+};

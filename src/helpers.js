@@ -3,8 +3,6 @@ import { useEffect, useState } from 'react';
 import { getBaseUrl, flattenToAppURL } from '@plone/volto/helpers';
 import qs from 'querystring';
 
-export * from './components/manage/Blocks/RouteParameter';
-
 export function getBasePath(url) {
   return flattenToAppURL(getBaseUrl(url));
 }
@@ -13,7 +11,20 @@ export function getConnectorPath(provider_url, hashValue) {
   return `${provider_url}${hashValue ? `#${hashValue}` : '#_default'}`;
 }
 
-export function getForm({ data = {}, location, pagination, extraQuery = {} }) {
+export function getProviderUrl(url) {
+  if (!url) return '';
+  return flattenToAppURL(url)
+    .replace('@@download/file', '')
+    .replace(/\/*$/, '');
+}
+
+export function getForm({
+  data = {},
+  location,
+  pagination,
+  extraQuery = {},
+  extraConditions,
+}) {
   const params = {
     ...(qs.parse(location?.search?.replace('?', '')) || {}),
     ...(data.form || {}),
@@ -32,6 +43,7 @@ export function getForm({ data = {}, location, pagination, extraQuery = {} }) {
 
   return {
     ...(allowedParamsObj || params),
+    ...(extraConditions ? { extra_conditions: extraConditions } : {}),
     ...(pagination?.enabled
       ? { p: pagination.activePage, nrOfHits: pagination.itemsPerPage }
       : {}),
@@ -40,27 +52,44 @@ export function getForm({ data = {}, location, pagination, extraQuery = {} }) {
 
 export function getDataQuery({
   connected_data_parameters,
+  content = {},
   data = {},
   location,
-  // pagination,
+  params,
   provider_url,
 }) {
-  const path = location.pathname.replace('/edit', '');
-  const has_data_query_by_context = data.has_data_query_by_context ?? true;
+  let byContextPath = [];
+  let byRouteParameters = [];
+  const path =
+    flattenToAppURL(content?.['@id']) || location.pathname.replace('/edit', '');
   const has_data_query_by_provider = data.has_data_query_by_provider ?? true;
-  const byContextPath = has_data_query_by_context
-    ? connected_data_parameters?.byContextPath?.[path] || []
-    : [];
   const byProviderPath = has_data_query_by_provider
     ? connected_data_parameters?.byProviderPath?.[provider_url] || {}
     : {};
+
+  (connected_data_parameters?.byContextPath?.[path] || []).forEach(
+    (data_query) => {
+      if (!params[data_query.i]) {
+        byContextPath.push(data_query);
+      } else {
+        byRouteParameters.push({ ...data_query, v: [params[data_query.i]] });
+      }
+    },
+  );
+
   const filters =
     Object.keys(byProviderPath).map((key) => byProviderPath[key]) || [];
-  // if (pagination.enabled) {
-  //   return [...(data?.data_query || []), ...byContextPath, ...filters];
-  // }
-  return [...(data?.data_query || []), ...byContextPath, ...filters];
-  // return [...(data?.data_query || []), ...byContextPath];
+
+  const has_data_query_by_context = data?.has_data_query_by_context ?? true;
+
+  const query = [
+    ...(data?.data_query || []),
+    ...(has_data_query_by_context ? byContextPath : []),
+    ...byRouteParameters,
+    ...filters,
+  ];
+
+  return query;
 }
 
 /*
@@ -88,10 +117,27 @@ export function updateChartDataFromProvider(chartData, providerData) {
         newTrace[originalColumn] = values;
       }
     });
-    newTrace.transforms = (trace.transforms || []).map((transform) => ({
-      ...transform,
-      target: providerData[transform.targetsrc],
-    }));
+    newTrace.transforms = (trace.transforms || []).map((transform) => {
+      // Sometimes the provider columns change to lower/uppercase, so let's handle that
+      const key = Object.keys(providerData).includes(transform.targetsrc)
+        ? transform.targetsrc
+        : Object.keys(providerData)
+            .map((s) => s.toLowerCase())
+            .includes(transform.targetsrc.toLowerCase())
+        ? transform.targetsrc.toLowerCase()
+        : null;
+      if (key === null) {
+        // eslint-disable-next-line no-console
+        console.warn(
+          "Transform can't be identified in provider data",
+          transform.targetsrc,
+        );
+      }
+      return {
+        ...transform,
+        target: providerData[key],
+      };
+    });
     return newTrace;
   });
   return res;
@@ -289,25 +335,25 @@ export function useOnScreen(ref, rootMargin = '0px') {
 
 export const getFilteredURL = (url, connected_data_parameters = []) => {
   if (!connected_data_parameters?.length) return url;
+
   let decodedURL = decodeURIComponent(url);
-  const queries = decodedURL.match(/(<<)(.*?)*>>/g); //safari: don't use lookbehind
+
+  // Use a non-greedy match to capture everything between '<<' and '>>'
+  const queries = decodedURL.match(/<<.*?>>/g);
   if (!queries?.length) return url;
 
   const filteredQueries = queries.map((query) =>
-    query.replace('<<', '').replace('>>', ''),
+    query.trim().replace('<<', '').replace('>>', ''),
   );
 
   const keys = connected_data_parameters.map((param) => param.i);
-  for (let poz in filteredQueries) {
-    const key = filteredQueries[poz];
+  for (let key of filteredQueries) {
     const paramPoz = keys.indexOf(key);
     if (paramPoz > -1) {
       decodedURL = decodedURL.replace(
         `<<${key}>>`,
         connected_data_parameters[paramPoz].v[0],
       );
-
-      continue;
     }
   }
   return decodedURL;

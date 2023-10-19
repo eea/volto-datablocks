@@ -1,0 +1,137 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language: \n"
+"Language-Team: \n"
+"Content-Type: \n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#: components/manage/Widgets/DataQueryWidget
+# defaultMessage: Add criteria
+msgid "Add criteria"
+msgstr ""
+
+#: components/manage/Blocks/DataConnectedEmbedBlock/Edit
+# defaultMessage: Center
+msgid "Center"
+msgstr ""
+
+#: components/manage/Widgets/SelectProviderPickWidget
+# defaultMessage: Choices
+msgid "Choices"
+msgstr ""
+
+#: components/manage/Widgets/SelectProviderPickWidget
+# defaultMessage: Close
+msgid "Close"
+msgstr ""
+
+#: components/manage/Widgets/DataQueryWidget
+# defaultMessage: Criteria
+msgid "Criteria"
+msgstr ""
+
+#: components/manage/Widgets/SelectProviderPickWidget
+# defaultMessage: Default
+msgid "Default"
+msgstr ""
+
+#: components/manage/Widgets/SelectProviderPickWidget
+# defaultMessage: Description
+msgid "Description"
+msgstr ""
+
+#: components/manage/Blocks/DataConnectedEmbedBlock/Edit
+# defaultMessage: Embed code error, please follow the instructions and try again.
+msgid "Embed code error, please follow the instructions and try again."
+msgstr ""
+
+#: components/manage/Blocks/DataConnectedEmbedBlock/View
+# defaultMessage: Embeded Google Maps
+msgid "Embeded Google Maps"
+msgstr ""
+
+#: components/manage/Blocks/DataConnectedEmbedBlock/Edit
+# defaultMessage: Enter map Embed Code
+msgid "Enter map Embed Code"
+msgstr ""
+
+#: components/manage/Blocks/DataConnectedEmbedBlock/Edit
+# defaultMessage: Full
+msgid "Full"
+msgstr ""
+
+#: components/manage/Blocks/DataConnectedEmbedBlock/Edit
+# defaultMessage: Google Maps Embedded Block
+msgid "Google Maps Embedded Block"
+msgstr ""
+
+#: components/manage/Blocks/DataConnectedEmbedBlock/Edit
+# defaultMessage: Left
+msgid "Left"
+msgstr ""
+
+#: components/manage/Widgets/SelectProviderPickWidget
+# defaultMessage: No options
+msgid "No options"
+msgstr ""
+
+#: components/manage/Widgets/SelectProviderPickWidget
+# defaultMessage: No value
+msgid "No value"
+msgstr ""
+
+#: components/manage/Blocks/DataConnectedEmbedBlock/Edit
+# defaultMessage: Please use the sidebar to add Embed URL.
+msgid "Please use the sidebar to add Embed URL"
+msgstr ""
+
+#: components/manage/Widgets/SelectProviderPickWidget
+# defaultMessage: Choices
+msgid "Provider Choices"
+msgstr ""
+
+#: components/manage/Widgets/SelectProviderPickWidget
+# defaultMessage: Required
+msgid "Required"
+msgstr ""
+
+#: components/manage/Blocks/DataConnectedEmbedBlock/Edit
+# defaultMessage: Right
+msgid "Right"
+msgstr ""
+
+#: components/manage/Widgets/SelectProviderPickWidget
+# defaultMessage: Select provider
+msgid "Select provider"
+msgstr ""
+
+#: components/manage/Widgets/SelectProviderPickWidget
+# defaultMessage: Select…
+msgid "Select…"
+msgstr ""
+
+#: components/manage/Widgets/SelectProviderPickWidget
+# defaultMessage: Short Name
+msgid "Short Name"
+msgstr ""
+
+#: components/manage/Widgets/SelectProviderPickWidget
+# defaultMessage: Title
+msgid "Title"
+msgstr ""
+
+#: components/manage/Widgets/SelectProviderPickWidget
+# defaultMessage: Used for programmatic access to the fieldset.
+msgid "Used for programmatic access to the fieldset."
+msgstr ""
+
+#: components/manage/Widgets/DataQueryWidget
+# defaultMessage: Select…
+msgid "querystring-widget-select"
+msgstr ""

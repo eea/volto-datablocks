@@ -32,8 +32,13 @@ const ViewEmbedBlock = (props) => {
 
   const url = getFilteredURL(data.url, props.connected_data_parameters);
 
+  const height =
+    props?.data?.height || props.data.height === null
+      ? props.data?.height
+      : 600;
+
   return url ? (
-    <PrivacyProtection data={data} {...props}>
+    <PrivacyProtection data={data} height={height} {...props}>
       <p
         className={cx(
           'map-container block maps',
@@ -52,7 +57,7 @@ const ViewEmbedBlock = (props) => {
           }}
         >
           <iframe
-            style={{ minHeight: '100%' }}
+            style={{ height: `${height}px` }}
             title={intl.formatMessage(messages.EmbededGoogleMaps)}
             src={url}
             className="google-map"

@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { Button, Form, Grid, Input, Label } from 'semantic-ui-react';
-import { filter, remove, toPairs, groupBy, isEmpty, map } from 'lodash';
+import { filter, toPairs, groupBy, isEmpty, map } from 'lodash';
 import { defineMessages, injectIntl } from 'react-intl';
 import { getQuerystring } from '@plone/volto/actions';
 import { Icon } from '@plone/volto/components';
@@ -134,6 +134,7 @@ class QuerystringWidget extends Component {
     if (this.props.indexesLoaded && !this.state.indexes) {
       this.initializeIndexes();
     }
+    // console.log(this.props.value, 'value on up');
   }
 
   /**
@@ -183,6 +184,18 @@ class QuerystringWidget extends Component {
     switch (indexes[row.i].operators[row.o].widget) {
       case null:
         return <span />;
+      case 'TextWidget':
+        return (
+          <Form.Field style={{ flex: '1 0 auto' }}>
+            <Input
+              {...props}
+              onChange={(data) =>
+                this.onChangeValue(index, [data.target.value])
+              }
+              value={row.v?.[0]}
+            />
+          </Form.Field>
+        );
       case 'DateWidget':
         return (
           <Form.Field style={{ flex: '1 0 auto' }}>
@@ -328,7 +341,9 @@ class QuerystringWidget extends Component {
           <Grid.Row stretched>
             <Grid.Column width="12">
               <div className="simple-field-name">
-                {intl.formatMessage(messages.Criteria)}
+                {this.props.title
+                  ? this.props.title
+                  : intl.formatMessage(messages.Criteria)}
               </div>
             </Grid.Column>
           </Grid.Row>
@@ -462,7 +477,7 @@ class QuerystringWidget extends Component {
                           onClick={(event) => {
                             onChange(
                               id,
-                              remove(value, (v, i) => i !== index),
+                              filter(value, (v, i) => i !== index),
                             );
                             event.preventDefault();
                           }}
@@ -483,7 +498,7 @@ class QuerystringWidget extends Component {
                         onClick={(event) => {
                           onChange(
                             id,
-                            remove(value, (v, i) => i !== index),
+                            filter(value, (v, i) => i !== index),
                           );
                           event.preventDefault();
                         }}

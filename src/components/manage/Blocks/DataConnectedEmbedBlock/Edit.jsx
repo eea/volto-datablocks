@@ -137,9 +137,15 @@ class Edit extends Component {
    * @method render
    * @returns {string} Markup for the component.
    */
+
   render() {
+    const height =
+      this.props?.data?.height || this.props.data.height === null
+        ? this.props.data?.height
+        : 600;
     return (
       <div
+        style={{ height: `${height}px` }}
         className={cx(
           'block maps align',
           {
@@ -149,8 +155,14 @@ class Edit extends Component {
         )}
       >
         {this.props.data.url ? (
-          <PrivacyProtection data={this.props.data} isEditMode {...this.props}>
+          <PrivacyProtection
+            data={this.props.data}
+            height={height}
+            isEditMode
+            {...this.props}
+          >
             <div
+              style={{ height: `${height}px` }}
               className={cx('maps-inner', {
                 'full-width': this.props.data.align === 'full',
               })}
@@ -170,6 +182,7 @@ class Edit extends Component {
                 />
               )}
               <iframe
+                style={{ height: `${height}px` }}
                 title={this.props.intl.formatMessage(
                   messages.GoogleMapsEmbeddedBlock,
                 )}

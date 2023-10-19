@@ -9,7 +9,11 @@ function getHeaders(headers) {
   let str = '';
   headers.forEach((header) => {
     if (str !== '') str += ',';
-    str += header;
+    if (header.includes(',')) {
+      str += `"${header}"`;
+    } else {
+      str += header;
+    }
   });
   return str + '\r\n';
 }
@@ -17,21 +21,29 @@ function getHeaders(headers) {
 function getData(array) {
   let str = '';
   for (let i = 0; i < array.length; i++) {
-    let line = '';
+    let row = '';
     for (let key in array[i]) {
-      if (line !== '') line += ',';
-
-      line += array[i][key];
+      const column = array[i][key];
+      if (row !== '') row += ',';
+      if (
+        (typeof column === 'number' && column.toString().includes(',')) ||
+        (typeof column === 'string' && column.includes(','))
+      ) {
+        row += `"${column}"`;
+      } else {
+        row += column;
+      }
     }
 
-    str += line + '\r\n';
+    str += row + '\r\n';
   }
 
   return str;
 }
 
 function convertToCSV(array, readme = []) {
-  let str = getHeaders(Object.keys(array[0]));
+  const headers = Object.keys(array[0]);
+  let str = getHeaders(headers);
 
   str += getData(array);
 

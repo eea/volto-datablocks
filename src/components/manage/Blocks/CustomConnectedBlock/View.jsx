@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
+import { isNil } from 'lodash';
 import { compose } from 'redux';
 import config from '@plone/volto/registry';
+import { VisibilitySensor } from '@eeacms/volto-datablocks/components';
 import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 import './style.less';
 
@@ -34,15 +36,23 @@ const View = (props) => {
     <RenderCustomConnectedBlock
       {...props}
       mode={props.mode}
-      placeholder={props.data.placeholder}
+      placeholder={!isNil(props.provider_data) ? props.data.placeholder : null}
     />
   );
 };
 
-export { View };
-
-export default compose(
+const BlockView = compose(
   connectToProviderData((props) => ({
     provider_url: props.data?.provider_url,
   })),
 )(View);
+
+export { View };
+
+export default (props) => {
+  return (
+    <VisibilitySensor Placeholder={() => <div>loading....&nbsp;</div>}>
+      <BlockView {...props} />
+    </VisibilitySensor>
+  );
+};

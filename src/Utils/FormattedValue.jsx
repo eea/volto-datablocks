@@ -1,55 +1,41 @@
-import React, { useRef } from 'react';
+import React from 'react';
+import isObject from 'lodash/isObject';
 import loadable from '@loadable/component';
 import cx from 'classnames';
 import sanitizeHtml from 'sanitize-html';
-import { Portal } from 'react-portal';
-import CountUp from 'react-countup';
-
-import { useOnScreen } from '../helpers';
+import { CountUp } from '@eeacms/countup';
+import { UniversalLink } from '@plone/volto/components';
+import { isUrl } from '@plone/volto/helpers';
 
 const D3 = loadable.lib(() => import('d3'));
 
-const AnimatedCounterPortal = ({ originalValue }) => {
-  const portalNode = document.getElementById(
-    `animated-counter-${originalValue}`,
-  );
-  const ref = useRef();
-  const { entryCount, isIntersecting } = useOnScreen(ref);
-
+const AnimatedCounter = ({ originalValue }) => {
   return (
-    <span ref={ref}>
-      <Portal node={portalNode}>
-        {isIntersecting && entryCount === 1 && (
-          <CountUp
-            start={0}
-            formattingFn={(num) => num.toLocaleString()}
-            duration={3}
-            end={originalValue}
-          />
-        )}
-        {isIntersecting && entryCount > 1 && (
-          <span>
-            {originalValue.toLocaleString(undefined, {
-              maximumFractionDigits: 0,
-            })}
-          </span>
-        )}
-      </Portal>
+    <span>
+      <CountUp
+        isCounting
+        start={0}
+        duration={3}
+        end={originalValue}
+        formatter={(num) => parseInt(num).toLocaleString()}
+      />
     </span>
   );
 };
 
 const FormattedValue = ({
+  linkTemplate,
   textTemplate,
   specifier,
   value,
+  linkValue,
   collapsed,
   wrapped = true,
   animatedCounter,
+  link = null,
 }) => {
   const originalValue = value;
   const animateValue = typeof value === 'number' && animatedCounter;
-  const uid = animateValue ? `animated-counter-${originalValue}` : '';
 
   return (
     <React.Fragment>
@@ -61,40 +47,68 @@ const FormattedValue = ({
               value = formatter(value);
             } catch {}
           }
-          if (textTemplate) {
+          if (linkTemplate) {
+            linkValue = linkTemplate.replace('{}', linkValue || value);
+          }
+          if (textTemplate && !animateValue) {
             value = textTemplate.replace('{}', value);
           }
-          if (textTemplate && animateValue) {
-            value = textTemplate.replace(
-              '{}',
-              animateValue ? `<span id="${uid}"></span>` : value,
-            );
+          if (textTemplate && !linkTemplate && !linkValue) {
+            linkValue = value;
           }
-          if (animateValue && !textTemplate) {
-            value = `<span id="${uid}"></span>`;
-          }
+
+          const isLink = link && isUrl(linkValue);
+
+          const Link = isLink ? UniversalLink : React.Fragment;
+          const linkProps = isLink
+            ? {
+                href: linkValue,
+              }
+            : {};
+
+          const html =
+            isLink && isObject(link) && link.title
+              ? link.title
+              : sanitizeHtml(value, {
+                  allowedAttributes: {
+                    span: ['id'],
+                  },
+                }) || '';
+
           return wrapped ? (
-            <span
-              className={cx('formatted-value', collapsed ? 'collapsed' : null)}
-              dangerouslySetInnerHTML={{
-                __html:
-                  sanitizeHtml(value, {
-                    allowedAttributes: {
-                      span: ['id'],
-                    },
-                  }) || '',
-              }}
-            />
+            <Link {...linkProps}>
+              {animateValue ? (
+                <span
+                  className={cx(
+                    'formatted-value',
+                    collapsed ? 'collapsed' : null,
+                  )}
+                >
+                  {textTemplate && textTemplate.split('{}').length > 0
+                    ? textTemplate.split('{}')[0]
+                    : ''}
+                  <AnimatedCounter originalValue={originalValue} />
+                  {textTemplate && textTemplate.split('{}').length > 0
+                    ? textTemplate.split('{}')[1]
+                    : ''}
+                </span>
+              ) : (
+                <span
+                  className={cx(
+                    'formatted-value',
+                    collapsed ? 'collapsed' : null,
+                  )}
+                  dangerouslySetInnerHTML={{
+                    __html: html,
+                  }}
+                />
+              )}
+            </Link>
           ) : (
-            sanitizeHtml(value, {
-              allowedAttributes: {
-                span: ['id'],
-              },
-            }) || ''
+            <Link {...linkProps}>{html}</Link>
           );
         }}
       </D3>
-      {animateValue && <AnimatedCounterPortal originalValue={originalValue} />}
     </React.Fragment>
   );
 };
