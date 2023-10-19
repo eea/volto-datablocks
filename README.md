@@ -20,7 +20,7 @@ Volto-datablocks is an addon that has various blocks and utilities to provide "d
 
 **This add-on requires `eea.docker.plonesaas@5.2.4-66`.**
 
-## Notation
+## Concepts and terminology
 
 - data-connected component: is a component or a block that displays information coming from outside sources; For example a table would get its data from a REST api server (discodata.eea.europa.eu) and show it as desired
 - connector / provider: is a dexterity content type characterized by:
