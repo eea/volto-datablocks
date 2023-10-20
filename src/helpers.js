@@ -117,27 +117,34 @@ export function updateChartDataFromProvider(chartData, providerData) {
         newTrace[originalColumn] = values;
       }
     });
-    newTrace.transforms = (trace.transforms || []).map((transform) => {
-      // Sometimes the provider columns change to lower/uppercase, so let's handle that
-      const key = Object.keys(providerData).includes(transform.targetsrc)
-        ? transform.targetsrc
-        : Object.keys(providerData)
-            .map((s) => s.toLowerCase())
-            .includes(transform.targetsrc.toLowerCase())
-        ? transform.targetsrc.toLowerCase()
-        : null;
-      if (key === null) {
-        // eslint-disable-next-line no-console
-        console.warn(
-          "Transform can't be identified in provider data",
-          transform.targetsrc,
-        );
-      }
-      return {
-        ...transform,
-        target: providerData[key],
-      };
-    });
+    newTrace.transforms = (trace.transforms || [])
+      .filter((t) => !!t.targetsrc)
+      .map((transform) => {
+        // Sometimes the provider columns change to lower/uppercase, so let's handle that
+        let key = null;
+        try {
+          key = Object.keys(providerData).includes(transform.targetsrc)
+            ? transform.targetsrc
+            : Object.keys(providerData)
+                .map((s) => s.toLowerCase())
+                .includes(transform.targetsrc.toLowerCase())
+            ? transform.targetsrc.toLowerCase()
+            : null;
+        } catch {
+          console.log('Error in getting key', { providerData, transform });
+        }
+        if (key === null) {
+          // eslint-disable-next-line no-console
+          console.warn(
+            "Transform can't be identified in provider data",
+            transform.targetsrc,
+          );
+        }
+        return {
+          ...transform,
+          target: providerData[key],
+        };
+      });
     return newTrace;
   });
   return res;
