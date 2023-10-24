@@ -96,9 +96,9 @@ function getCaseInsensitiveColumnName(providerData, columnName) {
   const key = Object.keys(providerData).includes(columnName)
     ? columnName
     : Object.keys(providerData)
-        .map((s) => s.toLowerCase())
-        .includes(columnName.toLowerCase())
-    ? columnName.toLowerCase()
+        .map((s) => s?.toLowerCase())
+        .includes(columnName?.toLowerCase())
+    ? columnName?.toLowerCase()
     : null;
   return key;
 }
