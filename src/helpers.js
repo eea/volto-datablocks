@@ -92,59 +92,61 @@ export function getDataQuery({
   return query;
 }
 
+function getCaseInsensitiveColumnName(providerData, columnName) {
+  const key = Object.keys(providerData).includes(columnName)
+    ? columnName
+    : Object.keys(providerData)
+        .map((s) => s?.toLowerCase())
+        .includes(columnName?.toLowerCase())
+    ? columnName?.toLowerCase()
+    : null;
+  return key;
+}
+
 /*
  * refreshes chart data using data from provider
  * this is similar to mixProviderData from ConnectedChart, but it doesn't apply
- * transformation
+ * transformation.
  */
 export function updateChartDataFromProvider(chartData, providerData) {
   if (!providerData) return chartData;
 
-  const providerDataColumns = Object.keys(providerData);
-
   const res = chartData.map((trace) => {
     const newTrace = { ...(trace || {}) };
-    Object.keys(trace).forEach((tk) => {
-      const originalColumn = tk.replace(/src$/, '');
+    Object.keys(trace).forEach((traceKey) => {
+      const originalColumnName = traceKey.replace(/src$/, '');
       if (
-        tk.endsWith('src') &&
-        Object.keys(trace).includes(originalColumn) &&
-        typeof trace[tk] === 'string' &&
-        providerDataColumns.includes(trace[tk])
+        traceKey.endsWith('src') &&
+        Object.keys(trace).includes(originalColumnName) &&
+        typeof trace[traceKey] === 'string'
       ) {
-        let values = providerData[trace[tk]];
-
-        newTrace[originalColumn] = values;
+        const providerColumnName = getCaseInsensitiveColumnName(
+          providerData,
+          trace[traceKey],
+        );
+        newTrace[originalColumnName] = providerData[providerColumnName];
       }
     });
-    newTrace.transforms = (trace.transforms || [])
-      .filter((t) => !!t.targetsrc)
-      .map((transform) => {
-        // Sometimes the provider columns change to lower/uppercase, so let's handle that
-        let key = null;
-        try {
-          key = Object.keys(providerData).includes(transform.targetsrc)
-            ? transform.targetsrc
-            : Object.keys(providerData)
-                .map((s) => s.toLowerCase())
-                .includes(transform.targetsrc.toLowerCase())
-            ? transform.targetsrc.toLowerCase()
-            : null;
-        } catch {
-          console.log('Error in getting key', { providerData, transform });
-        }
-        if (key === null) {
-          // eslint-disable-next-line no-console
-          console.warn(
-            "Transform can't be identified in provider data",
-            transform.targetsrc,
-          );
-        }
-        return {
-          ...transform,
-          target: providerData[key],
-        };
-      });
+
+    newTrace.transforms = (trace.transforms || []).map((transform) => {
+      // Sometimes the provider columns change to lower/uppercase, so let's handle that
+      const key = getCaseInsensitiveColumnName(
+        providerData,
+        transform.targetsrc,
+      );
+      if (key === null) {
+        // eslint-disable-next-line no-console
+        console.warn(
+          "Transform can't be identified in provider data",
+          transform.targetsrc,
+        );
+      }
+      return {
+        ...transform,
+        target: providerData[key],
+      };
+    });
+
     return newTrace;
   });
   return res;
