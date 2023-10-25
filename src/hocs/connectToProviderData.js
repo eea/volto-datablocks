@@ -45,6 +45,7 @@ export function connectToProviderData(getConfig = () => ({})) {
       data_providers: state.data_providers,
     }))(
       withRouter((props) => {
+        // console.log('props', props);
         const dispatch = useDispatch();
         const params = useParams();
         const config = useMemo(() => getConfig(props), [props]);
@@ -71,7 +72,12 @@ export function connectToProviderData(getConfig = () => ({})) {
           [props, pagination, state.extraQuery, state.extraConditions],
         );
         const data_query = useMemo(
-          () => getDataQuery({ ...props, params, pagination, provider_url }),
+          () =>
+            // some blocks need unfiltered access to the data, for example
+            // a chart that shows data for all the countries
+            props.data?.filter_connector_data_at_source === false
+              ? []
+              : getDataQuery({ ...props, params, pagination, provider_url }),
           [props, params, pagination, provider_url],
         );
 
