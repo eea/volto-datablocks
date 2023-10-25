@@ -127,6 +127,7 @@ export function updateChartDataFromProvider(chartData, providerData) {
         newTrace[originalColumnName] = providerData[providerColumnName];
       }
     });
+
     newTrace.transforms = (trace.transforms || []).map((transform) => {
       // Sometimes the provider columns change to lower/uppercase, so let's handle that
       const key = getCaseInsensitiveColumnName(
@@ -145,6 +146,7 @@ export function updateChartDataFromProvider(chartData, providerData) {
         target: providerData[key],
       };
     });
+
     return newTrace;
   });
   return res;
