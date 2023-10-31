@@ -8,11 +8,11 @@
   height: 85%;
 
   .close.icon {
+    top: 1rem;
+    right: 1rem;
     width: 24px !important;
     height: 24px;
     padding: 0;
-    top: 1rem;
-    right: 1rem;
 
     > i {
       font-size: 24px;
@@ -61,7 +61,6 @@
   .trigger-button {
     display: inline-flex;
     align-items: center;
-    line-height: 1.5;
     padding: 0;
     padding-bottom: 3px;
     border: none;
@@ -69,6 +68,7 @@
     color: @textColor;
     column-gap: 0.25rem;
     cursor: pointer;
+    line-height: 1.5;
 
     &:hover {
       color: @secondaryColor;
@@ -105,10 +105,10 @@
 
 #vis-toolbar-popup {
   .ui.popup {
+    padding-right: 1rem;
+    padding-left: 1rem;
     background-color: @grey-1;
     box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
-    padding-left: 1rem;
-    padding-right: 1rem;
 
     &::before {
       background-color: @grey-1;
