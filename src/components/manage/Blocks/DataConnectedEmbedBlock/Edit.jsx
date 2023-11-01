@@ -9,12 +9,14 @@ import PropTypes from 'prop-types';
 import { Message } from 'semantic-ui-react';
 import { defineMessages, FormattedMessage, injectIntl } from 'react-intl';
 import cx from 'classnames';
-import PrivacyProtection from '@eeacms/volto-embed/PrivacyProtection/PrivacyProtection';
-
 import { SidebarPortal } from '@plone/volto/components';
 import mapsBlockSVG from '@plone/volto/components/manage/Blocks/Maps/block-maps.svg';
+import {
+  PrivacyProtection,
+  addPrivacyProtectionToSchema,
+} from '@eeacms/volto-embed';
+
 import schema from './schema';
-import { addPrivacyProtectionToSchema } from '@eeacms/volto-embed/PrivacyProtection';
 
 const messages = defineMessages({
   MapsBlockInputPlaceholder: {

@@ -7,7 +7,7 @@ import React from 'react';
 import { defineMessages, injectIntl } from 'react-intl';
 import cx from 'classnames';
 import { connect } from 'react-redux';
-import PrivacyProtection from '@eeacms/volto-embed/PrivacyProtection/PrivacyProtection';
+import { PrivacyProtection } from '@eeacms/volto-embed';
 import {
   getConnectedDataParametersForContext,
   getFilteredURL,
