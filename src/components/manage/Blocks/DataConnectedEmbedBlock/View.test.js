@@ -6,8 +6,10 @@ import ViewEmbedBlock from './View.jsx';
 import { IntlProvider } from 'react-intl';
 import '@testing-library/jest-dom/extend-expect';
 
-jest.mock('@eeacms/volto-embed/PrivacyProtection/PrivacyProtection', () => {
-  return jest.fn(({ children }) => <div>{children}</div>);
+jest.mock('@eeacms/volto-embed', () => {
+  return {
+    PrivacyProtection: jest.fn(({ children }) => <div>{children}</div>),
+  };
 });
 
 jest.mock('@plone/volto/helpers', () => ({
