@@ -24,8 +24,10 @@ const DottedTableChartView = (props) => {
 
   const possible_columns = Array.from(
     new Set(provider_data?.[column_data]),
-  ).sort();
-  const possible_rows = Array.from(new Set(provider_data?.[row_data])).sort();
+  ).sort((a, b) => a - b);
+  const possible_rows = Array.from(new Set(provider_data?.[row_data])).sort(
+    (a, b) => a - b,
+  );
 
   const data_tree = React.useMemo(() => {
     const res = {};

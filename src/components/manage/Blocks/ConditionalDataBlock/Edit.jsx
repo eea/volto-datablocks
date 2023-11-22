@@ -10,7 +10,7 @@ import { ConditionalDataBlockSchema } from './schema';
 
 const tweakSchema = (schema, provider_data) => {
   const choices = Object.keys(provider_data || {})
-    .sort()
+    .sort((a, b) => a - b)
     .map((n) => [n, n]);
   ['column_data'].forEach((n) => (schema.properties[n].choices = choices));
 

@@ -13,7 +13,7 @@ class DottedTableChartEdit extends React.Component {
     const schema = DottedTableChartSchema();
 
     const choices = Object.keys(provider_data)
-      .sort()
+      .sort((a, b) => a - b)
       .map((n) => [n, n]);
 
     ['column_data', 'row_data', 'size_data'].forEach(
@@ -21,7 +21,9 @@ class DottedTableChartEdit extends React.Component {
     );
 
     const { row_data } = this.props.data;
-    const possible_rows = Array.from(new Set(provider_data?.[row_data])).sort();
+    const possible_rows = Array.from(new Set(provider_data?.[row_data])).sort(
+      (a, b) => a - b,
+    );
 
     schema.properties.row_colors.options = possible_rows.map((r) => ({
       id: r,
