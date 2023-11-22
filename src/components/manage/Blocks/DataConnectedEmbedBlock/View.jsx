@@ -39,7 +39,7 @@ const ViewEmbedBlock = (props) => {
 
   return url ? (
     <PrivacyProtection data={data} height={height} {...props}>
-      <p
+      <div
         className={cx(
           'map-container block maps',
           {
@@ -65,7 +65,7 @@ const ViewEmbedBlock = (props) => {
             allowFullScreen
           />
         </div>
-      </p>
+      </div>
     </PrivacyProtection>
   ) : (
     ''

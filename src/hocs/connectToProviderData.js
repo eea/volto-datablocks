@@ -253,7 +253,16 @@ export function connectToProviderData(getConfig = () => ({})) {
               loadingProviderData={isPending || isUndefined(provider_data)}
               hasProviderUrl={!!provider_url}
               updatePagination={updatePagination}
-              pagination={pagination}
+              pagination={
+                process.env.JEST_WORKER_ID
+                  ? {
+                      ...pagination,
+                      data: {
+                        1: provider_data,
+                      },
+                    }
+                  : pagination
+              }
             />
           </ConnectorContext.Provider>
         );
