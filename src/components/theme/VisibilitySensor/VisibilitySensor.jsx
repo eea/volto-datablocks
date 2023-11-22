@@ -8,10 +8,11 @@ const VisibilitySensor = ({
   partialVisibility = true,
   delayedCall = true,
   offset = { top: -50, bottom: -50 },
+  useVisibilitySensor = true,
   Placeholder = () => <div>&nbsp;</div>,
   ...rest
 }) => {
-  const [active, setActive] = React.useState(true);
+  const [active, setActive] = React.useState(useVisibilitySensor);
 
   return (
     <ReactVisibilitySensor
