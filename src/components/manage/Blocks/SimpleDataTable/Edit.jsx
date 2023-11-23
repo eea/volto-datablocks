@@ -67,10 +67,9 @@ class Edit extends Component {
 
     if (!provider_data) return schema;
 
-    const choices = Array.from(Object.keys(provider_data).sort()).map((n) => [
-      n,
-      n,
-    ]);
+    const choices = Array.from(
+      Object.keys(provider_data).sort((a, b) => a - b),
+    ).map((n) => [n, n]);
     schema.properties.columns.schema.properties.column.choices = choices;
     schema.properties.columns.schema.properties.column_link.choices = choices;
 
