@@ -6,8 +6,8 @@ import installCountryFlag from './components/manage/Blocks/CountryFlag';
 import installCustomConnectedBlock from './components/manage/Blocks/CustomConnectedBlock';
 import installConditionalDataBlock from './components/manage/Blocks/ConditionalDataBlock';
 
-import { DataConnectorView } from './components';
 import {
+  DataConnectorView,
   DataQueryWidget,
   PickObjectWidget,
   SelectProviderPickWidget,
