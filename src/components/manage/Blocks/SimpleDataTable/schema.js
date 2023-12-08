@@ -185,7 +185,7 @@ export const SimpleDataTableSchema = (config, templateSchema = {}) => {
       },
       provider_url: {
         title: 'Data provider',
-        widget: 'object_by_path',
+        widget: 'internal_url',
       },
       allowedParams: {
         title: 'Allowed url params',
