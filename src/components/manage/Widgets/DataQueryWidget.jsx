@@ -15,7 +15,10 @@ import { Icon } from '@plone/volto/components';
 import { format, parse } from 'date-fns';
 import { injectLazyLibs } from '@plone/volto/helpers/Loadable/Loadable';
 import cx from 'classnames';
-
+import {
+  setUnsavedDataQueries,
+  resetUnsavedDataQueries,
+} from '@eeacms/volto-datablocks/actions';
 import {
   Option,
   DropdownIndicator,
@@ -116,8 +119,9 @@ class QuerystringWidget extends Component {
    * @returns {undefined}
    */
   componentDidMount() {
-    if (this.props.focus) {
-      this.node.focus();
+    if (this.props?.focus) {
+      // needed?
+      // this.node.focus();
     }
     this.props.getQuerystring();
     if (this.props.indexesLoaded) {
@@ -130,11 +134,20 @@ class QuerystringWidget extends Component {
    * @method componentDidUpdate
    * @returns {undefined}
    */
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     if (this.props.indexesLoaded && !this.state.indexes) {
       this.initializeIndexes();
     }
-    // console.log(this.props.value, 'value on up');
+
+    // Check if value of indexes has changed and temp save
+    // to redux store
+    if (JSON.stringify(prevProps.value) !== JSON.stringify(this.props.value)) {
+      this.props.setUnsavedDataQueries(this.props.value);
+    }
+  }
+
+  componentWillUnmount() {
+    this.props.resetUnsavedDataQueries();
   }
 
   /**
@@ -612,6 +625,6 @@ export default compose(
       indexes: filterIndexes(state.querystring.indexes),
       indexesLoaded: state.querystring.loaded,
     }),
-    { getQuerystring },
+    { getQuerystring, setUnsavedDataQueries, resetUnsavedDataQueries },
   ),
 )(QuerystringWidget);
