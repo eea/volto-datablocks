@@ -6,7 +6,7 @@ import { flattenToAppURL } from '@plone/volto/helpers';
 import {
   SET_CONNECTED_DATA_PARAMETERS,
   DELETE_CONNECTED_DATA_PARAMETERS,
-  SET_UNSAVED_QUERIES,
+  SET_UNSAVED_CONNECTED_DATA_PARAMETERS,
 } from '../constants';
 
 const initialState = {
@@ -66,7 +66,7 @@ export default function connected_data_parameters(
           [path]: contentSuccess.data_query,
         },
       };
-    case SET_UNSAVED_QUERIES:
+    case SET_UNSAVED_CONNECTED_DATA_PARAMETERS:
       const contentUnsaved = action.payload;
 
       if (!contentUnsaved) return state;

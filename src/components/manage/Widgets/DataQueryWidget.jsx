@@ -15,7 +15,7 @@ import { Icon } from '@plone/volto/components';
 import { format, parse } from 'date-fns';
 import { injectLazyLibs } from '@plone/volto/helpers/Loadable/Loadable';
 import cx from 'classnames';
-import { setUnsavedDataQueries } from '@eeacms/volto-datablocks/actions';
+import { setUnsavedConnectedDataParameters } from '@eeacms/volto-datablocks/actions';
 import {
   Option,
   DropdownIndicator,
@@ -141,7 +141,7 @@ class QuerystringWidget extends Component {
     if (
       JSON.stringify(prevProps.formData) !== JSON.stringify(this.props.formData)
     ) {
-      this.props.setUnsavedDataQueries(this.props.formData);
+      this.props.setUnsavedConnectedDataParameters(this.props.formData);
     }
   }
 
@@ -620,6 +620,6 @@ export default compose(
       indexes: filterIndexes(state.querystring.indexes),
       indexesLoaded: state.querystring.loaded,
     }),
-    { getQuerystring, setUnsavedDataQueries },
+    { getQuerystring, setUnsavedConnectedDataParameters },
   ),
 )(QuerystringWidget);
