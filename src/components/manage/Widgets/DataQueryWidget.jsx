@@ -15,10 +15,7 @@ import { Icon } from '@plone/volto/components';
 import { format, parse } from 'date-fns';
 import { injectLazyLibs } from '@plone/volto/helpers/Loadable/Loadable';
 import cx from 'classnames';
-import {
-  setUnsavedDataQueries,
-  resetUnsavedDataQueries,
-} from '@eeacms/volto-datablocks/actions';
+import { setUnsavedDataQueries } from '@eeacms/volto-datablocks/actions';
 import {
   Option,
   DropdownIndicator,
@@ -141,13 +138,11 @@ class QuerystringWidget extends Component {
 
     // Check if value of indexes has changed and temp save
     // to redux store
-    if (JSON.stringify(prevProps.value) !== JSON.stringify(this.props.value)) {
-      this.props.setUnsavedDataQueries(this.props.value);
+    if (
+      JSON.stringify(prevProps.formData) !== JSON.stringify(this.props.formData)
+    ) {
+      this.props.setUnsavedDataQueries(this.props.formData);
     }
-  }
-
-  componentWillUnmount() {
-    this.props.resetUnsavedDataQueries();
   }
 
   /**
@@ -625,6 +620,6 @@ export default compose(
       indexes: filterIndexes(state.querystring.indexes),
       indexesLoaded: state.querystring.loaded,
     }),
-    { getQuerystring, setUnsavedDataQueries, resetUnsavedDataQueries },
+    { getQuerystring, setUnsavedDataQueries },
   ),
 )(QuerystringWidget);

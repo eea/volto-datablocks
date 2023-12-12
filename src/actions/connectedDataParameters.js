@@ -1,6 +1,7 @@
 import {
   SET_CONNECTED_DATA_PARAMETERS,
   DELETE_CONNECTED_DATA_PARAMETERS,
+  SET_UNSAVED_QUERIES,
 } from '../constants';
 
 export function setConnectedDataParameters(providerPath, data_query, index) {
@@ -19,3 +20,10 @@ export function deleteConnectedDataParameters(providerPath, index) {
     index,
   };
 }
+
+export const setUnsavedDataQueries = (unsavedQueries) => {
+  return {
+    type: SET_UNSAVED_QUERIES,
+    payload: unsavedQueries,
+  };
+};
