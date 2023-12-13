@@ -6,6 +6,7 @@ import { flattenToAppURL } from '@plone/volto/helpers';
 import {
   SET_CONNECTED_DATA_PARAMETERS,
   DELETE_CONNECTED_DATA_PARAMETERS,
+  SET_UNSAVED_CONNECTED_DATA_PARAMETERS,
 } from '../constants';
 
 const initialState = {
@@ -43,13 +44,13 @@ export default function connected_data_parameters(
         byProviderPath,
       };
     case 'GET_CONTENT_SUCCESS':
-      const content = action.result;
+      const contentSuccess = action.result;
 
-      if (!content) return state;
+      if (!contentSuccess) return state;
 
-      path = flattenToAppURL(content['@id']);
+      path = flattenToAppURL(contentSuccess['@id']);
 
-      if (!content.data_query) {
+      if (!contentSuccess.data_query) {
         const byContextPath = { ...(state.byContextPath || {}) };
         delete byContextPath[path];
         return {
@@ -62,7 +63,30 @@ export default function connected_data_parameters(
         ...state,
         byContextPath: {
           ...state.byContextPath,
-          [path]: content.data_query,
+          [path]: contentSuccess.data_query,
+        },
+      };
+    case SET_UNSAVED_CONNECTED_DATA_PARAMETERS:
+      const contentUnsaved = action.payload;
+
+      if (!contentUnsaved) return state;
+
+      path = flattenToAppURL(contentUnsaved['@id']);
+
+      if (!contentUnsaved.data_query) {
+        const byContextPath = { ...(state.byContextPath || {}) };
+        delete byContextPath[path];
+        return {
+          ...state,
+          byContextPath,
+        };
+      }
+
+      return {
+        ...state,
+        byContextPath: {
+          ...state.byContextPath,
+          [path]: contentUnsaved.data_query,
         },
       };
 
