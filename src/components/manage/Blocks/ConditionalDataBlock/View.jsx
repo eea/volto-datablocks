@@ -12,6 +12,7 @@ const evaluateCondition = (columnValue, operator, conditionValue) => {
   const values = (conditionValue || '').split(',').map((item) => {
     return item.trim();
   });
+  conditionValue = conditionValue ? conditionValue : '';
   columnValue = columnValue[0];
 
   switch (true) {
