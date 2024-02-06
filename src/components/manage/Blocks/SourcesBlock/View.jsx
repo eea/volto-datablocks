@@ -190,7 +190,7 @@ const SourceView = (props) => {
                   className={`discreet block_source ${className || ''}`}
                   href={item.chart_source_link}
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noopener"
                 >
                   {item.chart_source}
                 </a>
@@ -205,7 +205,7 @@ const SourceView = (props) => {
               className="discreet block_source"
               href={initialSourceLink}
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener"
             >
               {initialSource}
             </a>
