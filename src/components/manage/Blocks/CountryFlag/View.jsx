@@ -5,10 +5,10 @@ import './styles.less';
 import { Dropdown } from 'semantic-ui-react';
 import { flattenToAppURL } from '@plone/volto/helpers';
 
-const MaybeDropdown = ({ children, countries, value }) => {
+const MaybeDropdown = ({ children, countries, value, dropdown = false }) => {
   const history = useHistory();
 
-  if (!countries) {
+  if (!countries || !dropdown) {
     return children;
   }
 
