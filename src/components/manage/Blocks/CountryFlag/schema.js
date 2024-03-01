@@ -11,7 +11,7 @@ const CountryFlagSchema = () => {
       {
         id: 'settings',
         title: 'Settings',
-        fields: ['show_name', 'show_flag', 'render_as'], // title
+        fields: ['show_name', 'show_flag', 'show_dropdown', 'render_as'], // title
       },
     ],
 
@@ -29,6 +29,10 @@ const CountryFlagSchema = () => {
       },
       show_flag: {
         title: 'Show country flag',
+        type: 'boolean',
+      },
+      show_dropdown: {
+        title: 'Show dropdown',
         type: 'boolean',
       },
     },
