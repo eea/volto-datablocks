@@ -1,3 +1,8 @@
+@type: 'extra';
+@element: 'custom';
+
+@import (multiple, reference, optional) '../../theme.config';
+
 .country-flag {
   display: flex;
   align-items: center;
@@ -9,5 +14,42 @@
 
   > *:nth-child(2) {
     margin: 0 !important;
+  }
+}
+
+// copied from https://github.com/eea/volto-freshwater-policy/blob/74ace6a8b74c18cca3cb4fa40471297875d5ae50/src/components/Blocks/CountryHeaderDataBlock/style.less#L153C1-L197C2
+
+.ui.selection.dropdown.countries-dd {
+  display: inline-block !important;
+  min-height: auto;
+  padding: 0 !important;
+  border: none;
+  background-color: transparent;
+  color: #fff;
+
+  &:active,
+  &:focus {
+    border: none;
+  }
+
+  > .text,
+  > .text:not(.default) {
+    padding: 0em;
+    margin-right: 10px;
+    color: #fff !important;
+    font-size: inherit !important;
+    font-weight: inherit !important;
+  }
+
+  > .menu {
+    width: 250px;
+    min-width: auto;
+    border: 1px solid #f1f1f1 !important;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.08) !important;
+  }
+
+  i.icon {
+    display: inline;
+    font-size: 30px;
   }
 }
