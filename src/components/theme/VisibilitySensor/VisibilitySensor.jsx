@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import ReactVisibilitySensor from 'react-visibility-sensor';
 
 const VisibilitySensor = ({
@@ -12,7 +13,16 @@ const VisibilitySensor = ({
   Placeholder = () => <div>&nbsp;</div>,
   ...rest
 }) => {
-  const [active, setActive] = React.useState(useVisibilitySensor);
+  const isPrint = useSelector((state) => state.print?.isPrint || false);
+  const useIsPrint = isPrint ? !isPrint : useVisibilitySensor;
+  const [active, setActive] = React.useState(useIsPrint);
+  // const [active, setActive] = React.useState(useVisibilitySensor);
+
+  useEffect(() => {
+    if (isPrint) {
+      setActive(!isPrint);
+    }
+  }, [isPrint]);
 
   return (
     <ReactVisibilitySensor
