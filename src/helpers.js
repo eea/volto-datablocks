@@ -125,7 +125,7 @@ export function updateChartDataFromProvider(chartData, providerData) {
           trace[traceKey],
         );
         newTrace[originalColumnName] =
-          providerData[providerColumnName] || trace[originalColumnName] || [];
+          providerData[providerColumnName] || trace[originalColumnName];
       }
     });
 
