@@ -124,28 +124,44 @@ export function updateChartDataFromProvider(chartData, providerData) {
           providerData,
           trace[traceKey],
         );
-        newTrace[originalColumnName] = providerData[providerColumnName];
+        newTrace[originalColumnName] =
+          providerData[providerColumnName] || trace[originalColumnName] || [];
       }
     });
 
-    newTrace.transforms = (trace.transforms || []).map((transform) => {
-      // Sometimes the provider columns change to lower/uppercase, so let's handle that
-      const key = getCaseInsensitiveColumnName(
-        providerData,
-        transform.targetsrc,
-      );
-      if (key === null) {
-        // eslint-disable-next-line no-console
-        console.warn(
-          "Transform can't be identified in provider data",
+    if (trace.transforms) {
+      newTrace.transforms = trace.transforms.map((transform) => {
+        // Sometimes the provider columns change to lower/uppercase, so let's handle that
+        const key = getCaseInsensitiveColumnName(
+          providerData,
           transform.targetsrc,
         );
-      }
-      return {
-        ...transform,
-        target: providerData[key],
+        if (key === null) {
+          // eslint-disable-next-line no-console
+          console.warn(
+            "Transform can't be identified in provider data",
+            transform.targetsrc,
+          );
+        }
+        return {
+          ...transform,
+          target: providerData[key],
+        };
+      });
+    }
+
+    if (trace.cells) {
+      newTrace.cells = {
+        ...trace.cells,
+        values: trace.cells.values.map((value, index) => {
+          const providerColumnName = getCaseInsensitiveColumnName(
+            providerData,
+            trace.cells.valuessrc[index],
+          );
+          return providerData[providerColumnName] || value;
+        }),
       };
-    });
+    }
 
     return newTrace;
   });

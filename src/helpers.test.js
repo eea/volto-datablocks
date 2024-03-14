@@ -256,9 +256,7 @@ describe('updateChartDataFromProvider function', () => {
   it('returns original chartData when providerData does not contain matching keys', () => {
     const chartData = [{ xsrc: 'x_values', ysrc: 'y_values' }];
     const providerData = { z_values: [7, 8, 9] };
-    const expectedResult = [
-      { xsrc: 'x_values', ysrc: 'y_values', transforms: [] },
-    ];
+    const expectedResult = [{ xsrc: 'x_values', ysrc: 'y_values' }];
 
     expect(updateChartDataFromProvider(chartData, providerData)).toEqual(
       expectedResult,
@@ -268,9 +266,7 @@ describe('updateChartDataFromProvider function', () => {
   it('returns original chartData when trace values are not strings', () => {
     const chartData = [{ xsrc: 'x_values', ysrc: 'y_values' }];
     const providerData = { x_values: [1, 2, 3], y_values: 4 };
-    const expectedResult = [
-      { xsrc: 'x_values', ysrc: 'y_values', transforms: [] },
-    ];
+    const expectedResult = [{ xsrc: 'x_values', ysrc: 'y_values' }];
 
     expect(updateChartDataFromProvider(chartData, providerData)).toEqual(
       expectedResult,
