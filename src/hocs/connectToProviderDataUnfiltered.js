@@ -24,9 +24,10 @@ export function connectToProviderDataUnfiltered(getConfig = () => ({})) {
           [config.provider_url],
         );
 
-        const connectorPath = useMemo(() => getConnectorPath(provider_url), [
-          provider_url,
-        ]);
+        const connectorPath = useMemo(
+          () => getConnectorPath(provider_url),
+          [provider_url],
+        );
 
         const provider_data = provider_url
           ? props.data_providers?.data?.[provider_url]?._default
