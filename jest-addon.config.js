@@ -1,4 +1,4 @@
-require('dotenv').config({ path: __dirname + '/.env' })
+require('dotenv').config({ path: __dirname + '/.env' });
 
 module.exports = {
   testMatch: ['**/src/addons/**/?(*.)+(spec|test).[jt]s?(x)'],
@@ -48,4 +48,4 @@ module.exports = {
       '<rootDir>/node_modules/@eeacms/volto-datablocks/jest.setup.js',
     ],
   }),
-}
+};
