@@ -1,7 +1,8 @@
 import React from 'react';
-import renderer from 'react-test-renderer';
+import { render, screen } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-intl-redux';
+import '@testing-library/jest-dom/extend-expect';
 
 import View from './View';
 
@@ -58,11 +59,27 @@ test('renders DataConnector view', () => {
       },
     },
   });
-  const component = renderer.create(
+  render(
     <Provider store={store}>
       <View location={location} content={store.content} pagination={{}} />
     </Provider>,
   );
-  const json = component.toJSON();
-  expect(json).toMatchSnapshot();
+  // Assert the presence of the title, SQL query, and table headers
+  expect(screen.getByText('Data connector')).toBeInTheDocument();
+  expect(
+    screen.getByText(
+      'SELECT * FROM [FISE].[latest].[v_cnct_forest_per_capita]',
+    ),
+  ).toBeInTheDocument();
+  expect(screen.getByText('col_1')).toBeInTheDocument();
+  expect(screen.getByText('col_2')).toBeInTheDocument();
+  expect(screen.getByText('col_3')).toBeInTheDocument();
+  expect(screen.getByText('col_4')).toBeInTheDocument();
+
+  // Assert the presence of the table data
+  expect(screen.getAllByRole('cell')).toHaveLength(40);
+
+  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].forEach((i) => {
+    expect(screen.getAllByText(i)).toHaveLength(4);
+  });
 });

@@ -10,9 +10,9 @@ import countryNames from './data/countries';
 class Edit extends Component {
   getSchema = () => {
     const schema = CountryFlagSchema();
-    schema.properties.country_name.choices = Object.keys(
-      countryNames,
-    ).map((k) => [k, countryNames[k]]);
+    schema.properties.country_name.choices = Object.keys(countryNames).map(
+      (k) => [k, countryNames[k]],
+    );
     return schema;
   };
 
