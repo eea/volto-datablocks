@@ -2,7 +2,7 @@ import paintSVG from '@plone/volto/icons/table.svg';
 import CountryFlagEdit from './Edit';
 import CountryFlagView from './View';
 
-export default (config) => {
+const config = (config) => {
   config.blocks.blocksConfig.countryFlag = {
     id: 'countryFlag',
     title: 'Country Flag',
@@ -20,3 +20,5 @@ export default (config) => {
   };
   return config;
 };
+
+export default config;

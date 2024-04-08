@@ -2,7 +2,7 @@ import worldSVG from '@plone/volto/icons/world.svg';
 import Edit from './Edit';
 import View from './View';
 
-export default (config) => {
+const config = (config) => {
   /**
    * To add a custom connected block overwrite config.blocks.blocksConfig.custom_connected_block.blocks
    * config.blocks.blocksConfig.custom_connected_block.blocks = {
@@ -33,3 +33,5 @@ export default (config) => {
   };
   return config;
 };
+
+export default config;

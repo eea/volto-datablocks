@@ -46,10 +46,12 @@ const EditWrapper = compose(
   })),
 )(Edit);
 
-export default (props) => {
+const CustomConnectedBlockEdit = (props) => {
   return (
     <VisibilitySensor>
       <EditWrapper {...props} />
     </VisibilitySensor>
   );
 };
+
+export default CustomConnectedBlockEdit;

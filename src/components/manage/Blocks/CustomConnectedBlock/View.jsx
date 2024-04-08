@@ -49,10 +49,12 @@ const BlockView = compose(
 
 export { View };
 
-export default (props) => {
+const CustomConnectedBlockView = (props) => {
   return (
     <VisibilitySensor Placeholder={() => <div>loading....&nbsp;</div>}>
       <BlockView {...props} />
     </VisibilitySensor>
   );
 };
+
+export default CustomConnectedBlockView;
