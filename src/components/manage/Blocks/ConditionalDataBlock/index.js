@@ -2,7 +2,7 @@ import imagewideSVG from '@plone/volto/icons/image-wide.svg';
 import View from './View';
 import Edit from './Edit';
 
-export default (config) => {
+const config = (config) => {
   config.blocks.blocksConfig.conditionalDataBlock = {
     id: 'conditionalDataBlock',
     title: 'Conditional data block',
@@ -21,3 +21,5 @@ export default (config) => {
   };
   return config;
 };
+
+export default config;

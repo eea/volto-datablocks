@@ -40,7 +40,10 @@ const DottedTableChartView = (props) => {
     return res;
   }, [column_data, provider_data, row_data, size_data]);
 
-  const size_column_data = provider_data?.[size_data] || [];
+  const size_column_data = React.useMemo(() => {
+    return provider_data?.[size_data] || [];
+  }, [provider_data, size_data]);
+
   // TODO: use sums to find the biggest value for a column?
   const maxValue = React.useMemo(() => {
     const numbers = size_column_data.map((s) =>

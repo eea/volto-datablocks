@@ -15,7 +15,7 @@ import {
 import { dataProvider } from './middlewares';
 import * as addonReducers from './reducers';
 
-export default (config) => {
+const config = (config) => {
   config.blocks.groupBlocksOrder = [
     ...config.blocks.groupBlocksOrder,
     {
@@ -51,3 +51,5 @@ export default (config) => {
     installConditionalDataBlock,
   ].reduce((acc, apply) => apply(acc), config);
 };
+
+export default config;

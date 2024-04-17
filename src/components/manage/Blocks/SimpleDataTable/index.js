@@ -4,7 +4,7 @@ import SimpleDataTableView from './View';
 
 import { DefaultView, defaultSchema } from './templates/default';
 
-export default (config) => {
+const config = (config) => {
   config.blocks.blocksConfig.simpleDataConnectedTable = {
     id: 'simpleDataConnectedTable',
     title: 'Data Table',
@@ -48,3 +48,5 @@ export default (config) => {
   };
   return config;
 };
+
+export default config;

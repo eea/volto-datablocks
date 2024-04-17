@@ -2,7 +2,7 @@ import worldSVG from '@plone/volto/icons/world.svg';
 import DataQueryFilterEdit from './Edit';
 import DataQueryFilterView from './View';
 
-export default (config) => {
+const config = (config) => {
   config.blocks.blocksConfig.dataqueryfilter = {
     id: 'dataqueryfilter',
     title: 'DataQuery Filter',
@@ -20,3 +20,5 @@ export default (config) => {
   };
   return config;
 };
+
+export default config;

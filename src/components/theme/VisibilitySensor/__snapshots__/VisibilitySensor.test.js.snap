@@ -1,9 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`renders a VisibilitySensor 1`] = `
-<div>
-  <p>
-    Some content
-  </p>
-</div>
-`;
