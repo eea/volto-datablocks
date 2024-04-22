@@ -121,10 +121,12 @@ const SimpleDataTableViewWrapper = compose(
   }),
 )(SimpleDataTableView);
 
-export default (props) => {
+const View = (props) => {
   return (
     <VisibilitySensor offset={{ top: -150, bottom: -150 }}>
       <SimpleDataTableViewWrapper {...props} />
     </VisibilitySensor>
   );
 };
+
+export default View;

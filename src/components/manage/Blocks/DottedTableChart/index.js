@@ -2,7 +2,7 @@ import tableSVG from '@plone/volto/icons/table.svg';
 import DottedTableChartEdit from './Edit';
 import DottedTableChartView from './View';
 
-export default (config) => {
+const config = (config) => {
   config.blocks.blocksConfig.dottedTableChart = {
     id: 'dottedTableChart',
     title: 'Dotted Table Chart',
@@ -20,3 +20,5 @@ export default (config) => {
   };
   return config;
 };
+
+export default config;

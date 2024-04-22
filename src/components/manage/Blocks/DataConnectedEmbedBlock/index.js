@@ -2,7 +2,7 @@ import worldSVG from '@plone/volto/icons/world.svg';
 import DataConnectedEmbedBlockEdit from './Edit';
 import DataConnectedEmbedBlockView from './View';
 
-export default (config) => {
+const config = (config) => {
   config.blocks.blocksConfig.data_connected_embed = {
     id: 'data_connected_embed',
     title: 'Data connected embed',
@@ -20,3 +20,5 @@ export default (config) => {
   };
   return config;
 };
+
+export default config;
