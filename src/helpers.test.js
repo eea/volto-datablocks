@@ -243,7 +243,7 @@ describe('updateChartDataFromProvider function', () => {
       {
         xsrc: 'x_values',
         ysrc: 'y_values',
-        transforms: [{ targetsrc: 'y_values', y: [4, 5, 6] }],
+        transforms: [{ ysrc: 'y_values', y: [4, 5, 6] }],
       },
       { xsrc: 'x_values', ysrc: 'z_values', transforms: [] },
     ];
