@@ -131,22 +131,24 @@ export function updateChartDataFromProvider(chartData, providerData) {
 
     if (trace.transforms) {
       newTrace.transforms = trace.transforms.map((transform) => {
-        // Sometimes the provider columns change to lower/uppercase, so let's handle that
-        const key = getCaseInsensitiveColumnName(
-          providerData,
-          transform.targetsrc,
-        );
-        if (key === null) {
-          // eslint-disable-next-line no-console
-          console.warn(
-            "Transform can't be identified in provider data",
-            transform.targetsrc,
-          );
-        }
-        return {
-          ...transform,
-          target: providerData[key],
-        };
+        const newTransform = { ...(transform || {}) };
+
+        Object.keys(transform).forEach((transformKey) => {
+          const originalColumnName = transformKey.replace(/src$/, '');
+          if (
+            transformKey.endsWith('src') &&
+            Object.keys(transform).includes(originalColumnName) &&
+            typeof transform[transformKey] === 'string'
+          ) {
+            const providerColumnName = getCaseInsensitiveColumnName(
+              providerData,
+              transform[transformKey],
+            );
+            newTransform[originalColumnName] =
+              providerData[providerColumnName] || transform[originalColumnName];
+          }
+        });
+        return newTransform;
       });
     }
 
@@ -165,6 +167,7 @@ export function updateChartDataFromProvider(chartData, providerData) {
 
     return newTrace;
   });
+
   return res;
 }
 
