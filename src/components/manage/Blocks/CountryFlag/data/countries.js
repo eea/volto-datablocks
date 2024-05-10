@@ -230,6 +230,7 @@ const countries = {
   TN: 'Tunisia',
   TO: 'Tonga',
   TR: 'Turkey',
+  'TR-UN': 'Turkiye',
   TT: 'Trinidad and Tobago',
   TV: 'Tuvalu',
   TW: 'Taiwan',
