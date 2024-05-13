@@ -10,17 +10,21 @@ import countryNames from './data/countries';
 class Edit extends Component {
   getSchema = () => {
     const schema = CountryFlagSchema();
-    schema.properties.country_name.choices = Object.keys(countryNames).map(
-      (k) => [k, countryNames[k]],
-    );
+    schema.properties.country_name.choices = Object.keys(
+      countryNames,
+    ).map((k) => [k, countryNames[k]]);
     return schema;
   };
 
   render() {
     const schema = this.getSchema();
+
     return (
       <div className="block">
-        <CountryFlagView data={this.props.data} />
+        <CountryFlagView
+          path={this.props.pathname || ''}
+          data={this.props.data}
+        />
 
         <SidebarPortal selected={this.props.selected}>
           <InlineForm
