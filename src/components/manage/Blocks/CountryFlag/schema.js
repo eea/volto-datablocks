@@ -13,6 +13,11 @@ const CountryFlagSchema = () => {
         title: 'Settings',
         fields: ['show_name', 'show_flag', 'show_dropdown', 'render_as'], // title
       },
+      {
+        id: 'dropdownItems',
+        title: 'Dropdown items',
+        fields: ['querystring'],
+      },
     ],
 
     properties: {
@@ -34,6 +39,10 @@ const CountryFlagSchema = () => {
       show_dropdown: {
         title: 'Show dropdown',
         type: 'boolean',
+      },
+      querystring: {
+        title: 'Criteria',
+        widget: 'querystring',
       },
     },
 

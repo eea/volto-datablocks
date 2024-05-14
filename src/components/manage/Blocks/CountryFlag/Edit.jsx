@@ -6,6 +6,7 @@ import InlineForm from '@plone/volto/components/manage/Form/InlineForm';
 import CountryFlagSchema from './schema';
 import CountryFlagView from './View';
 import countryNames from './data/countries';
+import './styles.less';
 
 class Edit extends Component {
   getSchema = () => {
@@ -18,9 +19,15 @@ class Edit extends Component {
 
   render() {
     const schema = this.getSchema();
+
     return (
       <div className="block">
-        <CountryFlagView data={this.props.data} />
+        <CountryFlagView
+          path={this.props.pathname || ''}
+          data={this.props.data}
+          metadata={this.props.metadata}
+          id={this.props.id}
+        />
 
         <SidebarPortal selected={this.props.selected}>
           <InlineForm
