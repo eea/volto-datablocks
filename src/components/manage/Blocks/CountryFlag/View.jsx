@@ -1,11 +1,12 @@
 import { useHistory } from 'react-router-dom';
 import React from 'react';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 import countryNames from './data/countries';
 import './styles.less';
 import { Dropdown } from 'semantic-ui-react';
 import { flattenToAppURL } from '@plone/volto/helpers';
 import withQuerystringResults from '@plone/volto/components/manage/Blocks/Listing/withQuerystringResults';
+import PreviewImage from '@eeacms/volto-listing-block/PreviewImage';
 
 const MaybeDropdown = ({ children, countries, value, dropdown = false }) => {
   const history = useHistory();
@@ -15,14 +16,16 @@ const MaybeDropdown = ({ children, countries, value, dropdown = false }) => {
   }
 
   const options = countries.map((c) => ({ text: c.title, value: c['@id'] }));
+  // const defaultValue = countries.filter((c) => c.title === value);
 
   return (
     <Dropdown
+      fluid
       selection
       className="countries-dd"
       text={children}
       options={options}
-      defaultValue={value}
+      // defaultValue={defaultValue.length > 0 ? defaultValue[0]['@id'] : null}
       icon="angle down"
       onChange={(_, { value }) => {
         const url = flattenToAppURL(value);
@@ -46,22 +49,9 @@ const CountryFlagView = withQuerystringResults(
     const [flag, setFlag] = React.useState();
     const contentdata = props.metadata || props.properties;
     const siblings = contentdata?.['@components']?.siblings?.items || [];
-
-    // const subrequestID = contentdata?.UID;
-    // const querystring = props.data.querystring;
-    // const hasQuery = querystring?.query?.length > 0;
-    // const querystringResults = useSelector(
-    //   (state) => state.querystringsearch.subrequests,
-    // );
-
-    // const listingItems = hasQuery
-    //   ? querystringResults?.[subrequestID]?.items || []
-    //   : siblings;
-
-    // console.log('props', props);
-    console.log('listingItems', props.listingItems);
-    // console.log('data', props.data);
-    // console.log('contentdata', contentdata);
+    const pageTitle = props.metadata.title;
+    const previewImageUrl =
+      contentdata && contentdata['@id'] + '/@@images/preview_image/thumb';
 
     React.useEffect(() => {
       if (countryCode) {
@@ -77,33 +67,38 @@ const CountryFlagView = withQuerystringResults(
         });
       }
     });
-    const countryTitles = Object.values(countryNames);
-
     // TODO: we might as well use the Title everywhere, since we use it for the siblings
     // const countries = siblings.filter((f) => countryTitles.includes(f.title));
     const countries =
-      props.listingItems.length > 0 ? props.listingItems : siblings;
+      props.listingItems.length > 0
+        ? props.listingItems
+        : siblings.filter((s) => s.title !== pageTitle);
 
     const countryFlag =
       (countryCode && show_flag && flag && (
         <img alt={countryNames[countryCode]} src={flag} />
       )) ||
-      'no country';
+      (contentdata?.preview_image ? (
+        <PreviewImage item={contentdata} preview_image_url={previewImageUrl} />
+      ) : (
+        ''
+      ));
+    const displayName =
+      (countryCode && show_name && countryNames[countryCode]) || pageTitle;
 
     return (
       <div className="country-flag">
         {countryFlag}
-        {countryCode && show_name && (
-          <Tag>
-            <MaybeDropdown
-              dropdown={show_dropdown}
-              countries={countries}
-              value={countryNames[countryCode]}
-            >
-              {countryNames[countryCode]}
-            </MaybeDropdown>
-          </Tag>
-        )}
+
+        <Tag>
+          <MaybeDropdown
+            dropdown={show_dropdown}
+            countries={countries}
+            value={displayName}
+          >
+            {displayName}
+          </MaybeDropdown>
+        </Tag>
       </div>
     );
   },
