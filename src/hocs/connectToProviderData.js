@@ -27,7 +27,7 @@ const getInitialPagination = (config = {}) => {
     itemsPerPage: config.pagination?.itemsPerPage || 5,
     prevPage: null,
     totalItems: null,
-    lastPage: Infinity,
+    lastPage: 1,
     data: {},
   };
 };
