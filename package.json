@@ -18,14 +18,14 @@
     "@eeacms/volto-embed",
     "@eeacms/volto-matomo",
     "@eeacms/volto-group-block",
-    "@eeamcs/volto-listing-block"
+    "@eeacms/volto-listing-block"
   ],
   "dependencies": {
     "@eeacms/countup": "*",
     "@eeacms/volto-embed": "*",
     "@eeacms/volto-group-block": "*",
     "@eeacms/volto-matomo": "*",
-    "@eeamcs/volto-listing-block": "*",
+    "@eeacms/volto-listing-block": "*",
     "d3": "7.1.1",
     "date-fns": "2.28.0",
     "humanize-plus": "^1.8.2",
