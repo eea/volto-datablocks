@@ -1,16 +1,14 @@
 import { useHistory } from 'react-router-dom';
 import React from 'react';
-// import { useSelector } from 'react-redux';
 import countryNames from './data/countries';
 import './styles.less';
 import { Dropdown } from 'semantic-ui-react';
 import { flattenToAppURL } from '@plone/volto/helpers';
-import withQuerystringResults from '@plone/volto/components/manage/Blocks/Listing/withQuerystringResults';
 import PreviewImage from '@eeacms/volto-listing-block/PreviewImage';
+import withQuerystringResults from './withQuerystringResults';
 
 const MaybeDropdown = ({ children, countries, value, dropdown = false }) => {
   const history = useHistory();
-
   if (!countries || !dropdown) {
     return children;
   }
@@ -66,11 +64,12 @@ const CountryFlagView = withQuerystringResults(
           setFlag(module.default);
         });
       }
-    });
+    }, [countryCode]);
+
     // TODO: we might as well use the Title everywhere, since we use it for the siblings
     // const countries = siblings.filter((f) => countryTitles.includes(f.title));
     const countries =
-      props.listingItems.length > 0
+      props?.listingItems && props.listingItems.length > 0
         ? props.listingItems
         : siblings.filter((s) => s.title !== pageTitle);
 
