@@ -165,7 +165,7 @@ export function connectToProviderData(getConfig = () => ({})) {
               getDataFromProvider(provider_url, form, data_query, hashValue),
             );
           }
-
+          console.log(pagination.activePage);
           if (
             provider_data &&
             !isPending &&
@@ -201,8 +201,23 @@ export function connectToProviderData(getConfig = () => ({})) {
                     pagination.itemsPerPage,
                   )?.[
                     pagination.activePage - 1 <=
-                    provider_data[currentKey].length / pagination.itemsPerPage
+                    (provider_data[currentKey].length %
+                      pagination.itemsPerPage ===
+                    0
+                      ? provider_data[currentKey].length /
+                          pagination.itemsPerPage -
+                        1
+                      : parseInt(
+                          provider_data[currentKey].length /
+                            pagination.itemsPerPage,
+                        ))
                       ? pagination.activePage - 1
+                      : provider_data[currentKey].length %
+                          pagination.itemsPerPage ===
+                        0
+                      ? provider_data[currentKey].length /
+                          pagination.itemsPerPage -
+                        1
                       : parseInt(
                           provider_data[currentKey].length /
                             pagination.itemsPerPage,
@@ -213,7 +228,11 @@ export function connectToProviderData(getConfig = () => ({})) {
                 }, {}),
               },
             };
-
+            if (!dataLength && pagination.activePage > 1) {
+              newPagination.lastPage = pagination.prevPage;
+            } else if (dataLength < pagination.itemsPerPage) {
+              newPagination.lastPage = pagination.activePage;
+            }
             setPagination({ ...newPagination });
           } else if (
             provider_data &&
@@ -222,12 +241,16 @@ export function connectToProviderData(getConfig = () => ({})) {
             activePageHasData &&
             !isEqual(provider_data, pagination.provider_data)
           ) {
+            console.log(provider_data);
             const dataLength =
               provider_data[Object.keys(provider_data)[0]]?.length || 0;
             newPagination.totalItems = dataLength;
             newPagination = {
               ...newPagination,
-              activePage: 1,
+              activePage:
+                !dataLength && pagination.activePage > 1
+                  ? pagination.prevPage
+                  : pagination.activePage,
               prevPage: null,
               provider_data: provider_data,
               lastPage: parseInt(
@@ -244,8 +267,23 @@ export function connectToProviderData(getConfig = () => ({})) {
                     pagination.itemsPerPage,
                   )?.[
                     pagination.activePage - 1 <=
-                    provider_data[currentKey].length / pagination.itemsPerPage
+                    (provider_data[currentKey].length %
+                      pagination.itemsPerPage ===
+                    0
+                      ? provider_data[currentKey].length /
+                          pagination.itemsPerPage -
+                        1
+                      : parseInt(
+                          provider_data[currentKey].length /
+                            pagination.itemsPerPage,
+                        ))
                       ? pagination.activePage - 1
+                      : provider_data[currentKey].length %
+                          pagination.itemsPerPage ===
+                        0
+                      ? provider_data[currentKey].length /
+                          pagination.itemsPerPage -
+                        1
                       : parseInt(
                           provider_data[currentKey].length /
                             pagination.itemsPerPage,
@@ -256,7 +294,18 @@ export function connectToProviderData(getConfig = () => ({})) {
                 }, {}),
               },
             };
-
+            if (!dataLength && pagination.activePage > 1) {
+              newPagination.lastPage = pagination.prevPage;
+            } else if (dataLength < pagination.itemsPerPage) {
+              newPagination.lastPage = pagination.activePage;
+            }
+            if (!dataLength && pagination.activePage > 1) {
+              newPagination.lastPage = pagination.prevPage;
+            } else if (dataLength < pagination.itemsPerPage) {
+              newPagination.lastPage = pagination.activePage;
+            } else {
+              newPagination.lastPage = Infinity;
+            }
             setPagination({ ...newPagination });
           }
         }, [
