@@ -165,7 +165,6 @@ export function connectToProviderData(getConfig = () => ({})) {
               getDataFromProvider(provider_url, form, data_query, hashValue),
             );
           }
-          console.log(pagination.activePage);
           if (
             provider_data &&
             !isPending &&
@@ -241,7 +240,6 @@ export function connectToProviderData(getConfig = () => ({})) {
             activePageHasData &&
             !isEqual(provider_data, pagination.provider_data)
           ) {
-            console.log(provider_data);
             const dataLength =
               provider_data[Object.keys(provider_data)[0]]?.length || 0;
             newPagination.totalItems = dataLength;
