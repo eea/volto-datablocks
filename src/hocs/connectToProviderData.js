@@ -20,6 +20,11 @@ import {
 } from '../helpers';
 import { ConnectorContext } from './';
 
+const splitArray = (array, size) =>
+  Array.from({ length: Math.ceil(array.length / size) }, (v, i) =>
+    array.slice(i * size, i * size + size),
+  );
+
 const getInitialPagination = (config = {}) => {
   return {
     activePage: 1,
@@ -27,7 +32,7 @@ const getInitialPagination = (config = {}) => {
     itemsPerPage: config.pagination?.itemsPerPage || 5,
     prevPage: null,
     totalItems: null,
-    lastPage: 1,
+    lastPage: Infinity,
     data: {},
   };
 };
@@ -173,6 +178,7 @@ export function connectToProviderData(getConfig = () => ({})) {
               (pagination.totalItems || 0) + dataLength;
             newPagination = {
               ...newPagination,
+              ...pagination.data,
               activePage:
                 !dataLength && pagination.activePage > 1
                   ? pagination.prevPage
@@ -181,23 +187,40 @@ export function connectToProviderData(getConfig = () => ({})) {
                 !dataLength && pagination.activePage > 1
                   ? null
                   : pagination.prevPage,
+              lastPage: parseInt(
+                provider_data[Object.keys(provider_data || {})?.[0]].length /
+                  pagination.itemsPerPage +
+                  1,
+              ),
               data: {
-                ...pagination.data,
-                [pagination.activePage]: provider_data,
+                [pagination.activePage]: Object.keys(
+                  provider_data || {},
+                )?.reduce((res, currentKey) => {
+                  let values = splitArray(
+                    provider_data[currentKey],
+                    pagination.itemsPerPage,
+                  )?.[
+                    pagination.activePage - 1 <=
+                    provider_data[currentKey].length / pagination.itemsPerPage
+                      ? pagination.activePage - 1
+                      : parseInt(
+                          provider_data[currentKey].length /
+                            pagination.itemsPerPage,
+                        )
+                  ];
+
+                  return { ...res, [currentKey]: values || [] };
+                }, {}),
               },
             };
-            if (!dataLength && pagination.activePage > 1) {
-              newPagination.lastPage = pagination.prevPage;
-            } else if (dataLength < pagination.itemsPerPage) {
-              newPagination.lastPage = pagination.activePage;
-            }
+
             setPagination({ ...newPagination });
           } else if (
             provider_data &&
             !isPending &&
             pagination.enabled &&
             activePageHasData &&
-            !isEqual(provider_data, pagination.data[pagination.activePage])
+            !isEqual(provider_data, pagination.provider_data)
           ) {
             const dataLength =
               provider_data[Object.keys(provider_data)[0]]?.length || 0;
@@ -206,21 +229,34 @@ export function connectToProviderData(getConfig = () => ({})) {
               ...newPagination,
               activePage: 1,
               prevPage: null,
+              provider_data: provider_data,
+              lastPage: parseInt(
+                provider_data[Object.keys(provider_data || {})?.[0]].length /
+                  pagination.itemsPerPage +
+                  1,
+              ),
               data: {
-                1:
-                  pagination.activePage > 1
-                    ? pagination.data[pagination.activePage]
-                    : provider_data,
+                [pagination.activePage]: Object.keys(
+                  provider_data || {},
+                )?.reduce((res, currentKey) => {
+                  let values = splitArray(
+                    provider_data[currentKey],
+                    pagination.itemsPerPage,
+                  )?.[
+                    pagination.activePage - 1 <=
+                    provider_data[currentKey].length / pagination.itemsPerPage
+                      ? pagination.activePage - 1
+                      : parseInt(
+                          provider_data[currentKey].length /
+                            pagination.itemsPerPage,
+                        )
+                  ];
+
+                  return { ...res, [currentKey]: values || [] };
+                }, {}),
               },
             };
-            if (
-              dataLength < newPagination.itemsPerPage &&
-              pagination.activePage === 1
-            ) {
-              newPagination.lastPage = pagination.activePage;
-            } else {
-              newPagination.lastPage = Infinity;
-            }
+
             setPagination({ ...newPagination });
           }
         }, [
@@ -230,9 +266,9 @@ export function connectToProviderData(getConfig = () => ({})) {
           dispatch,
           form,
           hashValue,
+          pagination,
           isPending,
           mounted,
-          pagination,
           provider_data,
           provider_url,
           readyToDispatch,
