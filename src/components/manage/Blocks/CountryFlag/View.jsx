@@ -9,6 +9,7 @@ import withQuerystringResults from './withQuerystringResults';
 
 const MaybeDropdown = ({ children, countries, value, dropdown = false }) => {
   const history = useHistory();
+
   if (!countries || !dropdown) {
     return children;
   }
@@ -33,74 +34,72 @@ const MaybeDropdown = ({ children, countries, value, dropdown = false }) => {
   );
 };
 
-const CountryFlagView = withQuerystringResults(
-  // ({ data = {}, metadata, properties }) => {
-  (props) => {
-    const {
-      country_name: countryCode,
-      render_as,
-      show_name,
-      show_flag,
-      show_dropdown,
-    } = props.data;
-    const Tag = render_as ? render_as.toLowerCase() : 'h2';
-    const [flag, setFlag] = React.useState();
-    const contentdata = props.metadata || props.properties;
-    const siblings = contentdata?.['@components']?.siblings?.items || [];
-    const pageTitle = props.metadata.title;
-    const previewImageUrl =
-      contentdata && contentdata['@id'] + '/@@images/preview_image/thumb';
+const CountryFlagView = (props) => {
+  const {
+    country_name: countryCode,
+    render_as,
+    show_name,
+    show_flag,
+    show_dropdown,
+  } = props.data;
+  const Tag = render_as ? render_as.toLowerCase() : 'h2';
+  const [flag, setFlag] = React.useState();
+  const contentdata = props.metadata || props.properties;
+  const siblings = contentdata?.['@components']?.siblings?.items || [];
+  const pageTitle = contentdata.title;
+  const previewImageUrl =
+    contentdata && contentdata['@id'] + '/@@images/preview_image/thumb';
 
-    React.useEffect(() => {
-      if (countryCode) {
-        const code = countryCode.toLowerCase();
-        import(
-          /* webpackChunkName: "flags" */
-          /* webpackMode: "lazy" */
-          /* webpackExports: ["default", "named"] */
+  React.useEffect(() => {
+    if (countryCode) {
+      const code = countryCode.toLowerCase();
+      import(
+        /* webpackChunkName: "flags" */
+        /* webpackMode: "lazy" */
+        /* webpackExports: ["default", "named"] */
 
-          `./data/svg/${code}.svg`
-        ).then((module) => {
-          setFlag(module.default);
-        });
-      }
-    }, [countryCode]);
+        `./data/svg/${code}.svg`
+      ).then((module) => {
+        setFlag(module.default);
+      });
+    }
+  }, [countryCode]);
 
-    // TODO: we might as well use the Title everywhere, since we use it for the siblings
-    // const countries = siblings.filter((f) => countryTitles.includes(f.title));
-    const countries =
-      props?.listingItems && props.listingItems.length > 0
-        ? props.listingItems
-        : siblings.filter((s) => s.title !== pageTitle);
+  // TODO: we might as well use the Title everywhere, since we use it for the siblings
+  // const countries = siblings.filter((f) => countryTitles.includes(f.title));
+  const countries =
+    props?.listingItems && props.listingItems.length > 0
+      ? props.listingItems
+      : siblings.filter((s) => s.title !== pageTitle);
 
-    const countryFlag =
-      (countryCode && show_flag && flag && (
-        <img alt={countryNames[countryCode]} src={flag} />
-      )) ||
-      (contentdata?.preview_image ? (
-        <PreviewImage item={contentdata} preview_image_url={previewImageUrl} />
-      ) : (
-        ''
-      ));
-    const displayName =
-      (countryCode && show_name && countryNames[countryCode]) || pageTitle;
+  const countryFlag =
+    (countryCode && show_flag && flag && (
+      <img alt={countryNames[countryCode]} src={flag} />
+    )) ||
+    (contentdata?.preview_image ? (
+      <PreviewImage item={contentdata} preview_image_url={previewImageUrl} />
+    ) : (
+      ''
+    ));
+  const displayName =
+    (countryCode && show_name && countryNames[countryCode]) || pageTitle;
 
-    return (
-      <div className="country-flag">
-        {countryFlag}
+  return (
+    <div className="country-flag">
+      {countryFlag}
 
-        <Tag>
-          <MaybeDropdown
-            dropdown={show_dropdown}
-            countries={countries}
-            value={displayName}
-          >
-            {displayName}
-          </MaybeDropdown>
-        </Tag>
-      </div>
-    );
-  },
-);
+      <Tag>
+        <MaybeDropdown
+          dropdown={show_dropdown}
+          countries={countries}
+          value={displayName}
+        >
+          {displayName}
+        </MaybeDropdown>
+      </Tag>
+    </div>
+  );
+};
 
-export default CountryFlagView;
+export { CountryFlagView };
+export default withQuerystringResults(CountryFlagView);
