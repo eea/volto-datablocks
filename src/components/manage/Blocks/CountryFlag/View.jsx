@@ -1,12 +1,11 @@
 import { useHistory } from 'react-router-dom';
 import React from 'react';
-// import { useSelector } from 'react-redux';
 import countryNames from './data/countries';
 import './styles.less';
 import { Dropdown } from 'semantic-ui-react';
 import { flattenToAppURL } from '@plone/volto/helpers';
-import withQuerystringResults from '@plone/volto/components/manage/Blocks/Listing/withQuerystringResults';
 import PreviewImage from '@eeacms/volto-listing-block/PreviewImage';
+import withQuerystringResults from './withQuerystringResults';
 
 const MaybeDropdown = ({ children, countries, value, dropdown = false }) => {
   const history = useHistory();
@@ -35,73 +34,72 @@ const MaybeDropdown = ({ children, countries, value, dropdown = false }) => {
   );
 };
 
-const CountryFlagView = withQuerystringResults(
-  // ({ data = {}, metadata, properties }) => {
-  (props) => {
-    const {
-      country_name: countryCode,
-      render_as,
-      show_name,
-      show_flag,
-      show_dropdown,
-    } = props.data;
-    const Tag = render_as ? render_as.toLowerCase() : 'h2';
-    const [flag, setFlag] = React.useState();
-    const contentdata = props.metadata || props.properties;
-    const siblings = contentdata?.['@components']?.siblings?.items || [];
-    const pageTitle = props.metadata.title;
-    const previewImageUrl =
-      contentdata && contentdata['@id'] + '/@@images/preview_image/thumb';
+const CountryFlagView = (props) => {
+  const {
+    country_name: countryCode,
+    render_as,
+    show_name,
+    show_flag,
+    show_dropdown,
+  } = props.data;
+  const Tag = render_as ? render_as.toLowerCase() : 'h2';
+  const [flag, setFlag] = React.useState();
+  const contentdata = props.metadata || props.properties;
+  const siblings = contentdata?.['@components']?.siblings?.items || [];
+  const pageTitle = contentdata.title;
+  const previewImageUrl =
+    contentdata && contentdata['@id'] + '/@@images/preview_image/thumb';
 
-    React.useEffect(() => {
-      if (countryCode) {
-        const code = countryCode.toLowerCase();
-        import(
-          /* webpackChunkName: "flags" */
-          /* webpackMode: "lazy" */
-          /* webpackExports: ["default", "named"] */
+  React.useEffect(() => {
+    if (countryCode) {
+      const code = countryCode.toLowerCase();
+      import(
+        /* webpackChunkName: "flags" */
+        /* webpackMode: "lazy" */
+        /* webpackExports: ["default", "named"] */
 
-          `./data/svg/${code}.svg`
-        ).then((module) => {
-          setFlag(module.default);
-        });
-      }
-    });
-    // TODO: we might as well use the Title everywhere, since we use it for the siblings
-    // const countries = siblings.filter((f) => countryTitles.includes(f.title));
-    const countries =
-      props.listingItems.length > 0
-        ? props.listingItems
-        : siblings.filter((s) => s.title !== pageTitle);
+        `./data/svg/${code}.svg`
+      ).then((module) => {
+        setFlag(module.default);
+      });
+    }
+  }, [countryCode]);
 
-    const countryFlag =
-      (countryCode && show_flag && flag && (
-        <img alt={countryNames[countryCode]} src={flag} />
-      )) ||
-      (contentdata?.preview_image ? (
-        <PreviewImage item={contentdata} preview_image_url={previewImageUrl} />
-      ) : (
-        ''
-      ));
-    const displayName =
-      (countryCode && show_name && countryNames[countryCode]) || pageTitle;
+  // TODO: we might as well use the Title everywhere, since we use it for the siblings
+  // const countries = siblings.filter((f) => countryTitles.includes(f.title));
+  const countries =
+    props?.listingItems && props.listingItems.length > 0
+      ? props.listingItems
+      : siblings.filter((s) => s.title !== pageTitle);
 
-    return (
-      <div className="country-flag">
-        {countryFlag}
+  const countryFlag =
+    (countryCode && show_flag && flag && (
+      <img alt={countryNames[countryCode]} src={flag} />
+    )) ||
+    (contentdata?.preview_image ? (
+      <PreviewImage item={contentdata} preview_image_url={previewImageUrl} />
+    ) : (
+      ''
+    ));
+  const displayName =
+    (countryCode && show_name && countryNames[countryCode]) || pageTitle;
 
-        <Tag>
-          <MaybeDropdown
-            dropdown={show_dropdown}
-            countries={countries}
-            value={displayName}
-          >
-            {displayName}
-          </MaybeDropdown>
-        </Tag>
-      </div>
-    );
-  },
-);
+  return (
+    <div className="country-flag">
+      {countryFlag}
 
-export default CountryFlagView;
+      <Tag>
+        <MaybeDropdown
+          dropdown={show_dropdown}
+          countries={countries}
+          value={displayName}
+        >
+          {displayName}
+        </MaybeDropdown>
+      </Tag>
+    </div>
+  );
+};
+
+export { CountryFlagView };
+export default withQuerystringResults(CountryFlagView);
