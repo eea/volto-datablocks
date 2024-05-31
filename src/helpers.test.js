@@ -11,7 +11,6 @@ import {
   getConnectedDataParametersForProvider,
   useOnScreen,
   getFilteredURL,
-  sanitizeHtml,
 } from './helpers';
 
 describe('getBasePath function', () => {
