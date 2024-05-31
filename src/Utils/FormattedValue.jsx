@@ -2,7 +2,6 @@ import React from 'react';
 import isObject from 'lodash/isObject';
 import loadable from '@loadable/component';
 import cx from 'classnames';
-import sanitizeHtml from 'sanitize-html';
 import { CountUp } from '@eeacms/countup';
 import { UniversalLink } from '@plone/volto/components';
 import { isUrl } from '@plone/volto/helpers';
@@ -21,6 +20,14 @@ const AnimatedCounter = ({ originalValue }) => {
       />
     </span>
   );
+};
+
+const sanitizeHtml = async (value, allowedAttributes) => {
+  const sanitized = await import('sanitize-html');
+  const result = sanitized.default(value, {
+    ...allowedAttributes,
+  });
+  return result;
 };
 
 const FormattedValue = ({
@@ -65,7 +72,6 @@ const FormattedValue = ({
                 href: linkValue,
               }
             : {};
-
           const html =
             isLink && isObject(link) && link.title
               ? link.title
