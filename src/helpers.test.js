@@ -11,6 +11,7 @@ import {
   getConnectedDataParametersForProvider,
   useOnScreen,
   getFilteredURL,
+  sanitizeHtml,
 } from './helpers';
 
 describe('getBasePath function', () => {
@@ -695,5 +696,68 @@ describe('getFilteredURL', () => {
     const connected_data_parameters = [{ i: 'param1', v: ['value1'] }];
     const expectedUrl = 'value1';
     expect(getFilteredURL(url, connected_data_parameters)).toBe(expectedUrl);
+  });
+
+  describe('sanitizeHtml', () => {
+    it('sanitizes HTML with allowed attributes', async () => {
+      const value = '<div><a href="https://example.com">Link</a></div>';
+      const allowedAttributes = {
+        allowedTags: ['a'],
+        allowedAttributes: { a: ['href'] },
+      };
+
+      const result = await sanitizeHtml(value, allowedAttributes);
+
+      expect(result).toBe('<a href="https://example.com">Link</a>');
+    });
+
+    it('removes disallowed attributes', async () => {
+      const value =
+        '<div><a href="https://example.com" target="_blank">Link</a></div>';
+      const allowedAttributes = {
+        allowedTags: ['a'],
+        allowedAttributes: { a: ['href'] },
+      };
+
+      const result = await sanitizeHtml(value, allowedAttributes);
+
+      expect(result).toBe('<a href="https://example.com">Link</a>');
+    });
+
+    it('removes disallowed tags', async () => {
+      const value = '<div><a href="https://example.com">Link</a></div>';
+      const allowedAttributes = {
+        allowedTags: ['b'],
+        allowedAttributes: { b: [] },
+      };
+
+      const result = await sanitizeHtml(value, allowedAttributes);
+
+      expect(result).toBe('Link');
+    });
+
+    it('returns empty string for empty input', async () => {
+      const value = '';
+      const allowedAttributes = {
+        allowedTags: ['a'],
+        allowedAttributes: { a: ['href'] },
+      };
+
+      const result = await sanitizeHtml(value, allowedAttributes);
+
+      expect(result).toBe('');
+    });
+
+    it('returns the same string if no sanitization is needed', async () => {
+      const value = '<a href="https://example.com">Link</a>';
+      const allowedAttributes = {
+        allowedTags: ['a'],
+        allowedAttributes: { a: ['href'] },
+      };
+
+      const result = await sanitizeHtml(value, allowedAttributes);
+
+      expect(result).toBe('<a href="https://example.com">Link</a>');
+    });
   });
 });

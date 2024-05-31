@@ -5,6 +5,7 @@ import cx from 'classnames';
 import { CountUp } from '@eeacms/countup';
 import { UniversalLink } from '@plone/volto/components';
 import { isUrl } from '@plone/volto/helpers';
+import { sanitizeHtml } from '../helpers';
 
 const D3 = loadable.lib(() => import('d3'));
 
@@ -20,14 +21,6 @@ const AnimatedCounter = ({ originalValue }) => {
       />
     </span>
   );
-};
-
-const sanitizeHtml = async (value, allowedAttributes) => {
-  const sanitized = await import('sanitize-html');
-  const result = sanitized.default(value, {
-    ...allowedAttributes,
-  });
-  return result;
 };
 
 const FormattedValue = ({

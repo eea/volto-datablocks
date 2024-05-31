@@ -386,3 +386,18 @@ export const getFilteredURL = (url, connected_data_parameters = []) => {
   }
   return decodedURL;
 };
+
+/**
+ * Sanitizes the given HTML value using the `sanitize-html` library.
+ *
+ * @param {string} value - The HTML value to be sanitized.
+ * @param {object} allowedAttributes - An object specifying the allowed attributes for the sanitized HTML.
+ * @returns {Promise<string>} - The sanitized HTML value.
+ */
+export const sanitizeHtml = async (value, allowedAttributes) => {
+  const sanitized = await import('sanitize-html');
+  const result = sanitized.default(value, {
+    ...allowedAttributes,
+  });
+  return result;
+};
