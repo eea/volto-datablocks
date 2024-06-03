@@ -1,5 +1,3 @@
-// FormattedValue.jsx
-
 import React, { useState, useEffect } from 'react';
 import isObject from 'lodash/isObject';
 import loadable from '@loadable/component';
