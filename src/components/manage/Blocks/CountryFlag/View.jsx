@@ -11,7 +11,7 @@ const MaybeDropdown = ({ children, countries, value, dropdown = false }) => {
   const history = useHistory();
 
   if (!countries || !dropdown) {
-    return children;
+    if (children) return children;
   }
 
   const options = countries.map((c) => ({ text: c.title, value: c['@id'] }));
@@ -46,7 +46,7 @@ const CountryFlagView = (props) => {
   const [flag, setFlag] = React.useState();
   const contentdata = props.metadata || props.properties;
   const siblings = contentdata?.['@components']?.siblings?.items || [];
-  const pageTitle = contentdata.title;
+  const pageTitle = contentdata?.title;
   const previewImageUrl =
     contentdata && contentdata['@id'] + '/@@images/preview_image/thumb';
 
