@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import isObject from 'lodash/isObject';
 import loadable from '@loadable/component';
 import cx from 'classnames';
-import sanitizeHtml from 'sanitize-html';
 import { CountUp } from '@eeacms/countup';
 import { UniversalLink } from '@plone/volto/components';
 import { isUrl } from '@plone/volto/helpers';
@@ -34,6 +33,16 @@ const FormattedValue = ({
   animatedCounter,
   link = null,
 }) => {
+  const [sanitizeHtmlModule, setSanitizeHtmlModule] = useState(null);
+
+  useEffect(() => {
+    const loadModule = async () => {
+      const module = await import('sanitize-html');
+      setSanitizeHtmlModule(module);
+    };
+    loadModule();
+  }, []);
+
   const originalValue = value;
   const animateValue = typeof value === 'number' && animatedCounter;
 
@@ -65,11 +74,10 @@ const FormattedValue = ({
                 href: linkValue,
               }
             : {};
-
           const html =
             isLink && isObject(link) && link.title
               ? link.title
-              : sanitizeHtml(value, {
+              : sanitizeHtmlModule(value, {
                   allowedAttributes: {
                     span: ['id'],
                   },
