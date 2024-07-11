@@ -36,11 +36,9 @@ const FormattedValue = ({
   const [sanitizeHtmlModule, setSanitizeHtmlModule] = useState(null);
 
   useEffect(() => {
-    const loadModule = async () => {
-      const module = await import('sanitize-html');
-      setSanitizeHtmlModule(module);
-    };
-    loadModule();
+    import('sanitize-html').then((module) => {
+      setSanitizeHtmlModule(module.default);
+    });
   }, []);
 
   const originalValue = value;
@@ -77,11 +75,13 @@ const FormattedValue = ({
           const html =
             isLink && isObject(link) && link.title
               ? link.title
-              : sanitizeHtmlModule(value, {
-                  allowedAttributes: {
-                    span: ['id'],
-                  },
-                }) || '';
+              : (sanitizeHtmlModule &&
+                  sanitizeHtmlModule(value, {
+                    allowedAttributes: {
+                      span: ['id'],
+                    },
+                  })) ||
+                '';
 
           return wrapped ? (
             <Link {...linkProps}>
