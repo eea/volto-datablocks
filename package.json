@@ -31,7 +31,7 @@
     "humanize-plus": "^1.8.2",
     "object-hash": "2.2.0",
     "react-visibility-sensor": "5.1.1",
-    "sanitize-html": "2.7.3"
+    "sanitize-html": "2.12.1"
   },
   "devDependencies": {
     "@cypress/code-coverage": "^3.10.0",
