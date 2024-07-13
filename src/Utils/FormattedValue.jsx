@@ -7,6 +7,7 @@ import { UniversalLink } from '@plone/volto/components';
 import { isUrl } from '@plone/volto/helpers';
 
 const D3 = loadable.lib(() => import('d3'));
+const SanitizeHtmlLib = loadable.lib(() => import('sanitize-html'));
 
 const AnimatedCounter = ({ originalValue }) => {
   return (
@@ -33,11 +34,11 @@ const FormattedValue = ({
   animatedCounter,
   link = null,
 }) => {
-  const [sanitizeHtmlModule, setSanitizeHtmlModule] = useState(null);
+  const [sanitizeHtml, setSanitizeHtml] = useState(null);
 
   useEffect(() => {
-    import('sanitize-html').then((module) => {
-      setSanitizeHtmlModule(module.default);
+    SanitizeHtmlLib.load().then((module) => {
+      setSanitizeHtml(() => module.default);
     });
   }, []);
 
@@ -75,8 +76,9 @@ const FormattedValue = ({
           const html =
             isLink && isObject(link) && link.title
               ? link.title
-              : (sanitizeHtmlModule &&
-                  sanitizeHtmlModule(value, {
+              : (sanitizeHtml &&
+                  value &&
+                  sanitizeHtml(value, {
                     allowedAttributes: {
                       span: ['id'],
                     },
