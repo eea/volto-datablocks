@@ -110,31 +110,36 @@ const DottedTableChartView = (props) => {
                         padding: '0',
                       }}
                     >
-                      <Popup
-                        content={
-                          // it might happen that the FormattedValue component returns empty string because of the input data
-                          <>
-                            Value:{' '}
-                            <FormattedValue
-                              textTemplate={text_template}
-                              value={data_tree[col][row]}
-                              specifier={specifier}
-                            />
-                          </>
-                        }
-                        trigger={
-                          <div
-                            style={{
-                              // hack from https://stackoverflow.com/a/3542470/258462
-                              height: '100%',
+                      {data_tree[col][row] ? (
+                        <Popup
+                          content={
+                            // it might happen that the FormattedValue component returns empty string because of the input data
+                            <>
+                              Value:{' '}
+                              <FormattedValue
+                                textTemplate={text_template}
+                                value={data_tree[col][row]}
+                                specifier={specifier}
+                              />
+                            </>
+                          }
+                          trigger={
+                            <div
+                              style={{
+                                // hack from https://stackoverflow.com/a/3542470/258462
+                                height: '100%',
 
-                              padding: '0.78571429em', // value taken from SUIR's collections/table.less (possibly needs to be changed if compact table style is implemented in DottedTableChartView)
-                            }}
-                          >
-                            {renderDots(data_tree[col][row], row_colors?.[row])}
-                          </div>
-                        }
-                      />
+                                padding: '0.78571429em', // value taken from SUIR's collections/table.less (possibly needs to be changed if compact table style is implemented in DottedTableChartView)
+                              }}
+                            >
+                              {renderDots(
+                                data_tree[col][row],
+                                row_colors?.[row],
+                              )}
+                            </div>
+                          }
+                        />
+                      ) : null}
                     </Table.Cell>
                   ))}
                 </Table.Row>
