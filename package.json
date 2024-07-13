@@ -1,6 +1,6 @@
 {
   "name": "@eeacms/volto-datablocks",
-  "version": "7.1.0",
+  "version": "7.2.0",
   "description": "(EEA) Provides primitives for data connectivity to volto-plotlycharts and other blocks",
   "main": "src/index.js",
   "author": "European Environment Agency: IDM2 A-Team",
@@ -31,7 +31,7 @@
     "humanize-plus": "^1.8.2",
     "object-hash": "2.2.0",
     "react-visibility-sensor": "5.1.1",
-    "sanitize-html": "2.7.3"
+    "sanitize-html": "2.12.1"
   },
   "devDependencies": {
     "@cypress/code-coverage": "^3.10.0",
