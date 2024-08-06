@@ -64,6 +64,7 @@ const Edit = (props) => {
         {data.title || 'Conditional block'}
       </legend>
       <BlocksForm
+        {...props}
         metadata={metadata}
         properties={properties}
         manage={manage}
