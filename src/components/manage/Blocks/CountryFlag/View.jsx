@@ -1,21 +1,28 @@
-import { useHistory } from 'react-router-dom';
 import React from 'react';
-import countryNames from './data/countries';
-import './styles.less';
+import { useHistory } from 'react-router-dom';
 import { Dropdown } from 'semantic-ui-react';
+
 import { flattenToAppURL } from '@plone/volto/helpers';
 import PreviewImage from '@eeacms/volto-listing-block/PreviewImage';
+
+import countryNames from './data/countries';
 import withQuerystringResults from './withQuerystringResults';
+
+import './styles.less';
 
 const MaybeDropdown = ({ children, countries, value, dropdown = false }) => {
   const history = useHistory();
+
+  const options = React.useMemo(() => {
+    return countries.map((c) => ({ text: c.title, value: c['@id'] }));
+  }, [countries]);
+  // const defaultValue = countries.filter((c) => c.title === value);
 
   if (!countries || !dropdown) {
     return children;
   }
 
-  const options = countries.map((c) => ({ text: c.title, value: c['@id'] }));
-  // const defaultValue = countries.filter((c) => c.title === value);
+  // because the value is not actually passed down to the dropdown component, it behaves in strange way. The solution is to only handle click events
 
   return (
     <Dropdown
@@ -26,7 +33,9 @@ const MaybeDropdown = ({ children, countries, value, dropdown = false }) => {
       options={options}
       // defaultValue={defaultValue.length > 0 ? defaultValue[0]['@id'] : null}
       icon="angle down"
-      onChange={(_, { value }) => {
+      onChange={(event, data) => {
+        if (event.type !== 'click') return;
+        const { value } = data;
         const url = flattenToAppURL(value);
         history.push(url);
       }}
@@ -34,7 +43,7 @@ const MaybeDropdown = ({ children, countries, value, dropdown = false }) => {
   );
 };
 
-const CountryFlagView = (props) => {
+export const CountryFlagView = (props) => {
   const {
     country_name: countryCode,
     render_as,
@@ -45,7 +54,8 @@ const CountryFlagView = (props) => {
   const Tag = render_as ? render_as.toLowerCase() : 'h2';
   const [flag, setFlag] = React.useState();
   const contentdata = props.metadata || props.properties;
-  const siblings = contentdata?.['@components']?.siblings?.items || [];
+  const siblingItems = contentdata?.['@components']?.siblings?.items;
+  const siblings = React.useMemo(() => siblingItems || [], [siblingItems]);
   const pageTitle = contentdata.title;
   const previewImageUrl =
     contentdata && contentdata['@id'] + '/@@images/preview_image/thumb';
@@ -67,10 +77,13 @@ const CountryFlagView = (props) => {
 
   // TODO: we might as well use the Title everywhere, since we use it for the siblings
   // const countries = siblings.filter((f) => countryTitles.includes(f.title));
-  const countries =
-    props?.listingItems && props.listingItems.length > 0
-      ? props.listingItems
+  const { listingItems } = props;
+
+  const countries = React.useMemo(() => {
+    return listingItems && listingItems.length > 0
+      ? listingItems
       : siblings.filter((s) => s.title !== pageTitle);
+  }, [listingItems, pageTitle, siblings]);
 
   const countryFlag =
     (countryCode && show_flag && flag && (
@@ -101,5 +114,4 @@ const CountryFlagView = (props) => {
   );
 };
 
-export { CountryFlagView };
 export default withQuerystringResults(CountryFlagView);
