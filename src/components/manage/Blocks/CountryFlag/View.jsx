@@ -22,6 +22,8 @@ const MaybeDropdown = ({ children, countries, value, dropdown = false }) => {
     return children;
   }
 
+  // because the value is not actually passed down to the dropdown component, it behaves in strange way. The solution is to only handle click events
+
   return (
     <Dropdown
       fluid
