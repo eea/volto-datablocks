@@ -398,9 +398,9 @@ class QuerystringWidget extends Component {
                           onCreateOption={(key) => {
                             if (!this.state.indexes) return;
                             if (!this.state.indexes[key]) {
-                              this.setState({
+                              this.setState((prevState) => ({
                                 indexes: {
-                                  ...this.state.indexes,
+                                  ...prevState.indexes,
                                   [key]: {
                                     enabled: true,
                                     group: 'Custom',
@@ -411,7 +411,7 @@ class QuerystringWidget extends Component {
                                     values: {},
                                   },
                                 },
-                              });
+                              }));
                             }
                             onChange(
                               id,
@@ -555,9 +555,9 @@ class QuerystringWidget extends Component {
                     onCreateOption={(key) => {
                       if (!this.state.indexes) return;
                       if (!this.state.indexes[key]) {
-                        this.setState({
+                        this.setState((prevState) => ({
                           indexes: {
-                            ...this.state.indexes,
+                            ...prevState.indexes,
                             [key]: {
                               enabled: true,
                               group: 'Custom',
@@ -568,7 +568,7 @@ class QuerystringWidget extends Component {
                               values: {},
                             },
                           },
-                        });
+                        }));
                       }
                       onChange(id, [
                         ...(value || []),
