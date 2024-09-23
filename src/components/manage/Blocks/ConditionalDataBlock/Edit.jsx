@@ -65,6 +65,7 @@ const Edit = (props) => {
       </legend>
       <BlocksForm
         {...props}
+        multiSelected={[]}
         metadata={metadata}
         properties={properties}
         manage={manage}
