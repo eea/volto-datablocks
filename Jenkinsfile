@@ -10,7 +10,7 @@ pipeline {
     DEPENDENCIES = "@eeacms/volto-embed"
     BACKEND_PROFILES = "eea.kitkat:testing"
     BACKEND_ADDONS = ""
-    VOLTO = "16.14.0"
+    VOLTO = "16.19.0"
     IMAGE_NAME = BUILD_TAG.toLowerCase()
   }
 
