@@ -68,7 +68,6 @@ pipeline {
           }
         }
       }
-      parallel {
 
       stage('Volto 16') {
         agent { node { label 'docker-1.13'} }
