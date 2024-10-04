@@ -170,6 +170,7 @@ class Edit extends Component {
                 />
               )}
               <iframe
+                style={{ height: `${this.props.data.height || 200}px` }}
                 title={this.props.intl.formatMessage(
                   messages.GoogleMapsEmbeddedBlock,
                 )}
