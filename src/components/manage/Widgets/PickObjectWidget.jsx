@@ -2,11 +2,11 @@
  * A wrapper over ObjectBrowser because of API constraints
  */
 
-import { TextWidget } from '@plone/volto/components'; //CheckboxWidget, Icon,
-import { Link } from 'react-router-dom';
+import { TextWidget, UniversalLink } from '@plone/volto/components'; //CheckboxWidget, Icon,
 import clearSVG from '@plone/volto/icons/clear.svg';
 import navTreeSVG from '@plone/volto/icons/nav.svg';
 import withObjectBrowser from '@plone/volto/components/manage/Sidebar/ObjectBrowser';
+import { flattenToAppURL } from '@plone/volto/helpers';
 import React from 'react';
 
 const ObjectBrowserWrapper = withObjectBrowser((props) => {
@@ -19,12 +19,14 @@ const ObjectBrowserWrapper = withObjectBrowser((props) => {
     required,
     onChangeBlock,
   } = props;
+  const url = flattenToAppURL(value);
+
   return (
     <TextWidget
       id={id}
-      title={value ? <Link to={value}>{title}</Link> : title}
+      title={value ? <UniversalLink href={url}>{title}</UniversalLink> : title}
       required={required}
-      value={value}
+      value={url}
       icon={value ? clearSVG : navTreeSVG}
       iconAction={
         value
@@ -32,7 +34,7 @@ const ObjectBrowserWrapper = withObjectBrowser((props) => {
           : () => openObjectBrowser({ mode: 'link', onSelectItem })
       }
       onChange={(id, value) => {
-        onChangeBlock(props.id, value);
+        onChangeBlock(props.id, flattenToAppURL(value));
       }}
     />
   );
