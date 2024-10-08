@@ -56,7 +56,7 @@ export const CountryFlagView = (props) => {
   const contentdata = props.metadata || props.properties;
   const siblingItems = contentdata?.['@components']?.siblings?.items;
   const siblings = React.useMemo(() => siblingItems || [], [siblingItems]);
-  const pageTitle = contentdata.title;
+  const pageTitle = contentdata?.title;
   const previewImageUrl =
     contentdata && contentdata['@id'] + '/@@images/preview_image/thumb';
 
