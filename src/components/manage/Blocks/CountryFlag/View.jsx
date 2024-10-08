@@ -19,7 +19,7 @@ const MaybeDropdown = ({ children, countries, value, dropdown = false }) => {
   // const defaultValue = countries.filter((c) => c.title === value);
 
   if (!countries || !dropdown) {
-    return children;
+    return children ?? null;
   }
 
   // because the value is not actually passed down to the dropdown component, it behaves in strange way. The solution is to only handle click events
