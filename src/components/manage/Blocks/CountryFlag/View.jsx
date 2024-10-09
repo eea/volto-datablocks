@@ -19,7 +19,7 @@ const MaybeDropdown = ({ children, countries, value, dropdown = false }) => {
   // const defaultValue = countries.filter((c) => c.title === value);
 
   if (!countries || !dropdown) {
-    return children;
+    return children ?? null;
   }
 
   // because the value is not actually passed down to the dropdown component, it behaves in strange way. The solution is to only handle click events
@@ -51,14 +51,18 @@ export const CountryFlagView = (props) => {
     show_flag,
     show_dropdown,
   } = props.data;
+
   const Tag = render_as ? render_as.toLowerCase() : 'h2';
-  const [flag, setFlag] = React.useState();
-  const contentdata = props.metadata || props.properties;
-  const siblingItems = contentdata?.['@components']?.siblings?.items;
+  const contentData = props.metadata || props.properties;
+  const siblingItems = contentData?.['@components']?.siblings?.items;
+
   const siblings = React.useMemo(() => siblingItems || [], [siblingItems]);
-  const pageTitle = contentdata.title;
-  const previewImageUrl =
-    contentdata && contentdata['@id'] + '/@@images/preview_image/thumb';
+  const pageTitle = contentData?.title;
+  const previewImageUrl = contentData
+    ? `${contentData['@id']}/@@images/preview_image/thumb`
+    : '';
+
+  const [flag, setFlag] = React.useState();
 
   React.useEffect(() => {
     if (countryCode) {
@@ -89,11 +93,12 @@ export const CountryFlagView = (props) => {
     (countryCode && show_flag && flag && (
       <img alt={countryNames[countryCode]} src={flag} />
     )) ||
-    (contentdata?.preview_image ? (
-      <PreviewImage item={contentdata} preview_image_url={previewImageUrl} />
+    (contentData?.preview_image ? (
+      <PreviewImage item={contentData} preview_image_url={previewImageUrl} />
     ) : (
       ''
     ));
+
   const displayName =
     (countryCode && show_name && countryNames[countryCode]) || pageTitle;
 
