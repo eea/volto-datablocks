@@ -23,9 +23,9 @@
     "react-countup/countup.js": "2.5.0"
   },
   "dependencies": {
-    "@eeacms/volto-embed": "*",
-    "@eeacms/volto-group-block": "*",
-    "@eeacms/volto-matomo": "*",
+    "@eeacms/volto-embed": "9.1.1",
+    "@eeacms/volto-group-block": "6.4.0",
+    "@eeacms/volto-matomo": "4.2.1",
     "d3": "7.1.1",
     "date-fns": "2.28.0",
     "humanize-plus": "^1.8.2",
