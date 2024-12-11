@@ -8,6 +8,8 @@ import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 import EditBlockWrapper from '@eeacms/volto-group-block/components/manage/Blocks/Group/EditBlockWrapper';
 import { ConditionalDataBlockSchema } from './schema';
 
+import './edit.less';
+
 const tweakSchema = (schema, provider_data) => {
   const choices = Object.keys(provider_data || {})
     .sort((a, b) => a - b)
