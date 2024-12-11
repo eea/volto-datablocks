@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import cx from 'classnames';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { isEmpty } from 'lodash';
@@ -7,6 +8,8 @@ import { BlocksForm, SidebarPortal, InlineForm } from '@plone/volto/components';
 import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 import EditBlockWrapper from '@eeacms/volto-group-block/components/manage/Blocks/Group/EditBlockWrapper';
 import { ConditionalDataBlockSchema } from './schema';
+
+import './edit.less';
 
 const tweakSchema = (schema, provider_data) => {
   const choices = Object.keys(provider_data || {})

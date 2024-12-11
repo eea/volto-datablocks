@@ -1,0 +1,135 @@
+@type: 'extra';
+@element: 'custom';
+
+@import (multiple, reference, optional) '../../theme.config';
+
+@borderColor: rgba(120, 192, 215, 0.75);
+
+.conditionalDataBlock {
+  [data-rbd-draggable-context-id] {
+    margin-bottom: 0;
+  }
+
+  .blocks-form {
+    width: 100%;
+    // padding-bottom: 0.1rem;
+  }
+
+  .block-wrapper {
+    &:not(:last-child) {
+      margin-bottom: 2rem;
+    }
+  }
+
+  .block {
+    .block-add-button,
+    .delete-button {
+      display: none;
+    }
+
+    .block.selected::before {
+      border-top-left-radius: 0;
+    }
+  }
+
+  .block .block:not(.inner)::before {
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .block.wrapper.multiSelected {
+    .block .block::before {
+      z-index: 1;
+      background-color: rgba(120, 192, 215, 0.375);
+    }
+  }
+
+  .blocks-form {
+    margin-top: 0.5rem;
+  }
+
+  .blocks-chooser {
+    right: 0;
+    left: auto;
+    margin-top: 3rem;
+  }
+
+  .block-toolbar {
+    position: absolute;
+    z-index: 3;
+    right: -9px;
+    display: flex;
+    border: none;
+    border: 1px solid @borderColor;
+    border-bottom: 1px solid @pageBackground;
+    margin-top: -45px;
+    background-color: @pageBackground;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+
+    .ui.basic.button {
+      padding: 8px 5px;
+    }
+
+    .ui.basic.button:hover {
+      background: transparent !important;
+    }
+  }
+}
+
+.drag-drop-list-widget {
+  .tabs-area {
+    padding: 1em 0;
+
+    [data-rbd-draggable-context-id] {
+      margin-bottom: 0.3em;
+    }
+
+    .drag.handle.wrapper {
+      min-height: auto;
+    }
+
+    .tab-area {
+      display: flex;
+
+      .label {
+        flex-grow: 2;
+        padding-left: 1em;
+      }
+
+      button {
+        flex-grow: 0;
+      }
+    }
+
+    button {
+      cursor: pointer;
+    }
+  }
+}
+
+.block-editor-conditionalDataBlock {
+  .block.conditionalDataBlock.selected::before,
+  .block.conditionalDataBlock:hover::before {
+    border-style: dashed;
+  }
+
+  fieldset {
+    border: none;
+
+    legend {
+      position: absolute;
+      z-index: 3;
+      top: -1.3em;
+      left: 0;
+      width: fit-content;
+      padding: 0 1rem;
+      margin-right: auto;
+      margin-left: auto;
+      background-color: @pageBackground;
+      color: @borderColor;
+      cursor: pointer;
+      text-align: center;
+    }
+  }
+}
