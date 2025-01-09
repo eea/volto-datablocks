@@ -22,8 +22,8 @@ const DataConnectorView = (props) => {
   const prev_provider_data = pagination.data[pagination.activePage]
     ? pagination.data[pagination.activePage]
     : pagination.activePage !== pagination.prevPage
-    ? pagination.data[pagination.prevPage]
-    : null;
+      ? pagination.data[pagination.prevPage]
+      : null;
   const provider_data = props.provider_data || prev_provider_data;
   const prev_provider_data_length = getProviderDataLength(prev_provider_data);
   const provider_data_length = getProviderDataLength(provider_data);
