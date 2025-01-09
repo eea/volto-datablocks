@@ -8,13 +8,20 @@ import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 import getSchema from './schema';
 import { View } from './View';
 import './style.less';
+import { useIntl } from 'react-intl';
 
 const Edit = (props) => {
   const type = props.data.type;
   const blockSchema =
     config.blocks.blocksConfig.custom_connected_block.blocks?.[type]
       ?.getSchema || null;
-  const schemaObject = getSchema(props, config, blockSchema?.(props, config));
+  const intl = useIntl();
+  const schemaObject = getSchema(
+    props,
+    config,
+    blockSchema?.(props, config),
+    intl,
+  );
   const blockTitle =
     config.blocks.blocksConfig.custom_connected_block.blocks?.[type]?.title ||
     'Custom connected block';

@@ -8,6 +8,8 @@ import './styles.less';
 import { serializeNodes } from '@plone/volto-slate/editor/render';
 import { isArray } from 'lodash';
 
+import messages from '@eeacms/volto-datablocks/messages';
+
 export const serializeText = (text) => {
   return isArray(text) ? serializeNodes(text) : text;
 };
@@ -16,8 +18,8 @@ const getAlignmentOfColumn = (col, idx) => {
   return typeof col !== 'string' && col.textAlign
     ? col.textAlign
     : idx === 0
-    ? 'left'
-    : 'right';
+      ? 'left'
+      : 'right';
 };
 
 const getNameOfColumn = (col) => {
@@ -47,7 +49,7 @@ const SimpleDataTableView = (props) => {
     description,
     has_pagination = false,
     max_count = 5,
-    placeholder = 'No results',
+    placeholder = props.intl.formatMessage(messages.noResults),
     show_header = false,
     template = 'default',
   } = data;
@@ -56,8 +58,8 @@ const SimpleDataTableView = (props) => {
     (pagination.data[pagination.activePage]
       ? pagination.data[pagination.activePage]
       : pagination.activePage !== pagination.prevPage
-      ? pagination.data[pagination.prevPage]
-      : null) || props.provider_data;
+        ? pagination.data[pagination.prevPage]
+        : null) || props.provider_data;
   const provider_data_length = getProviderDataLength(provider_data);
 
   const TableView =
@@ -70,8 +72,8 @@ const SimpleDataTableView = (props) => {
       ? provider_data_length
       : Math.min(pagination.itemsPerPage, provider_data_length) || 0
     : max_count > 0
-    ? Math.min(max_count, provider_data_length)
-    : provider_data_length;
+      ? Math.min(max_count, provider_data_length)
+      : provider_data_length;
 
   const providerColumns = Object.keys(provider_data || {});
   const showAllColumns = !Array.isArray(columns) || columns.length === 0;

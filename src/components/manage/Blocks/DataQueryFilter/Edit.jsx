@@ -47,7 +47,7 @@ const Edit = (props) => {
 
       <SidebarPortal selected={selected}>
         <InlineForm
-          schema={getSchema(schema)}
+          schema={getSchema(schema(props.intl))}
           title={schema.title}
           onChangeField={(id, value) => {
             onChangeBlock(block, {

@@ -10,7 +10,7 @@ import { DEFAULT_MAX_DOT_COUNT } from './constants';
 class DottedTableChartEdit extends React.Component {
   getSchema = () => {
     const provider_data = this.props.provider_data || {};
-    const schema = DottedTableChartSchema();
+    const schema = DottedTableChartSchema(this.props.intl);
 
     const choices = Object.keys(provider_data)
       .sort((a, b) => a - b)

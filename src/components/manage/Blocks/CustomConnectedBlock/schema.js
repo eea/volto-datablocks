@@ -1,10 +1,12 @@
-const SourceSchema = {
-  title: 'Source',
+import messages from '@eeacms/volto-datablocks/messages';
+
+const SourceSchema = (intl) => ({
+  title: intl.formatMessage(messages.source),
 
   fieldsets: [
     {
       id: 'default',
-      title: 'Default',
+      title: intl.formatMessage(messages.defaultFieldsetTitle),
       fields: ['source', 'source_link'],
     },
   ],
@@ -12,18 +14,18 @@ const SourceSchema = {
   properties: {
     source: {
       type: 'string',
-      title: 'Source',
+      title: intl.formatMessage(messages.source),
     },
     source_link: {
       type: 'string',
-      title: 'Link',
+      title: intl.formatMessage(messages.sourceLink),
     },
   },
 
   required: ['source'],
-};
+});
 
-const getSchema = (props, config, templateSchema = {}) => {
+const getSchema = (props, config, templateSchema = {}, intl) => {
   const blocksConfig =
     config.blocks.blocksConfig.custom_connected_block?.blocks || {};
   const blocks = Object.keys(blocksConfig).map((block) => [
@@ -36,11 +38,11 @@ const getSchema = (props, config, templateSchema = {}) => {
     )[0] || {};
 
   return {
-    title: templateSchema.title || 'Edit custom connected block',
+    title: intl.formatMessage(messages.editCustomBlockTitle),
     fieldsets: [
       {
         id: 'default',
-        title: 'Default',
+        title: intl.formatMessage(messages.defaultFieldsetTitle),
         fields: [
           'provider_url',
           'allowedParams',
@@ -54,18 +56,18 @@ const getSchema = (props, config, templateSchema = {}) => {
       ) || []),
       {
         id: 'sources',
-        title: 'Sources',
+        title: intl.formatMessage(messages.sources),
         fields: ['sources'],
       },
     ],
 
     properties: {
       provider_url: {
-        title: 'Data provider',
+        title: intl.formatMessage(messages.dataProviderTitle),
         widget: 'internal_url',
       },
       allowedParams: {
-        title: 'Allowed params',
+        title: intl.formatMessage(messages.allowedParams),
         type: 'array',
         creatable: true,
         items: {
@@ -73,18 +75,18 @@ const getSchema = (props, config, templateSchema = {}) => {
         },
       },
       placeholder: {
-        title: 'Placeholder',
+        title: intl.formatMessage(messages.placeholder),
         widget: 'textarea',
       },
       type: {
-        title: 'Select block type',
+        title: intl.formatMessage(messages.blockType),
         type: 'array',
         choices: [...blocks],
       },
       sources: {
         widget: 'object_list',
-        title: 'Sources',
-        schema: SourceSchema,
+        title: intl.formatMessage(messages.sources),
+        schema: SourceSchema(intl),
       },
       ...(templateSchema.properties || {}),
     },

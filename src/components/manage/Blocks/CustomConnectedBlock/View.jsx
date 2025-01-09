@@ -5,13 +5,29 @@ import config from '@plone/volto/registry';
 import { VisibilitySensor } from '@eeacms/volto-datablocks/components';
 import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 import './style.less';
+import { defineMessages } from 'react-intl';
+
+const messages = defineMessages({
+  selectBlockType: {
+    id: 'selectBlockType',
+    defaultMessage: 'Please select a block type from sidebar',
+  },
+  blockTypeSelected: {
+    id: 'blockTypeSelected',
+    defaultMessage: 'Block type selected: {type}',
+  },
+});
 
 const DefaultView = (props) => (
   <>
     {props.mode === 'edit' && !props.data.type ? (
-      <p>Please select a block type from sidebar</p>
+      <p>{props.intl.formatMessage(messages.selectBlockType)}</p>
     ) : props.mode === 'edit' && props.data.type ? (
-      <p>Block type selected: {props.data.type}</p>
+      <p>
+        {props.intl.formatMessage(messages.blockTypeSelected, {
+          type: props.data.type,
+        })}
+      </p>
     ) : (
       ''
     )}
