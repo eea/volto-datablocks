@@ -11,127 +11,542 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
+#. Default: "Add criteria"
 #: components/manage/Widgets/DataQueryWidget
-# defaultMessage: Add criteria
 msgid "Add criteria"
-msgstr ""
+msgstr "Kriterium hinzufügen"
 
+#. Default: "Center"
 #: components/manage/Blocks/DataConnectedEmbedBlock/Edit
-# defaultMessage: Center
 msgid "Center"
-msgstr ""
+msgstr "Mitte"
 
+#. Default: "Choices"
 #: components/manage/Widgets/SelectProviderPickWidget
-# defaultMessage: Choices
 msgid "Choices"
-msgstr ""
+msgstr "Auswahlmöglichkeiten"
 
+#. Default: "Close"
 #: components/manage/Widgets/SelectProviderPickWidget
-# defaultMessage: Close
 msgid "Close"
-msgstr ""
+msgstr "Schließen"
 
+#. Default: "Criteria"
 #: components/manage/Widgets/DataQueryWidget
-# defaultMessage: Criteria
 msgid "Criteria"
-msgstr ""
+msgstr "Kriterium"
 
+#. Default: "Default"
 #: components/manage/Widgets/SelectProviderPickWidget
-# defaultMessage: Default
 msgid "Default"
-msgstr ""
+msgstr "Standard"
 
+#. Default: "Description"
 #: components/manage/Widgets/SelectProviderPickWidget
-# defaultMessage: Description
 msgid "Description"
-msgstr ""
+msgstr "Beschreibung"
 
+#. Default: "Embed code error, please follow the instructions and try again."
 #: components/manage/Blocks/DataConnectedEmbedBlock/Edit
-# defaultMessage: Embed code error, please follow the instructions and try again.
 msgid "Embed code error, please follow the instructions and try again."
-msgstr ""
+msgstr "Einbettungscodefehler, bitte folgen Sie den Anweisungen und versuchen Sie es erneut."
 
+#. Default: "Embeded Google Maps"
 #: components/manage/Blocks/DataConnectedEmbedBlock/View
-# defaultMessage: Embeded Google Maps
 msgid "Embeded Google Maps"
-msgstr ""
+msgstr "Eingebettete Google Maps"
 
+#. Default: "Enter map Embed Code"
 #: components/manage/Blocks/DataConnectedEmbedBlock/Edit
-# defaultMessage: Enter map Embed Code
 msgid "Enter map Embed Code"
-msgstr ""
+msgstr "Karten EinbettungscodeKarte eingeben"
 
+#. Default: "Full"
 #: components/manage/Blocks/DataConnectedEmbedBlock/Edit
-# defaultMessage: Full
 msgid "Full"
-msgstr ""
+msgstr "Voll"
 
+#. Default: "Google Maps Embedded Block"
 #: components/manage/Blocks/DataConnectedEmbedBlock/Edit
-# defaultMessage: Google Maps Embedded Block
 msgid "Google Maps Embedded Block"
-msgstr ""
+msgstr "Google Maps eingebetteter Block"
 
+#. Default: "Left"
 #: components/manage/Blocks/DataConnectedEmbedBlock/Edit
-# defaultMessage: Left
 msgid "Left"
-msgstr ""
+msgstr "Links"
 
+#. Default: "No options"
 #: components/manage/Widgets/SelectProviderPickWidget
-# defaultMessage: No options
 msgid "No options"
-msgstr ""
+msgstr "Keine Optionen"
 
+#. Default: "No value"
 #: components/manage/Widgets/SelectProviderPickWidget
-# defaultMessage: No value
 msgid "No value"
-msgstr ""
+msgstr "Kein Wert"
 
+#. Default: "Please use the sidebar to add Embed URL."
 #: components/manage/Blocks/DataConnectedEmbedBlock/Edit
-# defaultMessage: Please use the sidebar to add Embed URL.
 msgid "Please use the sidebar to add Embed URL"
-msgstr ""
+msgstr "Bitte verwenden Sie die Seitenleiste, um die URL einzubetten."
 
+#. Default: "Choices"
 #: components/manage/Widgets/SelectProviderPickWidget
-# defaultMessage: Choices
 msgid "Provider Choices"
-msgstr ""
+msgstr "Auswahlmöglichkeiten"
 
+#. Default: "Required"
 #: components/manage/Widgets/SelectProviderPickWidget
-# defaultMessage: Required
 msgid "Required"
-msgstr ""
+msgstr "Erforderlich"
 
+#. Default: "Right"
 #: components/manage/Blocks/DataConnectedEmbedBlock/Edit
-# defaultMessage: Right
 msgid "Right"
-msgstr ""
+msgstr "Rechts"
 
+#. Default: "Select provider"
 #: components/manage/Widgets/SelectProviderPickWidget
-# defaultMessage: Select provider
 msgid "Select provider"
-msgstr ""
+msgstr "Anbieter auswählen"
 
+#. Default: "Select…"
 #: components/manage/Widgets/SelectProviderPickWidget
-# defaultMessage: Select…
 msgid "Select…"
-msgstr ""
+msgstr "Wähle..."
 
+#. Default: "Short Name"
 #: components/manage/Widgets/SelectProviderPickWidget
-# defaultMessage: Short Name
 msgid "Short Name"
-msgstr ""
+msgstr "Kurzname"
 
+#. Default: "Title"
 #: components/manage/Widgets/SelectProviderPickWidget
-# defaultMessage: Title
 msgid "Title"
-msgstr ""
+msgstr "Titel"
 
+#. Default: "Used for programmatic access to the fieldset."
 #: components/manage/Widgets/SelectProviderPickWidget
-# defaultMessage: Used for programmatic access to the fieldset.
 msgid "Used for programmatic access to the fieldset."
+msgstr "Wird für den programmatischen Zugriff auf das Fieldset verwendet."
+
+#. Default: "Alignment"
+#: messages
+msgid "alignmentTitle"
+msgstr "Ausrichtung"
+
+#. Default: "Allows rich text formatting"
+#: messages
+msgid "allowRichText"
+msgstr "Erlaubt Rich-Text-Formatierung"
+
+#. Default: "Allowed params"
+#: messages
+msgid "allowedParamsField"
+msgstr "Erlaubte Parameter"
+
+#. Default: "Allowed URL parameters"
+#: messages
+msgid "allowedURLParams"
+msgstr "Erlaubte URL-Parameter"
+
+#. Default: "Autoquery field"
+#: messages
+msgid "autoqueryFieldTitle"
+msgstr "Autoquery-Feld"
+
+#. Default: "Select block type"
+#: messages
+msgid "blockTypeField"
+msgstr "Blocktyp auswählen"
+
+#. Default: "Block type selected: {type}"
+#: components/manage/Blocks/CustomConnectedBlock/View
+msgid "blockTypeSelected"
+msgstr "Blocktyp ausgewählt: {type]"
+
+#. Default: "Colors"
+#: messages
+msgid "colorsTitle"
+msgstr "Farben"
+
+#. Default: "Column"
+#: messages
+msgid "columnTitle"
+msgstr "Spalte"
+
+#. Default: "Column value"
+#: messages
+msgid "columnValueLabel"
+msgstr "Wert der Spalte"
+
+#. Default: "Leave empty to show all columns"
+#: messages
+msgid "columnsDescription"
+msgstr "Leer lassen, um alle Spalten anzuzeigen"
+
+#. Default: "Columns"
+#: messages
+msgid "columnsTitle"
+msgstr "Spalten"
+
+#. Default: "Component type"
+#: messages
+msgid "componentType"
+msgstr "Komponenten Typ"
+
+#. Default: "Condition value"
+#: messages
+msgid "conditionValueLabel"
+msgstr "Bedingungswert"
+
+#. Default: "Conditional data block"
+#: messages
+msgid "conditionalDataBlockTitle"
+msgstr "Bedingter Datenblock"
+
+#. Default: "Country Flag"
+#: messages
+msgid "countryFlagTitle"
+msgstr "Landesflagge"
+
+#. Default: "Select the country to be displayed."
+#: messages
+msgid "countryNameDescription"
+msgstr "Wählen Sie das Land, das angezeigt werden soll."
+
+#. Default: "Country name"
+#: messages
+msgid "countryNameTitle"
+msgstr "Name des Landes"
+
+#. Default: "Data column"
+#: messages
+msgid "dataColumn"
+msgstr "Datenspalte"
+
+#. Default: "Data column link"
+#: messages
+msgid "dataColumnLink"
+msgstr "Datenspalte Link"
+
+#. Default: "Data connected table"
+#: messages
+msgid "dataConnectedTable"
+msgstr "Verbundene Daten Tabelle"
+
+#. Default: "Data provider"
+#: messages
+msgid "dataProviderTitle"
+msgstr "Datenanbieter"
+
+#. Default: "Data query"
+#: messages
+msgid "dataQuery"
+msgstr "Datenabfrage"
+
+#. Default: "Data source"
+#: messages
+msgid "dataSourceFieldsetTitle"
+msgstr "Datenquelle"
+
+#. Default: "Default"
+#: messages
+msgid "defaultFieldsetTitle"
+msgstr "Standard"
+
+#. Default: "Description"
+#: messages
+msgid "descriptionTitle"
+msgstr "Beschreibung"
+
+#. Default: "Divide each row into separate cells"
+#: messages
+msgid "divideRow"
+msgstr "Jede Reihe in einzelne Zellen unterteilen"
+
+#. Default: "Dotted Table Chart"
+#: messages
+msgid "dottedTableChartTitle"
+msgstr "Gepunktetes Tabellendiagramm"
+
+#. Default: "Dropdown items"
+#: messages
+msgid "dropdownItemsFieldsetTitle"
+msgstr "Dropdown-Elemente"
+
+#. Default: "Edit custom connected block"
+#: messages
+msgid "editCustomBlockTitle"
+msgstr "Benutzerdefinierten verbundenen Block bearbeiten"
+
+#. Default: "Edit DataQuery Filter"
+#: messages
+msgid "editDataQueryFilterTitle"
+msgstr "DataQuery Filter bearbeiten"
+
+#. Default: "Embed URL"
+#: messages
+msgid "embedUrl"
+msgstr "URL einbetten"
+
+#. Default: "Equal"
+#: messages
+msgid "equalOperator"
+msgstr "Gleich"
+
+#. Default: "External link"
+#: messages
+msgid "externalLink"
+msgstr "Externer Link"
+
+#. Default: "Format specifier"
+#: messages
+msgid "formatSpecifier"
+msgstr "Formatangabe"
+
+#. Default: "Greater than"
+#: messages
+msgid "greaterThanOperator"
+msgstr "Größer als"
+
+#. Default: "Header"
+#: messages
+msgid "headerTitle"
+msgstr "Kopfzeile"
+
+#. Default: "Height"
+#: messages
+msgid "height"
+msgstr "Höhe"
+
+#. Default: "Map height"
+#: messages
+msgid "heightDescription"
+msgstr "Höhe der Karte"
+
+#. Default: "Data-connected embed"
+#: messages
+msgid "iframeTitle"
+msgstr "Datenverknüpfte Einbettung"
+
+#. Default: "Includes"
+#: messages
+msgid "includesOperator"
+msgstr "Enthält"
+
+#. Default: "Less than"
+#: messages
+msgid "lessThanOperator"
+msgstr "Weniger als"
+
+#. Default: "Link template"
+#: messages
+msgid "linkTemplate"
+msgstr "Linkvorlage"
+
+#. Default: "Make the table compact"
+#: messages
+msgid "makeTableCompact"
+msgstr "Die Tabelle kompakt machen"
+
+#. Default: "Maximum dot count"
+#: messages
+msgid "maxDotCountTitle"
+msgstr "Maximale Punktzahl"
+
+#. Default: "Maximum results"
+#: messages
+msgid "maxResults"
+msgstr "Maximalen Ergbenisse"
+
+#. Default: "New window"
+#: messages
+msgid "newWindowChoice"
 msgstr ""
 
-#: components/manage/Widgets/DataQueryWidget
-# defaultMessage: Select…
-msgid "querystring-widget-select"
+#. Default: "No results"
+#: messages
+msgid "noResults"
+msgstr "Keine Ergebnisse"
+
+#. Default: "Not equal"
+#: messages
+msgid "notEqualOperator"
+msgstr "Nicht gleich"
+
+#. Default: "Not includes"
+#: messages
+msgid "notIncludesOperator"
+msgstr "Nicht enthalten"
+
+#. Default: "Operator"
+#: messages
+msgid "operatorLabel"
 msgstr ""
+
+#. Default: "Pagination"
+#: messages
+msgid "paginationTitle"
+msgstr "Seiten navigation"
+
+#. Default: "Placeholder"
+#: messages
+msgid "placeholderField"
+msgstr "Platzhalter"
+
+#. Default: "Placeholder value"
+#: messages
+msgid "placeholderValueTitle"
+msgstr "Platzhalterwert"
+
+#. Default: "Select a provider from the sidebar"
+#: components/manage/Blocks/DataQueryFilter/View
+msgid "providerSelection"
+msgstr "Wählen Sie einen Anbieter in der Seitenleiste"
+
+#. Default: "Select…"
+#: components/manage/Widgets/DataQueryWidget
+msgid "querystring-widget-select"
+msgstr "Wähle..."
+
+#. Default: "Criteria"
+#: messages
+msgid "querystringTitle"
+msgstr "Kriterium"
+
+#. Default: "Remove table border"
+#: messages
+msgid "removeTableBorder"
+msgstr "Tabellenrand entfernen"
+
+#. Default: "HTML tag"
+#: messages
+msgid "htmlTagTitle"
+msgstr "HTML-Tag"
+
+#. Default: "Rows"
+#: messages
+msgid "rowsTitle"
+msgstr "Zeilen"
+
+#. Default: "Same window"
+#: messages
+msgid "sameWindowChoice"
+msgstr "Gleiches Fenster"
+
+#. Default: "Please select a block type from sidebar"
+#: components/manage/Blocks/CustomConnectedBlock/View
+msgid "selectBlockType"
+msgstr "Bitte wählen Sie einen Blocktyp aus der Seitenleiste"
+
+#. Default: "Settings"
+#: messages
+msgid "settingsFieldsetTitle"
+msgstr "Einstellungen"
+
+#. Default: "Enable the dropdown select to navigate to other pages. In the "Dropdown items" section you can set the criterias to filter the items displayed in the dropdown. If no criterias are set, the siblings of the current page are displayed in the dropdown."
+#: messages
+msgid "showDropdownDescription"
+msgstr "Aktivieren Sie die Dropdown-Auswahl, um zu anderen Seiten zu navigieren. Im Abschnitt Dropdown-Elemente können Sie die Kriterien festlegen, nach denen die im Dropdown angezeigten Elemente gefiltert werden. Wenn keine Kriterien festgelegt sind, werden die Geschwister der aktuellen Seite in der Dropdown-Liste angezeigt."
+
+#. Default: "Show dropdown"
+#: messages
+msgid "showDropdownTitle"
+msgstr "Dropdown anzeigen"
+
+#. Default: "Enable it to display the flag of the selected country. Disable it to display the preview image of the current page. If the page has no preview image set, it will display nothing."
+#: messages
+msgid "showFlagDescription"
+msgstr "Aktivieren Sie diese Option, um die Flagge des ausgewählten Landes anzuzeigen. Deaktivieren Sie es, um das Vorschaubild der aktuellen Seite anzuzeigen. Wenn für die Seite kein Vorschaubild eingestellt ist, wird nichts angezeigt."
+
+#. Default: "Show country flag"
+#: messages
+msgid "showFlagTitle"
+msgstr "Landesflagge anzeigen"
+
+#. Default: "Show header"
+#: messages
+msgid "showHeader"
+msgstr "Kopfzeile anzeigen"
+
+#. Default: "Enable it to display the name of the selected country. Disable it to display the title of the page."
+#: messages
+msgid "showNameDescription"
+msgstr "Aktivieren Sie diese Option, um den Namen des ausgewählten Landes anzuzeigen. Deaktivieren Sie es, um den Titel der Seite anzuzeigen."
+
+#. Default: "Show country name"
+#: messages
+msgid "showNameTitle"
+msgstr "Ländernamen anzeigen"
+
+#. Default: "Size data"
+#: messages
+msgid "sizeDataTitle"
+msgstr "Größenangabe"
+
+#. Default: "Source"
+#: messages
+msgid "sourceField"
+msgstr "Quelle"
+
+#. Default: "Link"
+#: messages
+msgid "sourceLinkField"
+msgstr ""
+
+#. Default: "Sources"
+#: messages
+msgid "sourcesField"
+msgstr "Quellen"
+
+#. Default: "Stripe alternate rows with color"
+#: messages
+msgid "stripeRows"
+msgstr "Zeilen abwechselnd einfärben"
+
+#. Default: "Styling"
+#: messages
+msgid "stylingFieldsetTitle"
+msgstr "Aussehen"
+
+#. Default: "Template"
+#: messages
+msgid "templateTitle"
+msgstr "Vorlage"
+
+#. Default: "Text template"
+#: messages
+msgid "textTemplate"
+msgstr "Textvorlage"
+
+#. Default: "Section friendly name"
+#: messages
+msgid "titleDescription"
+msgstr "Kurzname für den Abschnitt"
+
+#. Default: "Title"
+#: messages
+msgid "titleLabel"
+msgstr "Titel"
+
+#. Default: "See D3 format documentation"
+#: messages
+msgid "tooltipFormatSpecifierDescription"
+msgstr "Siehe Dokumentation zum D3-Format"
+
+#. Default: "Tool-tip format specifier"
+#: messages
+msgid "tooltipFormatSpecifierTitle"
+msgstr "Formatangabe für die QuickInfo"
+
+#. Default: "Add suffix/prefix to text. Use {value} for value placeholder"
+#: messages
+msgid "tooltipTextTemplateDescription"
+msgstr "Suffix/Präfix zum Text hinzufügen. {value} als Platzhalter für den Wert verwenden"
+
+#. Default: "Tool-tip text template"
+#: messages
+msgid "tooltipTextTemplateTitle"
+msgstr "Tooltip-Textvorlage"
