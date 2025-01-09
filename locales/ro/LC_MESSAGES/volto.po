@@ -326,6 +326,11 @@ msgstr ""
 msgid "heightDescription"
 msgstr ""
 
+#. Default: "HTML tag"
+#: messages
+msgid "htmlTagTitle"
+msgstr ""
+
 #. Default: "Data-connected embed"
 #: messages
 msgid "iframeTitle"
@@ -419,11 +424,6 @@ msgstr ""
 #. Default: "Remove table border"
 #: messages
 msgid "removeTableBorder"
-msgstr ""
-
-#. Default: "HTML tag"
-#: messages
-msgid "htmlTagTitle"
 msgstr ""
 
 #. Default: "Rows"

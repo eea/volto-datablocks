@@ -326,6 +326,11 @@ msgstr "Höhe"
 msgid "heightDescription"
 msgstr "Höhe der Karte"
 
+#. Default: "HTML tag"
+#: messages
+msgid "htmlTagTitle"
+msgstr "HTML-Tag"
+
 #. Default: "Data-connected embed"
 #: messages
 msgid "iframeTitle"
@@ -420,11 +425,6 @@ msgstr "Kriterium"
 #: messages
 msgid "removeTableBorder"
 msgstr "Tabellenrand entfernen"
-
-#. Default: "HTML tag"
-#: messages
-msgid "htmlTagTitle"
-msgstr "HTML-Tag"
 
 #. Default: "Rows"
 #: messages

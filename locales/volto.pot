@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Plone\n"
-"POT-Creation-Date: 2025-01-09T08:53:20.705Z\n"
+"POT-Creation-Date: 2025-01-09T09:52:05.966Z\n"
 "Last-Translator: Plone i18n <plone-i18n@lists.sourceforge.net>\n"
 "Language-Team: Plone i18n <plone-i18n@lists.sourceforge.net>\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -328,6 +328,11 @@ msgstr ""
 msgid "heightDescription"
 msgstr ""
 
+#. Default: "HTML tag"
+#: messages
+msgid "htmlTagTitle"
+msgstr ""
+
 #. Default: "Data-connected embed"
 #: messages
 msgid "iframeTitle"
@@ -421,11 +426,6 @@ msgstr ""
 #. Default: "Remove table border"
 #: messages
 msgid "removeTableBorder"
-msgstr ""
-
-#. Default: "HTML tag"
-#: messages
-msgid "htmlTagTitle"
 msgstr ""
 
 #. Default: "Rows"
