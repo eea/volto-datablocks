@@ -2,7 +2,7 @@ import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
   conditionalDataBlockTitle: {
-    id: 'conditionalDataBlockTitle',
+    id: 'Conditional data block',
     defaultMessage: 'Conditional data block',
   },
   titleLabel: {
@@ -54,7 +54,7 @@ const messages = defineMessages({
     defaultMessage: 'Condition value',
   },
   countryFlagTitle: {
-    id: 'countryFlagTitle',
+    id: 'Country Flag',
     defaultMessage: 'Country Flag',
   },
   settingsFieldsetTitle: {
@@ -116,6 +116,10 @@ const messages = defineMessages({
     id: 'sourceLinkField',
     defaultMessage: 'Link',
   },
+  customConnectedBlock: {
+    id: 'Custom connected block',
+    defaultMessage: 'Custom connected block',
+  },
   editCustomBlockTitle: {
     id: 'editCustomBlockTitle',
     defaultMessage: 'Edit custom connected block',
@@ -152,6 +156,10 @@ const messages = defineMessages({
     id: 'heightDescription',
     defaultMessage: 'Map height',
   },
+  dataQueryFilter: {
+    id: 'DataQuery Filter',
+    defaultMessage: 'DataQuery Filter',
+  },
   editDataQueryFilterTitle: {
     id: 'editDataQueryFilterTitle',
     defaultMessage: 'Edit DataQuery Filter',
@@ -173,7 +181,7 @@ const messages = defineMessages({
     defaultMessage: 'Autoquery field',
   },
   dottedTableChartTitle: {
-    id: 'dottedTableChartTitle',
+    id: 'Dotted Table Chart',
     defaultMessage: 'Dotted Table Chart',
   },
   dataSourceFieldsetTitle: {
@@ -324,6 +332,14 @@ const messages = defineMessages({
   columnTitle: {
     id: 'columnTitle',
     defaultMessage: 'Column',
+  },
+  dataConnectedEmbed: {
+    id: 'Data connected embed',
+    defaultMessage: 'Data connected embed',
+  },
+  dataTable: {
+    id: 'Data Table',
+    defaultMessage: 'Data Table',
   },
 });
 
