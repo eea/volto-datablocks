@@ -31,10 +31,40 @@ msgstr "Auswahlmöglichkeiten"
 msgid "Close"
 msgstr "Schließen"
 
+#. Default: "Conditional data block"
+#: messages
+msgid "Conditional data block"
+msgstr "Bedingter Datenblock"
+
+#. Default: "Country Flag"
+#: messages
+msgid "Country Flag"
+msgstr "Landesflagge"
+
 #. Default: "Criteria"
 #: components/manage/Widgets/DataQueryWidget
 msgid "Criteria"
 msgstr "Kriterium"
+
+#. Default: "Custom connected block"
+#: messages
+msgid "Custom connected block"
+msgstr "Individuell verbundener Block"
+
+#. Default: "Data Table"
+#: messages
+msgid "Data Table"
+msgstr "Daten-Tabelle"
+
+#. Default: "Data connected embed"
+#: messages
+msgid "Data connected embed"
+msgstr "Verbundene Daten einbetten"
+
+#. Default: "DataQuery Filter"
+#: messages
+msgid "DataQuery Filter"
+msgstr "Datenabfrage-Filter"
 
 #. Default: "Default"
 #: components/manage/Widgets/SelectProviderPickWidget
@@ -45,6 +75,11 @@ msgstr "Standard"
 #: components/manage/Widgets/SelectProviderPickWidget
 msgid "Description"
 msgstr "Beschreibung"
+
+#. Default: "Dotted Table Chart"
+#: messages
+msgid "Dotted Table Chart"
+msgstr "Gepunktetes Tabellendiagramm"
 
 #. Default: "Embed code error, please follow the instructions and try again."
 #: components/manage/Blocks/DataConnectedEmbedBlock/Edit
@@ -201,16 +236,6 @@ msgstr "Komponenten Typ"
 msgid "conditionValueLabel"
 msgstr "Bedingungswert"
 
-#. Default: "Conditional data block"
-#: messages
-msgid "conditionalDataBlockTitle"
-msgstr "Bedingter Datenblock"
-
-#. Default: "Country Flag"
-#: messages
-msgid "countryFlagTitle"
-msgstr "Landesflagge"
-
 #. Default: "Select the country to be displayed."
 #: messages
 msgid "countryNameDescription"
@@ -266,11 +291,6 @@ msgstr "Beschreibung"
 msgid "divideRow"
 msgstr "Jede Reihe in einzelne Zellen unterteilen"
 
-#. Default: "Dotted Table Chart"
-#: messages
-msgid "dottedTableChartTitle"
-msgstr "Gepunktetes Tabellendiagramm"
-
 #. Default: "Dropdown items"
 #: messages
 msgid "dropdownItemsFieldsetTitle"
@@ -279,7 +299,7 @@ msgstr "Dropdown-Elemente"
 #. Default: "Edit custom connected block"
 #: messages
 msgid "editCustomBlockTitle"
-msgstr "Benutzerdefinierten verbundenen Block bearbeiten"
+msgstr "Individuell verbundener Block"
 
 #. Default: "Edit DataQuery Filter"
 #: messages

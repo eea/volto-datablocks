@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Plone\n"
-"POT-Creation-Date: 2025-01-09T09:52:05.966Z\n"
+"POT-Creation-Date: 2025-01-14T10:19:02.915Z\n"
 "Last-Translator: Plone i18n <plone-i18n@lists.sourceforge.net>\n"
 "Language-Team: Plone i18n <plone-i18n@lists.sourceforge.net>\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -33,9 +33,39 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
+#. Default: "Conditional data block"
+#: messages
+msgid "Conditional data block"
+msgstr ""
+
+#. Default: "Country Flag"
+#: messages
+msgid "Country Flag"
+msgstr ""
+
 #. Default: "Criteria"
 #: components/manage/Widgets/DataQueryWidget
 msgid "Criteria"
+msgstr ""
+
+#. Default: "Custom connected block"
+#: messages
+msgid "Custom connected block"
+msgstr ""
+
+#. Default: "Data Table"
+#: messages
+msgid "Data Table"
+msgstr ""
+
+#. Default: "Data connected embed"
+#: messages
+msgid "Data connected embed"
+msgstr ""
+
+#. Default: "DataQuery Filter"
+#: messages
+msgid "DataQuery Filter"
 msgstr ""
 
 #. Default: "Default"
@@ -46,6 +76,11 @@ msgstr ""
 #. Default: "Description"
 #: components/manage/Widgets/SelectProviderPickWidget
 msgid "Description"
+msgstr ""
+
+#. Default: "Dotted Table Chart"
+#: messages
+msgid "Dotted Table Chart"
 msgstr ""
 
 #. Default: "Embed code error, please follow the instructions and try again."
@@ -203,16 +238,6 @@ msgstr ""
 msgid "conditionValueLabel"
 msgstr ""
 
-#. Default: "Conditional data block"
-#: messages
-msgid "conditionalDataBlockTitle"
-msgstr ""
-
-#. Default: "Country Flag"
-#: messages
-msgid "countryFlagTitle"
-msgstr ""
-
 #. Default: "Select the country to be displayed."
 #: messages
 msgid "countryNameDescription"
@@ -266,11 +291,6 @@ msgstr ""
 #. Default: "Divide each row into separate cells"
 #: messages
 msgid "divideRow"
-msgstr ""
-
-#. Default: "Dotted Table Chart"
-#: messages
-msgid "dottedTableChartTitle"
 msgstr ""
 
 #. Default: "Dropdown items"
