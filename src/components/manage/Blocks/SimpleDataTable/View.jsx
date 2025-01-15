@@ -9,6 +9,7 @@ import { serializeNodes } from '@plone/volto-slate/editor/render';
 import { isArray } from 'lodash';
 
 import messages from '@eeacms/volto-datablocks/messages';
+import { injectIntl } from 'react-intl';
 
 export const serializeText = (text) => {
   return isArray(text) ? serializeNodes(text) : text;
@@ -131,4 +132,4 @@ const View = (props) => {
   );
 };
 
-export default View;
+export default injectIntl(View);
