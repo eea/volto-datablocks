@@ -389,7 +389,7 @@ msgstr "Maximalen Ergbenisse"
 #. Default: "New window"
 #: messages
 msgid "newWindowChoice"
-msgstr ""
+msgstr "Neues Fenster"
 
 #. Default: "No results"
 #: messages
