@@ -70,8 +70,8 @@ const SimpleDataTableView = (props) => {
   // TODO: sorting
   const row_size = has_pagination
     ? !Object.keys(pagination.data).includes(pagination.activePage)
-    ? provider_data_length
-    : Math.min(pagination.itemsPerPage, provider_data_length) || 0
+      ? provider_data_length
+      : Math.min(pagination.itemsPerPage, provider_data_length) || 0
     : max_count > 0
     ? Math.min(max_count, provider_data_length)
     : provider_data_length;
