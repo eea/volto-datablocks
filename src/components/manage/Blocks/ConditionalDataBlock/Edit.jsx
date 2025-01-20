@@ -29,9 +29,10 @@ const Edit = (props) => {
     selected,
     manage,
     provider_data = {},
+    intl,
   } = props;
 
-  const schema = tweakSchema(ConditionalDataBlockSchema(), provider_data);
+  const schema = tweakSchema(ConditionalDataBlockSchema(intl), provider_data);
   const data_blocks = data?.data?.blocks;
   const metadata = props.metadata || props.properties;
   const properties = isEmpty(data_blocks) ? emptyBlocksForm() : data.data;
@@ -63,7 +64,7 @@ const Edit = (props) => {
         }}
         aria-hidden="true"
       >
-        {data.title || 'Conditional block'}
+        {data.title || schema.title}
       </legend>
       <BlocksForm
         {...props}

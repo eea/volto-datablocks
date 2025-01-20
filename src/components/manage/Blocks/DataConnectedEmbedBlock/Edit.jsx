@@ -218,7 +218,10 @@ class Edit extends Component {
         )}
         <SidebarPortal selected={this.props.selected}>
           <InlineForm
-            schema={addPrivacyProtectionToSchema(schema)}
+            schema={addPrivacyProtectionToSchema(
+              schema(this.props.intl),
+              this.props.intl,
+            )}
             title={schema.title}
             onChangeField={(id, value) => {
               this.props.onChangeBlock(this.props.block, {

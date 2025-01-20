@@ -10,7 +10,8 @@ import './styles.less';
 
 class Edit extends Component {
   getSchema = () => {
-    const schema = CountryFlagSchema();
+    const { intl } = this.props;
+    const schema = CountryFlagSchema(intl);
     schema.properties.country_name.choices = Object.keys(countryNames).map(
       (k) => [k, countryNames[k]],
     );

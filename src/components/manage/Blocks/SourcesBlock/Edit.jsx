@@ -31,7 +31,7 @@ const SourceEdit = ({ data, onChangeBlock, block }) => {
       <Accordion.Content active={activeAccIndex === 0}>
         {data.chartSources && data.chartSources.length
           ? data.chartSources.map((item, index) => (
-              <React.Fragment>
+              <React.Fragment key={`chart-source-fragment_${index}`}>
                 <TextWidget
                   title="Source"
                   id={`chart-source_${index}`}
