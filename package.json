@@ -36,6 +36,7 @@
   "devDependencies": {
     "@cypress/code-coverage": "^3.10.0",
     "@plone/scripts": "*",
+    "@plone/registry": "*",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "cypress": "13.1.0",
     "cypress-fail-fast": "^5.0.1",

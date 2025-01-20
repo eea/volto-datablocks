@@ -8,6 +8,9 @@ import './styles.less';
 import { serializeNodes } from '@plone/volto-slate/editor/render';
 import { isArray } from 'lodash';
 
+import messages from '@eeacms/volto-datablocks/messages';
+import { injectIntl } from 'react-intl';
+
 export const serializeText = (text) => {
   return isArray(text) ? serializeNodes(text) : text;
 };
@@ -47,7 +50,7 @@ const SimpleDataTableView = (props) => {
     description,
     has_pagination = false,
     max_count = 5,
-    placeholder = 'No results',
+    placeholder = props.intl.formatMessage(messages.noResults),
     show_header = false,
     template = 'default',
   } = data;
@@ -129,4 +132,4 @@ const View = (props) => {
   );
 };
 
-export default View;
+export default injectIntl(View);

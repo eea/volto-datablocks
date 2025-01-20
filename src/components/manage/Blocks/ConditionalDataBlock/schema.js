@@ -1,41 +1,43 @@
-export const ConditionalDataBlockSchema = () => ({
-  title: 'Conditional data block',
+import messages from '@eeacms/volto-datablocks/messages';
+
+export const ConditionalDataBlockSchema = (intl) => ({
+  title: intl.formatMessage(messages.conditionalDataBlockTitle),
 
   fieldsets: [
     {
       id: 'default',
-      title: 'Default',
+      title: intl.formatMessage(messages.defaultFieldsetTitle),
       fields: ['title', 'provider_url', 'column_data', 'operator', 'condition'],
     },
   ],
 
   properties: {
     title: {
-      title: 'Title',
-      description: 'Section friendly name',
+      title: intl.formatMessage(messages.titleLabel),
+      description: intl.formatMessage(messages.titleDescription),
       type: 'string',
     },
     provider_url: {
       widget: 'internal_url',
-      title: 'Data provider',
+      title: intl.formatMessage(messages.dataProviderTitle),
     },
     column_data: {
-      title: 'Column value',
+      title: intl.formatMessage(messages.columnValueLabel),
       choices: [],
     },
     operator: {
-      title: 'Operator',
+      title: intl.formatMessage(messages.operatorLabel),
       choices: [
-        ['=', 'Equal'],
-        ['!=', 'Not equal'],
-        ['in', 'Includes'],
-        ['not in', 'Not includes'],
-        ['>', 'Greater than'],
-        ['<', 'Less than'],
+        ['=', intl.formatMessage(messages.equalOperator)],
+        ['!=', intl.formatMessage(messages.notEqualOperator)],
+        ['in', intl.formatMessage(messages.includesOperator)],
+        ['not in', intl.formatMessage(messages.notIncludesOperator)],
+        ['>', intl.formatMessage(messages.greaterThanOperator)],
+        ['<', intl.formatMessage(messages.lessThanOperator)],
       ],
     },
     condition: {
-      title: 'Condition value',
+      title: intl.formatMessage(messages.conditionValueLabel),
       widget: 'textarea',
     },
   },

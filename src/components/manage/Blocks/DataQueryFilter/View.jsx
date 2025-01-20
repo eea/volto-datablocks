@@ -11,13 +11,22 @@ import {
   setConnectedDataParameters,
   deleteConnectedDataParameters,
 } from '@eeacms/volto-datablocks/actions';
+import { defineMessages, useIntl } from 'react-intl';
 
 const Select = loadable(() => import('react-select'));
+
+const messages = defineMessages({
+  providerSelection: {
+    id: 'providerSelection',
+    defaultMessage: 'Select a provider from the sidebar',
+  },
+});
 
 const View = (props) => {
   const { data = {}, id } = props;
   const { select_field, options, placeholder } = data;
   const provider_url = props.data?.provider_url || '';
+  const intl = useIntl();
 
   useEffect(() => {
     return () => {
@@ -30,7 +39,7 @@ const View = (props) => {
   }, []);
 
   if (!provider_url && props.mode === 'edit')
-    return <div>Select a provider from the sidebar</div>;
+    return <div>{intl.formatMessage(messages.providerSelection)}</div>;
 
   const value =
     props.connected_data_parameters.byProviderPath[provider_url]?.[

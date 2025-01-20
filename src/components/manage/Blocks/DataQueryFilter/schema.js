@@ -1,34 +1,36 @@
-const Schema = {
-  title: 'Edit DataQuery Filter',
+import messages from '@eeacms/volto-datablocks/messages';
+
+const Schema = (intl) => ({
+  title: intl.formatMessage(messages.editDataQueryFilterTitle),
 
   fieldsets: [
     {
       id: 'default',
-      title: 'Default',
+      title: intl.formatMessage(messages.defaultFieldsetTitle),
       fields: ['placeholder', 'provider_url', 'align', 'select_field'],
     },
   ],
 
   properties: {
     placeholder: {
-      title: 'Placeholder value',
+      title: intl.formatMessage(messages.placeholderValueTitle),
     },
     provider_url: {
       widget: 'internal_url',
-      title: 'Data provider',
+      title: intl.formatMessage(messages.dataProviderTitle),
     },
     align: {
-      title: 'Alignment',
+      title: intl.formatMessage(messages.alignmentTitle),
       widget: 'align',
       type: 'string',
     },
     select_field: {
-      title: 'Autoquery field',
+      title: intl.formatMessage(messages.autoqueryFieldTitle),
       choices: [],
     },
   },
 
   required: ['provider_url'],
-};
+});
 
 export default Schema;

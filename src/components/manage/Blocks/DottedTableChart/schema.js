@@ -1,18 +1,19 @@
 import React from 'react';
 import config from '@plone/volto/registry';
+import messages from '@eeacms/volto-datablocks/messages';
 
-export const DottedTableChartSchema = () => ({
-  title: 'Dotted Table Chart',
+export const DottedTableChartSchema = (intl) => ({
+  title: intl.formatMessage(messages.dottedTableChartTitle),
 
   fieldsets: [
     {
       id: 'default',
-      title: 'Default',
+      title: intl.formatMessage(messages.defaultFieldsetTitle),
       fields: ['description'], // title, 'underline'
     },
     {
       id: 'source',
-      title: 'Data source',
+      title: intl.formatMessage(messages.dataSourceFieldsetTitle),
       fields: [
         'provider_url',
         'column_data',
@@ -25,38 +26,38 @@ export const DottedTableChartSchema = () => ({
     },
     {
       id: 'styling',
-      title: 'Styling',
+      title: intl.formatMessage(messages.stylingFieldsetTitle),
       fields: ['row_colors'],
     },
   ],
 
   properties: {
     description: {
-      title: 'Description',
+      title: intl.formatMessage(messages.descriptionTitle),
       widget: 'slate_richtext',
     },
     provider_url: {
       widget: 'internal_url',
-      title: 'Data provider',
+      title: intl.formatMessage(messages.dataProviderTitle),
     },
     max_dot_count: {
-      title: 'Maximum dot count',
+      title: intl.formatMessage(messages.maxDotCountTitle),
       widget: 'number',
     },
     column_data: {
-      title: 'Columns',
+      title: intl.formatMessage(messages.columnsTitle),
       choices: [],
     },
     row_data: {
-      title: 'Rows',
+      title: intl.formatMessage(messages.rowsTitle),
       choices: [],
     },
     size_data: {
-      title: 'Size data',
+      title: intl.formatMessage(messages.sizeDataTitle),
       choices: [],
     },
     row_colors: {
-      title: 'Colors',
+      title: intl.formatMessage(messages.colorsTitle),
       widget: 'option_mapping',
       field_props: {
         widget: 'simple_color',
@@ -65,10 +66,10 @@ export const DottedTableChartSchema = () => ({
       options: [],
     },
     specifier: {
-      title: 'Tool-tip format specifier',
+      title: intl.formatMessage(messages.tooltipFormatSpecifierTitle),
       description: (
         <>
-          See{' '}
+          {intl.formatMessage(messages.tooltipFormatSpecifierDescription)}{' '}
           <a
             target="_blank"
             rel="noopener"
@@ -80,8 +81,8 @@ export const DottedTableChartSchema = () => ({
       ),
     },
     text_template: {
-      title: 'Tool-tip text template',
-      description: 'Add suffix/prefix to text. Use {} for value placeholder',
+      title: intl.formatMessage(messages.tooltipTextTemplateTitle),
+      description: intl.formatMessage(messages.tooltipTextTemplateDescription),
     },
   },
 

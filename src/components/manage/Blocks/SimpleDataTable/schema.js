@@ -1,11 +1,12 @@
 import React from 'react';
+import messages from '@eeacms/volto-datablocks/messages';
 
-const columnSchema = {
-  title: 'Column',
+const columnSchema = (intl) => ({
+  title: intl.formatMessage(messages.columnTitle),
   fieldsets: [
     {
       id: 'default',
-      title: 'Default',
+      title: intl.formatMessage(messages.defaultFieldsetTitle),
       fields: [
         'column',
         'title',
@@ -20,10 +21,10 @@ const columnSchema = {
   ],
   properties: {
     title: {
-      title: 'Header',
+      title: intl.formatMessage(messages.headerTitle),
     },
     component: {
-      title: 'Component type',
+      title: intl.formatMessage(messages.componentType),
       choices: [
         ['text', 'Text'],
         ['link', 'Link'],
@@ -33,23 +34,23 @@ const columnSchema = {
     target: {
       title: 'Target',
       choices: [
-        ['_blank', 'New window'],
-        ['_self', 'Same window'],
+        ['_blank', intl.formatMessage(messages.newWindowChoice)],
+        ['_self', intl.formatMessage(messages.sameWindowChoice)],
       ],
     },
     external: {
-      title: 'External link',
+      title: intl.formatMessage(messages.externalLink),
       type: 'boolean',
     },
     linkTemplate: {
-      title: 'Link template',
-      description: 'Add suffix/prefix to text. Use {} for value placeholder',
+      title: intl.formatMessage(messages.linkTemplate),
+      description: intl.formatMessage(messages.tooltipTextTemplateDescription),
     },
     render_as: {
       title: 'HTML tag',
     },
     specifier: {
-      title: 'Format specifier',
+      title: intl.formatMessage(messages.formatSpecifier),
       description: (
         <>
           See{' '}
@@ -64,36 +65,36 @@ const columnSchema = {
       ),
     },
     textTemplate: {
-      title: 'Text template',
-      description: 'Add suffix/prefix to text. Use {} for value placeholder',
+      title: intl.formatMessage(messages.textTemplate),
+      description: intl.formatMessage(messages.tooltipTextTemplateDescription),
     },
     placeholder: {
-      title: 'Placeholder',
+      title: intl.formatMessage(messages.placeholder),
     },
     textAlign: {
-      title: 'Align',
+      title: intl.formatMessage(messages.alignmentTitle),
       widget: 'align',
       type: 'string',
     },
     column: {
-      title: 'Data column',
+      title: intl.formatMessage(messages.dataColumn),
       choices: [],
     },
     column_link: {
-      title: 'Data column link',
+      title: intl.formatMessage(messages.dataColumnLink),
       choices: [],
     },
   },
   required: ['column'],
-};
+});
 
-const getColumnSchema = (schema, child) => {
+const getColumnSchema = (schema, child, intl) => {
   return {
-    ...columnSchema,
+    ...columnSchema(intl),
     fieldsets: [
       {
         id: 'default',
-        title: 'Default',
+        title: intl.formatMessage(messages.defaultFieldsetTitle),
         fields: [
           'column',
           ...(child?.component === 'link' ? ['column_link'] : []),
@@ -113,7 +114,7 @@ const getColumnSchema = (schema, child) => {
   };
 };
 
-export const SimpleDataTableSchema = (config, templateSchema = {}) => {
+export const SimpleDataTableSchema = (config, templateSchema = {}, intl) => {
   const templatesConfig =
     config.blocks.blocksConfig.simpleDataConnectedTable.templates;
 
@@ -126,12 +127,12 @@ export const SimpleDataTableSchema = (config, templateSchema = {}) => {
   })[0];
 
   return {
-    title: 'DataConnected Table',
+    title: intl.formatMessage(messages.dataConnectedTable),
 
     fieldsets: [
       {
         id: 'default',
-        title: 'Default',
+        title: intl.formatMessage(messages.defaultFieldsetTitle),
         fields: [
           'description',
           'placeholder',
@@ -141,17 +142,17 @@ export const SimpleDataTableSchema = (config, templateSchema = {}) => {
       },
       {
         id: 'source',
-        title: 'Data source',
+        title: intl.formatMessage(messages.dataSourceFieldsetTitle),
         fields: ['provider_url', 'allowedParams', 'max_count', 'columns'],
       },
       {
         id: 'data_query',
-        title: 'Data query',
+        title: intl.formatMessage(messages.dataQuery),
         fields: ['data_query'],
       },
       {
         id: 'styling',
-        title: 'Styling',
+        title: intl.formatMessage(messages.stylingFieldsetTitle),
         fields: [
           'has_pagination',
           'show_header',
@@ -172,23 +173,23 @@ export const SimpleDataTableSchema = (config, templateSchema = {}) => {
       //   widget: 'multi_select',
       // },
       columns: {
-        title: 'Columns',
-        description: 'Leave empty to show all columns',
-        schema: columnSchema,
-        schemaExtender: (schema, child) => getColumnSchema(schema, child),
+        title: intl.formatMessage(messages.columnsTitle),
+        description: intl.formatMessage(messages.columnsDescription),
+        schema: columnSchema(intl),
+        schemaExtender: (schema, child) => getColumnSchema(schema, child, intl),
         widget: 'object_list',
       },
       description: {
-        title: 'Description',
+        title: intl.formatMessage(messages.descriptionTitle),
         widget: 'slate_richtext',
-        description: 'Allows rich text formatting',
+        description: intl.formatMessage(messages.allowRichText),
       },
       provider_url: {
-        title: 'Data provider',
+        title: intl.formatMessage(messages.dataProviderTitle),
         widget: 'internal_url',
       },
       allowedParams: {
-        title: 'Allowed url params',
+        title: intl.formatMessage(messages.allowedURLParams),
         type: 'array',
         creatable: true,
         items: {
@@ -196,47 +197,47 @@ export const SimpleDataTableSchema = (config, templateSchema = {}) => {
         },
       },
       data_query: {
-        title: 'Data query',
+        title: intl.formatMessage(messages.dataQuery),
         widget: 'data_query',
       },
       max_count: {
-        title: 'Max results',
+        title: intl.formatMessage(messages.maxResults),
         widget: 'number',
         defaultValue: 5,
       },
       placeholder: {
-        title: 'Placeholder',
+        title: intl.formatMessage(messages.placeholder),
         widget: 'textarea',
-        default: 'No results',
+        default: intl.formatMessage(messages.noResults),
       },
       template: {
-        title: 'Template',
+        title: intl.formatMessage(messages.templateTitle),
         choices: [...templates],
         default: 'default',
       },
       has_pagination: {
-        title: 'Pagination',
+        title: intl.formatMessage(messages.paginationTitle),
         type: 'boolean',
         default: false,
       },
       show_header: {
-        title: 'Show header',
+        title: intl.formatMessage(messages.showHeader),
         type: 'boolean',
       },
       striped: {
-        title: 'Stripe alternate rows with color',
+        title: intl.formatMessage(messages.stripeRows),
         type: 'boolean',
       },
       bordered: {
-        title: 'Remove table border',
+        title: intl.formatMessage(messages.removeTableBorder),
         type: 'boolean',
       },
       compact_table: {
-        title: 'Make the table compact',
+        title: intl.formatMessage(messages.makeTableCompact),
         type: 'boolean',
       },
       celled: {
-        title: 'Divide each row into separate cells',
+        title: intl.formatMessage(messages.divideRow),
         type: 'boolean',
       },
       ...(templateSchema.properties || {}),

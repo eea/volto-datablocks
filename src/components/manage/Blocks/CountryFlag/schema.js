@@ -1,54 +1,53 @@
-const CountryFlagSchema = () => {
+import messages from '@eeacms/volto-datablocks/messages';
+
+const CountryFlagSchema = (intl) => {
   return {
-    title: 'Country Flag',
+    title: intl.formatMessage(messages.countryFlagTitle),
 
     fieldsets: [
       {
         id: 'default',
-        title: 'Default',
+        title: intl.formatMessage(messages.defaultFieldsetTitle),
         fields: ['country_name'],
       },
       {
         id: 'settings',
-        title: 'Settings',
-        fields: ['show_name', 'show_flag', 'show_dropdown', 'render_as'], // title
+        title: intl.formatMessage(messages.settingsFieldsetTitle),
+        fields: ['show_name', 'show_flag', 'show_dropdown', 'render_as'],
       },
       {
         id: 'dropdownItems',
-        title: 'Dropdown items',
+        title: intl.formatMessage(messages.dropdownItemsFieldsetTitle),
         fields: ['querystring'],
       },
     ],
 
     properties: {
       country_name: {
-        title: 'Country name',
-        description: 'Select the country to be displayed.',
+        title: intl.formatMessage(messages.countryNameTitle),
+        description: intl.formatMessage(messages.countryNameDescription),
         choices: [],
       },
       render_as: {
-        title: 'HTML tag',
+        title: intl.formatMessage(messages.htmlTagTitle),
       },
       show_name: {
-        title: 'Show country name',
-        description:
-          'Enable it to display the name of the selected country. Disable it to display the title of the page.',
+        title: intl.formatMessage(messages.showNameTitle),
+        description: intl.formatMessage(messages.showNameDescription),
         type: 'boolean',
       },
       show_flag: {
-        title: 'Show country flag',
-        description:
-          'Enable it to display the flag of the selected country. Disable it to display the preview image of the current page. If the page has no preview image set, it will display nothing.',
+        title: intl.formatMessage(messages.showFlagTitle),
+        description: intl.formatMessage(messages.showFlagDescription),
         type: 'boolean',
       },
       show_dropdown: {
-        title: 'Show dropdown',
-        description:
-          'Enable the dropdown select to navigate to other pages. In the "Dropdown items" section you can set the criterias to filter the items displayed in the dropdown. If no criterias are set, the siblings of the current page are displayed in the dropdown.',
+        title: intl.formatMessage(messages.showDropdownTitle),
+        description: intl.formatMessage(messages.showDropdownDescription),
         type: 'boolean',
       },
       querystring: {
-        title: 'Criteria',
+        title: intl.formatMessage(messages.querystringTitle),
         widget: 'querystring',
       },
     },
