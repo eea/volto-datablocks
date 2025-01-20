@@ -19,8 +19,8 @@ const getAlignmentOfColumn = (col, idx) => {
   return typeof col !== 'string' && col.textAlign
     ? col.textAlign
     : idx === 0
-      ? 'left'
-      : 'right';
+    ? 'left'
+    : 'right';
 };
 
 const getNameOfColumn = (col) => {
@@ -59,8 +59,8 @@ const SimpleDataTableView = (props) => {
     (pagination.data[pagination.activePage]
       ? pagination.data[pagination.activePage]
       : pagination.activePage !== pagination.prevPage
-        ? pagination.data[pagination.prevPage]
-        : null) || props.provider_data;
+      ? pagination.data[pagination.prevPage]
+      : null) || props.provider_data;
   const provider_data_length = getProviderDataLength(provider_data);
 
   const TableView =
@@ -70,11 +70,11 @@ const SimpleDataTableView = (props) => {
   // TODO: sorting
   const row_size = has_pagination
     ? !Object.keys(pagination.data).includes(pagination.activePage)
-      ? provider_data_length
-      : Math.min(pagination.itemsPerPage, provider_data_length) || 0
+    ? provider_data_length
+    : Math.min(pagination.itemsPerPage, provider_data_length) || 0
     : max_count > 0
-      ? Math.min(max_count, provider_data_length)
-      : provider_data_length;
+    ? Math.min(max_count, provider_data_length)
+    : provider_data_length;
 
   const providerColumns = Object.keys(provider_data || {});
   const showAllColumns = !Array.isArray(columns) || columns.length === 0;
