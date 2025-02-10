@@ -155,13 +155,41 @@ export function updateChartDataFromProvider(chartData, providerData) {
     if (trace.cells) {
       newTrace.cells = {
         ...trace.cells,
-        values: trace.cells.values.map((value, index) => {
-          const providerColumnName = getCaseInsensitiveColumnName(
-            providerData,
-            trace.cells.valuessrc[index],
-          );
-          return providerData[providerColumnName] || value;
+        ...(trace.cells.values?.length > 0 && {
+          values: trace.cells.values.map((value, index) => {
+            const providerColumnName = getCaseInsensitiveColumnName(
+              providerData,
+              trace.cells.valuessrc[index],
+            );
+            return providerData[providerColumnName] || value;
+          }),
         }),
+      };
+    }
+
+    if (trace.headers) {
+      newTrace.headers = {
+        ...trace.headers,
+        ...(trace.headers.values?.length > 0 && {
+          values: trace.headers.values.map((value, index) => {
+            const providerColumnName = getCaseInsensitiveColumnName(
+              providerData,
+              trace.headers.valuessrc[index],
+            );
+            return providerData[providerColumnName] || value;
+          }),
+        }),
+      };
+    }
+
+    if (trace.marker) {
+      const providerColumnName = getCaseInsensitiveColumnName(
+        providerData,
+        trace.marker.colorsrc,
+      );
+      newTrace.marker = {
+        ...trace.marker,
+        color: providerData[providerColumnName] || trace.color || [],
       };
     }
 
