@@ -182,16 +182,16 @@ export function updateChartDataFromProvider(chartData, providerData) {
       };
     }
 
-    if (trace.marker) {
-      const providerColumnName = getCaseInsensitiveColumnName(
-        providerData,
-        trace.marker.colorsrc,
-      );
-      newTrace.marker = {
-        ...trace.marker,
-        color: providerData[providerColumnName] || trace.color || [],
-      };
-    }
+    // if (trace.marker) {
+    //   const providerColumnName = getCaseInsensitiveColumnName(
+    //     providerData,
+    //     trace.marker.colorsrc,
+    //   );
+    //   newTrace.marker = {
+    //     ...trace.marker,
+    //     color: providerData[providerColumnName] || trace.color || [],
+    //   };
+    // }
 
     return newTrace;
   });
