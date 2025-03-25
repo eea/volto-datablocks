@@ -70,11 +70,18 @@ export function connectToProviderData(getConfig = () => ({})) {
           () =>
             getForm({
               ...props,
+              location,
               pagination,
               extraQuery: state.extraQuery,
               extraConditions: state.extraConditions,
             }),
-          [props, pagination, state.extraQuery, state.extraConditions],
+          [
+            props,
+            location,
+            pagination,
+            state.extraQuery,
+            state.extraConditions,
+          ],
         );
         const data_query = useMemo(
           () =>
@@ -263,7 +270,10 @@ export function connectToProviderData(getConfig = () => ({})) {
               prev_provider_data={prev_provider_data}
               provider_metadata={provider_metadata}
               prev_provider_metadata={prev_provider_metadata}
-              loadingProviderData={isPending || isUndefined(provider_data)}
+              loadingProviderData={
+                !!provider_url && (isPending || isUndefined(provider_data))
+              }
+              failedProviderData={isFailed}
               hasProviderUrl={!!provider_url}
               updatePagination={updatePagination}
               pagination={

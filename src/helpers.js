@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
+import { omit } from 'lodash';
 import { getBaseUrl, flattenToAppURL } from '@plone/volto/helpers';
 import qs from 'querystring';
 
@@ -42,7 +43,7 @@ export function getForm({
   }
 
   return {
-    ...(allowedParamsObj || params),
+    ...omit(allowedParamsObj || params, ['activeTab']),
     ...(extraConditions ? { extra_conditions: extraConditions } : {}),
     ...(pagination?.enabled
       ? { p: pagination.activePage, nrOfHits: pagination.itemsPerPage }
