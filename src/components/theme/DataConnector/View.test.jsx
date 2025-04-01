@@ -24,6 +24,9 @@ jest.mock('react-router-dom', () => ({
   useParams: () => {
     return {};
   },
+  useLocation: () => {
+    return location;
+  },
 }));
 
 jest.mock('@plone/volto/components', () => ({

@@ -1,12 +1,12 @@
 import React, {
+  forwardRef,
   useEffect,
   useCallback,
   useMemo,
   useState,
   useRef,
 } from 'react';
-import { useParams } from 'react-router-dom';
-import { withRouter } from 'react-router';
+import { useParams, useLocation } from 'react-router-dom';
 import { connect, useDispatch } from 'react-redux';
 import isEqual from 'lodash/isEqual';
 import isUndefined from 'lodash/isUndefined';
@@ -39,13 +39,18 @@ const getInitialPagination = (config = {}) => {
  */
 export function connectToProviderData(getConfig = () => ({})) {
   return (WrappedComponent) => {
-    return connect((state) => ({
-      content: state.content.data,
-      connected_data_parameters: state.connected_data_parameters,
-      data_providers: state.data_providers,
-    }))(
-      withRouter((props) => {
-        // console.log('props', props);
+    return connect(
+      (state) => ({
+        content: state.content.data,
+        connected_data_parameters: state.connected_data_parameters,
+        data_providers: state.data_providers,
+      }),
+      null,
+      null,
+      { forwardRef: true },
+    )(
+      forwardRef((props, ref) => {
+        const location = useLocation();
         const dispatch = useDispatch();
         const params = useParams();
         const config = useMemo(() => getConfig(props), [props]);
@@ -65,11 +70,18 @@ export function connectToProviderData(getConfig = () => ({})) {
           () =>
             getForm({
               ...props,
+              location,
               pagination,
               extraQuery: state.extraQuery,
               extraConditions: state.extraConditions,
             }),
-          [props, pagination, state.extraQuery, state.extraConditions],
+          [
+            props,
+            location,
+            pagination,
+            state.extraQuery,
+            state.extraConditions,
+          ],
         );
         const data_query = useMemo(
           () =>
@@ -77,8 +89,14 @@ export function connectToProviderData(getConfig = () => ({})) {
             // a chart that shows data for all the countries
             props.data?.filter_connector_data_at_source === false
               ? []
-              : getDataQuery({ ...props, params, pagination, provider_url }),
-          [props, params, pagination, provider_url],
+              : getDataQuery({
+                  ...props,
+                  location,
+                  params,
+                  pagination,
+                  provider_url,
+                }),
+          [props, location, params, pagination, provider_url],
         );
 
         const hashValue = useMemo(() => {
@@ -242,6 +260,8 @@ export function connectToProviderData(getConfig = () => ({})) {
           <ConnectorContext.Provider value={{ state, setState }}>
             <WrappedComponent
               {...props}
+              ref={ref}
+              location={location}
               provider_data={
                 pagination.enabled
                   ? provider_data
@@ -250,7 +270,10 @@ export function connectToProviderData(getConfig = () => ({})) {
               prev_provider_data={prev_provider_data}
               provider_metadata={provider_metadata}
               prev_provider_metadata={prev_provider_metadata}
-              loadingProviderData={isPending || isUndefined(provider_data)}
+              loadingProviderData={
+                !!provider_url && (isPending || isUndefined(provider_data))
+              }
+              failedProviderData={isFailed}
               hasProviderUrl={!!provider_url}
               updatePagination={updatePagination}
               pagination={
