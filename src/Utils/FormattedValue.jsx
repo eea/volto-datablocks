@@ -35,7 +35,6 @@ const FormattedValue = ({
   collapsed,
   wrapped = true,
   animatedCounter,
-  animation,
   link = null,
 }) => {
   const [sanitizeHtml, setSanitizeHtml] = useState(null);
@@ -47,8 +46,9 @@ const FormattedValue = ({
   }, []);
 
   const originalValue = value;
-  const animateValue =
-    typeof value === 'number' && (animatedCounter || animation?.enabled);
+  const animateValue = typeof value === 'number' && animatedCounter;
+
+  const animationConfig = isObject(animatedCounter) ? animatedCounter : {};
 
   return (
     <React.Fragment>
@@ -104,7 +104,7 @@ const FormattedValue = ({
                     : ''}
                   <AnimatedCounter
                     originalValue={originalValue}
-                    animation={animation}
+                    animation={animationConfig}
                   />
                   {textTemplate && textTemplate.split('{}').length > 0
                     ? textTemplate.split('{}')[1]
