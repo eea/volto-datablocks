@@ -46,7 +46,9 @@ const FormattedValue = ({
   }, []);
 
   const originalValue = value;
-  const animateValue = typeof value === 'number' && animatedCounter;
+  const animateValue =
+    typeof value === 'number' &&
+    (isObject(animatedCounter) ? animatedCounter.enabled : !!animatedCounter);
 
   const animationConfig = isObject(animatedCounter) ? animatedCounter : {};
 
