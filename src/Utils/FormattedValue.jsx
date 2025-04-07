@@ -13,6 +13,7 @@ const AnimatedCounter = ({ originalValue, animation = {} }) => {
   return (
     <span>
       <CountUp
+        as="span"
         isCounting
         start={0}
         duration={animation.duration > 0 ? animation.duration : 3}
