@@ -9,15 +9,19 @@ import { isUrl } from '@plone/volto/helpers';
 const D3 = loadable.lib(() => import('d3'));
 const SanitizeHtmlLib = loadable.lib(() => import('sanitize-html'));
 
-const AnimatedCounter = ({ originalValue }) => {
+const AnimatedCounter = ({ originalValue, animation = {} }) => {
   return (
     <span>
       <CountUp
+        as="span"
         isCounting
         start={0}
-        duration={3}
+        duration={animation.duration > 0 ? animation.duration : 3}
+        decimalPlaces={animation.decimals > 0 ? animation.decimals : 0}
         end={originalValue}
-        formatter={(num) => parseInt(num).toLocaleString()}
+        formatter={
+          animation.formatter || ((num) => parseInt(num).toLocaleString())
+        }
       />
     </span>
   );
@@ -43,7 +47,11 @@ const FormattedValue = ({
   }, []);
 
   const originalValue = value;
-  const animateValue = typeof value === 'number' && animatedCounter;
+  const animateValue =
+    typeof value === 'number' &&
+    (isObject(animatedCounter) ? animatedCounter.enabled : !!animatedCounter);
+
+  const animationConfig = isObject(animatedCounter) ? animatedCounter : {};
 
   return (
     <React.Fragment>
@@ -97,7 +105,10 @@ const FormattedValue = ({
                   {textTemplate && textTemplate.split('{}').length > 0
                     ? textTemplate.split('{}')[0]
                     : ''}
-                  <AnimatedCounter originalValue={originalValue} />
+                  <AnimatedCounter
+                    originalValue={originalValue}
+                    animation={animationConfig}
+                  />
                   {textTemplate && textTemplate.split('{}').length > 0
                     ? textTemplate.split('{}')[1]
                     : ''}
