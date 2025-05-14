@@ -45,10 +45,21 @@ const DataConnectedValue = (props) => {
     link,
   } = props;
 
+  
   const value = React.useMemo(
-    () => getValue(provider_data, column, row),
+    () => {
+      const data = getValue(provider_data, column, row);
+
+      if (typeof data === 'string') {
+        // This pattern replaces any [content] to italics [<em>content</em>]
+        return data.replace(/\[(.*?)\]/g, '<em>$1</em>');
+      }
+      
+      return data;
+    },
     [provider_data, column, row],
   );
+
 
   const collapsable = props.collapsable && value?.length > collapseLimit;
 
