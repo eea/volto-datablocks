@@ -66,7 +66,6 @@ const FormattedValue = ({
                 const formatter = format ? format(specifier) : (v) => v;
                 value = formatter(value);
               }
-              
             } catch {}
           }
           if (linkTemplate) {

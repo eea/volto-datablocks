@@ -8,9 +8,7 @@ export const dataFormatChoices = [
 
 export const valueFormatters = {
     square_brackets_to_italics: (value) => {
-        return (
-          (value && typeof value === 'string' && 'whatever' || value)
-        );
+        return value && typeof value === 'string' && 'whatever' || value;
     }
 }
 
