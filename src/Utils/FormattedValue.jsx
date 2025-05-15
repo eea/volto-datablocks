@@ -5,6 +5,7 @@ import cx from 'classnames';
 import { CountUp } from '@eeacms/countup';
 import { UniversalLink } from '@plone/volto/components';
 import { isUrl } from '@plone/volto/helpers';
+import { isOtherFormat, otherFormat } from '../otherFormat';
 
 const D3 = loadable.lib(() => import('d3'));
 const SanitizeHtmlLib = loadable.lib(() => import('sanitize-html'));
@@ -59,8 +60,13 @@ const FormattedValue = ({
         {({ format }) => {
           if (specifier) {
             try {
-              const formatter = format ? format(specifier) : (v) => v;
-              value = formatter(value);
+              if (isOtherFormat(specifier)) {
+                value = otherFormat(specifier, value);
+              } else {
+                const formatter = format ? format(specifier) : (v) => v;
+                value = formatter(value);
+              }
+              
             } catch {}
           }
           if (linkTemplate) {

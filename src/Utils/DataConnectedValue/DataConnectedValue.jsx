@@ -47,16 +47,7 @@ const DataConnectedValue = (props) => {
 
   
   const value = React.useMemo(
-    () => {
-      const data = getValue(provider_data, column, row);
-
-      if (typeof data === 'string') {
-        // This pattern replaces any [content] to italics <em>content</em>
-        return data.replace(/\[(.*?)\]/g, '<em>$1</em>');
-      }
-      
-      return data;
-    },
+    () => getValue(provider_data, column, row),
     [provider_data, column, row],
   );
 
