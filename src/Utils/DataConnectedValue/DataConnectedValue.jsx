@@ -44,7 +44,7 @@ const DataConnectedValue = (props) => {
     animatedCounter,
     link,
   } = props;
-  
+
   const value = React.useMemo(
     () => getValue(provider_data, column, row),
     [provider_data, column, row],
