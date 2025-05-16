@@ -17,7 +17,10 @@ export const dataFormatChoices = [
 
   { id: 'format_precise', label: 'Format with 2 precision' },
   { id: 'format_int', label: 'Format as whole number' },
-  { id: 'square_brackets_to_italic', label: 'Format square brackets pattern to italic' },
+  {
+    id: 'square_brackets_to_italic',
+    label: 'Format square brackets pattern to italic',
+  },
 ];
 
 function valueIsNumber(value) {
@@ -68,7 +71,12 @@ export const valueFormatters = {
     );
   },
   square_brackets_to_italic: (value) => {
-    return (value && typeof value === 'string' && value.replace(/\[(.*?)\]/g, '<em>$1</em>')) || value;
+    return (
+      (value &&
+        typeof value === 'string' &&
+        value.replace(/\[(.*?)\]/g, '<em>$1</em>')) ||
+      value
+    );
   },
 };
 
