@@ -5,6 +5,7 @@ import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 
 import { FormattedValue } from '../';
 import './styles.css';
+import { formatValue } from '../../format';
 
 const EMPTY = '-';
 
@@ -46,7 +47,7 @@ const DataConnectedValue = (props) => {
   } = props;
 
   const value = React.useMemo(
-    () => getValue(provider_data, column, row),
+    () => formatValue(getValue(provider_data, column, row)),
     [provider_data, column, row],
   );
 
