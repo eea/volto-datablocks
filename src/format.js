@@ -4,6 +4,7 @@
 
 import Humanize from 'humanize-plus';
 import { isNumber } from 'lodash';
+import config from '@plone/volto/registry'
 
 export const dataFormatChoices = [
   { id: 'raw', label: 'Raw value' },
@@ -17,7 +18,6 @@ export const dataFormatChoices = [
 
   { id: 'format_precise', label: 'Format with 2 precision' },
   { id: 'format_int', label: 'Format as whole number' },
-  { id: 'square_brackets_to_italic', label: 'Format square brackets pattern to italic' },
 ];
 
 function valueIsNumber(value) {
@@ -67,16 +67,13 @@ export const valueFormatters = {
       (value && valueIsNumber(value) && `${Humanize.intComma(value)}`) || value
     );
   },
-  square_brackets_to_italic: (value) => {
-    return (value && typeof value === 'string' && value.replace(/\[(.*?)\]/g, '<em>$1</em>')) || value;
-  },
 };
 
-export function isCustomFormat(specifier) {
-  return Object.prototype.hasOwnProperty.call(valueFormatters, specifier);
-}
-
 export function formatValue(value, format = 'raw') {
+  // TODO: Take formatter from bise policy config
+  // TODO: Handle if formatter is in config, otherwise use default
+  const formattersFromBise = config.settings.formatters.custom
+  console.log('DOES IT WORK? ', formattersFromBise)
   if (typeof value === 'undefined' || value === null) return '';
   return valueFormatters[format](value);
 }
