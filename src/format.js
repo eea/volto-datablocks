@@ -73,12 +73,12 @@ export function formatValue(value, format = 'raw') {
   if (typeof value === 'undefined' || value === null) return '';
 
   if (typeof value === 'string') {
-    let formattedValue = value
+    let formattedValue = value;
     for (const key of Object.keys(config.settings.formatters)) {
-      formattedValue = config.settings.formatters[key](formattedValue)
+      formattedValue = config.settings.formatters[key](formattedValue);
     }
 
-    return formattedValue
+    return formattedValue;
   }
 
   return valueFormatters[format](value);
