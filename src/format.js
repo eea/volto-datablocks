@@ -4,7 +4,7 @@
 
 import Humanize from 'humanize-plus';
 import { isNumber } from 'lodash';
-import config from '@plone/volto/registry'
+import config from '@plone/volto/registry';
 
 export const dataFormatChoices = [
   { id: 'raw', label: 'Raw value' },
@@ -72,8 +72,8 @@ export const valueFormatters = {
 export function formatValue(value, format = 'raw') {
   // TODO: Take formatter from bise policy config
   // TODO: Handle if formatter is in config, otherwise use default
-  const formattersFromBise = config.settings.formatters.custom
-  console.log('DOES IT WORK? ', formattersFromBise)
+  const formattersFromBise = config.settings.formatters.custom;
+  console.log('DOES IT WORK? ', formattersFromBise);
   if (typeof value === 'undefined' || value === null) return '';
   return valueFormatters[format](value);
 }
