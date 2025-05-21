@@ -72,10 +72,17 @@ export const valueFormatters = {
 export function formatValue(value, format = 'raw') {
   if (typeof value === 'undefined' || value === null) return '';
 
-  if (typeof value === 'string') {
+  if (typeof value === 'string' && format === 'raw') {
+    const formatters = config?.settings?.formatters;
+
+    if (!formatters || typeof formatters !== 'object') {
+      return value;
+    }
+
     let formattedValue = value;
-    for (const key of Object.keys(config.settings.formatters)) {
-      formattedValue = config.settings.formatters[key](formattedValue);
+
+    for (const key of Object.keys(formatters)) {
+      formattedValue = formatters[key](formattedValue);
     }
 
     return formattedValue;
