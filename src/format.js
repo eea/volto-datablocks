@@ -73,7 +73,7 @@ export function formatValue(value, format = 'raw') {
   if (typeof value === 'undefined' || value === null) return '';
 
   if (typeof value === 'string' && format === 'raw') {
-    const formatters = config?.settings?.formatters;
+    const formatters = config?.settings?.dataFormatters;
 
     if (!formatters || typeof formatters !== 'object') {
       return value;
