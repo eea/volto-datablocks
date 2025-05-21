@@ -4,6 +4,7 @@
 
 import Humanize from 'humanize-plus';
 import { isNumber } from 'lodash';
+import config from '@plone/volto/registry';
 
 export const dataFormatChoices = [
   { id: 'raw', label: 'Raw value' },
@@ -70,5 +71,22 @@ export const valueFormatters = {
 
 export function formatValue(value, format = 'raw') {
   if (typeof value === 'undefined' || value === null) return '';
+
+  if (typeof value === 'string' && format === 'raw') {
+    const formatters = config?.settings?.dataFormatters;
+
+    if (!formatters || typeof formatters !== 'object') {
+      return value;
+    }
+
+    let formattedValue = value;
+
+    for (const key of Object.keys(formatters)) {
+      formattedValue = formatters[key](formattedValue);
+    }
+
+    return formattedValue;
+  }
+
   return valueFormatters[format](value);
 }
