@@ -25,6 +25,10 @@ const messages = defineMessages({
     id: 'operatorLabel',
     defaultMessage: 'Operator',
   },
+  existsOperator: {
+    id: 'existsOperator',
+    defaultMessage: 'Exists',
+  },
   equalOperator: {
     id: 'equalOperator',
     defaultMessage: 'Equal',

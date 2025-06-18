@@ -40,6 +40,9 @@ const evaluateCondition = (columnValue, operator, conditionValue) => {
     case operator === '>':
       return parseFloat(columnValue) > parseFloat(conditionValue);
 
+    case operator === 'exists':
+      return !!columnValue;
+
     default:
       return 'Could not evaluate!';
   }
