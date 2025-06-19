@@ -34,6 +34,7 @@ export const ConditionalDataBlockSchema = (intl) => ({
         ['not in', intl.formatMessage(messages.notIncludesOperator)],
         ['>', intl.formatMessage(messages.greaterThanOperator)],
         ['<', intl.formatMessage(messages.lessThanOperator)],
+        ['exists', intl.formatMessage(messages.existsOperator)],
       ],
     },
     condition: {
