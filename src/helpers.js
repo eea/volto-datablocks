@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { omit } from 'lodash';
 import { getBaseUrl, flattenToAppURL } from '@plone/volto/helpers';
-import qs from 'querystring';
+import qs from 'query-string';
 
 export function getBasePath(url) {
   return flattenToAppURL(getBaseUrl(url));
