@@ -3,7 +3,7 @@
  * @module components/manage/Blocks/Maps/Edit
  */
 
-import InlineForm from '@plone/volto/components/manage/Form/InlineForm';
+import BlockDataForm from '@plone/volto/components/manage/Form/BlockDataForm';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Message } from 'semantic-ui-react';
@@ -84,6 +84,10 @@ class Edit extends Component {
       error: null,
     };
     this.onSubmitUrl = this.onSubmitUrl.bind(this);
+    this.schema = addPrivacyProtectionToSchema(
+      schema(this.props.intl),
+      this.props.intl,
+    );
   }
 
   /**
@@ -217,11 +221,8 @@ class Edit extends Component {
           </Message>
         )}
         <SidebarPortal selected={this.props.selected}>
-          <InlineForm
-            schema={addPrivacyProtectionToSchema(
-              schema(this.props.intl),
-              this.props.intl,
-            )}
+          <BlockDataForm
+            schema={this.schema}
             title={schema.title}
             onChangeField={(id, value) => {
               this.props.onChangeBlock(this.props.block, {
@@ -229,6 +230,7 @@ class Edit extends Component {
                 [id]: value,
               });
             }}
+            onChangeBlock={this.props.onChangeBlock}
             formData={this.props.data}
           />
         </SidebarPortal>

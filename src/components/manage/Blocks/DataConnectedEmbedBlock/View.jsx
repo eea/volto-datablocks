@@ -27,7 +27,7 @@ const messages = defineMessages({
  * @extends Component
  */
 
-const ViewEmbedBlock = (props) => {
+export const ViewEmbedBlock = (props) => {
   const { data, intl } = props;
 
   const url = getFilteredURL(data.url, props.connected_data_parameters);
