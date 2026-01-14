@@ -14,7 +14,10 @@ const MaybeDropdown = ({ children, countries, value, dropdown = false }) => {
   const history = useHistory();
 
   const options = React.useMemo(() => {
-    return countries.map((c) => ({ text: c.title, value: c['@id'] }));
+    return countries.map((c) => ({
+      text: c.title || c.name,
+      value: c['@id'] || c.url,
+    }));
   }, [countries]);
   // const defaultValue = countries.filter((c) => c.title === value);
 
