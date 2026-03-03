@@ -30,7 +30,6 @@ const IframeSchema = (intl) => ({
       title: intl.formatMessage(messages.zoom),
       description: intl.formatMessage(messages.zoomDescription),
       type: 'string',
-      default: '1',
     },
   },
 
