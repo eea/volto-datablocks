@@ -51,7 +51,9 @@ const evaluateCondition = (columnValue, operator, conditionValue) => {
 const View = (props) => {
   const { data, provider_data } = props;
   const { column_data, operator, condition } = data;
-  const columnValue = Array.from(new Set(provider_data?.[column_data])).sort();
+  const columnValue = Array.from(new Set(provider_data?.[column_data])).sort(
+    (a, b) => (a > b ? 1 : a < b ? -1 : 0),
+  );
   const evalResult = evaluateCondition(columnValue, operator, condition);
   const metadata = props.metadata || props.properties;
   const CustomTag = `${data.as || 'div'}`;
