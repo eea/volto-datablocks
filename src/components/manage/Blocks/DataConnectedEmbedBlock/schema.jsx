@@ -7,7 +7,7 @@ const IframeSchema = (intl) => ({
     {
       id: 'default',
       title: intl.formatMessage(messages.defaultFieldsetTitle),
-      fields: ['url', 'align', 'height'],
+      fields: ['url', 'align', 'height', 'zoom'],
     },
   ],
 
@@ -25,6 +25,12 @@ const IframeSchema = (intl) => ({
       description: intl.formatMessage(messages.heightDescription),
       type: 'integer',
       default: 200,
+    },
+    zoom: {
+      title: intl.formatMessage(messages.zoom),
+      description: intl.formatMessage(messages.zoomDescription),
+      type: 'string',
+      default: '1',
     },
   },
 

@@ -160,6 +160,14 @@ const messages = defineMessages({
     id: 'heightDescription',
     defaultMessage: 'Map height',
   },
+  zoom: {
+    id: 'zoom',
+    defaultMessage: 'Zoom',
+  },
+  zoomDescription: {
+    id: 'zoomDescription',
+    defaultMessage: 'Zoom level (e.g. 0.5 for 50%, 1 for 100%, 2 for 200%)',
+  },
   dataQueryFilter: {
     id: 'DataQuery Filter',
     defaultMessage: 'DataQuery Filter',

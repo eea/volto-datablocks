@@ -37,6 +37,8 @@ export const ViewEmbedBlock = (props) => {
       ? props.data?.height
       : 600;
 
+  const zoom = parseFloat(data.zoom) || null;
+
   return url ? (
     <PrivacyProtection data={data} height={height} {...props}>
       <div
@@ -54,10 +56,18 @@ export const ViewEmbedBlock = (props) => {
           })}
           style={{
             height: `${data.height || 200}px`,
+            ...(zoom ? { overflow: 'hidden' } : {}),
           }}
         >
           <iframe
-            style={{ height: `${height}px` }}
+            style={{
+              height: zoom ? `${height / zoom}px` : `${height}px`,
+              ...(zoom && {
+                width: `${100 / zoom}%`,
+                transform: `scale(${zoom})`,
+                transformOrigin: '0 0',
+              }),
+            }}
             title={intl.formatMessage(messages.EmbededGoogleMaps)}
             src={url}
             className="google-map"
