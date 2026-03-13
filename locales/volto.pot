@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Plone\n"
-"POT-Creation-Date: 2025-01-14T10:19:02.915Z\n"
+"POT-Creation-Date: 2026-03-10T17:23:03.741Z\n"
 "Last-Translator: Plone i18n <plone-i18n@lists.sourceforge.net>\n"
 "Language-Team: Plone i18n <plone-i18n@lists.sourceforge.net>\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -318,6 +318,11 @@ msgstr ""
 msgid "equalOperator"
 msgstr ""
 
+#. Default: "Exists"
+#: messages
+msgid "existsOperator"
+msgstr ""
+
 #. Default: "External link"
 #: messages
 msgid "externalLink"
@@ -571,4 +576,14 @@ msgstr ""
 #. Default: "Tool-tip text template"
 #: messages
 msgid "tooltipTextTemplateTitle"
+msgstr ""
+
+#. Default: "Zoom"
+#: messages
+msgid "zoom"
+msgstr ""
+
+#. Default: "Zoom level (e.g. 0.5 for 50%, 1 for 100%, 2 for 200%)"
+#: messages
+msgid "zoomDescription"
 msgstr ""

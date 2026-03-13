@@ -6,7 +6,7 @@ import { Router } from 'react-router-dom';
 // import { Provider } from 'react-intl-redux';
 // import configureStore from 'redux-mock-store';
 import { createMemoryHistory } from 'history';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 // jest.mock('react-router-dom', () => ({
 //   useLocation: jest.fn().mockReturnValue({
