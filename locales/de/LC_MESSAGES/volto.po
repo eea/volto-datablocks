@@ -316,6 +316,11 @@ msgstr "URL einbetten"
 msgid "equalOperator"
 msgstr "Gleich"
 
+#. Default: "Exists"
+#: messages
+msgid "existsOperator"
+msgstr ""
+
 #. Default: "External link"
 #: messages
 msgid "externalLink"
@@ -570,3 +575,13 @@ msgstr "Suffix/Präfix zum Text hinzufügen. {value} als Platzhalter für den We
 #: messages
 msgid "tooltipTextTemplateTitle"
 msgstr "Tooltip-Textvorlage"
+
+#. Default: "Zoom"
+#: messages
+msgid "zoom"
+msgstr ""
+
+#. Default: "Zoom level (e.g. 0.5 for 50%, 1 for 100%, 2 for 200%)"
+#: messages
+msgid "zoomDescription"
+msgstr ""

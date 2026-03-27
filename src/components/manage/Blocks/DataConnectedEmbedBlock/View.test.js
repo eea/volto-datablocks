@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import ViewEmbedBlock from './View.jsx';
 import { IntlProvider } from 'react-intl';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 
 jest.mock('@eeacms/volto-embed', () => {
   return {

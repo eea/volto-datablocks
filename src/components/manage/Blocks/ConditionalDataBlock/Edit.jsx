@@ -5,7 +5,6 @@ import { isEmpty } from 'lodash';
 import { emptyBlocksForm } from '@plone/volto/helpers';
 import { BlocksForm, SidebarPortal, InlineForm } from '@plone/volto/components';
 import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
-import EditBlockWrapper from '@eeacms/volto-group-block/components/manage/Blocks/Group/EditBlockWrapper';
 import { ConditionalDataBlockSchema } from './schema';
 
 import './edit.less';
@@ -56,7 +55,13 @@ const Edit = (props) => {
   const blockState = React.useRef({});
 
   return (
-    <fieldset className="section-block">
+    <fieldset
+      className={
+        data.disableInnerButtons
+          ? 'section-block disable-inner-buttons'
+          : 'section-block'
+      }
+    >
       <legend
         onClick={() => {
           setSelectedBlock();
@@ -75,6 +80,8 @@ const Edit = (props) => {
         selectedBlock={selected ? selectedBlock : null}
         allowedBlocks={data.allowedBlocks}
         title={data.placeholder}
+        isMainForm={false}
+        stopPropagation={selectedBlock}
         onSelectBlock={setSelectedBlock}
         onChangeFormData={(newFormData) => {
           onChangeBlock(block, {
@@ -97,18 +104,7 @@ const Edit = (props) => {
           }
         }}
         pathname={pathname}
-      >
-        {({ draginfo }, editBlock, blockProps) => (
-          <EditBlockWrapper
-            className="block-editor-group"
-            draginfo={draginfo}
-            blockProps={blockProps}
-            disabled={data.disableInnerButtons}
-          >
-            {editBlock}
-          </EditBlockWrapper>
-        )}
-      </BlocksForm>
+      />
 
       <SidebarPortal selected={selected && !selectedBlock}>
         {!data?.readOnlySettings && (
