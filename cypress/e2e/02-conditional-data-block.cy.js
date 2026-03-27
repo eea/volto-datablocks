@@ -102,7 +102,7 @@ describe('Conditional data block tests', () => {
     cy.get(`${CONDITIONAL_INNER_SCOPE} .block-add-button:visible`)
       .first()
       .should('be.visible')
-      .click();
+      .click({ force: true });
 
     cy.get('.blocks-chooser .title').contains('Text').click();
     cy.get('.ui.basic.icon.button.slate').contains('Text').click();
