@@ -316,6 +316,11 @@ msgstr ""
 msgid "equalOperator"
 msgstr ""
 
+#. Default: "Exists"
+#: messages
+msgid "existsOperator"
+msgstr ""
+
 #. Default: "External link"
 #: messages
 msgid "externalLink"
@@ -569,4 +574,14 @@ msgstr ""
 #. Default: "Tool-tip text template"
 #: messages
 msgid "tooltipTextTemplateTitle"
+msgstr ""
+
+#. Default: "Zoom"
+#: messages
+msgid "zoom"
+msgstr ""
+
+#. Default: "Zoom level (e.g. 0.5 for 50%, 1 for 100%, 2 for 200%)"
+#: messages
+msgid "zoomDescription"
 msgstr ""

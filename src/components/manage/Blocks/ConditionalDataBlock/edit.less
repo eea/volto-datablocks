@@ -22,11 +22,6 @@
   }
 
   .block {
-    .block-add-button,
-    .delete-button {
-      display: none;
-    }
-
     .block.selected::before {
       border-top-left-radius: 0;
     }
@@ -112,6 +107,14 @@
   .block.conditionalDataBlock.selected::before,
   .block.conditionalDataBlock:hover::before {
     border-style: dashed;
+  }
+
+  .section-block.disable-inner-buttons {
+    .drag.handle.wrapper,
+    .delete-button,
+    .block-add-button {
+      display: none !important;
+    }
   }
 
   fieldset {
