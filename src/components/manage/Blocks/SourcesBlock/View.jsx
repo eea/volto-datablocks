@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import downloadSVG from '@plone/volto/icons/download.svg';
-import { Icon as VoltoIcon } from '@plone/volto/components';
-import { isEmpty } from 'lodash';
+import VoltoIcon from '@plone/volto/components/theme/Icon/Icon';
+import isEmpty from 'lodash/isEmpty';
 // import { Grid } from 'semantic-ui-react';
 import config from '@plone/volto/registry';
 import { trackLink } from '@eeacms/volto-matomo/utils';

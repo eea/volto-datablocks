@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
-import { isEmpty } from 'lodash';
-import { emptyBlocksForm } from '@plone/volto/helpers';
-import { BlocksForm, SidebarPortal, InlineForm } from '@plone/volto/components';
+import isEmpty from 'lodash/isEmpty';
+import { emptyBlocksForm } from '@plone/volto/helpers/Blocks/Blocks';
+import SidebarPortal from '@plone/volto/components/manage/Sidebar/SidebarPortal';
+import { BlocksForm, InlineForm } from '@plone/volto/components/manage/Form';
 import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 import { ConditionalDataBlockSchema } from './schema';
 

@@ -3,7 +3,7 @@
  */
 
 import Humanize from 'humanize-plus';
-import { isNumber } from 'lodash';
+import isNumber from 'lodash/isNumber';
 import config from '@plone/volto/registry';
 
 export const dataFormatChoices = [

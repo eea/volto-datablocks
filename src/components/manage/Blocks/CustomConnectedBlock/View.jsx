@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { isNil } from 'lodash';
+import isNil from 'lodash/isNil';
 import { compose } from 'redux';
 import config from '@plone/volto/registry';
 import { VisibilitySensor } from '@eeacms/volto-datablocks/components';

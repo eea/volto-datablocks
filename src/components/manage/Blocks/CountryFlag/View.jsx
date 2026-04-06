@@ -2,7 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Dropdown } from 'semantic-ui-react';
 
-import { flattenToAppURL } from '@plone/volto/helpers';
+import { flattenToAppURL } from '@plone/volto/helpers/Url/Url';
 import PreviewImage from '@eeacms/volto-listing-block/PreviewImage';
 
 import countryNames from './data/countries';

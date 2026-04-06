@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Button, Form, Grid, Accordion } from 'semantic-ui-react';
-import { Field, Icon, TextWidget } from '@plone/volto/components';
+import Icon from '@plone/volto/components/theme/Icon/Icon';
+import { Field } from '@plone/volto/components/manage/Form';
+import { TextWidget } from '@plone/volto/components/manage/Widgets';
 import upSVG from '@plone/volto/icons/up-key.svg';
 import downSVG from '@plone/volto/icons/down-key.svg';
 

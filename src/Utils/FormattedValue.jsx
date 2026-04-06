@@ -3,8 +3,8 @@ import isObject from 'lodash/isObject';
 import loadable from '@loadable/component';
 import cx from 'classnames';
 import { CountUp } from '@eeacms/countup';
-import { UniversalLink } from '@plone/volto/components';
-import { isUrl } from '@plone/volto/helpers';
+import UniversalLink from '@plone/volto/components/manage/UniversalLink/UniversalLink';
+import { isUrl } from '@plone/volto/helpers/Url/Url';
 
 const D3 = loadable.lib(() => import('d3'));
 const SanitizeHtmlLib = loadable.lib(() => import('sanitize-html'));
