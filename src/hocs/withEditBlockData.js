@@ -11,8 +11,8 @@ const withEditBlockData = (WrappedComponent) => (props) => {
     props.data?.chartData?.data?.length > 0 // we have data from edit
       ? props
       : state.blockdata[id]?.data?.chartData // the data came from async
-        ? state.blockdata[id]
-        : props,
+      ? state.blockdata[id]
+      : props,
   );
   const pathname = useSelector((state) => state.router.location.pathname);
 
