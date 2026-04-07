@@ -84,13 +84,17 @@ export const CountryFlagView = (props) => {
 
   // TODO: we might as well use the Title everywhere, since we use it for the siblings
   // const countries = siblings.filter((f) => countryTitles.includes(f.title));
-  const { listingItems } = props;
+  const { listingItems, hasLoaded } = props;
 
   const countries = React.useMemo(() => {
-    return listingItems && listingItems.length > 0
-      ? listingItems
-      : siblings.filter((s) => s.title !== pageTitle);
-  }, [listingItems, pageTitle, siblings]);
+    if (listingItems && listingItems.length > 0) {
+      return listingItems;
+    }
+    if (hasLoaded) {
+      return siblings.filter((s) => s.title !== pageTitle);
+    }
+    return [];
+  }, [listingItems, pageTitle, siblings, hasLoaded]);
 
   const countryFlag =
     (countryCode && show_flag && flag && (
