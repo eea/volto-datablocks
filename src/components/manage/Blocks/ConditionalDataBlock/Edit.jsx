@@ -4,7 +4,8 @@ import { compose } from 'redux';
 import isEmpty from 'lodash/isEmpty';
 import { emptyBlocksForm } from '@plone/volto/helpers/Blocks/Blocks';
 import SidebarPortal from '@plone/volto/components/manage/Sidebar/SidebarPortal';
-import { BlocksForm, InlineForm } from '@plone/volto/components/manage/Form';
+import BlocksForm from '@plone/volto/components/manage/Blocks/Block/BlocksForm';
+import InlineForm from '@plone/volto/components/manage/Form/InlineForm';
 import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 import { ConditionalDataBlockSchema } from './schema';
 

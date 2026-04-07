@@ -2,7 +2,7 @@
  * A wrapper over ObjectBrowser because of API constraints
  */
 
-import { TextWidget } from '@plone/volto/components/manage/Widgets';
+import TextWidget from '@plone/volto/components/manage/Widgets/TextWidget';
 import UniversalLink from '@plone/volto/components/manage/UniversalLink/UniversalLink'; //CheckboxWidget, Icon,
 import clearSVG from '@plone/volto/icons/clear.svg';
 import navTreeSVG from '@plone/volto/icons/nav.svg';

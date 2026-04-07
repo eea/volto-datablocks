@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Dropdown } from 'semantic-ui-react';
 
 import { flattenToAppURL } from '@plone/volto/helpers/Url/Url';
+import Image from '@plone/volto/components/theme/Image/Image';
 import PreviewImage from '@eeacms/volto-listing-block/PreviewImage';
 
 import countryNames from './data/countries';
@@ -94,7 +95,7 @@ export const CountryFlagView = (props) => {
 
   const countryFlag =
     (countryCode && show_flag && flag && (
-      <img alt={countryNames[countryCode]} src={flag} />
+      <Image alt={countryNames[countryCode]} src={flag} />
     )) ||
     (contentData?.preview_image ? (
       <PreviewImage item={contentData} preview_image_url={previewImageUrl} />
