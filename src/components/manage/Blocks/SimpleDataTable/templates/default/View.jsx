@@ -1,7 +1,7 @@
 import React from 'react';
 import Icon from '@plone/volto/components/theme/Icon/Icon';
 import { Table, Menu, Loader } from 'semantic-ui-react';
-import RenderComponent from '../../components';
+import RenderComponent from '@eeacms/volto-datablocks/components/manage/Blocks/SimpleDataTable/components';
 
 import leftSVG from '@plone/volto/icons/left-key.svg';
 import rightSVG from '@plone/volto/icons/right-key.svg';
