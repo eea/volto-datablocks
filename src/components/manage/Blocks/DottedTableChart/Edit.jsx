@@ -1,6 +1,6 @@
 import React from 'react';
 import { compose } from 'redux';
-import { SidebarPortal } from '@plone/volto/components';
+import SidebarPortal from '@plone/volto/components/manage/Sidebar/SidebarPortal';
 import InlineForm from '@plone/volto/components/manage/Form/InlineForm';
 import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 import DottedTableChartView from './View';

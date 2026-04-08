@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from '@plone/volto/components';
+import Icon from '@plone/volto/components/theme/Icon/Icon';
 import { Table, Menu, Loader } from 'semantic-ui-react';
 import RenderComponent from '../../components';
 

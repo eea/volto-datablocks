@@ -2,7 +2,8 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Dropdown } from 'semantic-ui-react';
 
-import { flattenToAppURL } from '@plone/volto/helpers';
+import { flattenToAppURL } from '@plone/volto/helpers/Url/Url';
+import Image from '@plone/volto/components/theme/Image/Image';
 import PreviewImage from '@eeacms/volto-listing-block/PreviewImage';
 
 import countryNames from './data/countries';
@@ -84,17 +85,21 @@ export const CountryFlagView = (props) => {
 
   // TODO: we might as well use the Title everywhere, since we use it for the siblings
   // const countries = siblings.filter((f) => countryTitles.includes(f.title));
-  const { listingItems } = props;
+  const { listingItems, hasLoaded } = props;
 
   const countries = React.useMemo(() => {
-    return listingItems && listingItems.length > 0
-      ? listingItems
-      : siblings.filter((s) => s.title !== pageTitle);
-  }, [listingItems, pageTitle, siblings]);
+    if (listingItems && listingItems.length > 0) {
+      return listingItems;
+    }
+    if (hasLoaded) {
+      return siblings.filter((s) => s.title !== pageTitle);
+    }
+    return [];
+  }, [listingItems, pageTitle, siblings, hasLoaded]);
 
   const countryFlag =
     (countryCode && show_flag && flag && (
-      <img alt={countryNames[countryCode]} src={flag} />
+      <Image alt={countryNames[countryCode]} src={flag} />
     )) ||
     (contentData?.preview_image ? (
       <PreviewImage item={contentData} preview_image_url={previewImageUrl} />

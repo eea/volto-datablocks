@@ -2,7 +2,7 @@
  * Data Providers reducer
  * @module reducers/data_providers
  */
-import { flattenToAppURL } from '@plone/volto/helpers';
+import { flattenToAppURL } from '@plone/volto/helpers/Url/Url';
 import {
   SET_CONNECTED_DATA_PARAMETERS,
   DELETE_CONNECTED_DATA_PARAMETERS,

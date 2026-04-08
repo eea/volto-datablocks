@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
-import { omit } from 'lodash';
-import { getBaseUrl, flattenToAppURL } from '@plone/volto/helpers';
+import omit from 'lodash/omit';
+import { getBaseUrl, flattenToAppURL } from '@plone/volto/helpers/Url/Url';
 import qs from 'query-string';
 
 export function getBasePath(url) {
@@ -97,10 +97,10 @@ function getCaseInsensitiveColumnName(providerData, columnName) {
   const key = Object.keys(providerData).includes(columnName)
     ? columnName
     : Object.keys(providerData)
-        .map((s) => s?.toLowerCase())
-        .includes(columnName?.toLowerCase())
-    ? columnName?.toLowerCase()
-    : null;
+          .map((s) => s?.toLowerCase())
+          .includes(columnName?.toLowerCase())
+      ? columnName?.toLowerCase()
+      : null;
   return key;
 }
 

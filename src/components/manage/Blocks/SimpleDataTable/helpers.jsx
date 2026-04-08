@@ -1,9 +1,9 @@
 import React from 'react';
-import _ from 'lodash';
+import isArray from 'lodash/isArray';
 import { FormattedValue } from '../../../../Utils';
 
 export const getValue = (tableData, column, rowIndex, textTemplate) => {
-  let value = _.isArray(tableData)
+  let value = isArray(tableData)
     ? tableData[rowIndex]?.[column]
     : tableData[column]?.[rowIndex];
   if (textTemplate) {
@@ -16,11 +16,11 @@ export const getCellValue = (tableData, colDef, rowIndex, placeholder = '') => {
   let value;
 
   if (colDef === 'string') {
-    value = _.isArray(tableData)
+    value = isArray(tableData)
       ? tableData[rowIndex]?.[colDef]
       : tableData[colDef]?.[rowIndex];
   } else {
-    value = _.isArray(tableData)
+    value = isArray(tableData)
       ? tableData[rowIndex]?.[colDef.column]
       : tableData[colDef.column]?.[rowIndex];
   }

@@ -4,7 +4,7 @@
  */
 
 import { GET_DATA_FROM_PROVIDER } from '../constants';
-import { without } from 'lodash';
+import without from 'lodash/without';
 
 const MAX_DATA_PER_PROVIDER = 10;
 

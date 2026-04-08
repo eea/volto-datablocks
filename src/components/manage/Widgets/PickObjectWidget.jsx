@@ -2,11 +2,12 @@
  * A wrapper over ObjectBrowser because of API constraints
  */
 
-import { TextWidget, UniversalLink } from '@plone/volto/components'; //CheckboxWidget, Icon,
+import TextWidget from '@plone/volto/components/manage/Widgets/TextWidget';
+import UniversalLink from '@plone/volto/components/manage/UniversalLink/UniversalLink'; //CheckboxWidget, Icon,
 import clearSVG from '@plone/volto/icons/clear.svg';
 import navTreeSVG from '@plone/volto/icons/nav.svg';
 import withObjectBrowser from '@plone/volto/components/manage/Sidebar/ObjectBrowser';
-import { flattenToAppURL } from '@plone/volto/helpers';
+import { flattenToAppURL } from '@plone/volto/helpers/Url/Url';
 import React from 'react';
 
 const ObjectBrowserWrapper = withObjectBrowser((props) => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { compose } from 'redux';
-import { isNil } from 'lodash';
+import isNil from 'lodash/isNil';
 import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 
 import { FormattedValue } from '../';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { compose } from 'redux';
-import { RenderBlocks } from '@plone/volto/components';
+import RenderBlocks from '@plone/volto/components/theme/View/RenderBlocks';
 import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 import './style.less';
 
