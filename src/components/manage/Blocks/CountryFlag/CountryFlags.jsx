@@ -4,7 +4,7 @@
 /* eslint-disable */
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getContent } from '@plone/volto/actions';
+import { getContent } from '@plone/volto/actions/content/content';
 import countries_url from './data/countries.tsv';
 import world_url from './data/world-country-names.tsv';
 

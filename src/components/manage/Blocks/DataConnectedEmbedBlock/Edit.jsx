@@ -9,7 +9,8 @@ import PropTypes from 'prop-types';
 import { Message } from 'semantic-ui-react';
 import { defineMessages, FormattedMessage, injectIntl } from 'react-intl';
 import cx from 'classnames';
-import { SidebarPortal } from '@plone/volto/components';
+import Image from '@plone/volto/components/theme/Image/Image';
+import SidebarPortal from '@plone/volto/components/manage/Sidebar/SidebarPortal';
 import mapsBlockSVG from '@plone/volto/components/manage/Blocks/Maps/block-maps.svg';
 import {
   PrivacyProtection,
@@ -202,7 +203,7 @@ class Edit extends Component {
         ) : (
           <Message>
             <center>
-              <img src={mapsBlockSVG} alt="" />
+              <Image src={mapsBlockSVG} alt="" />
               <div className="message-text">
                 <FormattedMessage
                   id="Please use the sidebar to add Embed URL"

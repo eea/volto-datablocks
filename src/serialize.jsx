@@ -1,7 +1,9 @@
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import cx from 'classnames';
-import { isEmpty, isEqual, omit } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
+import isEqual from 'lodash/isEqual';
+import omit from 'lodash/omit';
 import { Node, Text } from 'slate';
 import config from '@plone/volto/registry';
 

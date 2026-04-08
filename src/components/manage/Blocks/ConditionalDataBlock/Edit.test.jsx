@@ -9,13 +9,20 @@ const mockSidebarPortal = jest.fn(({ children }) => (
   <div data-testid="sidebar-portal">{children}</div>
 ));
 
-jest.mock('@plone/volto/components', () => ({
-  BlocksForm: (props) => mockBlocksForm(props),
-  SidebarPortal: (props) => mockSidebarPortal(props),
-  InlineForm: () => <div data-testid="inline-form" />,
-}));
+jest.mock('@plone/volto/components/manage/Blocks/Block/BlocksForm', () => {
+  return (props) => mockBlocksForm(props);
+});
 
-jest.mock('@plone/volto/helpers', () => ({
+jest.mock('@plone/volto/components/manage/Form/InlineForm', () => {
+  return () => <div data-testid="inline-form" />;
+});
+
+jest.mock(
+  '@plone/volto/components/manage/Sidebar/SidebarPortal',
+  () => (props) => mockSidebarPortal(props),
+);
+
+jest.mock('@plone/volto/helpers/Blocks/Blocks', () => ({
   emptyBlocksForm: jest.fn(() => ({
     blocks: {
       empty: {
