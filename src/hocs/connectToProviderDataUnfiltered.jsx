@@ -2,8 +2,11 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { withRouter } from 'react-router';
 import { connect, useDispatch } from 'react-redux';
 import isUndefined from 'lodash/isUndefined';
-import { getDataFromProvider } from '../actions';
-import { getProviderUrl, getConnectorPath } from '../helpers';
+import { getDataFromProvider } from '@eeacms/volto-datablocks/actions';
+import {
+  getProviderUrl,
+  getConnectorPath,
+} from '@eeacms/volto-datablocks/helpers';
 /**
  * connectToProviderData.
  *

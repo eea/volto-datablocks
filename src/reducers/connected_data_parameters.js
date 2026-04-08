@@ -7,7 +7,7 @@ import {
   SET_CONNECTED_DATA_PARAMETERS,
   DELETE_CONNECTED_DATA_PARAMETERS,
   SET_UNSAVED_CONNECTED_DATA_PARAMETERS,
-} from '../constants';
+} from '@eeacms/volto-datablocks/constants';
 
 const initialState = {
   byProviderPath: {},

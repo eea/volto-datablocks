@@ -3,9 +3,9 @@ import { compose } from 'redux';
 import isNil from 'lodash/isNil';
 import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
 
-import { FormattedValue } from '../';
+import { FormattedValue } from '@eeacms/volto-datablocks/Utils';
 import './styles.css';
-import { formatValue } from '../../format';
+import { formatValue } from '@eeacms/volto-datablocks/format';
 
 const EMPTY = '-';
 

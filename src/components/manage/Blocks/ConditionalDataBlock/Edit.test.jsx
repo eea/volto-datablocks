@@ -16,7 +16,6 @@ jest.mock('@plone/volto/components/manage/Blocks/Block/BlocksForm', () => {
 jest.mock('@plone/volto/components/manage/Form/InlineForm', () => {
   return () => <div data-testid="inline-form" />;
 });
-
 jest.mock(
   '@plone/volto/components/manage/Sidebar/SidebarPortal',
   () => (props) => mockSidebarPortal(props),

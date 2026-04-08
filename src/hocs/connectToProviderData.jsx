@@ -11,13 +11,13 @@ import { connect, useDispatch } from 'react-redux';
 import isEqual from 'lodash/isEqual';
 import isUndefined from 'lodash/isUndefined';
 import hash from 'object-hash';
-import { getDataFromProvider } from '../actions';
+import { getDataFromProvider } from '@eeacms/volto-datablocks/actions';
 import {
   getProviderUrl,
   getConnectorPath,
   getForm,
   getDataQuery,
-} from '../helpers';
+} from '@eeacms/volto-datablocks/helpers';
 import { ConnectorContext } from './';
 
 const getInitialPagination = (config = {}) => {

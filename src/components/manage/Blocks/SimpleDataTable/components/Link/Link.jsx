@@ -1,5 +1,9 @@
 import React from 'react';
-import { getValue, getCellValue, isValidUrl } from '../../helpers';
+import {
+  getValue,
+  getCellValue,
+  isValidUrl,
+} from '@eeacms/volto-datablocks/components/manage/Blocks/SimpleDataTable/helpers';
 import { Link } from 'react-router-dom';
 
 const LinkView = (props) => {

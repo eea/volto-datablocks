@@ -1,4 +1,4 @@
-import { GET_SPARQL_DATA } from '../constants';
+import { GET_SPARQL_DATA } from '@eeacms/volto-datablocks/constants';
 
 const initialState = {
   error: null,

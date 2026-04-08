@@ -1,4 +1,7 @@
-import { GET_SPARQL_DATA, CHANGE_SIDEBAR_STATE } from '../constants';
+import {
+  GET_SPARQL_DATA,
+  CHANGE_SIDEBAR_STATE,
+} from '@eeacms/volto-datablocks/constants';
 
 export * from './blockData';
 export * from './dataProvider';
