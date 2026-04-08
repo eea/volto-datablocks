@@ -74,8 +74,6 @@ export const CountryFlagView = (props) => {
       import(
         /* webpackChunkName: "flags" */
         /* webpackMode: "lazy" */
-        /* webpackExports: ["default", "named"] */
-
         `./data/svg/${code}.svg`
       ).then((module) => {
         setFlag(module.default);
