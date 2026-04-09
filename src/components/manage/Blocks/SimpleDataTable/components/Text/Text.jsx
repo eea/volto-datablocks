@@ -1,5 +1,5 @@
 import React from 'react';
-import { getCellValue } from '../../helpers';
+import { getCellValue } from '@eeacms/volto-datablocks/components/manage/Blocks/SimpleDataTable/helpers';
 
 const TextView = (props) => {
   const { tableData = {}, colDef = {}, row = 0, placeholder } = props;

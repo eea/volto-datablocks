@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getBaseUrl } from '@plone/volto/helpers/Url/Url';
-import { getBlockData } from '../actions';
+import { getBlockData } from '@eeacms/volto-datablocks/actions';
 
 const withEditBlockData = (WrappedComponent) => (props) => {
   const { id } = props;

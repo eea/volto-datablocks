@@ -3,7 +3,7 @@
  * @module reducers/data_providers
  */
 
-import { GET_DATA_FROM_PROVIDER } from '../constants';
+import { GET_DATA_FROM_PROVIDER } from '@eeacms/volto-datablocks/constants';
 import without from 'lodash/without';
 
 const MAX_DATA_PER_PROVIDER = 10;

@@ -1,4 +1,4 @@
-import { GET_DATA_FROM_PROVIDER } from '../constants';
+import { GET_DATA_FROM_PROVIDER } from '@eeacms/volto-datablocks/constants';
 
 export const dataProvider = (middlewares) => [
   (store) => (next) => (action) => {

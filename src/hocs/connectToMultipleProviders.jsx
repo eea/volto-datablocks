@@ -4,13 +4,13 @@ import { useParams } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import { connect, useDispatch } from 'react-redux';
 import hash from 'object-hash';
-import { getDataFromProvider } from '../actions';
+import { getDataFromProvider } from '@eeacms/volto-datablocks/actions';
 import {
   getProviderUrl,
   getConnectorPath,
   getForm,
   getDataQuery,
-} from '../helpers';
+} from '@eeacms/volto-datablocks/helpers';
 
 /**
  * connectToMultipleProviders.

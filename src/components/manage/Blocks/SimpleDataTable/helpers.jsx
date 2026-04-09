@@ -1,6 +1,6 @@
 import React from 'react';
 import isArray from 'lodash/isArray';
-import { FormattedValue } from '../../../../Utils';
+import { FormattedValue } from '@eeacms/volto-datablocks/Utils';
 
 export const getValue = (tableData, column, rowIndex, textTemplate) => {
   let value = isArray(tableData)

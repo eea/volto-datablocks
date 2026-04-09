@@ -1,6 +1,6 @@
 import { flattenToAppURL } from '@plone/volto/helpers/Url/Url';
 import config from '@plone/volto/registry';
-import { GET_DATA_FROM_PROVIDER } from '../constants';
+import { GET_DATA_FROM_PROVIDER } from '@eeacms/volto-datablocks/constants';
 
 export function getDataFromProvider(
   path,
