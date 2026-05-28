@@ -3,8 +3,11 @@
  * @module reducers/data_providers
  */
 
-import { GET_DATA_FROM_PROVIDER } from '@eeacms/volto-datablocks/constants';
+import hash from 'object-hash';
 import without from 'lodash/without';
+import { GET_CONTENT } from '@plone/volto/constants/ActionTypes';
+import { GET_DATA_FROM_PROVIDER } from '@eeacms/volto-datablocks/constants';
+import { getProviderUrl } from '@eeacms/volto-datablocks/helpers';
 
 const MAX_DATA_PER_PROVIDER = 10;
 
@@ -21,13 +24,33 @@ const initialState = {
 };
 
 export default function data_providers(state = initialState, action = {}) {
+  let providerPath, hashValue, path, results, metadata;
   const pendingConnectors = { ...state.pendingConnectors };
   const failedConnectors = { ...state.failedConnectors };
   const tree = { ...state.tree };
-  const providerPath = action.path;
-  const hashValue = action.hashValue;
 
-  const path = `${providerPath}${hashValue ? `#${hashValue}` : ''}`;
+  if (action.type === `${GET_CONTENT}_SUCCESS`) {
+    const connector = action.result?.['@components']?.['connector-data'] || {};
+    const payload = connector.payload || {};
+
+    if (!connector.data) {
+      return state;
+    }
+
+    hashValue = hash(hash(payload.form) + hash(payload.data_query));
+    providerPath = getProviderUrl(connector.path);
+    path = `${providerPath}${hashValue ? `#${hashValue}` : ''}`;
+    results = connector.data.results;
+    metadata = connector.data.metadata;
+  } else {
+    providerPath = action.path;
+    hashValue = action.hashValue;
+
+    path = `${providerPath}${hashValue ? `#${hashValue}` : ''}`;
+
+    results = action.result?.data?.results;
+    metadata = action.result?.data?.metadata;
+  }
 
   switch (action.type) {
     case `${GET_DATA_FROM_PROVIDER}_PENDING`:
@@ -44,16 +67,19 @@ export default function data_providers(state = initialState, action = {}) {
         failedConnectors,
       };
 
+    case `${GET_CONTENT}_SUCCESS`:
     case `${GET_DATA_FROM_PROVIDER}_SUCCESS`:
       delete pendingConnectors[path];
       if (!tree[providerPath]) {
         tree[providerPath] = [];
       }
-      tree[providerPath].push(hashValue);
-      const providerData = state.data[providerPath] || {};
-      if (tree[providerPath].length > MAX_DATA_PER_PROVIDER) {
-        delete providerData[tree[providerPath].shift()];
+      if (!tree[providerPath].includes(hashValue)) {
+        tree[providerPath].push(hashValue);
       }
+      const providerData = state.data[providerPath] || {};
+      // if (tree[providerPath].length > MAX_DATA_PER_PROVIDER) {
+      //   delete providerData[tree[providerPath].shift()];
+      // }
       return {
         ...state,
         error: null,
@@ -61,14 +87,14 @@ export default function data_providers(state = initialState, action = {}) {
           ...state.data,
           [providerPath]: {
             ...providerData,
-            [hashValue]: action.result.data.results,
+            [hashValue]: results,
           },
         },
         metadata: {
           ...state.metadata,
           [providerPath]: {
             ...providerData,
-            [hashValue]: action.result.data.metadata,
+            [hashValue]: metadata,
           },
         },
         loaded: true,

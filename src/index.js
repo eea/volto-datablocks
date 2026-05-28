@@ -5,6 +5,7 @@ import installDottedTableChart from './components/manage/Blocks/DottedTableChart
 import installCountryFlag from './components/manage/Blocks/CountryFlag';
 import installCustomConnectedBlock from './components/manage/Blocks/CustomConnectedBlock';
 import installConditionalDataBlock from './components/manage/Blocks/ConditionalDataBlock';
+import loadable from '@loadable/component';
 
 import {
   DataConnectorView,
@@ -39,6 +40,12 @@ const config = (config) => {
   config.addonReducers = {
     ...config.addonReducers,
     ...addonReducers,
+  };
+
+  config.settings.loadables = {
+    ...config.settings.loadables,
+    d3: loadable.lib(() => import('d3')),
+    sanitizeHtml: loadable.lib(() => import('sanitize-html')),
   };
 
   return [

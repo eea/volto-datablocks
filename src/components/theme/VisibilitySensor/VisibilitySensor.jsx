@@ -2,8 +2,11 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import ReactVisibilitySensor from 'react-visibility-sensor';
 
+const seen = new Set();
+
 const VisibilitySensor = ({
   children,
+  id,
   scrollCheck = true,
   resizeCheck = true,
   partialVisibility = true,
@@ -14,9 +17,12 @@ const VisibilitySensor = ({
   ...rest
 }) => {
   const isPrint = useSelector((state) => state.print?.isPrint || false);
-  const useIsPrint = isPrint ? !isPrint : useVisibilitySensor;
-  const [active, setActive] = React.useState(useIsPrint);
-  // const [active, setActive] = React.useState(useVisibilitySensor);
+  const initial = isPrint
+    ? false
+    : id && seen.has(id)
+      ? false
+      : useVisibilitySensor;
+  const [active, setActive] = React.useState(initial);
 
   useEffect(() => {
     if (isPrint) {
@@ -32,6 +38,7 @@ const VisibilitySensor = ({
       delayedCall={delayedCall}
       onChange={(visible) => {
         if (visible && active) {
+          if (id) seen.add(id);
           setActive(false);
         }
       }}

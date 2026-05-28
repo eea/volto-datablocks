@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from 'react';
+import { flattenToAppURL, getBaseUrl } from '@plone/volto/helpers/Url/Url';
 import omit from 'lodash/omit';
-import { getBaseUrl, flattenToAppURL } from '@plone/volto/helpers/Url/Url';
 import qs from 'query-string';
+import { useEffect, useState } from 'react';
 
 export function getBasePath(url) {
   return flattenToAppURL(getBaseUrl(url));
@@ -26,6 +26,9 @@ export function getForm({
   extraQuery = {},
   extraConditions,
 }) {
+  if (data.x) {
+    console.log(data);
+  }
   const params = {
     ...(qs.parse(location?.search?.replace('?', '')) || {}),
     ...(data.form || {}),
@@ -33,7 +36,7 @@ export function getForm({
   };
   const allowedParams = data.allowedParams;
   let allowedParamsObj = null;
-  if (Object.keys(allowedParams || {}).length) {
+  if ((allowedParams || []).length) {
     allowedParamsObj = {};
     allowedParams.forEach((param) => {
       if (params[param]) {
@@ -84,11 +87,14 @@ export function getDataQuery({
   const has_data_query_by_context = data?.has_data_query_by_context ?? true;
 
   const query = [
-    ...(data?.data_query || []),
+    ...(data.data_query || []),
     ...(has_data_query_by_context ? byContextPath : []),
     ...byRouteParameters,
     ...filters,
-  ];
+  ].filter((q) => {
+    if (!(data.allowedParams || []).length) return true;
+    return data.allowedParams.includes(q.i);
+  });
 
   return query;
 }

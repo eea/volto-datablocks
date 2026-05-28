@@ -98,6 +98,13 @@ export function connectToProviderData(getConfig = () => ({})) {
                 }),
           [props, location, params, pagination, provider_url],
         );
+        const allParams = {
+          ...form,
+          ...data_query.reduce((acc, item) => {
+            acc[item.i] = item.v;
+            return acc;
+          }, {}),
+        };
 
         const hashValue = useMemo(() => {
           const _hash_1 = hash(form);
@@ -136,12 +143,21 @@ export function connectToProviderData(getConfig = () => ({})) {
           ? props.data_providers?.failedConnectors?.[connectorPath] ?? false
           : false;
 
+        const hasAllAllowedParams = (props.data?.allowedParams || []).every(
+          (param) => param in allParams,
+        );
+
         const activePageHasData = pagination.enabled
           ? !!pagination.data[pagination.activePage]
           : false;
 
         const readyToDispatch =
-          mounted && provider_url && !provider_data && !isPending && !isFailed;
+          mounted &&
+          provider_url &&
+          hasAllAllowedParams &&
+          !provider_data &&
+          !isPending &&
+          !isFailed;
 
         const updatePagination = useCallback(
           (data) => {

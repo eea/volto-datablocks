@@ -7,7 +7,14 @@ export const ConditionalDataBlockSchema = (intl) => ({
     {
       id: 'default',
       title: intl.formatMessage(messages.defaultFieldsetTitle),
-      fields: ['title', 'provider_url', 'column_data', 'operator', 'condition'],
+      fields: [
+        'title',
+        'provider_url',
+        'allowedParams',
+        'column_data',
+        'operator',
+        'condition',
+      ],
     },
   ],
 
@@ -20,6 +27,12 @@ export const ConditionalDataBlockSchema = (intl) => ({
     provider_url: {
       widget: 'internal_url',
       title: intl.formatMessage(messages.dataProviderTitle),
+    },
+    allowedParams: {
+      title: 'Allowed params',
+      type: 'array',
+      creatable: true,
+      items: { choices: [] },
     },
     column_data: {
       title: intl.formatMessage(messages.columnValueLabel),

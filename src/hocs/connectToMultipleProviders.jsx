@@ -62,6 +62,7 @@ export function connectToMultipleProviders(getConfig = () => ({})) {
                 params,
                 provider_url,
                 data: {
+                  ...(provider.data || {}),
                   data_query: provider.data_query,
                   has_data_query_by_context: provider.has_data_query_by_context,
                   has_data_query_by_provider:
@@ -129,6 +130,13 @@ export function connectToMultipleProviders(getConfig = () => ({})) {
             );
             const form = state.form[index];
             const data_query = state.data_query[index];
+            const allParams = {
+              ...form,
+              ...data_query.reduce((acc, item) => {
+                acc[item.i] = item.v;
+                return acc;
+              }, {}),
+            };
             const hashValue = state.hashValues[index];
             const connectorPath = state.connectorsPath[index];
 
@@ -144,10 +152,15 @@ export function connectToMultipleProviders(getConfig = () => ({})) {
               ? props.data_providers?.failedConnectors?.[connectorPath]
               : false;
 
+            const hasAllAllowedParams = (
+              provider.data?.allowedParams || []
+            ).every((param) => param in allParams);
+
             const readyToDispatch =
               provider_url &&
               hashValue &&
               connectorPath &&
+              hasAllAllowedParams &&
               !provider_data &&
               !isPending &&
               !isFailed;
