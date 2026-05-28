@@ -79,11 +79,13 @@ const FormattedValue = ({
   return (
     <Link {...linkProps}>
       {animateValue ? (
-        <span className={cx(
+        <span
+          className={cx(
             'formatted-value',
             collapsed && 'collapsed',
             animate && 'dcv-enter',
-          )}>
+          )}
+        >
           {textTemplate?.split('{}')[0] ?? ''}
           <AnimatedCounter
             originalValue={originalValue}
