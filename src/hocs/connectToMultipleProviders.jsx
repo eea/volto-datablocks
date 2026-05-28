@@ -132,7 +132,7 @@ export function connectToMultipleProviders(getConfig = () => ({})) {
             const data_query = state.data_query[index];
             const allParams = {
               ...form,
-              ...data_query.reduce((acc, item) => {
+              ...(data_query || []).reduce((acc, item) => {
                 acc[item.i] = item.v;
                 return acc;
               }, {}),

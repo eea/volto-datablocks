@@ -100,7 +100,7 @@ export function connectToProviderData(getConfig = () => ({})) {
         );
         const allParams = {
           ...form,
-          ...data_query.reduce((acc, item) => {
+          ...(data_query || []).reduce((acc, item) => {
             acc[item.i] = item.v;
             return acc;
           }, {}),
