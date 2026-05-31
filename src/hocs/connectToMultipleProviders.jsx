@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import { connect, useDispatch } from 'react-redux';
@@ -152,9 +152,14 @@ export function connectToMultipleProviders(getConfig = () => ({})) {
               ? props.data_providers?.failedConnectors?.[connectorPath]
               : false;
 
-            const hasAllAllowedParams = (
-              provider.data?.allowedParams || []
-            ).every((param) => param in allParams);
+            const waitForParams =
+              provider.waitForParams ?? provider.data?.waitForParams ?? false;
+
+            const hasAllAllowedParams = waitForParams
+              ? (provider.data?.allowedParams || []).every(
+                  (param) => param in allParams,
+                )
+              : true;
 
             const readyToDispatch =
               provider_url &&

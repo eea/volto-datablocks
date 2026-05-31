@@ -11,6 +11,7 @@ export const ConditionalDataBlockSchema = (intl) => ({
         'title',
         'provider_url',
         'allowedParams',
+        'waitForParams',
         'column_data',
         'operator',
         'condition',
@@ -33,6 +34,13 @@ export const ConditionalDataBlockSchema = (intl) => ({
       type: 'array',
       creatable: true,
       items: { choices: [] },
+    },
+    waitForParams: {
+      title: 'Wait for filters before loading data',
+      description:
+        'When enabled, data is fetched only after all allowed filter parameters are available.',
+      type: 'boolean',
+      default: false,
     },
     column_data: {
       title: intl.formatMessage(messages.columnValueLabel),

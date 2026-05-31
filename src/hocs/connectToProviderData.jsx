@@ -1,4 +1,4 @@
-import React, {
+import {
   forwardRef,
   useEffect,
   useCallback,
@@ -143,9 +143,14 @@ export function connectToProviderData(getConfig = () => ({})) {
           ? props.data_providers?.failedConnectors?.[connectorPath] ?? false
           : false;
 
-        const hasAllAllowedParams = (props.data?.allowedParams || []).every(
-          (param) => param in allParams,
-        );
+        const waitForParams =
+          config.waitForParams ?? props.data?.waitForParams ?? false;
+
+        const hasAllAllowedParams = waitForParams
+          ? (props.data?.allowedParams || []).every(
+              (param) => param in allParams,
+            )
+          : true;
 
         const activePageHasData = pagination.enabled
           ? !!pagination.data[pagination.activePage]
