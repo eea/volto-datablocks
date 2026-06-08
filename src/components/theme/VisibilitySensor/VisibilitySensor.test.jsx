@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, act } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-intl-redux';
+import { MemoryRouter } from 'react-router-dom';
 import '@testing-library/jest-dom';
 
 import VisibilitySensor from './VisibilitySensor';
@@ -38,11 +39,13 @@ const store = mockStore({
 describe('VisibilitySensor', () => {
   it('should render the children when visible', () => {
     render(
-      <Provider store={{ ...store, print: { isPrint: false } }}>
-        <VisibilitySensor useVisibilitySensor>
-          <div data-testid="content">Some content</div>
-        </VisibilitySensor>
-      </Provider>,
+      <MemoryRouter>
+        <Provider store={{ ...store, print: { isPrint: false } }}>
+          <VisibilitySensor useVisibilitySensor>
+            <div data-testid="content">Some content</div>
+          </VisibilitySensor>
+        </Provider>
+      </MemoryRouter>,
     );
 
     expect(screen.getByTestId('content')).toBeInTheDocument();
@@ -50,11 +53,13 @@ describe('VisibilitySensor', () => {
 
   it('should set active to false when the component becomes visible', () => {
     render(
-      <Provider store={{ ...store, print: { isPrint: false } }}>
-        <VisibilitySensor useVisibilitySensor>
-          <div data-testid="content">Some content</div>
-        </VisibilitySensor>
-      </Provider>,
+      <MemoryRouter>
+        <Provider store={{ ...store, print: { isPrint: false } }}>
+          <VisibilitySensor useVisibilitySensor>
+            <div data-testid="content">Some content</div>
+          </VisibilitySensor>
+        </Provider>
+      </MemoryRouter>,
     );
 
     const visibilitySensor = screen.getByTestId('visibility-sensor');
@@ -67,11 +72,13 @@ describe('VisibilitySensor', () => {
 
   it('should set active to false when the component is in print mode', () => {
     render(
-      <Provider store={{ ...store, print: { isPrint: true } }}>
-        <VisibilitySensor useVisibilitySensor>
-          <div data-testid="content">Some content</div>
-        </VisibilitySensor>
-      </Provider>,
+      <MemoryRouter>
+        <Provider store={{ ...store, print: { isPrint: true } }}>
+          <VisibilitySensor useVisibilitySensor>
+            <div data-testid="content">Some content</div>
+          </VisibilitySensor>
+        </Provider>
+      </MemoryRouter>,
     );
 
     expect(screen.getByTestId('content')).toBeInTheDocument();

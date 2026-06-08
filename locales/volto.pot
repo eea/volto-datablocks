@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Plone\n"
-"POT-Creation-Date: 2026-03-10T17:23:03.741Z\n"
+"POT-Creation-Date: 2026-06-08T19:59:39.328Z\n"
 "Last-Translator: Plone i18n <plone-i18n@lists.sourceforge.net>\n"
 "Language-Team: Plone i18n <plone-i18n@lists.sourceforge.net>\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -473,7 +473,7 @@ msgstr ""
 msgid "settingsFieldsetTitle"
 msgstr ""
 
-#. Default: "Enable the dropdown select to navigate to other pages. In the "Dropdown items" section you can set the criterias to filter the items displayed in the dropdown. If no criterias are set, the siblings of the current page are displayed in the dropdown."
+#. Default: "Enable the dropdown select to navigate to other pages. In the \"Dropdown items\" section you can set the criterias to filter the items displayed in the dropdown. If no criterias are set, the siblings of the current page are displayed in the dropdown."
 #: messages
 msgid "showDropdownDescription"
 msgstr ""

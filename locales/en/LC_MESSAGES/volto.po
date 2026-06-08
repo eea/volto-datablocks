@@ -471,7 +471,7 @@ msgstr ""
 msgid "settingsFieldsetTitle"
 msgstr ""
 
-#. Default: "Enable the dropdown select to navigate to other pages. In the "Dropdown items" section you can set the criterias to filter the items displayed in the dropdown. If no criterias are set, the siblings of the current page are displayed in the dropdown."
+#. Default: "Enable the dropdown select to navigate to other pages. In the \"Dropdown items\" section you can set the criterias to filter the items displayed in the dropdown. If no criterias are set, the siblings of the current page are displayed in the dropdown."
 #: messages
 msgid "showDropdownDescription"
 msgstr ""
