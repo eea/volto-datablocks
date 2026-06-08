@@ -1,4 +1,6 @@
 import React, { useEffect } from 'react';
+import qs from 'query-string';
+import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ReactVisibilitySensor from 'react-visibility-sensor';
 
@@ -13,10 +15,12 @@ const VisibilitySensor = ({
   Placeholder = () => <div>&nbsp;</div>,
   ...rest
 }) => {
+  const location = useLocation();
+  const queryParams = qs.parse(location?.search);
   const isPrint = useSelector((state) => state.print?.isPrint || false);
-  const useIsPrint = isPrint ? !isPrint : useVisibilitySensor;
-  const [active, setActive] = React.useState(useIsPrint);
-  // const [active, setActive] = React.useState(useVisibilitySensor);
+  const [active, setActive] = React.useState(
+    useVisibilitySensor && !isPrint && queryParams?.visibility_sensor !== 'off',
+  );
 
   useEffect(() => {
     if (isPrint) {
