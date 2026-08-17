@@ -471,7 +471,7 @@ msgstr "Bitte wählen Sie einen Blocktyp aus der Seitenleiste"
 msgid "settingsFieldsetTitle"
 msgstr "Einstellungen"
 
-#. Default: "Enable the dropdown select to navigate to other pages. In the "Dropdown items" section you can set the criterias to filter the items displayed in the dropdown. If no criterias are set, the siblings of the current page are displayed in the dropdown."
+#. Default: "Enable the dropdown select to navigate to other pages. In the \"Dropdown items\" section you can set the criterias to filter the items displayed in the dropdown. If no criterias are set, the siblings of the current page are displayed in the dropdown."
 #: messages
 msgid "showDropdownDescription"
 msgstr "Aktivieren Sie die Dropdown-Auswahl, um zu anderen Seiten zu navigieren. Im Abschnitt Dropdown-Elemente können Sie die Kriterien festlegen, nach denen die im Dropdown angezeigten Elemente gefiltert werden. Wenn keine Kriterien festgelegt sind, werden die Geschwister der aktuellen Seite in der Dropdown-Liste angezeigt."
