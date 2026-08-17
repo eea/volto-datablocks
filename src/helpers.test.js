@@ -7,6 +7,7 @@ import {
   getDataProviderHash,
   getDataProviderKey,
   isDefaultDataProviderRequest,
+  hasAllDataProviderParams,
   getForm,
   getDataQuery,
   updateChartDataFromProvider,
@@ -45,6 +46,33 @@ describe('getProviderUrl function', () => {
 
     expect(getProviderUrl(url)).toEqual('https://example.com');
     expect(getProviderUrl('')).toEqual('');
+  });
+});
+
+describe('hasAllDataProviderParams', () => {
+  it('accepts required parameters from the form and data query', () => {
+    expect(
+      hasAllDataProviderParams({
+        allowedParams: ['formParam', 'queryParam'],
+        form: { formParam: 'value' },
+        dataQuery: [{ i: 'queryParam', v: ['value'] }],
+      }),
+    ).toBe(true);
+  });
+
+  it('rejects missing parameters, including inherited property names', () => {
+    expect(
+      hasAllDataProviderParams({
+        allowedParams: ['missing'],
+        form: {},
+      }),
+    ).toBe(false);
+    expect(
+      hasAllDataProviderParams({
+        allowedParams: ['constructor'],
+        form: {},
+      }),
+    ).toBe(false);
   });
 });
 

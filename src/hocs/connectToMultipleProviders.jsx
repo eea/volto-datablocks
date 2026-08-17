@@ -12,7 +12,58 @@ import {
   getDataProviderHash,
   getDataProviderPayload,
   getDataProviderKey,
+  hasAllDataProviderParams,
 } from '@eeacms/volto-datablocks/helpers';
+
+const getProviderConnection = (provider, props, params) => {
+  const providerUrl = getProviderUrl(provider.provider_url || provider.url);
+  const form = getDataProviderPayload(
+    getForm({ ...provider, location: props.location }),
+  ).form;
+  const dataQuery = getDataQuery({
+    ...props,
+    params,
+    provider_url: providerUrl,
+    data: {
+      ...(provider.data || {}),
+      data_query: provider.data_query,
+      has_data_query_by_context: provider.has_data_query_by_context,
+      has_data_query_by_provider: provider.has_data_query_by_provider,
+    },
+  });
+  const hashValue = getDataProviderHash(form, dataQuery);
+  const connectorPath = getConnectorPath(providerUrl, hashValue);
+  const providerData = props.data_providers?.data?.[providerUrl];
+  const providerDataKey = getDataProviderKey(
+    providerData,
+    hashValue,
+    form,
+    dataQuery,
+  );
+  const waitForParams =
+    provider.waitForParams ?? provider.data?.waitForParams ?? false;
+  const waitingForParams =
+    waitForParams &&
+    !hasAllDataProviderParams({
+      allowedParams: provider.data?.allowedParams,
+      form,
+      dataQuery,
+    });
+
+  return {
+    providerUrl,
+    title: provider.name || provider.title || providerUrl,
+    form,
+    dataQuery,
+    hashValue,
+    connectorPath,
+    waitingForParams,
+    data: providerData?.[providerDataKey],
+    metadata: props.data_providers?.metadata?.[providerUrl]?.[providerDataKey],
+    pending: props.data_providers?.pendingConnectors?.[connectorPath] ?? false,
+    failed: props.data_providers?.failedConnectors?.[connectorPath] ?? false,
+  };
+};
 
 /**
  * connectToMultipleProviders.
@@ -31,196 +82,76 @@ export function connectToMultipleProviders(getConfig = () => ({})) {
         const params = useParams();
         const config = useMemo(() => getConfig(props), [props]);
         const [mounted, setMounted] = useState(false);
-        const [state, setState] = useState({
-          form: [],
-          data_query: [],
-          hashValues: [],
-          connectorsPath: [],
-        });
+        const providers = config.providers || [];
 
-        const providers = useMemo(() => {
-          return config.providers || [];
-        }, [config]);
+        const connections = useMemo(
+          () =>
+            providers
+              .map((provider) => getProviderConnection(provider, props, params))
+              .filter(({ providerUrl }) => providerUrl),
+          [providers, props, params],
+        );
 
-        useEffect(() => {
-          const newState = {
-            form: [],
-            data_query: [],
-            hashValues: [],
-            connectorsPath: [],
-          };
-          providers.forEach((provider, index) => {
-            const provider_url = getProviderUrl(
-              provider.provider_url || provider.url,
-            );
-            // Get form
-            newState.form.push(
-              getDataProviderPayload(
-                getForm({ ...provider, location: props.location }),
-              ).form,
-            );
-            // Get data query
-            newState.data_query.push(
-              getDataQuery({
-                ...props,
-                params,
-                provider_url,
-                data: {
-                  ...(provider.data || {}),
-                  data_query: provider.data_query,
-                  has_data_query_by_context: provider.has_data_query_by_context,
-                  has_data_query_by_provider:
-                    provider.has_data_query_by_provider,
-                },
-              }),
-            );
-            // Get hash value
-            newState.hashValues.push(
-              getDataProviderHash(
-                newState.form[index],
-                newState.data_query[index],
-              ),
-            );
-            // Get connector path
-            newState.connectorsPath.push(
-              getConnectorPath(provider_url, newState.hashValues[index]),
-            );
-          });
-          setState({ ...newState });
-        }, [
-          providers,
-          params,
-          props.location,
-          props.connected_data_parameters,
-        ]);
-
-        const providers_data = useMemo(() => {
-          const data = {};
-          providers.forEach((provider, index) => {
-            const provider_url = getProviderUrl(
-              provider.provider_url || provider.url,
-            );
-            if (!provider_url || !state.hashValues[index]) return;
-            const title = provider.name || provider.title || provider_url;
-            const providerData = props.data_providers?.data?.[provider_url];
-            const providerDataKey = getDataProviderKey(
-              providerData,
-              state.hashValues[index],
-              state.form[index],
-              state.data_query[index],
-            );
-            data[title] = providerData?.[providerDataKey];
-          });
-          return data;
-        }, [state, providers, props.data_providers?.data]);
-
-        const providers_metadata = useMemo(() => {
-          const data = {};
-          providers.forEach((provider, index) => {
-            const provider_url = getProviderUrl(
-              provider.provider_url || provider.url,
-            );
-            if (!provider_url || !state.hashValues[index]) return;
-            const title = provider.name || provider.title || provider_url;
-            const providerData = props.data_providers?.data?.[provider_url];
-            const providerDataKey = getDataProviderKey(
-              providerData,
-              state.hashValues[index],
-              state.form[index],
-              state.data_query[index],
-            );
-            data[title] =
-              props.data_providers?.metadata?.[provider_url]?.[providerDataKey];
-          });
-          return data;
-        }, [
-          state,
-          providers,
-          props.data_providers?.data,
-          props.data_providers?.metadata,
-        ]);
+        const connectedProps = useMemo(
+          () =>
+            connections.reduce(
+              (result, connection) => {
+                const { title, waitingForParams } = connection;
+                result.data[title] = waitingForParams
+                  ? undefined
+                  : connection.data;
+                result.metadata[title] = waitingForParams
+                  ? undefined
+                  : connection.metadata;
+                result.waitingForParams[title] = waitingForParams;
+                return result;
+              },
+              { data: {}, metadata: {}, waitingForParams: {} },
+            ),
+          [connections],
+        );
 
         useEffect(() => {
           if (!mounted && __CLIENT__) {
             setMounted(true);
             return;
           }
-          providers.forEach((provider, index) => {
-            const provider_url = getProviderUrl(
-              provider.provider_url || provider.url,
-            );
-            const form = state.form[index];
-            const data_query = state.data_query[index];
-            const allParams = {
-              ...form,
-              ...(data_query || []).reduce((acc, item) => {
-                acc[item.i] = item.v;
-                return acc;
-              }, {}),
-            };
-            const hashValue = state.hashValues[index];
-            const connectorPath = state.connectorsPath[index];
 
-            const providerData = props.data_providers?.data?.[provider_url];
-            const providerDataKey = getDataProviderKey(
-              providerData,
-              hashValue,
+          connections.forEach((connection) => {
+            const {
+              providerUrl,
               form,
-              data_query,
-            );
-            const provider_data = provider_url
-              ? providerData?.[providerDataKey]
-              : null;
-
-            const isPending = provider_url
-              ? props.data_providers?.pendingConnectors?.[connectorPath]
-              : false;
-
-            const isFailed = provider_url
-              ? props.data_providers?.failedConnectors?.[connectorPath]
-              : false;
-
-            const waitForParams =
-              provider.waitForParams ?? provider.data?.waitForParams ?? false;
-
-            const hasAllAllowedParams = waitForParams
-              ? (provider.data?.allowedParams || []).every(
-                  (param) => param in allParams,
-                )
-              : true;
-
+              dataQuery,
+              hashValue,
+              connectorPath,
+              waitingForParams,
+              data,
+              pending,
+              failed,
+            } = connection;
             const readyToDispatch =
-              provider_url &&
+              providerUrl &&
               hashValue &&
               connectorPath &&
-              hasAllAllowedParams &&
-              !provider_data &&
-              !isPending &&
-              !isFailed;
+              !waitingForParams &&
+              !data &&
+              !pending &&
+              !failed;
 
             if (readyToDispatch) {
               dispatch(
-                getDataFromProvider(provider_url, form, data_query, hashValue),
+                getDataFromProvider(providerUrl, form, dataQuery, hashValue),
               );
             }
           });
-        }, [
-          dispatch,
-          mounted,
-          props.location,
-          props.data_providers,
-          props.data_providers?.pendingConnectors,
-          props.data_providers?.failedConnectors,
-          props.data_providers?.data,
-          providers,
-          state,
-        ]);
+        }, [dispatch, mounted, connections]);
 
         return (
           <WrappedComponent
             {...props}
-            providers_data={providers_data}
-            providers_metadata={providers_metadata}
+            providers_data={connectedProps.data}
+            providers_metadata={connectedProps.metadata}
+            providers_waiting_for_params={connectedProps.waitingForParams}
           />
         );
       }),

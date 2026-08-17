@@ -76,6 +76,19 @@ export function getDataProviderKey(
   return hashValue;
 }
 
+export function hasAllDataProviderParams({
+  allowedParams = [],
+  form = {},
+  dataQuery = [],
+} = {}) {
+  const availableParams = new Set([
+    ...Object.keys(form),
+    ...(dataQuery || []).map(({ i }) => i),
+  ]);
+
+  return allowedParams.every((param) => availableParams.has(param));
+}
+
 export function getForm({
   data = {},
   location,

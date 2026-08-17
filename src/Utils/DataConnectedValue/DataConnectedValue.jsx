@@ -45,6 +45,7 @@ const DataConnectedValue = (props) => {
     column,
     provider_data = {},
     loadingProviderData,
+    waitingForProviderParams,
     failedProviderData,
     row = 0,
     specifier,
@@ -76,7 +77,10 @@ const DataConnectedValue = (props) => {
     skeleton &&
     !failedProviderData &&
     value === undefined &&
-    (loadingProviderData || provider_data === undefined || !libsReady)
+    (loadingProviderData ||
+      waitingForProviderParams ||
+      provider_data === undefined ||
+      !libsReady)
   ) {
     return <Skeleton width={skeletonWidth} />;
   }
