@@ -3,13 +3,15 @@ import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import { connect, useDispatch } from 'react-redux';
-import hash from 'object-hash';
 import { getDataFromProvider } from '@eeacms/volto-datablocks/actions';
 import {
   getProviderUrl,
   getConnectorPath,
   getForm,
   getDataQuery,
+  getDataProviderHash,
+  getDataProviderPayload,
+  getDataProviderKey,
 } from '@eeacms/volto-datablocks/helpers';
 
 /**
@@ -53,7 +55,9 @@ export function connectToMultipleProviders(getConfig = () => ({})) {
             );
             // Get form
             newState.form.push(
-              getForm({ ...provider, location: props.location }),
+              getDataProviderPayload(
+                getForm({ ...provider, location: props.location }),
+              ).form,
             );
             // Get data query
             newState.data_query.push(
@@ -71,9 +75,12 @@ export function connectToMultipleProviders(getConfig = () => ({})) {
               }),
             );
             // Get hash value
-            const _hash_1 = hash(newState.form[index]);
-            const _hash_2 = hash(newState.data_query[index]);
-            newState.hashValues.push(hash(_hash_1 + _hash_2));
+            newState.hashValues.push(
+              getDataProviderHash(
+                newState.form[index],
+                newState.data_query[index],
+              ),
+            );
             // Get connector path
             newState.connectorsPath.push(
               getConnectorPath(provider_url, newState.hashValues[index]),
@@ -95,10 +102,14 @@ export function connectToMultipleProviders(getConfig = () => ({})) {
             );
             if (!provider_url || !state.hashValues[index]) return;
             const title = provider.name || provider.title || provider_url;
-            data[title] =
-              props.data_providers?.data?.[provider_url]?.[
-                state.hashValues[index]
-              ];
+            const providerData = props.data_providers?.data?.[provider_url];
+            const providerDataKey = getDataProviderKey(
+              providerData,
+              state.hashValues[index],
+              state.form[index],
+              state.data_query[index],
+            );
+            data[title] = providerData?.[providerDataKey];
           });
           return data;
         }, [state, providers, props.data_providers?.data]);
@@ -111,13 +122,23 @@ export function connectToMultipleProviders(getConfig = () => ({})) {
             );
             if (!provider_url || !state.hashValues[index]) return;
             const title = provider.name || provider.title || provider_url;
+            const providerData = props.data_providers?.data?.[provider_url];
+            const providerDataKey = getDataProviderKey(
+              providerData,
+              state.hashValues[index],
+              state.form[index],
+              state.data_query[index],
+            );
             data[title] =
-              props.data_providers?.metadata?.[provider_url]?.[
-                state.hashValues[index]
-              ];
+              props.data_providers?.metadata?.[provider_url]?.[providerDataKey];
           });
           return data;
-        }, [state, providers, props.data_providers?.metadata]);
+        }, [
+          state,
+          providers,
+          props.data_providers?.data,
+          props.data_providers?.metadata,
+        ]);
 
         useEffect(() => {
           if (!mounted && __CLIENT__) {
@@ -140,8 +161,15 @@ export function connectToMultipleProviders(getConfig = () => ({})) {
             const hashValue = state.hashValues[index];
             const connectorPath = state.connectorsPath[index];
 
+            const providerData = props.data_providers?.data?.[provider_url];
+            const providerDataKey = getDataProviderKey(
+              providerData,
+              hashValue,
+              form,
+              data_query,
+            );
             const provider_data = provider_url
-              ? props.data_providers?.data?.[provider_url]?.[hashValue]
+              ? providerData?.[providerDataKey]
               : null;
 
             const isPending = provider_url

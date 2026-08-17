@@ -3,6 +3,10 @@ import {
   getBasePath,
   getConnectorPath,
   getProviderUrl,
+  getDataProviderPayload,
+  getDataProviderHash,
+  getDataProviderKey,
+  isDefaultDataProviderRequest,
   getForm,
   getDataQuery,
   updateChartDataFromProvider,
@@ -41,6 +45,98 @@ describe('getProviderUrl function', () => {
 
     expect(getProviderUrl(url)).toEqual('https://example.com');
     expect(getProviderUrl('')).toEqual('');
+  });
+});
+
+describe('data provider request identity', () => {
+  it('excludes only REST expansion parameters', () => {
+    expect(
+      getDataProviderPayload(
+        {
+          expand: '',
+          'expand.navigation.depth': '3',
+          facilityLocalId: '5000671',
+          expander: 'preserved',
+        },
+        [{ i: 'facilityLocalId', v: ['5000671'] }],
+      ),
+    ).toEqual({
+      form: {
+        facilityLocalId: '5000671',
+        expander: 'preserved',
+        db_version: 'latest',
+      },
+      data_query: [{ i: 'facilityLocalId', v: ['5000671'] }],
+    });
+  });
+
+  it('treats omitted and explicit latest db versions as identical', () => {
+    const dataQuery = [{ i: 'facilityLocalId', v: ['5000671'] }];
+
+    expect(getDataProviderHash({}, dataQuery)).toBe(
+      getDataProviderHash({ db_version: 'latest' }, dataQuery),
+    );
+    expect(getDataProviderHash({ db_version: 'v2' }, dataQuery)).not.toBe(
+      getDataProviderHash({}, dataQuery),
+    );
+  });
+
+  it('identifies only the configured default unfiltered request', () => {
+    expect(isDefaultDataProviderRequest()).toBe(true);
+    expect(isDefaultDataProviderRequest({ expand: 'navigation' })).toBe(true);
+    expect(isDefaultDataProviderRequest({ country: 'DE' })).toBe(false);
+    expect(
+      isDefaultDataProviderRequest({}, [{ i: 'country', v: ['DE'] }]),
+    ).toBe(false);
+  });
+
+  it('prefers canonical provider data over the legacy default', () => {
+    expect(
+      getDataProviderKey(
+        {
+          canonical: { rows: ['current'] },
+          _default: { rows: ['legacy'] },
+        },
+        'canonical',
+      ),
+    ).toBe('canonical');
+  });
+
+  it('falls back to legacy default data for an unfiltered request', () => {
+    expect(
+      getDataProviderKey({ _default: { rows: ['legacy'] } }, 'canonical'),
+    ).toBe('_default');
+  });
+
+  it('does not use legacy default data for a data query', () => {
+    const dataQuery = [{ i: 'country', v: ['DE'] }];
+    const filteredHash = getDataProviderHash({}, dataQuery);
+
+    expect(
+      getDataProviderKey(
+        { _default: { rows: ['legacy'] } },
+        filteredHash,
+        {},
+        dataQuery,
+      ),
+    ).toBe(filteredHash);
+  });
+
+  it('does not use legacy default data for form parameters', () => {
+    const form = { country: 'DE' };
+    const filteredHash = getDataProviderHash(form);
+
+    expect(
+      getDataProviderKey(
+        { _default: { rows: ['legacy'] } },
+        filteredHash,
+        form,
+      ),
+    ).toBe(filteredHash);
+  });
+
+  it('keeps the canonical key when no provider data exists', () => {
+    expect(getDataProviderKey(undefined, 'canonical')).toBe('canonical');
   });
 });
 
@@ -156,6 +252,33 @@ describe('getDataQuery function', () => {
     const expectedResult = [
       { i: 'param2', v: 'value2' },
       { i: 'param1', v: 'value1' },
+    ];
+
+    expect(getDataQuery(params)).toEqual(expectedResult);
+  });
+
+  it('preserves block queries while filtering dynamic queries', () => {
+    const params = {
+      connected_data_parameters: {
+        byContextPath: {
+          'http://example.com/path': [
+            { i: 'allowed', v: 'dynamic value' },
+            { i: 'filtered', v: 'filtered value' },
+          ],
+        },
+      },
+      content: { '@id': 'http://example.com/path' },
+      data: {
+        allowedParams: ['allowed'],
+        data_query: [{ i: 'configured', v: 'configured value' }],
+      },
+      location: { pathname: '/edit' },
+      params: {},
+      provider_url: 'http://example.com/provider',
+    };
+    const expectedResult = [
+      { i: 'configured', v: 'configured value' },
+      { i: 'allowed', v: 'dynamic value' },
     ];
 
     expect(getDataQuery(params)).toEqual(expectedResult);

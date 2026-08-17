@@ -10,13 +10,15 @@ import { useParams, useLocation } from 'react-router-dom';
 import { connect, useDispatch } from 'react-redux';
 import isEqual from 'lodash/isEqual';
 import isUndefined from 'lodash/isUndefined';
-import hash from 'object-hash';
 import { getDataFromProvider } from '@eeacms/volto-datablocks/actions';
 import {
   getProviderUrl,
   getConnectorPath,
   getForm,
   getDataQuery,
+  getDataProviderHash,
+  getDataProviderPayload,
+  getDataProviderKey,
 } from '@eeacms/volto-datablocks/helpers';
 import { ConnectorContext } from './';
 
@@ -59,7 +61,10 @@ export function connectToProviderData(getConfig = () => ({})) {
         const [pagination, setPagination] = useState(
           getInitialPagination(config),
         );
-        const prevHashValue = useRef(null);
+        const lastProviderData = useRef({
+          providerUrl: null,
+          dataKey: null,
+        });
 
         const provider_url = useMemo(
           () => getProviderUrl(config.provider_url),
@@ -68,13 +73,15 @@ export function connectToProviderData(getConfig = () => ({})) {
 
         const form = useMemo(
           () =>
-            getForm({
-              ...props,
-              location,
-              pagination,
-              extraQuery: state.extraQuery,
-              extraConditions: state.extraConditions,
-            }),
+            getDataProviderPayload(
+              getForm({
+                ...props,
+                location,
+                pagination,
+                extraQuery: state.extraQuery,
+                extraConditions: state.extraConditions,
+              }),
+            ).form,
           [
             props,
             location,
@@ -106,32 +113,44 @@ export function connectToProviderData(getConfig = () => ({})) {
           }, {}),
         };
 
-        const hashValue = useMemo(() => {
-          const _hash_1 = hash(form);
-          const _hash_2 = hash(data_query);
-          return hash(_hash_1 + _hash_2);
-        }, [form, data_query]);
+        const hashValue = useMemo(
+          () => getDataProviderHash(form, data_query),
+          [form, data_query],
+        );
 
         const connectorPath = useMemo(
           () => getConnectorPath(provider_url, hashValue),
           [provider_url, hashValue],
         );
 
+        const providerData = props.data_providers?.data?.[provider_url];
+        const providerDataKey = getDataProviderKey(
+          providerData,
+          hashValue,
+          form,
+          data_query,
+        );
+
         const provider_data = provider_url
-          ? props.data_providers?.data?.[provider_url]?.[hashValue]
+          ? providerData?.[providerDataKey]
           : null;
 
+        const previousProviderDataKey =
+          lastProviderData.current.providerUrl === provider_url
+            ? lastProviderData.current.dataKey
+            : null;
+
         const prev_provider_data = provider_url
-          ? props.data_providers?.data?.[provider_url]?.[prevHashValue.current]
+          ? providerData?.[previousProviderDataKey]
           : null;
 
         const provider_metadata = provider_url
-          ? props.data_providers?.metadata?.[provider_url]?.[hashValue]
+          ? props.data_providers?.metadata?.[provider_url]?.[providerDataKey]
           : null;
 
         const prev_provider_metadata = provider_url
           ? props.data_providers?.metadata?.[provider_url]?.[
-              prevHashValue.current
+              previousProviderDataKey
             ]
           : null;
 
@@ -176,11 +195,13 @@ export function connectToProviderData(getConfig = () => ({})) {
         );
 
         useEffect(() => {
-          if (!isPending) {
-            prevHashValue.current = hashValue;
+          if (!isPending && !isUndefined(provider_data)) {
+            lastProviderData.current = {
+              providerUrl: provider_url,
+              dataKey: providerDataKey,
+            };
           }
-          /* eslint-disable-next-line */
-        }, [isPending]);
+        }, [isPending, provider_data, providerDataKey, provider_url]);
 
         useEffect(() => {
           setPagination(getInitialPagination(config));

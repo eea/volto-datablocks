@@ -18,10 +18,19 @@ export const dataProvider = (middlewares) => [
         hashValue: action.hashValue,
       });
     }
-    return next(action).catch((error) => {
-      // console.error('Redux action error:', { action }, error);
-      // Handle error, dispatch _FAIL if not already handled
-    });
+    try {
+      const result = next(action);
+
+      if (result && typeof result.catch === 'function') {
+        return result.catch((error) => {
+          throw error;
+        });
+      }
+
+      return result;
+    } catch (error) {
+      throw error;
+    }
   },
   ...middlewares,
 ];

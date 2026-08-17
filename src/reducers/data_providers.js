@@ -3,13 +3,13 @@
  * @module reducers/data_providers
  */
 
-import hash from 'object-hash';
 import without from 'lodash/without';
 import { GET_CONTENT } from '@plone/volto/constants/ActionTypes';
 import { GET_DATA_FROM_PROVIDER } from '@eeacms/volto-datablocks/constants';
-import { getProviderUrl } from '@eeacms/volto-datablocks/helpers';
-
-const MAX_DATA_PER_PROVIDER = 10;
+import {
+  getDataProviderHash,
+  getProviderUrl,
+} from '@eeacms/volto-datablocks/helpers';
 
 const initialState = {
   error: null,
@@ -37,7 +37,10 @@ export default function data_providers(state = initialState, action = {}) {
       return state;
     }
 
-    hashValue = hash(hash(payload.form) + hash(payload.data_query));
+    hashValue =
+      Object.keys(payload).length > 0
+        ? getDataProviderHash(payload.form, payload.data_query)
+        : '_default';
     providerPath = getProviderUrl(connector.path);
     path = `${providerPath}${hashValue ? `#${hashValue}` : ''}`;
     results = connector.data.results;
@@ -69,6 +72,9 @@ export default function data_providers(state = initialState, action = {}) {
 
     case `${GET_CONTENT}_SUCCESS`:
     case `${GET_DATA_FROM_PROVIDER}_SUCCESS`:
+      if (!hashValue) {
+        return state;
+      }
       delete pendingConnectors[path];
       if (!tree[providerPath]) {
         tree[providerPath] = [];
@@ -77,6 +83,7 @@ export default function data_providers(state = initialState, action = {}) {
         tree[providerPath].push(hashValue);
       }
       const providerData = state.data[providerPath] || {};
+      const providerMetadata = state.metadata[providerPath] || {};
       // if (tree[providerPath].length > MAX_DATA_PER_PROVIDER) {
       //   delete providerData[tree[providerPath].shift()];
       // }
@@ -93,7 +100,7 @@ export default function data_providers(state = initialState, action = {}) {
         metadata: {
           ...state.metadata,
           [providerPath]: {
-            ...providerData,
+            ...providerMetadata,
             [hashValue]: metadata,
           },
         },
