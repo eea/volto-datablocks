@@ -4,8 +4,11 @@ import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ReactVisibilitySensor from 'react-visibility-sensor';
 
+const seen = new Set();
+
 const VisibilitySensor = ({
   children,
+  id,
   scrollCheck = true,
   resizeCheck = true,
   partialVisibility = true,
@@ -19,7 +22,10 @@ const VisibilitySensor = ({
   const queryParams = qs.parse(location?.search);
   const isPrint = useSelector((state) => state.print?.isPrint || false);
   const [active, setActive] = React.useState(
-    useVisibilitySensor && !isPrint && queryParams?.visibility_sensor !== 'off',
+    useVisibilitySensor &&
+      !isPrint &&
+      queryParams?.visibility_sensor !== 'off' &&
+      !(id && seen.has(id)),
   );
 
   useEffect(() => {
@@ -36,6 +42,7 @@ const VisibilitySensor = ({
       delayedCall={delayedCall}
       onChange={(visible) => {
         if (visible && active) {
+          if (id) seen.add(id);
           setActive(false);
         }
       }}

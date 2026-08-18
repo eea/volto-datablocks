@@ -4,6 +4,7 @@ import configureStore from 'redux-mock-store';
 import { Provider } from 'react-intl-redux';
 import '@testing-library/jest-dom';
 
+import { getDataProviderHash } from '@eeacms/volto-datablocks/helpers';
 import View from './View';
 
 const mockStore = configureStore();
@@ -52,7 +53,7 @@ test('renders DataConnector view', () => {
     data_providers: {
       data: {
         [location.pathname]: {
-          a91a94e369df59971e2e97fc57c6a4a2c661b0fb: {
+          [getDataProviderHash({ p: 1, nrOfHits: 14 })]: {
             col_1: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
             col_2: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
             col_3: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],

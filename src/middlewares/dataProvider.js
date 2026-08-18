@@ -18,7 +18,19 @@ export const dataProvider = (middlewares) => [
         hashValue: action.hashValue,
       });
     }
-    return next(action);
+    try {
+      const result = next(action);
+
+      if (result && typeof result.catch === 'function') {
+        return result.catch((error) => {
+          throw error;
+        });
+      }
+
+      return result;
+    } catch (error) {
+      throw error;
+    }
   },
   ...middlewares,
 ];

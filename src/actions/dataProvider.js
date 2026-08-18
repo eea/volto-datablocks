@@ -1,24 +1,23 @@
 import { flattenToAppURL } from '@plone/volto/helpers/Url/Url';
-import config from '@plone/volto/registry';
 import { GET_DATA_FROM_PROVIDER } from '@eeacms/volto-datablocks/constants';
+import {
+  getDataProviderHash,
+  getDataProviderPayload,
+} from '@eeacms/volto-datablocks/helpers';
 
 export function getDataFromProvider(
   path,
   query = {},
   data_query = [],
-  hashValue = '_default',
+  hashValue,
 ) {
   path = path && flattenToAppURL(path).replace(/\/$/, '');
 
-  const db_version =
-    window.env.RAZZLE_DB_VERSION || config.settings.db_version || 'latest';
+  const payload = getDataProviderPayload(query, data_query);
+  const effectiveHashValue =
+    hashValue || getDataProviderHash(payload.form, payload.data_query);
 
-  const form = {
-    db_version,
-    ...query,
-  };
-
-  //Could be nice but it meses up the inputs. Also, using multiple queries does not stack but return the original viz without querys.
+  // // Could be nice but it meses up the inputs. Also, using multiple queries does not stack but return the original viz without querys.
   // // Remove duplicates and combine values.
   // const reducedQuery = data_query.reduce((acc, curr) => {
   //   const found = acc.find((item) => item.i === curr.i);
@@ -33,14 +32,11 @@ export function getDataFromProvider(
   return {
     type: GET_DATA_FROM_PROVIDER,
     path: path,
-    hashValue,
+    hashValue: effectiveHashValue,
     request: {
       op: 'post',
       path: `${path}/@connector-data`,
-      data: {
-        form,
-        data_query,
-      },
+      data: payload,
     },
   };
 }
