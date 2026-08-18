@@ -12,11 +12,6 @@ export const dataProvider = (middlewares) => [
       if (isPending) {
         return;
       }
-      store.dispatch({
-        type: `${GET_DATA_FROM_PROVIDER}_PENDING`,
-        path: action.path,
-        hashValue: action.hashValue,
-      });
     }
     try {
       const result = next(action);
