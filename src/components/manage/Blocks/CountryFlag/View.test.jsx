@@ -8,6 +8,8 @@ import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import '@testing-library/jest-dom';
 
+jest.mock('./withQuerystringResults', () => (Component) => Component);
+
 // jest.mock('react-router-dom', () => ({
 //   useLocation: jest.fn().mockReturnValue({
 //     pathname: '/marine/belgium',

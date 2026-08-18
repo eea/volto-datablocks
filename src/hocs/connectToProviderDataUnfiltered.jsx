@@ -6,6 +6,8 @@ import { getDataFromProvider } from '@eeacms/volto-datablocks/actions';
 import {
   getProviderUrl,
   getConnectorPath,
+  getDataProviderHash,
+  getDataProviderKey,
 } from '@eeacms/volto-datablocks/helpers';
 /**
  * connectToProviderData.
@@ -27,17 +29,22 @@ export function connectToProviderDataUnfiltered(getConfig = () => ({})) {
           [config.provider_url],
         );
 
+        const hashValue = useMemo(() => getDataProviderHash(), []);
+
         const connectorPath = useMemo(
-          () => getConnectorPath(provider_url),
-          [provider_url],
+          () => getConnectorPath(provider_url, hashValue),
+          [provider_url, hashValue],
         );
 
+        const providerData = props.data_providers?.data?.[provider_url];
+        const providerDataKey = getDataProviderKey(providerData, hashValue);
+
         const provider_data = provider_url
-          ? props.data_providers?.data?.[provider_url]?._default
+          ? providerData?.[providerDataKey]
           : null;
 
         const provider_metadata = provider_url
-          ? props.data_providers?.metadata?.[provider_url]?._default
+          ? props.data_providers?.metadata?.[provider_url]?.[providerDataKey]
           : null;
 
         const isPending = provider_url
@@ -57,7 +64,7 @@ export function connectToProviderDataUnfiltered(getConfig = () => ({})) {
           }
 
           if (readyToDispatch) {
-            dispatch(getDataFromProvider(provider_url));
+            dispatch(getDataFromProvider(provider_url, {}, [], hashValue));
           }
         }, [
           mounted,
@@ -66,6 +73,7 @@ export function connectToProviderDataUnfiltered(getConfig = () => ({})) {
           dispatch,
           provider_data,
           provider_url,
+          hashValue,
         ]);
 
         return (

@@ -1,8 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from 'react';
+import { flattenToAppURL, getBaseUrl } from '@plone/volto/helpers/Url/Url';
+import config from '@plone/volto/registry';
 import omit from 'lodash/omit';
-import { getBaseUrl, flattenToAppURL } from '@plone/volto/helpers/Url/Url';
+import hash from 'object-hash';
 import qs from 'query-string';
+import { useEffect, useState } from 'react';
 
 export function getBasePath(url) {
   return flattenToAppURL(getBaseUrl(url));
@@ -19,6 +21,74 @@ export function getProviderUrl(url) {
     .replace(/\/*$/, '');
 }
 
+export function getDataProviderDbVersion() {
+  const runtimeVersion =
+    typeof window !== 'undefined'
+      ? window.env?.RAZZLE_DB_VERSION
+      : process.env.RAZZLE_DB_VERSION;
+
+  return runtimeVersion || config.settings.db_version || 'latest';
+}
+
+export function getDataProviderPayload(form = {}, data_query = []) {
+  const canonicalForm = Object.fromEntries(
+    Object.entries(form || {}).filter(
+      ([key]) => key !== 'expand' && !key.startsWith('expand.'),
+    ),
+  );
+  canonicalForm.db_version =
+    canonicalForm.db_version || getDataProviderDbVersion();
+
+  return {
+    form: canonicalForm,
+    data_query: data_query || [],
+  };
+}
+
+export function getDataProviderHash(form = {}, data_query = []) {
+  const payload = getDataProviderPayload(form, data_query);
+  return hash(hash(payload.form) + hash(payload.data_query));
+}
+
+export function isDefaultDataProviderRequest(form = {}, data_query = []) {
+  const payload = getDataProviderPayload(form, data_query);
+  return (
+    Object.keys(payload.data_query).length === 0 &&
+    Object.keys(payload.form).length === 1 &&
+    payload.form.db_version === getDataProviderDbVersion()
+  );
+}
+
+export function getDataProviderKey(
+  providerData,
+  hashValue,
+  form = {},
+  data_query = [],
+) {
+  if (
+    isDefaultDataProviderRequest(form, data_query) &&
+    !Object.prototype.hasOwnProperty.call(providerData || {}, hashValue) &&
+    Object.prototype.hasOwnProperty.call(providerData || {}, '_default')
+  ) {
+    return '_default';
+  }
+
+  return hashValue;
+}
+
+export function hasAllDataProviderParams({
+  allowedParams = [],
+  form = {},
+  dataQuery = [],
+} = {}) {
+  const availableParams = new Set([
+    ...Object.keys(form),
+    ...(dataQuery || []).map(({ i }) => i),
+  ]);
+
+  return allowedParams.every((param) => availableParams.has(param));
+}
+
 export function getForm({
   data = {},
   location,
@@ -33,7 +103,7 @@ export function getForm({
   };
   const allowedParams = data.allowedParams;
   let allowedParamsObj = null;
-  if (Object.keys(allowedParams || {}).length) {
+  if ((allowedParams || []).length) {
     allowedParamsObj = {};
     allowedParams.forEach((param) => {
       if (params[param]) {
@@ -83,14 +153,16 @@ export function getDataQuery({
 
   const has_data_query_by_context = data?.has_data_query_by_context ?? true;
 
-  const query = [
-    ...(data?.data_query || []),
+  const dynamicQuery = [
     ...(has_data_query_by_context ? byContextPath : []),
     ...byRouteParameters,
     ...filters,
-  ];
+  ].filter((query) => {
+    if (!(data.allowedParams || []).length) return true;
+    return data.allowedParams.includes(query.i);
+  });
 
-  return query;
+  return [...(data.data_query || []), ...dynamicQuery];
 }
 
 function getCaseInsensitiveColumnName(providerData, columnName) {

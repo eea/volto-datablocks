@@ -70,7 +70,9 @@ export const valueFormatters = {
 };
 
 export function formatValue(value, format = 'raw') {
-  if (typeof value === 'undefined' || value === null) return '';
+  if (typeof value === 'undefined') return undefined;
+
+  if (value === null) return null;
 
   if (typeof value === 'string' && format === 'raw') {
     const formatters = config?.settings?.dataFormatters;

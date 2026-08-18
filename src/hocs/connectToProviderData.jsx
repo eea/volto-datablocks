@@ -1,4 +1,4 @@
-import React, {
+import {
   forwardRef,
   useEffect,
   useCallback,
@@ -10,13 +10,16 @@ import { useParams, useLocation } from 'react-router-dom';
 import { connect, useDispatch } from 'react-redux';
 import isEqual from 'lodash/isEqual';
 import isUndefined from 'lodash/isUndefined';
-import hash from 'object-hash';
 import { getDataFromProvider } from '@eeacms/volto-datablocks/actions';
 import {
   getProviderUrl,
   getConnectorPath,
   getForm,
   getDataQuery,
+  getDataProviderHash,
+  getDataProviderPayload,
+  getDataProviderKey,
+  hasAllDataProviderParams,
 } from '@eeacms/volto-datablocks/helpers';
 import { ConnectorContext } from './';
 
@@ -59,7 +62,10 @@ export function connectToProviderData(getConfig = () => ({})) {
         const [pagination, setPagination] = useState(
           getInitialPagination(config),
         );
-        const prevHashValue = useRef(null);
+        const lastProviderData = useRef({
+          providerUrl: null,
+          dataKey: null,
+        });
 
         const provider_url = useMemo(
           () => getProviderUrl(config.provider_url),
@@ -68,13 +74,15 @@ export function connectToProviderData(getConfig = () => ({})) {
 
         const form = useMemo(
           () =>
-            getForm({
-              ...props,
-              location,
-              pagination,
-              extraQuery: state.extraQuery,
-              extraConditions: state.extraConditions,
-            }),
+            getDataProviderPayload(
+              getForm({
+                ...props,
+                location,
+                pagination,
+                extraQuery: state.extraQuery,
+                extraConditions: state.extraConditions,
+              }),
+            ).form,
           [
             props,
             location,
@@ -98,33 +106,44 @@ export function connectToProviderData(getConfig = () => ({})) {
                 }),
           [props, location, params, pagination, provider_url],
         );
-
-        const hashValue = useMemo(() => {
-          const _hash_1 = hash(form);
-          const _hash_2 = hash(data_query);
-          return hash(_hash_1 + _hash_2);
-        }, [form, data_query]);
+        const hashValue = useMemo(
+          () => getDataProviderHash(form, data_query),
+          [form, data_query],
+        );
 
         const connectorPath = useMemo(
           () => getConnectorPath(provider_url, hashValue),
           [provider_url, hashValue],
         );
 
+        const providerData = props.data_providers?.data?.[provider_url];
+        const providerDataKey = getDataProviderKey(
+          providerData,
+          hashValue,
+          form,
+          data_query,
+        );
+
         const provider_data = provider_url
-          ? props.data_providers?.data?.[provider_url]?.[hashValue]
+          ? providerData?.[providerDataKey]
           : null;
 
+        const previousProviderDataKey =
+          lastProviderData.current.providerUrl === provider_url
+            ? lastProviderData.current.dataKey
+            : null;
+
         const prev_provider_data = provider_url
-          ? props.data_providers?.data?.[provider_url]?.[prevHashValue.current]
+          ? providerData?.[previousProviderDataKey]
           : null;
 
         const provider_metadata = provider_url
-          ? props.data_providers?.metadata?.[provider_url]?.[hashValue]
+          ? props.data_providers?.metadata?.[provider_url]?.[providerDataKey]
           : null;
 
         const prev_provider_metadata = provider_url
           ? props.data_providers?.metadata?.[provider_url]?.[
-              prevHashValue.current
+              previousProviderDataKey
             ]
           : null;
 
@@ -136,12 +155,35 @@ export function connectToProviderData(getConfig = () => ({})) {
           ? props.data_providers?.failedConnectors?.[connectorPath] ?? false
           : false;
 
+        const waitForParams =
+          config.waitForParams ?? props.data?.waitForParams ?? false;
+        const waitingForProviderParams =
+          waitForParams &&
+          !hasAllDataProviderParams({
+            allowedParams: props.data?.allowedParams,
+            form,
+            dataQuery: data_query,
+          });
+        const visibleProvider = waitingForProviderParams
+          ? {}
+          : {
+              data: provider_data,
+              previousData: prev_provider_data,
+              metadata: provider_metadata,
+              previousMetadata: prev_provider_metadata,
+            };
+
         const activePageHasData = pagination.enabled
           ? !!pagination.data[pagination.activePage]
           : false;
 
         const readyToDispatch =
-          mounted && provider_url && !provider_data && !isPending && !isFailed;
+          mounted &&
+          provider_url &&
+          !waitingForProviderParams &&
+          !provider_data &&
+          !isPending &&
+          !isFailed;
 
         const updatePagination = useCallback(
           (data) => {
@@ -155,11 +197,23 @@ export function connectToProviderData(getConfig = () => ({})) {
         );
 
         useEffect(() => {
-          if (!isPending) {
-            prevHashValue.current = hashValue;
+          if (
+            !waitingForProviderParams &&
+            !isPending &&
+            !isUndefined(provider_data)
+          ) {
+            lastProviderData.current = {
+              providerUrl: provider_url,
+              dataKey: providerDataKey,
+            };
           }
-          /* eslint-disable-next-line */
-        }, [isPending]);
+        }, [
+          isPending,
+          provider_data,
+          providerDataKey,
+          provider_url,
+          waitingForProviderParams,
+        ]);
 
         useEffect(() => {
           setPagination(getInitialPagination(config));
@@ -180,6 +234,7 @@ export function connectToProviderData(getConfig = () => ({})) {
           }
 
           if (
+            !waitingForProviderParams &&
             provider_data &&
             !isPending &&
             pagination.enabled &&
@@ -211,6 +266,7 @@ export function connectToProviderData(getConfig = () => ({})) {
             }
             setPagination({ ...newPagination });
           } else if (
+            !waitingForProviderParams &&
             provider_data &&
             !isPending &&
             pagination.enabled &&
@@ -254,6 +310,7 @@ export function connectToProviderData(getConfig = () => ({})) {
           provider_data,
           provider_url,
           readyToDispatch,
+          waitingForProviderParams,
         ]);
 
         return (
@@ -264,27 +321,32 @@ export function connectToProviderData(getConfig = () => ({})) {
               location={location}
               provider_data={
                 pagination.enabled
-                  ? provider_data
-                  : provider_data || prev_provider_data
+                  ? visibleProvider.data
+                  : visibleProvider.data || visibleProvider.previousData
               }
-              prev_provider_data={prev_provider_data}
-              provider_metadata={provider_metadata}
-              prev_provider_metadata={prev_provider_metadata}
+              prev_provider_data={visibleProvider.previousData}
+              provider_metadata={visibleProvider.metadata}
+              prev_provider_metadata={visibleProvider.previousMetadata}
               loadingProviderData={
-                !!provider_url && (isPending || isUndefined(provider_data))
+                !!provider_url &&
+                !waitingForProviderParams &&
+                (isPending || isUndefined(provider_data))
               }
-              failedProviderData={isFailed}
+              waitingForProviderParams={waitingForProviderParams}
+              failedProviderData={waitingForProviderParams ? false : isFailed}
               hasProviderUrl={!!provider_url}
               updatePagination={updatePagination}
               pagination={
-                process.env.JEST_WORKER_ID
-                  ? {
-                      ...pagination,
-                      data: {
-                        1: provider_data,
-                      },
-                    }
-                  : pagination
+                waitingForProviderParams
+                  ? { ...pagination, data: {} }
+                  : process.env.JEST_WORKER_ID
+                    ? {
+                        ...pagination,
+                        data: {
+                          1: provider_data,
+                        },
+                      }
+                    : pagination
               }
             />
           </ConnectorContext.Provider>
