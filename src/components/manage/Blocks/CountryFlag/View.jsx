@@ -15,7 +15,8 @@ const MaybeDropdown = ({ children, countries, value, dropdown = false }) => {
   const history = useHistory();
 
   const options = React.useMemo(() => {
-    return countries.map((c) => ({
+    return countries.map((c, index) => ({
+      key: c['@id'] || c.url || c.UID || index,
       text: c.title || c.name,
       value: c['@id'] || c.url,
     }));
@@ -54,12 +55,12 @@ export const CountryFlagView = (props) => {
     show_name,
     show_flag,
     show_dropdown,
+    exclude,
   } = props.data;
 
   const Tag = render_as ? render_as.toLowerCase() : 'h2';
   const contentData = props.metadata || props.properties;
   const siblingItems = contentData?.['@components']?.siblings?.items;
-
   const siblings = React.useMemo(() => siblingItems || [], [siblingItems]);
   const pageTitle = contentData?.title;
   const previewImageUrl = contentData
@@ -81,19 +82,29 @@ export const CountryFlagView = (props) => {
     }
   }, [countryCode]);
 
-  // TODO: we might as well use the Title everywhere, since we use it for the siblings
-  // const countries = siblings.filter((f) => countryTitles.includes(f.title));
   const { listingItems, hasLoaded } = props;
 
+  const excludedUIDs = React.useMemo(
+    () =>
+      new Set(
+        (exclude || []).map((item) => item.UID || flattenToAppURL(item['@id'])),
+      ),
+    [exclude],
+  );
+
   const countries = React.useMemo(() => {
-    if (listingItems && listingItems.length > 0) {
-      return listingItems;
-    }
-    if (hasLoaded) {
-      return siblings.filter((s) => s.title !== pageTitle);
-    }
-    return [];
-  }, [listingItems, pageTitle, siblings, hasLoaded]);
+    const items =
+      listingItems && listingItems.length > 0
+        ? listingItems
+        : hasLoaded
+          ? siblings.filter((s) => s.title !== pageTitle)
+          : [];
+    return excludedUIDs.size > 0
+      ? items.filter(
+          (item) => !excludedUIDs.has(item.UID || flattenToAppURL(item['@id'])),
+        )
+      : items;
+  }, [listingItems, hasLoaded, siblings, pageTitle, excludedUIDs]);
 
   const countryFlag =
     (countryCode && show_flag && flag && (
