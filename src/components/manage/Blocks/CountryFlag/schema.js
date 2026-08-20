@@ -18,7 +18,7 @@ const CountryFlagSchema = (intl) => {
       {
         id: 'dropdownItems',
         title: intl.formatMessage(messages.dropdownItemsFieldsetTitle),
-        fields: ['querystring'],
+        fields: ['querystring', 'exclude'],
       },
     ],
 
@@ -49,6 +49,13 @@ const CountryFlagSchema = (intl) => {
       querystring: {
         title: intl.formatMessage(messages.querystringTitle),
         widget: 'querystring',
+      },
+      exclude: {
+        title: intl.formatMessage(messages.excludeTitle),
+        description: intl.formatMessage(messages.excludeDescription),
+        widget: 'object_browser',
+        mode: 'multiple',
+        allowExternals: false,
       },
     },
 

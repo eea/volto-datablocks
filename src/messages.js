@@ -112,6 +112,14 @@ const messages = defineMessages({
     id: 'querystringTitle',
     defaultMessage: 'Criteria',
   },
+  excludeTitle: {
+    id: 'excludeTitle',
+    defaultMessage: 'Exclude items',
+  },
+  excludeDescription: {
+    id: 'excludeDescription',
+    defaultMessage: 'Select items to exclude from the dropdown listing.',
+  },
   source: {
     id: 'sourceField',
     defaultMessage: 'Source',
