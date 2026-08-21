@@ -627,10 +627,10 @@ describe('useOnScreen', () => {
   let callback;
 
   beforeEach(() => {
-    observe = jest.fn();
-    unobserve = jest.fn();
+    observe = vi.fn();
+    unobserve = vi.fn();
 
-    window.IntersectionObserver = jest.fn(function (cb) {
+    window.IntersectionObserver = vi.fn(function (cb) {
       this.observe = observe;
       this.unobserve = unobserve;
       callback = cb;

@@ -4,25 +4,24 @@ import { IntlProvider } from 'react-intl';
 import '@testing-library/jest-dom';
 import Edit from './Edit';
 
-const mockBlocksForm = jest.fn(() => <div data-testid="blocks-form" />);
-const mockSidebarPortal = jest.fn(({ children }) => (
+const mockBlocksForm = vi.fn(() => <div data-testid="blocks-form" />);
+const mockSidebarPortal = vi.fn(({ children }) => (
   <div data-testid="sidebar-portal">{children}</div>
 ));
 
-jest.mock('@plone/volto/components/manage/Blocks/Block/BlocksForm', () => {
-  return (props) => mockBlocksForm(props);
+vi.mock('@plone/volto/components/manage/Blocks/Block/BlocksForm', () => {
+  return { default: (props) => mockBlocksForm(props) };
 });
 
-jest.mock('@plone/volto/components/manage/Form/InlineForm', () => {
-  return () => <div data-testid="inline-form" />;
+vi.mock('@plone/volto/components/manage/Form/InlineForm', () => {
+  return { default: () => <div data-testid="inline-form" /> };
 });
-jest.mock(
-  '@plone/volto/components/manage/Sidebar/SidebarPortal',
-  () => (props) => mockSidebarPortal(props),
-);
+vi.mock('@plone/volto/components/manage/Sidebar/SidebarPortal', () => ({
+  default: (props) => mockSidebarPortal(props),
+}));
 
-jest.mock('@plone/volto/helpers/Blocks/Blocks', () => ({
-  emptyBlocksForm: jest.fn(() => ({
+vi.mock('@plone/volto/helpers/Blocks/Blocks', () => ({
+  emptyBlocksForm: vi.fn(() => ({
     blocks: {
       empty: {
         '@type': 'empty',
@@ -34,12 +33,12 @@ jest.mock('@plone/volto/helpers/Blocks/Blocks', () => ({
   })),
 }));
 
-jest.mock('@eeacms/volto-datablocks/hocs', () => ({
+vi.mock('@eeacms/volto-datablocks/hocs', () => ({
   connectToProviderData: () => (Component) => Component,
 }));
 
-jest.mock('./schema', () => ({
-  ConditionalDataBlockSchema: jest.fn(() => ({
+vi.mock('./schema', () => ({
+  ConditionalDataBlockSchema: vi.fn(() => ({
     title: 'Conditional data block',
     properties: {
       column_data: {},
@@ -64,8 +63,8 @@ describe('ConditionalDataBlock Edit', () => {
         },
       },
     },
-    onChangeBlock: jest.fn(),
-    onChangeField: jest.fn(),
+    onChangeBlock: vi.fn(),
+    onChangeField: vi.fn(),
     pathname: '/',
     selected: true,
     manage: true,
@@ -75,7 +74,7 @@ describe('ConditionalDataBlock Edit', () => {
       2: {},
       1: {},
     },
-    setSidebarTab: jest.fn(),
+    setSidebarTab: vi.fn(),
     intl: {
       formatMessage: ({ defaultMessage }) => defaultMessage,
     },

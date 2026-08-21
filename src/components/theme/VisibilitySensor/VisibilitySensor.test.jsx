@@ -7,21 +7,23 @@ import '@testing-library/jest-dom';
 
 import VisibilitySensor from './VisibilitySensor';
 
-jest.mock('@plone/volto/components', () => ({
+vi.mock('@plone/volto/components', () => ({
   __esModule: true,
   UniversalLink: ({ children, href }) => {
     return <a href={href}>{children}</a>;
   },
 }));
 
-jest.mock('react-visibility-sensor', () => (props) => {
-  const { children, onChange, active, ...rest } = props;
-  return (
-    <div data-testid="visibility-sensor" {...rest}>
-      {children({ isVisible: active })}
-    </div>
-  );
-});
+vi.mock('react-visibility-sensor', () => ({
+  default: (props) => {
+    const { children, onChange, active, ...rest } = props;
+    return (
+      <div data-testid="visibility-sensor" {...rest}>
+        {children({ isVisible: active })}
+      </div>
+    );
+  },
+}));
 
 const mockStore = configureStore();
 

@@ -12,14 +12,14 @@ const location = {
   pathname: '/path/to/dataconnector',
 };
 
-jest.mock('react-router', () => ({
+vi.mock('react-router', () => ({
   __esModule: true,
   withRouter: (Component) => (props) => {
     return <Component {...props} location={location} />;
   },
 }));
 
-jest.mock('react-router-dom', () => ({
+vi.mock('react-router-dom', () => ({
   __esModule: true,
   useParams: () => {
     return {};
@@ -29,7 +29,7 @@ jest.mock('react-router-dom', () => ({
   },
 }));
 
-jest.mock('@plone/volto/components', () => ({
+vi.mock('@plone/volto/components', () => ({
   __esModule: true,
   Icon: () => {
     return <p>This is an icon</p>;

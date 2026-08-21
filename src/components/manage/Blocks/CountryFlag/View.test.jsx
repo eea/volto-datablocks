@@ -8,8 +8,8 @@ import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import '@testing-library/jest-dom';
 
-// jest.mock('react-router-dom', () => ({
-//   useLocation: jest.fn().mockReturnValue({
+// vi.mock('react-router-dom', () => ({
+//   useLocation: vi.fn().mockReturnValue({
 //     pathname: '/marine/belgium',
 //     search: '',
 //     hash: '',

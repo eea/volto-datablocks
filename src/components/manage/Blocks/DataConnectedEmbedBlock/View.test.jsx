@@ -6,15 +6,15 @@ import ViewEmbedBlock from './View.jsx';
 import { IntlProvider } from 'react-intl';
 import '@testing-library/jest-dom';
 
-jest.mock('@eeacms/volto-embed', () => {
+vi.mock('@eeacms/volto-embed', () => {
   return {
-    PrivacyProtection: jest.fn(({ children }) => <div>{children}</div>),
+    PrivacyProtection: vi.fn(({ children }) => <div>{children}</div>),
   };
 });
 
-jest.mock('@plone/volto/helpers', () => ({
-  getBaseUrl: jest.fn(),
-  flattenToAppURL: jest.fn(),
+vi.mock('@plone/volto/helpers', () => ({
+  getBaseUrl: vi.fn(),
+  flattenToAppURL: vi.fn(),
 }));
 
 const mockStore = configureStore();
