@@ -56,7 +56,7 @@ const columnSchema = (intl) => ({
           See{' '}
           <a
             target="_blank"
-            rel="noopener"
+            rel="noopener noreferrer"
             href="https://github.com/d3/d3-3.x-api-reference/blob/master/Formatting.md#d3_format"
           >
             D3 format documentation
