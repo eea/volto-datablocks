@@ -16,7 +16,7 @@ const getProviderDataLength = (provider_data) => {
     : 0;
 };
 
-const DataConnectorView = (props) => {
+export const DataConnectorView = (props) => {
   const { content, pagination = {}, updatePagination } = props;
 
   const prev_provider_data = pagination.data[pagination.activePage]

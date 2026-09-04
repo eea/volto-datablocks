@@ -1,0 +1,7 @@
+{
+  "title": "Datablocks",
+  "frontend_addon_name": "volto-datablocks",
+  "description": "(EEA) Provides primitives for data connectivity to volto-plotlycharts and other blocks",
+  "volto_version": "19.3.0",
+  "__template__": "frontend_addon"
+}
