@@ -12,13 +12,20 @@ export const dataProvider = (middlewares) => [
       if (isPending) {
         return;
       }
-      store.dispatch({
-        type: `${GET_DATA_FROM_PROVIDER}_PENDING`,
-        path: action.path,
-        hashValue: action.hashValue,
-      });
     }
-    return next(action);
+    try {
+      const result = next(action);
+
+      if (result && typeof result.catch === 'function') {
+        return result.catch((error) => {
+          throw error;
+        });
+      }
+
+      return result;
+    } catch (error) {
+      throw error;
+    }
   },
   ...middlewares,
 ];

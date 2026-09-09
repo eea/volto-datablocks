@@ -1,0 +1,37 @@
+@keyframes dcv-shimmer {
+  0% {
+    background-position: -1200px 0;
+  }
+  100% {
+    background-position: 1200px 0;
+  }
+}
+
+.dcv-skeleton {
+  display: inline-block;
+  max-width: 100%;
+}
+
+.dcv-skeleton-line {
+  position: relative;
+  display: block;
+  width: 100%;
+  border-radius: 4px;
+  animation: dcv-shimmer 2s linear infinite;
+  background-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.08) 0,
+    rgba(0, 0, 0, 0.15) 15%,
+    rgba(0, 0, 0, 0.08) 30%
+  );
+  background-size: 1200px 100%;
+  font-weight: inherit;
+  letter-spacing: 0;
+  line-height: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dcv-skeleton-line {
+    animation: none;
+  }
+}

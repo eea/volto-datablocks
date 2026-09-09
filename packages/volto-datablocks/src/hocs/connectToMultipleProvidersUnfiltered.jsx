@@ -6,6 +6,8 @@ import { getDataFromProvider } from '@eeacms/volto-datablocks/actions';
 import {
   getProviderUrl,
   getConnectorPath,
+  getDataProviderHash,
+  getDataProviderKey,
 } from '@eeacms/volto-datablocks/helpers';
 
 /**
@@ -27,6 +29,7 @@ export function connectToMultipleProvidersUnfiltered(getConfig = () => ({})) {
         const providers = useMemo(() => {
           return config.providers || [];
         }, [config]);
+        const hashValue = useMemo(() => getDataProviderHash(), []);
 
         const providers_data = useMemo(() => {
           const data = {};
@@ -36,10 +39,12 @@ export function connectToMultipleProvidersUnfiltered(getConfig = () => ({})) {
             );
             if (!provider_url) return;
             const title = provider.name || provider.title || provider_url;
-            data[title] = props.data_providers?.data?.[provider_url]?._default;
+            const providerData = props.data_providers?.data?.[provider_url];
+            const providerDataKey = getDataProviderKey(providerData, hashValue);
+            data[title] = providerData?.[providerDataKey];
           });
           return data;
-        }, [providers, props.data_providers?.data]);
+        }, [providers, props.data_providers?.data, hashValue]);
 
         const providers_metadata = useMemo(() => {
           const data = {};
@@ -49,11 +54,18 @@ export function connectToMultipleProvidersUnfiltered(getConfig = () => ({})) {
             );
             if (!provider_url) return;
             const title = provider.name || provider.title || provider_url;
+            const providerData = props.data_providers?.data?.[provider_url];
+            const providerDataKey = getDataProviderKey(providerData, hashValue);
             data[title] =
-              props.data_providers?.metadata?.[provider_url]?._default;
+              props.data_providers?.metadata?.[provider_url]?.[providerDataKey];
           });
           return data;
-        }, [providers, props.data_providers?.metadata]);
+        }, [
+          providers,
+          props.data_providers?.data,
+          props.data_providers?.metadata,
+          hashValue,
+        ]);
 
         useEffect(() => {
           if (!mounted && __CLIENT__) {
@@ -64,10 +76,12 @@ export function connectToMultipleProvidersUnfiltered(getConfig = () => ({})) {
             const provider_url = getProviderUrl(
               provider.provider_url || provider.url,
             );
-            const connectorPath = getConnectorPath(provider_url);
+            const connectorPath = getConnectorPath(provider_url, hashValue);
 
+            const providerData = props.data_providers?.data?.[provider_url];
+            const providerDataKey = getDataProviderKey(providerData, hashValue);
             const provider_data = provider_url
-              ? props.data_providers?.data?.[provider_url]?._default
+              ? providerData?.[providerDataKey]
               : null;
 
             const isPending = provider_url
@@ -86,7 +100,7 @@ export function connectToMultipleProvidersUnfiltered(getConfig = () => ({})) {
               !isFailed;
 
             if (readyToDispatch) {
-              dispatch(getDataFromProvider(provider_url));
+              dispatch(getDataFromProvider(provider_url, {}, [], hashValue));
             }
           });
         }, [
@@ -98,6 +112,7 @@ export function connectToMultipleProvidersUnfiltered(getConfig = () => ({})) {
           props.data_providers?.failedConnectors,
           props.data_providers?.data,
           providers,
+          hashValue,
         ]);
 
         return (

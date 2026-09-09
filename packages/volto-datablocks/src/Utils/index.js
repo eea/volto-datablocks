@@ -1,4 +1,5 @@
-import DataConnectedValue from './DataConnectedValue/DataConnectedValue';
 import FormattedValue from './FormattedValue';
+import DataConnectedValue from './DataConnectedValue/DataConnectedValue';
+import Skeleton from './Skeleton/Skeleton';
 
-export { DataConnectedValue, FormattedValue };
+export { DataConnectedValue, FormattedValue, Skeleton };
