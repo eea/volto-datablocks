@@ -4,6 +4,16 @@ jest.mock('@plone/volto/icons/image-wide.svg', () => 'image-wide.svg');
 jest.mock('./View', () => () => null);
 jest.mock('./Edit', () => () => null);
 
+// Volto's Blocks helper requires `uuid`, which is not resolvable in the
+// addon's test environment. Provide a minimal `getBlocks` that preserves the
+// layout-order semantics this test relies on.
+jest.mock('@plone/volto/helpers/Blocks/Blocks', () => ({
+  getBlocks: ({ blocks = {}, blocks_layout: { items = [] } = {} } = {}) =>
+    items
+      .map((id) => [id, blocks[id]])
+      .filter(([, block]) => block != null),
+}));
+
 describe('ConditionalDataBlock tocEntries', () => {
   const slateConfig = {
     tocEntry: (block, tocData) =>
