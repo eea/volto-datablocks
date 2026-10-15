@@ -42,6 +42,17 @@ const config = (config) => {
     ...addonReducers,
   };
 
+  // Expose the runtime visibility of conditional data blocks to volto-block-toc
+  // through its generic toc context selector. Existing selectors are preserved.
+  const previousTocContextSelector = config.settings.toc?.contextSelector;
+  config.settings.toc = {
+    ...config.settings.toc,
+    contextSelector: (state) => ({
+      ...(previousTocContextSelector ? previousTocContextSelector(state) : {}),
+      blockTocVisibility: state.block_toc_visibility,
+    }),
+  };
+
   config.settings.loadables = {
     ...config.settings.loadables,
     d3: loadable.lib(() => import('d3')),
