@@ -1,6 +1,8 @@
 import { getNestedTocEntries } from './index';
 
-vi.mock('@plone/volto/icons/image-wide.svg', () => ({ default: 'image-wide.svg' }));
+vi.mock('@plone/volto/icons/image-wide.svg', () => ({
+  default: 'image-wide.svg',
+}));
 vi.mock('./View', () => ({ default: () => null }));
 vi.mock('./Edit', () => ({ default: () => null }));
 
