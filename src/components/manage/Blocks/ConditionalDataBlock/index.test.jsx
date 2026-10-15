@@ -9,9 +9,7 @@ jest.mock('./Edit', () => () => null);
 // layout-order semantics this test relies on.
 jest.mock('@plone/volto/helpers/Blocks/Blocks', () => ({
   getBlocks: ({ blocks = {}, blocks_layout: { items = [] } = {} } = {}) =>
-    items
-      .map((id) => [id, blocks[id]])
-      .filter(([, block]) => block != null),
+    items.map((id) => [id, blocks[id]]).filter(([, block]) => block != null),
 }));
 
 describe('ConditionalDataBlock tocEntries', () => {
