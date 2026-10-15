@@ -1,8 +1,8 @@
 import { getNestedTocEntries } from './index';
 
-vi.mock('@plone/volto/icons/image-wide.svg', () => 'image-wide.svg');
-vi.mock('./View', () => () => null);
-vi.mock('./Edit', () => () => null);
+vi.mock('@plone/volto/icons/image-wide.svg', () => ({ default: 'image-wide.svg' }));
+vi.mock('./View', () => ({ default: () => null }));
+vi.mock('./Edit', () => ({ default: () => null }));
 
 // Volto's Blocks helper requires `uuid`, which is not resolvable in the
 // addon's test environment. Provide a minimal `getBlocks` that preserves the
