@@ -6,6 +6,7 @@ import {
 export * from './blockData';
 export * from './dataProvider';
 export * from './connectedDataParameters';
+export * from './blockTocVisibility';
 
 export function changeSidebarState(open) {
   return {
