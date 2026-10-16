@@ -56,16 +56,32 @@ const buildConditionalPageData = ({
   },
 });
 
-const updatePageBlocks = (options = {}) =>
+// The edit route is loaded directly in slateBeforeEach, so the page is
+// locked by the open editor. Release the lock before patching behind the
+// UI; on older backends without the @lock endpoint this is a no-op.
+const unlockPage = () =>
   cy.request({
-    method: 'PATCH',
-    url: `${getApiPath()}/${CONTENT_PATH}`,
+    method: 'DELETE',
+    url: `${getApiPath()}/${CONTENT_PATH}/@lock`,
     headers: {
       Accept: 'application/json',
     },
     auth: getAuth(),
-    body: buildConditionalPageData(options),
+    failOnStatusCode: false,
   });
+
+const updatePageBlocks = (options = {}) =>
+  unlockPage().then(() =>
+    cy.request({
+      method: 'PATCH',
+      url: `${getApiPath()}/${CONTENT_PATH}`,
+      headers: {
+        Accept: 'application/json',
+      },
+      auth: getAuth(),
+      body: buildConditionalPageData(options),
+    }),
+  );
 
 const mockConnectorData = (values) =>
   cy
