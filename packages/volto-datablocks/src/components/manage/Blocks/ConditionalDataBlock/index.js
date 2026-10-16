@@ -1,5 +1,6 @@
 import imagewideSVG from '@plone/volto/icons/image-wide.svg';
 import { getBlocks } from '@plone/volto/helpers/Blocks/Blocks';
+import { makeTocVisibilityKey } from './tocVisibility';
 import View from './View';
 import Edit from './Edit';
 
@@ -52,8 +53,21 @@ const config = (config) => {
     },
     // Integration with volto-block-toc: expose nested blocks to the ToC.
     tocEntry: undefined,
-    tocEntries: (block, tocData) =>
-      getNestedTocEntries(block, tocData, config.blocks.blocksConfig),
+    tocEntries: (block, tocData, context = {}) => {
+      // When the condition is currently false, the block is not rendered, so
+      // its nested entries must not appear in the ToC. `blockTocVisibility`
+      // is published by the block itself (see View.jsx) once provider data is
+      // resolved; while unknown we keep the optimistic default and include it.
+      const key = makeTocVisibilityKey(context.contentUid, context.id);
+      if (
+        key &&
+        context.blockTocVisibility &&
+        context.blockTocVisibility[key] === false
+      ) {
+        return [];
+      }
+      return getNestedTocEntries(block, tocData, config.blocks.blocksConfig);
+    },
   };
   return config;
 };

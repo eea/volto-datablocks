@@ -1,4 +1,4 @@
-import { getNestedTocEntries } from './index';
+import applyConfig, { getNestedTocEntries } from './index';
 
 vi.mock('@plone/volto/icons/image-wide.svg', () => ({
   default: 'image-wide.svg',
@@ -80,5 +80,67 @@ describe('ConditionalDataBlock tocEntries', () => {
 
   it('returns an empty list when no blocks config is provided', () => {
     expect(getNestedTocEntries(makeBlock(), {}, undefined)).toEqual([]);
+  });
+
+  describe('runtime visibility gating', () => {
+    const getTocEntries = () => {
+      const applied = applyConfig({
+        blocks: { blocksConfig: { ...blocksConfig } },
+        settings: {},
+      });
+      return applied.blocks.blocksConfig.conditionalDataBlock.tocEntries;
+    };
+
+    it('drops the nested entries when the block is reported hidden', () => {
+      const tocEntries = getTocEntries();
+
+      expect(
+        tocEntries(
+          makeBlock(),
+          { levels: ['h1', 'h2'] },
+          {
+            id: 'block-1',
+            contentUid: 'uid-1',
+            blockTocVisibility: { 'uid-1::block-1': false },
+          },
+        ),
+      ).toEqual([]);
+    });
+
+    it('keeps the nested entries when the block is reported visible', () => {
+      const tocEntries = getTocEntries();
+
+      expect(
+        tocEntries(
+          makeBlock(),
+          { levels: ['h1', 'h2'] },
+          {
+            id: 'block-1',
+            contentUid: 'uid-1',
+            blockTocVisibility: { 'uid-1::block-1': true },
+          },
+        ),
+      ).toEqual([
+        [2, 'Heading one'],
+        [2, 'from columns'],
+        [3, 'from columns 2'],
+      ]);
+    });
+
+    it('optimistically keeps entries while visibility is unknown', () => {
+      const tocEntries = getTocEntries();
+
+      expect(
+        tocEntries(
+          makeBlock(),
+          { levels: ['h1', 'h2'] },
+          {
+            id: 'block-1',
+            contentUid: 'uid-1',
+            blockTocVisibility: {},
+          },
+        ),
+      ).toHaveLength(3);
+    });
   });
 });

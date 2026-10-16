@@ -1,7 +1,10 @@
 import React from 'react';
 import { compose } from 'redux';
+import { useDispatch } from 'react-redux';
 import RenderBlocks from '@plone/volto/components/theme/View/RenderBlocks';
 import { connectToProviderData } from '@eeacms/volto-datablocks/hocs';
+import { setBlockTocVisibility } from '@eeacms/volto-datablocks/actions';
+import { getTocVisibilityKey } from './tocVisibility';
 import './style.less';
 
 const isNumber = (n) => {
@@ -49,7 +52,8 @@ const evaluateCondition = (columnValue, operator, conditionValue) => {
 };
 
 const View = (props) => {
-  const { data, provider_data } = props;
+  const { data, provider_data, id, loadingProviderData } = props;
+  const dispatch = useDispatch();
   const { column_data, operator, condition } = data;
   const columnValue = Array.from(new Set(provider_data?.[column_data])).sort(
     (a, b) => (a > b ? 1 : a < b ? -1 : 0),
@@ -62,6 +66,18 @@ const View = (props) => {
     ?.replace(/[^a-zA-Z-\s]/gi, '')
     ?.trim()
     ?.replace(/\s+/gi, '-');
+
+  // Report the runtime visibility to the table of contents. The ToC cannot
+  // evaluate the condition on its own, so it consumes this value to decide
+  // whether to include the entries of the blocks nested here. While the
+  // provider data is still being fetched we keep the value unknown, so the
+  // ToC keeps its optimistic default instead of hiding entries prematurely.
+  const visible = !!evalResult;
+  const tocKey = getTocVisibilityKey(metadata, id);
+  React.useEffect(() => {
+    if (!tocKey || loadingProviderData) return;
+    dispatch(setBlockTocVisibility(tocKey, visible));
+  }, [dispatch, tocKey, visible, loadingProviderData]);
 
   return (
     evalResult && (
