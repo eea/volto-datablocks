@@ -155,3 +155,101 @@ describe('connectToProviderData waitForParams', () => {
     expect(actions).toHaveLength(1);
   });
 });
+
+describe('connectToProviderData pagination', () => {
+  const PaginatedProbe = connectToProviderData(() => ({
+    provider_url: providerUrl,
+    pagination: { enabled: true, itemsPerPage: 5 },
+  }))(Probe);
+
+  const emptyState = () => ({
+    content: { data: {} },
+    connected_data_parameters: {},
+    data_providers: {
+      data: {},
+      metadata: {},
+      pendingConnectors: {},
+      failedConnectors: {},
+    },
+  });
+
+  const reducer = (state = emptyState(), action) => {
+    if (action.type === 'TEST_SET_PROVIDER_DATA') {
+      return {
+        ...state,
+        data_providers: {
+          ...state.data_providers,
+          data: {
+            ...state.data_providers.data,
+            [action.provider_url]: {
+              ...(state.data_providers.data[action.provider_url] || {}),
+              [action.hashValue]: action.data,
+            },
+          },
+        },
+      };
+    }
+    return state;
+  };
+
+  it('caches the data of the active page and refreshes it when it changes', async () => {
+    const history = createMemoryHistory({ initialEntries: ['/?filter=A'] });
+    const dispatched = [];
+    const observer = () => (next) => (action) => {
+      dispatched.push(action);
+      return next(action);
+    };
+    const store = createStore(reducer, emptyState(), applyMiddleware(observer));
+
+    render(
+      <Provider store={store}>
+        <Router history={history}>
+          <PaginatedProbe data={{}} />
+        </Router>
+      </Provider>,
+    );
+
+    await waitFor(() => {
+      expect(
+        dispatched.find((action) => action.type === 'GET_DATA_FROM_PROVIDER'),
+      ).toBeTruthy();
+    });
+    const { path, hashValue } = dispatched.find(
+      (action) => action.type === 'GET_DATA_FROM_PROVIDER',
+    );
+
+    act(() =>
+      store.dispatch({
+        type: 'TEST_SET_PROVIDER_DATA',
+        provider_url: path,
+        hashValue,
+        data: { value: ['filtered A'] },
+      }),
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('probe')).toHaveAttribute(
+        'data-provider',
+        'filtered A',
+      );
+    });
+
+    // new data arrives for the active page, the pagination cache must
+    // pick it up
+    act(() =>
+      store.dispatch({
+        type: 'TEST_SET_PROVIDER_DATA',
+        provider_url: path,
+        hashValue,
+        data: { value: ['fresh data'] },
+      }),
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('probe')).toHaveAttribute(
+        'data-provider',
+        'fresh data',
+      );
+    });
+  });
+});
