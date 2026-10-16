@@ -14,19 +14,21 @@ vi.mock('@plone/volto/components', () => ({
   },
 }));
 
-vi.mock('react-visibility-sensor', () => (props) => {
-  const { children, onChange, active } = props;
-  return (
-    <div
-      data-testid="visibility-sensor"
-      data-active={active}
-      onClick={() => onChange(true)}
-      role="presentation"
-    >
-      {children({ isVisible: false })}
-    </div>
-  );
-});
+vi.mock('react-visibility-sensor', () => ({
+  default: (props) => {
+    const { children, onChange, active } = props;
+    return (
+      <div
+        data-testid="visibility-sensor"
+        data-active={active}
+        onClick={() => onChange(true)}
+        role="presentation"
+      >
+        {children({ isVisible: false })}
+      </div>
+    );
+  },
+}));
 
 const mockStore = configureStore();
 

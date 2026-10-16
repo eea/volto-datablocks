@@ -63,13 +63,14 @@ test('renders DataConnector view', () => {
       },
     },
   });
+  const state = store.getState();
   render(
     <Provider store={store}>
       <View
         location={location}
-        content={store.content.data}
+        content={state.content.data}
         provider_data={
-          store.data_providers.data[location.pathname]
+          state.data_providers.data[location.pathname]
             .a91a94e369df59971e2e97fc57c6a4a2c661b0fb
         }
         pagination={{

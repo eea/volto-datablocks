@@ -8,7 +8,9 @@ import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import '@testing-library/jest-dom';
 
-vi.mock('./withQuerystringResults', () => (Component) => Component);
+vi.mock('./withQuerystringResults', () => ({
+  default: (Component) => Component,
+}));
 
 // vi.mock('react-router-dom', () => ({
 //   useLocation: vi.fn().mockReturnValue({
