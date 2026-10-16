@@ -40,6 +40,7 @@
     "@eeacms/volto-datablocks": "workspace:*"
   },
   "devDependencies": {
+    "babel-plugin-istanbul": "^6.1.1",
     "lint-staged": "^14.0.1",
     "mrs-developer": "^2.2.0"
   },
