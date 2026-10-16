@@ -2,17 +2,17 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import View from './View';
 
-const mockDispatch = jest.fn();
+const { mockDispatch } = vi.hoisted(() => ({ mockDispatch: vi.fn() }));
 
-jest.mock('react-redux', () => ({
+vi.mock('react-redux', () => ({
   useDispatch: () => mockDispatch,
 }));
 
-jest.mock('@eeacms/volto-datablocks/hocs', () => ({
+vi.mock('@eeacms/volto-datablocks/hocs', () => ({
   connectToProviderData: () => (WrappedComponent) => WrappedComponent,
 }));
 
-jest.mock('@eeacms/volto-datablocks/actions', () => ({
+vi.mock('@eeacms/volto-datablocks/actions', () => ({
   setBlockTocVisibility: (id, visible) => ({
     type: 'SET_BLOCK_TOC_VISIBILITY',
     id,
@@ -20,7 +20,9 @@ jest.mock('@eeacms/volto-datablocks/actions', () => ({
   }),
 }));
 
-jest.mock('@plone/volto/components/theme/View/RenderBlocks', () => () => null);
+vi.mock('@plone/volto/components/theme/View/RenderBlocks', () => ({
+  default: () => null,
+}));
 
 describe('ConditionalDataBlock View toC visibility', () => {
   const baseProps = {
