@@ -107,6 +107,12 @@ describe('Conditional data block tests', () => {
     cy.get('.blocks-chooser .title').contains('Text').click();
     cy.get('.ui.basic.icon.button.slate').contains('Text').click();
 
+    // Slate renders read-only until its block is in the viewport, which can
+    // leave the nested editor as `contenteditable=false` on a long page.
+    cy.get(
+      '.block-editor-conditionalDataBlock .slate-editor.selected',
+    ).scrollIntoView();
+
     cy.get(
       '.block-editor-conditionalDataBlock .slate-editor.selected [contenteditable=true]',
     )
