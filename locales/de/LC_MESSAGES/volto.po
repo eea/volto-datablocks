@@ -411,6 +411,11 @@ msgstr "Nicht gleich"
 msgid "notIncludesOperator"
 msgstr "Nicht enthalten"
 
+#. Default: "Not starts with"
+#: messages
+msgid "notStartsWithOperator"
+msgstr "Beginnt nicht mit"
+
 #. Default: "Operator"
 #: messages
 msgid "operatorLabel"
@@ -525,6 +530,11 @@ msgstr ""
 #: messages
 msgid "sourcesField"
 msgstr "Quellen"
+
+#. Default: "Starts with"
+#: messages
+msgid "startsWithOperator"
+msgstr "Beginnt mit"
 
 #. Default: "Stripe alternate rows with color"
 #: messages
