@@ -53,6 +53,14 @@ const messages = defineMessages({
     id: 'lessThanOperator',
     defaultMessage: 'Less than',
   },
+  startsWithOperator: {
+    id: 'startsWithOperator',
+    defaultMessage: 'Starts with',
+  },
+  notStartsWithOperator: {
+    id: 'notStartsWithOperator',
+    defaultMessage: 'Not starts with',
+  },
   conditionValueLabel: {
     id: 'conditionValueLabel',
     defaultMessage: 'Condition value',

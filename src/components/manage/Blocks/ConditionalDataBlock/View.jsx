@@ -46,6 +46,12 @@ const evaluateCondition = (columnValue, operator, conditionValue) => {
     case operator === 'exists':
       return !!columnValue;
 
+    case operator === 'startsWith':
+      return String(columnValue).startsWith(String(conditionValue));
+
+    case operator === 'notStartsWith':
+      return !String(columnValue).startsWith(String(conditionValue));
+
     default:
       return 'Could not evaluate!';
   }
