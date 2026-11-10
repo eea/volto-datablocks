@@ -1,0 +1,49 @@
+import React from 'react';
+import { render } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
+import ViewEmbedBlock from './View.jsx';
+import { IntlProvider } from 'react-intl';
+import '@testing-library/jest-dom';
+
+vi.mock('@eeacms/volto-embed', () => {
+  return {
+    PrivacyProtection: vi.fn(({ children }) => <div>{children}</div>),
+  };
+});
+
+vi.mock('@plone/volto/helpers', () => ({
+  getBaseUrl: vi.fn(),
+  flattenToAppURL: vi.fn(),
+}));
+
+const mockStore = configureStore();
+
+describe('ViewEmbedBlock', () => {
+  it('renders the component', () => {
+    const store = mockStore({
+      connected_data_parameters: {},
+      router: {
+        location: {
+          pathname: '/',
+        },
+      },
+    });
+
+    const data = {
+      url: 'https://example.com/embed',
+      height: 400,
+      align: 'center',
+    };
+
+    const { getByTitle } = render(
+      <Provider store={store}>
+        <IntlProvider locale="en">
+          <ViewEmbedBlock data={data} />
+        </IntlProvider>
+      </Provider>,
+    );
+
+    expect(getByTitle('Embeded Google Maps')).toBeInTheDocument();
+  });
+});
