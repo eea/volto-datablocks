@@ -62,7 +62,7 @@ function exportCSVFile(items, fileTitle, readme) {
     navigator.msSaveBlob(blob, exportedFilenmae);
   } else {
     let link = document.createElement('a');
-    if (link.download !== undefined) {
+    if ('download' in link) {
       // feature detection
       // Browsers that support HTML5 download attribute
       if (document) {
