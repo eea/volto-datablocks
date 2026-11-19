@@ -8,6 +8,21 @@
 Volto-datablocks is an addon that has various blocks and utilities to provide "data-connected" components in volto websites.
 **This add-on requires `eea.docker.plonesaas@5.2.4-66`.**
 
+## Upgrade
+
+### Upgrading to 10.x
+
+> This version requires `Volto 18` or `Volto 19` and Node.js 22.
+
+The blocks, widgets, hocs and reducers keep the same API, so upgrading from 9.x on Volto 18 needs no code changes. The release adds Volto 19 support and moves the repository to the Volto 19 layout, where the published package lives in `packages/volto-datablocks`.
+
+#### Breaking changes
+
+- **Node.js 22 or newer is required** (`engines.node >= 22`), 9.x declared no engine.
+- **React 18 is required.** The package declares `react` and `react-dom` as `^18.2.0` peers, 9.x declared no peers.
+
+Two changes are additive: links rendered by `DottedTableChart`, `SimpleDataTable` and `SourcesBlock` carry `rel="noopener noreferrer"`, and `DataConnectorView` is now a named export.
+
 ## Requirements
 
 ### Backend
